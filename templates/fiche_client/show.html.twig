@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}FicheClient{% endblock %}
+
+{% block body %}
+    <h1>FicheClient</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ fiche_client.id }}</td>
+            </tr>
+            <tr>
+                <th>Nom</th>
+                <td>{{ fiche_client.nom }}</td>
+            </tr>
+            <tr>
+                <th>Ville</th>
+                <td>{{ fiche_client.ville }}</td>
+            </tr>
+            <tr>
+                <th>Age</th>
+                <td>{{ fiche_client.age }}</td>
+            </tr>
+            <tr>
+                <th>Poids</th>
+                <td>{{ fiche_client.poids }}</td>
+            </tr>
+            <tr>
+                <th>Telephone</th>
+                <td>{{ fiche_client.telephone }}</td>
+            </tr>
+            <tr>
+                <th>DureeMaladie</th>
+                <td>{{ fiche_client.dureeMaladie }}</td>
+            </tr>
+            <tr>
+                <th>TypeMaladie</th>
+                <td>{{ fiche_client.typeMaladie }}</td>
+            </tr>
+            <tr>
+                <th>Traitement</th>
+                <td>{{ fiche_client.traitement }}</td>
+            </tr>
+            <tr>
+                <th>Observation</th>
+                <td>{{ fiche_client.observation }}</td>
+            </tr>
+            <tr>
+                <th>CreatedAt</th>
+                <td>{{ fiche_client.createdAt ? fiche_client.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>UpdatedAt</th>
+                <td>{{ fiche_client.updatedAt ? fiche_client.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_fiche_client_index') }}">back to list</a>
+
+    <a href="{{ path('app_fiche_client_edit', {'id': fiche_client.id}) }}">edit</a>
+
+    {{ include('fiche_client/_delete_form.html.twig') }}
+{% endblock %}

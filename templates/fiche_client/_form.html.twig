@@ -1,0 +1,33 @@
+<div class="card shadow-lg border-0 mt-4">
+
+
+	<div class="card-body">
+{{ form_start(form, { attr: { id: 'ficheForm', 'data-turbo': 'false' } }) }}
+
+
+		{{ form_start(form, { attr: { id: 'ficheForm' } }) }}
+
+		<div class="row g-3">
+			<div class="col-md-6">{{ form_row(form.nom) }}</div>
+			<div class="col-md-6">{{ form_row(form.ville) }}</div>
+			<div class="col-md-4">{{ form_row(form.age) }}</div>
+			<div class="col-md-4">{{ form_row(form.poids) }}</div>
+			<div class="col-md-4">{{ form_row(form.telephone) }}</div>
+			<div class="col-md-6">{{ form_row(form.dureeMaladie) }}</div>
+			<div class="col-md-6">{{ form_row(form.typeMaladie) }}</div>
+			<div class="col-12">{{ form_row(form.traitement) }}</div>
+			<div class="col-12">{{ form_row(form.observation) }}</div>
+		</div>
+
+		<div class="text-end mt-4">
+			<button type="submit" class="btn btn-success btn-lg">
+				<i class="bi bi-check-circle"></i>
+				Enregistrer
+			</button>
+		</div>
+
+		{{ form_end(form) }}
+
+	</div>
+</div>
+

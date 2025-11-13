@@ -1,0 +1,58 @@
+
+		<div data-turbo="false">
+			{{ include('fiche_client/_form.html.twig') }}
+		</div>
+
+
+	 <script>
+	document.addEventListener("DOMContentLoaded", () => {
+	
+	    const form = document.getElementById("ficheForm");
+	
+	    form.addEventListener("submit", async function (e) {
+	        e.preventDefault();
+	
+	        const formData = new FormData(form);
+	
+	        // 🔥 Transforme "fiche_client[nom]" → "nom"
+	        let data = {};
+	        formData.forEach((value, key) => {
+	            const cleanKey = key.replace('fiche_client[', '').replace(']', '');
+	            data[cleanKey] = value;
+	        });
+	
+	        try {
+	            const response = await fetch("{{ path('app_fiche_client_new') }}", {
+	                method: "POST",
+	                headers: {
+	                    "Content-Type": "application/json",
+	                    "X-Requested-With": "XMLHttpRequest"
+	                },
+	                body: JSON.stringify(data)
+	            });
+	
+	            // Si Symfony renvoie une erreur HTML → empêcher JSON.parse()
+	            const text = await response.text();
+	
+	            if (!response.ok) {
+	                console.error("Réponse serveur :", text);
+	                alert("Erreur détectée : voir console.");
+	                return;
+	            }
+	
+	            const result = JSON.parse(text);
+	            console.log(result);
+	
+	            alert("Fiche créée (ID : " + result.id + ")");
+	            form.reset();
+	
+	        } catch (error) {
+	            console.error("Erreur JS :", error);
+	            alert("Erreur JS détectée, voir console.");
+	        }
+	    });
+	});
+	</script>
+
+
+
