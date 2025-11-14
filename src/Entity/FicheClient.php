@@ -50,6 +50,9 @@ class FicheClient
     #[ORM\OneToMany(targetEntity: Paiement::class, mappedBy: 'client')]
     private Collection $paiements;
 
+    #[ORM\OneToOne(mappedBy: 'client', cascade: ['persist', 'remove'])]
+    private ?TroublesDigestifs $troublesDigestifs = null;
+
     public function __construct()
     {
         $this->paiements = new ArrayCollection();
@@ -184,6 +187,22 @@ class FicheClient
                 $paiement->setClient(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getTroublesDigestifs(): ?TroublesDigestifs
+    {
+        return $this->troublesDigestifs;
+    }
+
+    public function setTroublesDigestifs(?TroublesDigestifs $troublesDigestifs): static
+    {
+        if ($troublesDigestifs && $troublesDigestifs->getClient() !== $this) {
+            $troublesDigestifs->setClient($this);
+        }
+
+        $this->troublesDigestifs = $troublesDigestifs;
 
         return $this;
     }

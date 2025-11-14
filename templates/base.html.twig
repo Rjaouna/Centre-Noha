@@ -37,7 +37,31 @@
     <body>
 {{ include('partials/_navbar/_navbar.html.twig') }}
 
+<div id="flashMessageContainer" class="position-fixed top-0 start-50 translate-middle-x mt-3" style="z-index: 9999; width: 400px;"></div>
+
+
 
         {% block body %}{% endblock %}
+ <script>
+        function showFlashMessage(message, type = "success") {
+    const container = document.getElementById("flashMessageContainer");
+
+    const alert = document.createElement("div");
+    alert.className = `alert alert-${type} fade show text-center shadow`;
+    alert.role = "alert";
+    alert.innerHTML = message;
+
+    container.appendChild(alert);
+
+    // Disparition après 5 sec
+    setTimeout(() => {
+        alert.classList.remove("show");
+        alert.classList.add("fade");
+        setTimeout(() => alert.remove(), 2500);
+    }, 5000);
+}
+</script>
+
+
     </body>
 </html>

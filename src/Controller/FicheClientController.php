@@ -68,6 +68,7 @@ final class FicheClientController extends AbstractController
             return $this->json([
                 "success" => true,
                 "id" => $fiche->getId(),
+                "nom" => $fiche->getNom(),
                 "message" => "Fiche créée avec succès"
             ]);
         }

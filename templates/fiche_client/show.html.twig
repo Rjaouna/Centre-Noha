@@ -1,66 +1,195 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}FicheClient{% endblock %}
+{% block title %}Fiche patient —
+	{{ fiche_client.nom }}
+{% endblock %}
 
 {% block body %}
-    <h1>FicheClient</h1>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ fiche_client.id }}</td>
-            </tr>
-            <tr>
-                <th>Nom</th>
-                <td>{{ fiche_client.nom }}</td>
-            </tr>
-            <tr>
-                <th>Ville</th>
-                <td>{{ fiche_client.ville }}</td>
-            </tr>
-            <tr>
-                <th>Age</th>
-                <td>{{ fiche_client.age }}</td>
-            </tr>
-            <tr>
-                <th>Poids</th>
-                <td>{{ fiche_client.poids }}</td>
-            </tr>
-            <tr>
-                <th>Telephone</th>
-                <td>{{ fiche_client.telephone }}</td>
-            </tr>
-            <tr>
-                <th>DureeMaladie</th>
-                <td>{{ fiche_client.dureeMaladie }}</td>
-            </tr>
-            <tr>
-                <th>TypeMaladie</th>
-                <td>{{ fiche_client.typeMaladie }}</td>
-            </tr>
-            <tr>
-                <th>Traitement</th>
-                <td>{{ fiche_client.traitement }}</td>
-            </tr>
-            <tr>
-                <th>Observation</th>
-                <td>{{ fiche_client.observation }}</td>
-            </tr>
-            <tr>
-                <th>CreatedAt</th>
-                <td>{{ fiche_client.createdAt ? fiche_client.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>UpdatedAt</th>
-                <td>{{ fiche_client.updatedAt ? fiche_client.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-        </tbody>
-    </table>
+	<div class="container-fluid mt-4">
 
-    <a href="{{ path('app_fiche_client_index') }}">back to list</a>
+		{# -------------------------------------------- #}
+		{# 🔵 HEADER PATIENT                            #}
+		{# -------------------------------------------- #}
+			<div class="card shadow-lg border-0 mb-4 rounded-4"> <div class="card-body d-flex justify-content-between align-items-center py-4">
 
-    <a href="{{ path('app_fiche_client_edit', {'id': fiche_client.id}) }}">edit</a>
+				<div>
+					<h2 class="fw-bold text-primary mb-1 d-flex align-items-center">
+						<i class="bi bi-person-vcard me-2 fs-1"></i>
+						Fiche patient :
+						{{ fiche_client.nom }}
+					</h2>
+					<p class="text-muted mb-0">{{ fiche_client.ville }}
+						•
+						{{ fiche_client.telephone }}</p>
+				</div>
 
-    {{ include('fiche_client/_delete_form.html.twig') }}
+				<div class="d-flex gap-2">
+					<a href="#" class="btn btn-primary btn-lg px-4">
+						<i class="bi bi-pencil-square"></i>
+						Modifier
+					</a>
+
+					<a href="#" class="btn btn-danger btn-lg px-4">
+						<i class="bi bi-trash"></i>
+						Supprimer
+					</a>
+
+					<a href="{{ path('app_fiche_client_index') }}" class="btn btn-secondary btn-lg px-4">
+						<i class="bi bi-arrow-left"></i>
+						Retour
+					</a>
+				</div>
+
+			</div>
+		</div>
+
+
+		{# -------------------------------------------- #}
+		{# 🔷 SECTIONS PERSONNELLES & MEDICALES CÔTE À CÔTE #}
+		{# -------------------------------------------- #}
+			<div
+			class="row g-4 mb-4"> {# 🟦 INFORMATIONS PERSONNELLES #}
+			<div class="col-lg-6 d-flex">
+				<div class="card shadow-lg border-0 rounded-4 flex-fill h-100">
+					<div class="card-body py-4 px-4">
+
+						<h3 class="text-primary fw-bold mb-4 d-flex align-items-center">
+							<i class="bi bi-person-lines-fill me-2 fs-2"></i>
+							Informations personnelles
+						</h3>
+
+						<div class="row g-3">
+
+							<div class="col-md-6">
+								<div class="border-start border-3 border-primary ps-3">
+									<p class="text-secondary mb-1 fw-semibold">Nom</p>
+									<p class="fs-5 fw-bold">{{ fiche_client.nom }}</p>
+								</div>
+							</div>
+
+							<div class="col-md-6">
+								<div class="border-start border-3 border-info ps-3">
+									<p class="text-secondary mb-1 fw-semibold">Ville</p>
+									<p class="fs-5 fw-bold">{{ fiche_client.ville }}</p>
+								</div>
+							</div>
+
+							<div class="col-md-6">
+								<div class="border-start border-3 border-success ps-3">
+									<p class="text-secondary mb-1 fw-semibold">Téléphone</p>
+									<p class="fs-5 fw-bold">{{ fiche_client.telephone }}</p>
+								</div>
+							</div>
+
+							<div class="col-md-6">
+								<div class="border-start border-3 border-warning ps-3">
+									<p class="text-secondary mb-1 fw-semibold">Âge</p>
+									<p class="fs-5 fw-bold">{{ fiche_client.age }}</p>
+								</div>
+							</div>
+
+							<div class="col-md-6">
+								<div class="border-start border-3 border-danger ps-3">
+									<p class="text-secondary mb-1 fw-semibold">Poids</p>
+									<p class="fs-5 fw-bold">{{ fiche_client.poids }}
+										kg</p>
+								</div>
+							</div>
+
+							<div class="col-md-6">
+								<div class="border-start border-3 border-dark ps-3">
+									<p class="text-secondary mb-1 fw-semibold">Créé le</p>
+									<p class="fs-5 fw-bold">{{ fiche_client.createdAt|date('d/m/Y H:i') }}</p>
+								</div>
+							</div>
+
+							<div class="col-md-6">
+								<div class="border-start border-3 border-secondary ps-3">
+									<p class="text-secondary mb-1 fw-semibold">Mis à jour le</p>
+									<p class="fs-5 fw-bold">{{ fiche_client.updatedAt|date('d/m/Y H:i') }}</p>
+								</div>
+							</div>
+
+						</div>
+
+					</div>
+				</div>
+			</div>
+
+
+			{# 🟢 INFORMATIONS MÉDICALES #}
+			<div class="col-lg-6 d-flex">
+				<div class="card shadow-lg border-0 rounded-4 flex-fill h-100">
+					<div class="card-body py-4 px-4">
+
+						<h3 class="text-success fw-bold mb-4 d-flex align-items-center">
+							<i class="bi bi-heart-pulse-fill me-2 fs-2"></i>
+							Informations médicales
+						</h3>
+
+						<div class="row g-3">
+
+							<div class="col-md-12">
+								<div class="border-start border-3 border-success ps-3">
+									<p class="text-secondary mb-1 fw-semibold">Durée de la maladie</p>
+									<p class="fs-5 fw-bold">{{ fiche_client.dureeMaladie }}</p>
+								</div>
+							</div>
+
+							<div class="col-md-12">
+								<div class="border-start border-3 border-info ps-3">
+									<p class="text-secondary mb-1 fw-semibold">Type de maladie</p>
+									<p class="fs-5 fw-bold">{{ fiche_client.typeMaladie }}</p>
+								</div>
+							</div>
+
+						</div>
+
+						{# 🟣 TROUBLES DIGESTIFS (BOUTONS + MODALS) #}
+						<div class="mt-4">
+							{{ include('fiche_client/_composants/_trouble_digestifs.html.twig') }}
+						</div>
+
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+
+		{# -------------------------------------------- #}
+		{# 🔶 TRAITEMENT & OBSERVATIONS                 #}
+		{# -------------------------------------------- #}
+			<div class="card shadow-lg border-0 rounded-4 mb-4"> <div class="card-body py-4 px-4">
+
+				<h3 class="text-warning fw-bold mb-4 d-flex align-items-center">
+					<i class="bi bi-journal-medical me-2 fs-2"></i>
+					Traitement & Observations
+				</h3>
+
+				<div class="row g-4">
+
+					<div class="col-12">
+						<p class="text-secondary mb-1 fw-semibold">Traitement</p>
+						<div class="fs-5 p-3 bg-light rounded-3 shadow-sm">
+							{{ fiche_client.traitement ?: '—' }}
+						</div>
+					</div>
+
+					<div class="col-12">
+						<p class="text-secondary mb-1 fw-semibold">Observations</p>
+						<div class="fs-5 p-3 bg-light rounded-3 shadow-sm">
+							{{ fiche_client.observation ?: '—' }}
+						</div>
+					</div>
+
+				</div>
+
+			</div>
+		</div>
+
+	</div>
+
 {% endblock %}
+
