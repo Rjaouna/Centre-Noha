@@ -8,9 +8,9 @@
 
 	<div class="container-fluid mt-4">
 
-		{# -------------------------------------------- #}
-		{# 🔵 HEADER PATIENT                            #}
-		{# -------------------------------------------- #}
+		{# ----------------------------------------------------- #}
+		{# 🔵 HEADER PATIENT                                    #}
+		{# ----------------------------------------------------- #}
 			<div class="card shadow-lg border-0 mb-4 rounded-4"> <div class="card-body d-flex justify-content-between align-items-center py-4">
 
 				<div>
@@ -19,9 +19,11 @@
 						Fiche patient :
 						{{ fiche_client.nom }}
 					</h2>
-					<p class="text-muted mb-0">{{ fiche_client.ville }}
+					<p class="text-muted mb-0">
+						{{ fiche_client.ville }}
 						•
-						{{ fiche_client.telephone }}</p>
+						{{ fiche_client.telephone }}
+					</p>
 				</div>
 
 				<div class="d-flex gap-2">
@@ -55,11 +57,11 @@
 		</div>
 
 
-		{# -------------------------------------------- #}
-		{# 🔷 SECTIONS PERSONNELLES & MEDICALES CÔTE À CÔTE #}
-		{# -------------------------------------------- #}
+		{# ----------------------------------------------------- #}
+		{# 🔷 INFOS PERSONNELLES & MÉDICALES                    #}
+		{# ----------------------------------------------------- #}
 			<div
-			class="row g-4 mb-4"> {# 🟦 INFORMATIONS PERSONNELLES #}
+			class="row g-4 mb-4"> {# 🟦 INFO PERSO #}
 			<div class="col-lg-6 d-flex">
 				<div class="card shadow-lg border-0 rounded-4 flex-fill h-100">
 					<div class="card-body py-4 px-4">
@@ -121,52 +123,23 @@
 								</div>
 							</div>
 
-						</div>
 
-						{# 🔵 BLOC RDV — INSÉRÉ ICI #}
-						<h3 class="text-info fw-bold mb-3 d-flex align-items-center mt-4">
-							<i class="bi bi-calendar-event me-2 fs-3"></i>
-							Historique des rendez-vous
-						</h3>
-
-						<div class="d-flex flex-wrap gap-4 my-4">
-
-							<div class="text-center">
-								<div class="rounded-circle bg-primary text-white d-flex justify-content-center align-items-center shadow-sm rdv-circle">
-									{{ rdv_total }}
-								</div>
-								<small class="d-block mt-2 fw-bold text-primary">Total</small>
-							</div>
-
-							<div class="text-center">
-								<div class="rounded-circle bg-success text-white d-flex justify-content-center align-items-center shadow-sm rdv-circle">
-									{{ rdv_future }}
-								</div>
-								<small class="d-block mt-2 fw-bold text-success">À venir</small>
-							</div>
-
-							<div class="text-center">
-								<div class="rounded-circle bg-warning text-dark d-flex justify-content-center align-items-center shadow-sm rdv-circle">
-									{{ rdv_canceled }}
-								</div>
-								<small class="d-block mt-2 fw-bold text-warning">Annulés</small>
-							</div>
-
-							<div class="text-center">
-								<div class="rounded-circle bg-danger text-white d-flex justify-content-center align-items-center shadow-sm rdv-circle">
-									{{ rdv_past }}
-								</div>
-								<small class="d-block mt-2 fw-bold text-danger">Passés</small>
-							</div>
 
 						</div>
+                        
+{{ include('fiche_client/_composants/_galerie/_galerie.html.twig') }}
+
+<button class="btn btn-primary rounded-pill mt-3" data-bs-toggle="modal" data-bs-target="#modalUploadImage">
+	<i class="bi bi-image"></i>
+	Ajouter une image
+</button>
 
 					</div>
+
 				</div>
 			</div>
 
-
-			{# 🟢 INFORMATIONS MÉDICALES #}
+			{# 🟢 INFO MÉDICALES #}
 			<div class="col-lg-6 d-flex">
 				<div class="card shadow-lg border-0 rounded-4 flex-fill h-100">
 					<div class="card-body py-4 px-4">
@@ -177,7 +150,6 @@
 						</h3>
 
 						<div class="row g-3">
-
 							<div class="col-md-12">
 								<div class="border-start border-3 border-success ps-3">
 									<p class="text-secondary mb-1 fw-semibold">Durée de la maladie</p>
@@ -191,28 +163,30 @@
 									<p class="fs-5 fw-bold">{{ fiche_client.typeMaladie }}</p>
 								</div>
 							</div>
-
 						</div>
 
-						{# Composants médicaux #}
+						
+
 						<div class="mt-4">
 							{{ include('fiche_client/_composants/_trouble_digestifs.html.twig') }}
 							{{ include('fiche_client/_composants/_symptomes_generaux.html.twig') }}
 							{{ include('fiche_client/_composants/_maladies_chroniques.html.twig') }}
 							{{ include('fiche_client/_composants/_modal_edit_client/_modal_edit_client.html.twig') }}
 							{{ include('fiche_client/_composants/_modal_rdv/_modal_rdv.html.twig') }}
+							{{ include('fiche_client/_composants/_modal_image/_modal_image.html.twig') }}
 						</div>
 
 					</div>
 				</div>
 			</div>
 
-		</div>
+</div></div>
 
 
-		{# -------------------------------------------- #}
-		{# 🔶 TRAITEMENT & OBSERVATIONS                 #}
-		{# -------------------------------------------- #}
+
+		{# ----------------------------------------------------- #}
+		{# 🔶 TRAITEMENT & OBSERVATIONS                         #}
+		{# ----------------------------------------------------- #}
 			<div class="card shadow-lg border-0 rounded-4 mb-4"> <div class="card-body py-4 px-4">
 
 				<h3 class="text-warning fw-bold mb-4 d-flex align-items-center">
@@ -239,6 +213,52 @@
 				</div>
 
 			</div>
+		</div>
+
+
+		{# ----------------------------------------------------- #}
+		{# 🔵 BLOC RDV                                          #}
+		{# ----------------------------------------------------- #}
+<div class="container-fluid card shadow-lg border-0 rounded-4 mb-4 py-3">
+
+
+ <h3 class="text-info fw-bold mb-3 d-flex align-items-center">
+				<i class="bi bi-calendar-event me-2 fs-3"></i>
+				Historique des rendez-vous
+			</h3>
+
+			<div class="d-flex flex-wrap gap-4 my-4">
+
+				<div class="text-center">
+					<div class="rounded-circle bg-primary text-white d-flex justify-content-center align-items-center shadow-sm rdv-circle">
+						{{ rdv_total }}
+					</div>
+					<small class="d-block mt-2 fw-bold text-primary">Total</small>
+				</div>
+
+				<div class="text-center">
+					<div class="rounded-circle bg-success text-white d-flex justify-content-center align-items-center shadow-sm rdv-circle">
+						{{ rdv_future }}
+					</div>
+					<small class="d-block mt-2 fw-bold text-success">À venir</small>
+				</div>
+
+				<div class="text-center">
+					<div class="rounded-circle bg-warning text-dark d-flex justify-content-center align-items-center shadow-sm rdv-circle">
+						{{ rdv_canceled }}
+					</div>
+					<small class="d-block mt-2 fw-bold text-warning">Annulés</small>
+				</div>
+
+				<div class="text-center">
+					<div class="rounded-circle bg-danger text-white d-flex justify-content-center align-items-center shadow-sm rdv-circle">
+						{{ rdv_past }}
+					</div>
+					<small class="d-block mt-2 fw-bold text-danger">Passés</small>
+				</div>
+
+			</div>
+
 		</div>
 
 	</div>

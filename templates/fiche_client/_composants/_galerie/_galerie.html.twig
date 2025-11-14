@@ -1,0 +1,58 @@
+<style>
+.gallery-thumb {
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s;
+}
+.gallery-thumb:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+}
+</style>
+<h5 class="mb-3 fw-bold text-primary">Galerie photo du suivi médical</h5>
+
+<div class="row d-flex">
+
+	{% if fiche_client.images is not empty %}
+		{% for img in fiche_client.images %}
+			<div class="gallery-item position-relative col-2">
+				<img src="{{ asset('uploads/clients/' ~ img.fileName) }}" alt="Image du patient" class="img-fluid rounded shadow-sm gallery-thumb" data-bs-toggle="modal" data-bs-target="#modalGalleryView" data-image="{{ img.fileName }}">
+			</div>
+		{% endfor %}
+	{% else %}
+		<p class="text-muted">Aucune image disponible.</p>
+	{% endif %}
+</div>
+
+
+
+
+
+
+
+<div class="modal fade" id="modalGalleryView" tabindex="-1">
+	<div class="modal-dialog modal-dialog-centered modal-lg">
+		<div class="modal-content">
+
+			<div class="modal-header bg-primary text-white">
+				<h5 class="modal-title">Aperçu</h5>
+				<button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+			</div>
+
+			<div class="modal-body text-center">
+				<img id="modalImageView" src="" class="img-fluid rounded shadow">
+			</div>
+		</div>
+	</div>
+</div>
+
+ <script>
+document.addEventListener("click", function (e) {
+    let img = e.target.closest(".gallery-thumb");
+
+    if (img) {
+        let file = img.getAttribute("data-image");
+        document.getElementById("modalImageView").src = "/uploads/clients/" + file;
+    }
+});
+</script>
+

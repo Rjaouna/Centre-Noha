@@ -33,17 +33,18 @@
 			<div class="col-md-3 mb-4">
 				<div class="card shadow border-0 rounded-4 position-relative">
 
-					{% if totalClients is defined %}
-						<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-primary bg-secondary shadow">
-							{{ totalClients }}
-							Clients
-						</span>
-					{% endif %}
+					
 
 					<div class="card-body py-5">
 						<i class="bi bi-people-fill text-primary" style="font-size: 3rem;"></i>
 						<h4 class="mt-3 fw-bold">Liste des clients</h4>
 						<p class="text-muted small">Voir, rechercher et gérer les patients</p>
+{% if totalClients is defined %}
+	<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-primary bg-secondary shadow">
+		{{ totalClients }}
+		Clients
+	</span>
+{% endif %}
 
 						<a class="btn btn-primary rounded-pill px-4 mt-3" href="{{ path('app_fiche_client_index') }}">
 							<i class="bi bi-search"></i>

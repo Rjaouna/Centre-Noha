@@ -1,0 +1,64 @@
+<div class="modal fade" id="modalUploadImage" tabindex="-1">
+	<div class="modal-dialog">
+		<div class="modal-content">
+
+			<div class="modal-header bg-primary text-white">
+				<h5 class="modal-title">Ajouter une image</h5>
+				<button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+			</div>
+
+			<div class="modal-body">
+<form id="imageUploadForm" enctype="multipart/form-data">
+	<input type="file" name="image[imageFile]" class="form-control mb-3" required>
+
+	<button type="submit" class="btn btn-success w-100 rounded-pill">
+		<i class="bi bi-upload"></i>
+		Upload
+	</button>
+</form>
+
+<div id="uploadResult" class="mt-3"></div>
+
+
+
+				<div id="uploadResult" class="mt-3"></div>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+ <script>
+document.getElementById('imageUploadForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    let formData = new FormData(this);
+
+    fetch("{{ path('app_image_upload', { id: fiche_client.id }) }}", {
+        method: "POST",
+        body: formData
+    })
+    .then(async res => {
+        let data;
+
+        try {
+            data = await res.json(); // On tente JSON
+        } catch (err) {
+            document.getElementById("uploadResult").innerHTML =
+                `<div class="alert alert-danger rounded-4">Erreur interne</div>`;
+            return;
+        }
+
+        if (data.status === "success") {
+            document.getElementById("uploadResult").innerHTML =
+                `<div class="alert alert-success rounded-4">Image ajoutée !</div>`;
+        } else {
+            document.getElementById("uploadResult").innerHTML =
+                `<div class="alert alert-danger rounded-4">${data.message}</div>`;
+        }
+    });
+});
+</script>
+
+
+

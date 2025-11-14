@@ -13,6 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: FicheClientRepository::class)]
 class FicheClient
 {
+
     use TimestampableTrait;
 
     #[ORM\Id]
@@ -50,6 +51,38 @@ class FicheClient
     #[ORM\OneToMany(targetEntity: Paiement::class, mappedBy: 'client')]
     private Collection $paiements;
 
+    #[ORM\OneToMany(mappedBy: 'client', targetEntity: Image::class, cascade: ['persist', 'remove'])]
+    private Collection $images;
+
+    /**
+     * @return Collection<int, Image>
+     */
+    public function getImages(): Collection
+    {
+        return $this->images;
+    }
+
+    public function addImage(Image $image): static
+    {
+        if (!$this->images->contains($image)) {
+            $this->images->add($image);
+            $image->setClient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeImage(Image $image): static
+    {
+        if ($this->images->removeElement($image)) {
+            if ($image->getClient() === $this) {
+                $image->setClient(null);
+            }
+        }
+
+        return $this;
+    }
+
     #[ORM\OneToOne(mappedBy: 'client', cascade: ['persist', 'remove'])]
     private ?TroublesDigestifs $troublesDigestifs = null;
 
@@ -69,6 +102,7 @@ class FicheClient
     {
         $this->paiements = new ArrayCollection();
         $this->rendezVouses = new ArrayCollection();
+        $this->images = new ArrayCollection(); // 👍
     }
 
     public function getId(): ?int
