@@ -1,0 +1,43 @@
+<?php
+
+namespace App\Repository;
+
+use App\Entity\SymptomesGeneraux;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
+
+/**
+ * @extends ServiceEntityRepository<SymptomesGeneraux>
+ */
+class SymptomesGenerauxRepository extends ServiceEntityRepository
+{
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, SymptomesGeneraux::class);
+    }
+
+//    /**
+//     * @return SymptomesGeneraux[] Returns an array of SymptomesGeneraux objects
+//     */
+//    public function findByExampleField($value): array
+//    {
+//        return $this->createQueryBuilder('s')
+//            ->andWhere('s.exampleField = :val')
+//            ->setParameter('val', $value)
+//            ->orderBy('s.id', 'ASC')
+//            ->setMaxResults(10)
+//            ->getQuery()
+//            ->getResult()
+//        ;
+//    }
+
+//    public function findOneBySomeField($value): ?SymptomesGeneraux
+//    {
+//        return $this->createQueryBuilder('s')
+//            ->andWhere('s.exampleField = :val')
+//            ->setParameter('val', $value)
+//            ->getQuery()
+//            ->getOneOrNullResult()
+//        ;
+//    }
+}

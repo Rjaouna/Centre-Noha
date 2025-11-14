@@ -53,6 +53,9 @@ class FicheClient
     #[ORM\OneToOne(mappedBy: 'client', cascade: ['persist', 'remove'])]
     private ?TroublesDigestifs $troublesDigestifs = null;
 
+    #[ORM\OneToOne(mappedBy: 'client', cascade: ['persist', 'remove'])]
+    private ?SymptomesGeneraux $symptomesGeneraux = null;
+
     public function __construct()
     {
         $this->paiements = new ArrayCollection();
@@ -203,6 +206,28 @@ class FicheClient
         }
 
         $this->troublesDigestifs = $troublesDigestifs;
+
+        return $this;
+    }
+
+    public function getSymptomesGeneraux(): ?SymptomesGeneraux
+    {
+        return $this->symptomesGeneraux;
+    }
+
+    public function setSymptomesGeneraux(?SymptomesGeneraux $symptomesGeneraux): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($symptomesGeneraux === null && $this->symptomesGeneraux !== null) {
+            $this->symptomesGeneraux->setClient(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($symptomesGeneraux !== null && $symptomesGeneraux->getClient() !== $this) {
+            $symptomesGeneraux->setClient($this);
+        }
+
+        $this->symptomesGeneraux = $symptomesGeneraux;
 
         return $this;
     }
