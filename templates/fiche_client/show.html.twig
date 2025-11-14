@@ -25,29 +25,30 @@
 				</div>
 
 				<div class="d-flex gap-2">
-<a href="#" class="btn btn-primary btn-lg px-4" data-bs-toggle="modal" data-bs-target="#modalEditFiche">
 
+					<button class="btn btn-info btn-lg rounded-pill px-4 shadow-sm d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#modalAddRdv">
+						<i class="bi bi-calendar-plus fs-4"></i>
+						Donner un rendez-vous
+					</button>
 
+					<a href="#" class="btn btn-primary btn-lg rounded-pill px-4 shadow-sm d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#modalEditFiche">
 						<i class="bi bi-pencil-square"></i>
 						Modifier
 					</a>
 
-<form method="post" action="{{ path('app_fiche_client_delete', {id: fiche_client.id}) }}" onsubmit="return confirm('Voulez-vous vraiment supprimer cette fiche ?');">
+					<form method="post" action="{{ path('app_fiche_client_delete', {id: fiche_client.id}) }}" onsubmit="return confirm('Voulez-vous vraiment supprimer cette fiche ?');">
+						<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ fiche_client.id) }}">
+						<button class="btn btn-danger btn-lg rounded-pill px-4 shadow-sm d-flex align-items-center gap-2">
+							<i class="bi bi-trash"></i>
+							Supprimer
+						</button>
+					</form>
 
-	<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ fiche_client.id) }}">
-
-	<button class="btn btn-danger btn-lg px-4">
-		<i class="bi bi-trash"></i>
-		Supprimer
-
-</button></form>
-
-
-
-					<a href="{{ path('app_fiche_client_index') }}" class="btn btn-secondary btn-lg px-4">
+					<a href="{{ path('app_fiche_client_index') }}" class="btn btn-secondary btn-lg rounded-pill px-4 shadow-sm d-flex align-items-center gap-2">
 						<i class="bi bi-arrow-left"></i>
 						Retour
 					</a>
+
 				</div>
 
 			</div>
@@ -122,6 +123,44 @@
 
 						</div>
 
+						{# 🔵 BLOC RDV — INSÉRÉ ICI #}
+						<h3 class="text-info fw-bold mb-3 d-flex align-items-center mt-4">
+							<i class="bi bi-calendar-event me-2 fs-3"></i>
+							Historique des rendez-vous
+						</h3>
+
+						<div class="d-flex flex-wrap gap-4 my-4">
+
+							<div class="text-center">
+								<div class="rounded-circle bg-primary text-white d-flex justify-content-center align-items-center shadow-sm rdv-circle">
+									{{ rdv_total }}
+								</div>
+								<small class="d-block mt-2 fw-bold text-primary">Total</small>
+							</div>
+
+							<div class="text-center">
+								<div class="rounded-circle bg-success text-white d-flex justify-content-center align-items-center shadow-sm rdv-circle">
+									{{ rdv_future }}
+								</div>
+								<small class="d-block mt-2 fw-bold text-success">À venir</small>
+							</div>
+
+							<div class="text-center">
+								<div class="rounded-circle bg-warning text-dark d-flex justify-content-center align-items-center shadow-sm rdv-circle">
+									{{ rdv_canceled }}
+								</div>
+								<small class="d-block mt-2 fw-bold text-warning">Annulés</small>
+							</div>
+
+							<div class="text-center">
+								<div class="rounded-circle bg-danger text-white d-flex justify-content-center align-items-center shadow-sm rdv-circle">
+									{{ rdv_past }}
+								</div>
+								<small class="d-block mt-2 fw-bold text-danger">Passés</small>
+							</div>
+
+						</div>
+
 					</div>
 				</div>
 			</div>
@@ -155,14 +194,13 @@
 
 						</div>
 
-						{# 🟣 TROUBLES DIGESTIFS (BOUTONS + MODALS) #}
+						{# Composants médicaux #}
 						<div class="mt-4">
 							{{ include('fiche_client/_composants/_trouble_digestifs.html.twig') }}
-{{ include('fiche_client/_composants/_symptomes_generaux.html.twig') }}
-{{ include('fiche_client/_composants/_maladies_chroniques.html.twig') }}
-{{ include('fiche_client/_composants/_modal_edit_client/_modal_edit_client.html.twig') }}
-
-
+							{{ include('fiche_client/_composants/_symptomes_generaux.html.twig') }}
+							{{ include('fiche_client/_composants/_maladies_chroniques.html.twig') }}
+							{{ include('fiche_client/_composants/_modal_edit_client/_modal_edit_client.html.twig') }}
+							{{ include('fiche_client/_composants/_modal_rdv/_modal_rdv.html.twig') }}
 						</div>
 
 					</div>
@@ -204,6 +242,18 @@
 		</div>
 
 	</div>
+
+	<style>
+		.rdv-circle {
+			width: 80px;
+			height: 80px;
+			font-size: 1.6rem;
+			transition: transform 0.2s ease-in-out;
+		}
+		.rdv-circle:hover {
+			transform: scale(1.12);
+		}
+	</style>
 
 {% endblock %}
 

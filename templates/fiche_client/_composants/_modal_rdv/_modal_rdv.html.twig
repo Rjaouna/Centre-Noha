@@ -1,0 +1,48 @@
+<div class="modal fade" id="modalAddRdv" tabindex="-1" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content rounded-4">
+
+			<div class="modal-header bg-info text-white rounded-top-4">
+				<h5 class="modal-title d-flex align-items-center fw-bold">
+					<i class="bi bi-calendar-plus me-2 fs-3"></i>
+					Donner un rendez-vous
+				</h5>
+				<button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+			</div>
+
+			<form method="post" action="{{ path('app_rdv_add', {id: fiche_client.id}) }}">
+				<div class="modal-body py-4 px-4">
+
+					<div class="mb-3">
+						<label class="form-label fw-semibold">Date & Heure du rendez-vous</label>
+						<input type="datetime-local" name="dateRdvAt" class="form-control" required>
+					</div>
+
+					<div class="mb-3">
+						<label class="form-label fw-semibold">Motif</label>
+						<input type="text" name="motif" class="form-control" placeholder="Ex : Consultation, Suivi…" required>
+					</div>
+
+					<div class="mb-3">
+						<label class="form-label fw-semibold">Commentaire</label>
+						<textarea name="commentaire" class="form-control" rows="3" placeholder="Notes supplémentaires (optionnel)"></textarea>
+					</div>
+
+					<input type="hidden" name="statut" value="À venir">
+
+				</div>
+
+				<div class="modal-footer">
+					<button class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+					<button class="btn btn-info text-white">
+						<i class="bi bi-check-circle me-1"></i>
+						Enregistrer le RDV
+					</button>
+				</div>
+
+			</form>
+
+		</div>
+	</div>
+</div>
+

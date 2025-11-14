@@ -1,0 +1,107 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des rendez-vous
+{% endblock %}
+
+{% block body %}
+
+	<div class="container-fluid mt-4">
+
+		{# -------------------------------------------- #}
+		{# 🔵 HEADER PAGE RDV                            #}
+		{# -------------------------------------------- #}
+			<div class="card shadow-lg border-0 mb-4 rounded-4"> <div class="card-body d-flex justify-content-between align-items-center py-4">
+
+				<div>
+					<h2 class="fw-bold text-primary mb-1 d-flex align-items-center">
+						<i class="bi bi-calendar-week me-2 fs-1"></i>
+						Liste des rendez-vous
+					</h2>
+					<p class="text-muted mb-0">
+						Planning complet du centre Noha
+					</p>
+				</div>
+
+				<a href="{{ path('app_home') }}" class="btn btn-secondary btn-lg rounded-pill px-4 shadow-sm d-flex align-items-center gap-2">
+					<i class="bi bi-arrow-left"></i>
+					Retour
+				</a>
+
+			</div>
+		</div>
+
+		{# -------------------------------------------- #}
+		{# 🟦 LISTE DES RDV                              #}
+		{# -------------------------------------------- #}
+
+			{% if rdvs is empty %}
+				<div class="alert alert-info text-center rounded-pill shadow-sm"> Aucun rendez-vous pour le moment.
+			</div>
+		{% endif %}
+
+		<div class="row g-4">
+
+			{% for rdv in rdvs %}
+				{% set statutColor = {
+				'A venir': 'success',
+				'Annulé': 'warning',
+				'Passé': 'danger'
+			}[rdv.statut|default('A venir')] ?? 'secondary' %}
+
+				<div class="col-md-4">
+<div class="card cards shadow-lg border-0 rounded-4 h-100">
+
+						<div class="card-body p-4">
+
+							<div class="d-flex justify-content-between align-items-start mb-3">
+								<span class="badge bg-{{ statutColor }} px-3 py-2 rounded-pill">
+									{{ rdv.statut|default('A venir') }}
+								</span>
+
+								<i class="bi bi-calendar-event fs-3 text-primary"></i>
+							</div>
+
+							<h5 class="fw-bold">
+								<i class="bi bi-person-fill me-2"></i>
+								{{ rdv.client.nom }}
+							</h5>
+
+							<p class="text-muted mb-1">
+								<i class="bi bi-clock-history me-1"></i>
+								<strong>Date :</strong>
+								{{ rdv.dateRdvAt ? rdv.dateRdvAt|date('d/m/Y H:i') : '—' }}
+							</p>
+
+							<p class="mb-1">
+								<strong>Motif :</strong>
+								{{ rdv.motif ?: '—' }}
+							</p>
+
+							<p class="small text-secondary">
+								{{ rdv.commentaire ?: '' }}
+							</p>
+
+							<a href="{{ path('app_fiche_client_show', {id: rdv.client.id}) }}" class="btn btn-outline-primary mt-3 rounded-pill w-100">
+								<i class="bi bi-eye"></i>
+								Voir le patient
+							</a>
+
+						</div>
+					</div>
+				</div>
+
+			{% endfor %}
+
+		</div>
+
+	</div>
+
+	<style>
+		.cards:hover {
+			transform: scale(1.03);
+			transition: 0.2s ease;
+		}
+	</style>
+
+{% endblock %}
+

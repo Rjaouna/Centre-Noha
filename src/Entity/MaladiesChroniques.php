@@ -4,11 +4,15 @@ namespace App\Entity;
 
 use App\Repository\MaladiesChroniquesRepository;
 use Doctrine\DBAL\Types\Types;
+use App\Entity\Traits\TimestampableTrait;
 use Doctrine\ORM\Mapping as ORM;
 
+#[ORM\HasLifecycleCallbacks]
 #[ORM\Entity(repositoryClass: MaladiesChroniquesRepository::class)]
 class MaladiesChroniques
 {
+    use TimestampableTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

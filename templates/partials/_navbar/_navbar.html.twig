@@ -28,7 +28,8 @@
 
 				<!-- Liste des patients -->
 				<li class="nav-item">
-					<a class="nav-link{% if app.request.attributes.get('_route') starts with 'app_fiche_client_index' %} active{% endif %}" href="{{ path('app_fiche_client_index') }}">
+<a class="nav-link{% if app.request.attributes.get('_route') starts with 'app_fiche_client' %} active{% endif %}" href="{{ path('app_fiche_client_index') }}">
+
 						<i class="bi bi-people"></i>
 						Patients
 					</a>
@@ -41,6 +42,15 @@
 						Paiements
 					</a>
 				</li>
+<!-- Rendez-vous -->
+<li class="nav-item">
+	<a class="nav-link d-flex align-items-center gap-1 {% if app.request.attributes.get('_route') starts with 'app_rdv' %} active{% endif %}" href="{{ path('app_rdv_index') }}">
+		<i class="bi bi-calendar-week"></i>
+		Rendez-vous
+	</a>
+</li>
+
+
 			</ul>
 
 		</div>

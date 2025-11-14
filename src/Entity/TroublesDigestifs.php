@@ -3,11 +3,14 @@
 namespace App\Entity;
 
 use App\Repository\TroublesDigestifsRepository;
+use App\Entity\Traits\TimestampableTrait;
 use Doctrine\ORM\Mapping as ORM;
 
+#[ORM\HasLifecycleCallbacks]
 #[ORM\Entity(repositoryClass: TroublesDigestifsRepository::class)]
 class TroublesDigestifs
 {
+    use TimestampableTrait;
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

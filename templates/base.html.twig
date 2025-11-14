@@ -36,6 +36,16 @@
     </head>
     <body>
 {{ include('partials/_navbar/_navbar.html.twig') }}
+{% for label, messages in app.flashes %}
+	{% for message in messages %}
+		<div class="alert alert-{{ label }} alert-dismissible fade show shadow-sm mt-3 mx-3" role="alert">
+			<strong>{{ message }}</strong>
+			<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+		</div>
+	{% endfor %}
+{% endfor %}
+
+
 
 <div id="flashMessageContainer" class="position-fixed top-0 start-50 translate-middle-x mt-3" style="z-index: 9999; width: 400px;"></div>
 

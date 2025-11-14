@@ -14,7 +14,7 @@
 			</h1>
 
 			<!-- Carte 1 : Ajouter un client -->
-			<div class="col-md-4 mb-4">
+			<div class="col-md-3 mb-4">
 				<div class="card shadow border-0 rounded-4">
 					<div class="card-body py-5">
 						<i class="bi bi-person-plus-fill text-success" style="font-size: 3rem;"></i>
@@ -25,26 +25,23 @@
 							<i class="bi bi-plus-lg"></i>
 							Accéder
 						</button>
-
 					</div>
 				</div>
 			</div>
 
-			<!-- Carte 2 : Liste des clients AVEC BADGE -->
-			<div class="col-md-4 mb-4">
-				<div
-					class="card shadow border-0 rounded-4 position-relative">
+			<!-- Carte 2 : Liste des clients -->
+			<div class="col-md-3 mb-4">
+				<div class="card shadow border-0 rounded-4 position-relative">
 
-					<!-- 🔥 BADGE NOMBRE DE CLIENTS -->
 					{% if totalClients is defined %}
 						<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-primary bg-secondary shadow">
-							{{ totalClients }} Clients
+							{{ totalClients }}
+							Clients
 						</span>
 					{% endif %}
 
 					<div class="card-body py-5">
 						<i class="bi bi-people-fill text-primary" style="font-size: 3rem;"></i>
-
 						<h4 class="mt-3 fw-bold">Liste des clients</h4>
 						<p class="text-muted small">Voir, rechercher et gérer les patients</p>
 
@@ -56,12 +53,13 @@
 				</div>
 			</div>
 
-			<!-- Carte 3 : Gestion des paiements -->
-			<div class="col-md-4 mb-4">
+			<!-- Carte 3 : Paiements -->
+			<div class="col-md-3 mb-4">
 				<div class="card shadow border-0 rounded-4">
 					<div class="card-body py-5">
 						<i class="bi bi-credit-card-fill text-danger" style="font-size: 3rem;"></i>
-						<h4 class="mt-3 fw-bold">Gestion des paiements</h4>
+
+						<h4 class="mt-3 fw-bold">Paiements</h4>
 						<p class="text-muted small">Suivi et enregistrement des paiements</p>
 
 						<button class="btn btn-danger rounded-pill px-4 mt-3" disabled>
@@ -72,9 +70,33 @@
 				</div>
 			</div>
 
+			<!-- Carte 4 : Rendez-vous -->
+			<div class="col-md-3 mb-4">
+				<div class="card shadow border-0 rounded-4 position-relative">
+
+					{% if totalRdv is defined %}
+						<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-primary bg-warning shadow">
+							{{ totalRdv }}
+							RDV
+						</span>
+					{% endif %}
+
+					<div class="card-body py-5">
+						<i class="bi bi-calendar-week text-info" style="font-size: 3rem;"></i>
+
+						<h4 class="mt-3 fw-bold">Rendez-vous</h4>
+						<p class="text-muted small">Consulter tous les rendez-vous</p>
+
+						<a class="btn btn-info rounded-pill px-4 mt-3" href="{{ path('app_rdv_index') }}">
+							<i class="bi bi-calendar-check"></i>
+							Accéder
+						</a>
+					</div>
+				</div>
+			</div>
+
 		</div>
 	</div>
-
 
 	<!-- MODAL AJOUT PATIENT -->
 	<div class="modal fade" id="modalAddClient" tabindex="-1" aria-hidden="true">
