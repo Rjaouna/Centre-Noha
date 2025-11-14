@@ -1,0 +1,179 @@
+{# --------------------------------------------- #}
+{#  Maladies Chroniques - fiche patient          #}
+{# --------------------------------------------- #}
+
+
+
+{# 🟦 MODAL AJOUT / ÉDITION #}
+<div class="modal fade" id="modalAddMaladiesChroniques" tabindex="-1" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+
+			<div class="modal-header bg-danger text-white">
+				<h5 class="modal-title">
+					<i class="bi bi-plus-circle"></i>
+					Ajouter / modifier</h5>
+				<button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+			</div>
+
+			<div class="modal-body">
+
+				<form id="maladiesForm">
+
+					{% macro bloc(title, name, options) %}
+						<div class="p-3 mb-4 bg-light border rounded-3 shadow-sm">
+							<h5 class="fw-bold mb-2 text-danger">
+								<i class="bi bi-capsule"></i>
+								{{ title }}
+							</h5>
+							<div class="d-flex flex-wrap gap-3">
+								{% for opt in options %}
+									<div class="form-check form-check-inline">
+										<input type="radio" class="form-check-input" name="{{ name }}" value="{{ opt }}" id="{{ name }}_{{ loop.index }}">
+										<label for="{{ name }}_{{ loop.index }}" class="form-check-label">{{ opt }}</label>
+									</div>
+								{% endfor %}
+							</div>
+						</div>
+					{% endmacro %}
+
+					{{ _self.bloc("Diabète", "diabetique", ["Oui","Non"]) }}
+					{{ _self.bloc("Hypertension", "hypertendu", ["Oui","Non"]) }}
+					{{ _self.bloc("Cholestérol", "cholesterol", ["Oui","Non"]) }}
+					{{ _self.bloc("Allergies nasales", "allergieNasale", ["Jamais","Parfois","Souvent"]) }}
+
+					<div class="mb-3">
+						<label class="form-label fw-bold">Autre maladie</label>
+						<textarea name="autreMaladie" class="form-control" rows="3"></textarea>
+					</div>
+
+				</form>
+
+			</div>
+
+			<div class="modal-footer">
+				<button class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+				<button class="btn btn-danger" id="btnSaveMaladies">
+					<i class="bi bi-check-circle"></i>
+					Enregistrer</button>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+
+{# 🟩 MODAL VISUALISATION #}
+<div class="modal fade" id="modalMaladiesChroniques" tabindex="-1" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content rounded-4 shadow-lg">
+
+			<div class="modal-header bg-danger text-white rounded-top-4">
+				<h3 class="modal-title">
+					<i class="bi bi-activity me-2"></i>
+					Maladies chroniques</h3>
+				<button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+			</div>
+
+			<div class="modal-body py-4 px-4">
+
+				{% set m = fiche_client.maladiesChroniques %}
+
+				{% if m %}
+					<div class="row g-4">
+
+						{% macro view(label, value, color) %}
+							<div class="col-md-4">
+								<div class="p-3 rounded-4 border-start border-4 bg-light shadow-sm h-100 border-{{ color }}">
+									<p class="text-secondary fw-semibold mb-1">{{ label }}</p>
+									<p class="fs-5 fw-bold">{{ value ?? "-" }}</p>
+								</div>
+							</div>
+						{% endmacro %}
+
+						{{ _self.view("Diabète", m.diabetique, "danger") }}
+						{{ _self.view("Hypertension", m.hypertendu, "warning") }}
+						{{ _self.view("Cholestérol", m.cholesterol, "primary") }}
+						{{ _self.view("Allergies nasales", m.allergieNasale, "info") }}
+
+						<div class="col-12">
+							<div class="p-3 rounded-4 border-start border-4 border-secondary bg-light shadow-sm">
+								<p class="text-secondary fw-semibold mb-1">Autre maladie</p>
+								<p class="fs-5 fw-bold">{{ m.autreMaladie ?: '-' }}</p>
+							</div>
+						</div>
+
+					</div>
+
+					<div class="text-end mt-4">
+						<button class="btn btn-danger btn-lg px-4" id="btnEditMaladies" data-bs-target="#modalAddMaladiesChroniques" data-bs-toggle="modal" data-bs-dismiss="modal">
+							<i class="bi bi-pencil-square me-1"></i>
+							Modifier
+						</button>
+					</div>
+
+				{% else %}
+					<p class="text-center text-muted">Aucune maladie chronique enregistrée.</p>
+				{% endif %}
+
+			</div>
+
+		</div>
+	</div>
+</div>
+
+
+{# JS : Pré-remplissage en édition #}
+ <script>
+document.getElementById("btnEditMaladies")?.addEventListener("click", async () => {
+
+	const response = await fetch("{{ path('api_maladies_show', {idClient: fiche_client.id}) }}");
+	const data = await response.json();
+
+	if (!data.exists || !data.data) return;
+
+	const values = data.data;
+
+	for (const key in values) {
+		const value = values[key];
+		if (!value) continue;
+
+		const radio = document.querySelector(`input[name="${key}"][value="${value}"]`);
+		if (radio) radio.checked = true;
+
+		if (key === "autreMaladie") {
+			document.querySelector('textarea[name="autreMaladie"]').value = value;
+		}
+	}
+});
+</script>
+
+
+{# JS : Enregistrement #}
+ <script>
+document.getElementById("btnSaveMaladies").addEventListener("click", async () => {
+	const form = document.getElementById("maladiesForm");
+	const data = Object.fromEntries(new FormData(form));
+
+	const url = "{{ fiche_client.maladiesChroniques
+		? path('api_maladies_edit', {id: fiche_client.id})
+		: path('api_maladies_add', {id: fiche_client.id})
+	}}";
+
+	const response = await fetch(url, {
+		method: "POST",
+		headers: {"Content-Type": "application/json"},
+		body: JSON.stringify(data)
+	});
+
+	const result = await response.json();
+
+	if (result.success) {
+		showFlashMessage("Maladies chroniques enregistrées", "success");
+		location.reload();
+	} else {
+		alert("Erreur : " + (result.message ?? "Erreur serveur"));
+	}
+});
+</script>
+

@@ -8,6 +8,7 @@ use App\Repository\FicheClientRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/fiche/client')]
@@ -88,5 +89,23 @@ final class FicheClientController extends AbstractController
         return $this->render('fiche_client/show.html.twig', [
             'fiche_client' => $ficheClient,
         ]);
+    }
+
+    #[Route('/fiche-client/delete/{id}', name: 'app_fiche_client_delete', methods: ['POST'])]
+    public function delete(
+        FicheClient $ficheClient,
+        EntityManagerInterface $em,
+        Request $request
+    ): RedirectResponse {
+
+        if ($this->isCsrfTokenValid('delete' . $ficheClient->getId(), $request->request->get('_token'))) {
+
+            $em->remove($ficheClient);
+            $em->flush();
+
+            $this->addFlash('success', 'La fiche a été supprimée avec succès.');
+        }
+
+        return $this->redirectToRoute('app_fiche_client_index');
     }
 }

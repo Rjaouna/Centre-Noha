@@ -1,0 +1,74 @@
+<div class="modal fade" id="modalEditFiche" tabindex="-1" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+
+			<div class="modal-header bg-primary text-white">
+				<h5 class="modal-title">Modifier la fiche patient</h5>
+				<button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+			</div>
+
+			<div class="modal-body">
+
+				<form id="formEditFiche">
+
+					<div class="mb-3">
+						<label class="form-label">Nom</label>
+						<input type="text" class="form-control" name="nom" value="{{ fiche_client.nom }}">
+					</div>
+
+					<div class="mb-3">
+						<label class="form-label">Ville</label>
+						<input type="text" class="form-control" name="ville" value="{{ fiche_client.ville }}">
+					</div>
+
+					<div class="mb-3">
+						<label class="form-label">Téléphone</label>
+						<input type="text" class="form-control" name="telephone" value="{{ fiche_client.telephone }}">
+					</div>
+
+					<div class="mb-3">
+						<label class="form-label">Âge</label>
+						<input type="number" class="form-control" name="age" value="{{ fiche_client.age }}">
+					</div>
+
+				</form>
+
+			</div>
+
+			<div class="modal-footer">
+				<button class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+
+				<button class="btn btn-primary" id="btnSaveFiche">
+					Enregistrer
+				</button>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+ <script>
+document.getElementById("btnSaveFiche").addEventListener("click", async () => {
+
+    const form = document.getElementById("formEditFiche");
+    const data = Object.fromEntries(new FormData(form));
+
+    const url = "{{ path('api_fiche_edit', {id: fiche_client.id}) }}";
+
+    const response = await fetch(url, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(data)
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+        showFlashMessage("Fiche patient mise à jour !", "success");
+        location.reload();
+    } else {
+        alert("Erreur : " + result.message);
+    }
+});
+</script>
+

@@ -25,15 +25,24 @@
 				</div>
 
 				<div class="d-flex gap-2">
-					<a href="#" class="btn btn-primary btn-lg px-4">
+<a href="#" class="btn btn-primary btn-lg px-4" data-bs-toggle="modal" data-bs-target="#modalEditFiche">
+
+
 						<i class="bi bi-pencil-square"></i>
 						Modifier
 					</a>
 
-					<a href="#" class="btn btn-danger btn-lg px-4">
-						<i class="bi bi-trash"></i>
-						Supprimer
-					</a>
+<form method="post" action="{{ path('app_fiche_client_delete', {id: fiche_client.id}) }}" onsubmit="return confirm('Voulez-vous vraiment supprimer cette fiche ?');">
+
+	<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ fiche_client.id) }}">
+
+	<button class="btn btn-danger btn-lg px-4">
+		<i class="bi bi-trash"></i>
+		Supprimer
+
+</button></form>
+
+
 
 					<a href="{{ path('app_fiche_client_index') }}" class="btn btn-secondary btn-lg px-4">
 						<i class="bi bi-arrow-left"></i>
@@ -149,6 +158,11 @@
 						{# 🟣 TROUBLES DIGESTIFS (BOUTONS + MODALS) #}
 						<div class="mt-4">
 							{{ include('fiche_client/_composants/_trouble_digestifs.html.twig') }}
+{{ include('fiche_client/_composants/_symptomes_generaux.html.twig') }}
+{{ include('fiche_client/_composants/_maladies_chroniques.html.twig') }}
+{{ include('fiche_client/_composants/_modal_edit_client/_modal_edit_client.html.twig') }}
+
+
 						</div>
 
 					</div>

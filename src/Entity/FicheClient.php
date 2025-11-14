@@ -56,6 +56,9 @@ class FicheClient
     #[ORM\OneToOne(mappedBy: 'client', cascade: ['persist', 'remove'])]
     private ?SymptomesGeneraux $symptomesGeneraux = null;
 
+    #[ORM\OneToOne(mappedBy: 'client', cascade: ['persist', 'remove'])]
+    private ?MaladiesChroniques $maladiesChroniques = null;
+
     public function __construct()
     {
         $this->paiements = new ArrayCollection();
@@ -228,6 +231,28 @@ class FicheClient
         }
 
         $this->symptomesGeneraux = $symptomesGeneraux;
+
+        return $this;
+    }
+
+    public function getMaladiesChroniques(): ?MaladiesChroniques
+    {
+        return $this->maladiesChroniques;
+    }
+
+    public function setMaladiesChroniques(?MaladiesChroniques $maladiesChroniques): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($maladiesChroniques === null && $this->maladiesChroniques !== null) {
+            $this->maladiesChroniques->setClient(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($maladiesChroniques !== null && $maladiesChroniques->getClient() !== $this) {
+            $maladiesChroniques->setClient($this);
+        }
+
+        $this->maladiesChroniques = $maladiesChroniques;
 
         return $this;
     }

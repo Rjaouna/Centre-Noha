@@ -61,52 +61,69 @@ document.addEventListener("DOMContentLoaded", function () {
 	</div>
 
 	{# 🔵 Symptômes / douleurs — bleu #}
-	<div class="col-md-4">
-		<div class="alert alert-primary shadow-sm rounded-4 p-4 clickable-alert" role="alert" style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#modalDouleurs">
+{# 🔵 Symptômes / douleurs — bleu #}
+<div class="col-md-4">
+	<div class="alert alert-primary shadow-sm rounded-4 p-4 clickable-alert" role="alert" style="cursor:pointer;" data-bs-toggle="modal" {% if fiche_client.symptomesGeneraux %} data-bs-target="#modalSymptomesGeneraux" {% else %} data-bs-target="#modalAddSymptomesGeneraux" {% endif %}>
 
-			<div class="d-flex justify-content-between">
-				<div>
-					<h5 class="fw-bold mb-1">
-						<i class="bi bi-body-text me-2"></i>
-						Symptômes & douleurs
-					</h5>
-					<p class="mb-0 small opacity-75">
-						Renseigner les douleurs, zones touchées et intensité.
-					</p>
-				</div>
-
-				<span class="ms-3">
-					<i class="bi bi-chevron-right fs-4 opacity-50"></i>
-				</span>
+		<div class="d-flex justify-content-between">
+			<div>
+				<h5 class="fw-bold mb-1">
+					<i class="bi bi-body-text me-2"></i>
+					Symptômes & douleurs
+				</h5>
+				<p class="mb-0 small opacity-75">
+					Renseigner les douleurs, zones touchées et intensité.
+				</p>
 			</div>
 
+			<span class="ms-3">
+				<i class="bi bi-chevron-right fs-4 opacity-50"></i>
+			</span>
 		</div>
+
 	</div>
+</div>
+
+
+
+
 
 	{# 🔴 Maladies chroniques — rouge #}
-	<div class="col-md-4">
-		<div class="alert alert-danger shadow-sm rounded-4 p-4 clickable-alert" role="alert" style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#modalMaladies">
+{# 🔴 Maladies chroniques — rouge #}
+<div class="col-md-4">
+	<div class="alert alert-danger shadow-sm rounded-4 p-4 clickable-alert"
+		 role="alert"
+		 style="cursor:pointer;"
+		 data-bs-toggle="modal"
+		 {% if fiche_client.maladiesChroniques %}
+			 data-bs-target="#modalMaladiesChroniques"
+		 {% else %}
+			 data-bs-target="#modalAddMaladiesChroniques"
+		 {% endif %}
+	>
 
-			<div class="d-flex justify-content-between">
-				<div>
-					<h5 class="fw-bold mb-1">
-						<i class="bi bi-activity me-2"></i>
-						Maladies chroniques
-					</h5>
-					<p class="mb-0 small opacity-75">
-						Ajouter ou consulter les maladies suivies.
-					</p>
-				</div>
+		<div class="d-flex justify-content-between">
 
-				<span class="ms-3">
-					<i class="bi bi-chevron-right fs-4 opacity-50"></i>
-				</span>
+			<div>
+				<h5 class="fw-bold mb-1">
+					<i class="bi bi-activity me-2"></i>
+					Maladies chroniques
+				</h5>
+
+				<p class="mb-0 small opacity-75">
+					Ajouter ou consulter les maladies suivies.
+				</p>
 			</div>
 
-		</div>
-	</div>
+			<span class="ms-3">
+				<i class="bi bi-chevron-right fs-4 opacity-50"></i>
+			</span>
 
+		</div>
+
+	</div>
 </div>
+
 
 
 

@@ -21,7 +21,6 @@
 						<h4 class="mt-3 fw-bold">Ajouter un client</h4>
 						<p class="text-muted small">Créer une nouvelle fiche patient</p>
 
-						<!-- 🔥 OUVERTURE DU MODAL -->
 						<button class="btn btn-success rounded-pill px-4 mt-3" data-bs-toggle="modal" data-bs-target="#modalAddClient">
 							<i class="bi bi-plus-lg"></i>
 							Accéder
@@ -31,13 +30,24 @@
 				</div>
 			</div>
 
-			<!-- Carte 2 : Liste des clients -->
+			<!-- Carte 2 : Liste des clients AVEC BADGE -->
 			<div class="col-md-4 mb-4">
-				<div class="card shadow border-0 rounded-4">
+				<div
+					class="card shadow border-0 rounded-4 position-relative">
+
+					<!-- 🔥 BADGE NOMBRE DE CLIENTS -->
+					{% if totalClients is defined %}
+						<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-primary bg-secondary shadow">
+							{{ totalClients }} Clients
+						</span>
+					{% endif %}
+
 					<div class="card-body py-5">
 						<i class="bi bi-people-fill text-primary" style="font-size: 3rem;"></i>
+
 						<h4 class="mt-3 fw-bold">Liste des clients</h4>
 						<p class="text-muted small">Voir, rechercher et gérer les patients</p>
+
 						<a class="btn btn-primary rounded-pill px-4 mt-3" href="{{ path('app_fiche_client_index') }}">
 							<i class="bi bi-search"></i>
 							Accéder
@@ -53,6 +63,7 @@
 						<i class="bi bi-credit-card-fill text-danger" style="font-size: 3rem;"></i>
 						<h4 class="mt-3 fw-bold">Gestion des paiements</h4>
 						<p class="text-muted small">Suivi et enregistrement des paiements</p>
+
 						<button class="btn btn-danger rounded-pill px-4 mt-3" disabled>
 							<i class="bi bi-wallet2"></i>
 							Accéder
@@ -64,13 +75,13 @@
 		</div>
 	</div>
 
-	<!-- 🔥🔥 MODAL VIDE 🔥🔥 -->
+
+	<!-- MODAL AJOUT PATIENT -->
 	<div class="modal fade" id="modalAddClient" tabindex="-1" aria-hidden="true">
 		<div class="modal-dialog modal-xl">
-<div class="modal-content">
+			<div class="modal-content">
 
-
-				<div class="modal-header bg-primary text-white ">
+				<div class="modal-header bg-primary text-white">
 					<h5 class="modal-title">
 						<i class="bi bi-person-plus"></i>
 						Ajouter un client
@@ -78,9 +89,7 @@
 					<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
 				</div>
 
-				
-{{ include('fiche_client/new.html.twig') }}
-			
+				{{ include('fiche_client/new.html.twig') }}
 
 			</div>
 		</div>
