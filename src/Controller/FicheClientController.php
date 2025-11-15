@@ -1,6 +1,8 @@
 <?php
 namespace App\Controller;
 
+use App\Entity\Paiement;
+use App\Form\PaiementType;
 use App\Entity\FicheClient;
 use App\Form\FicheClientType;
 use App\Repository\RendezVousRepository;
@@ -19,11 +21,17 @@ final class FicheClientController extends AbstractController
     public function index(FicheClientRepository $ficheClientRepository): Response
     {
         $fiche = new FicheClient();
+        $paiement = new Paiement();
         $form = $this->createForm(FicheClientType::class, $fiche);
+        $formPaiement = $this->createForm(PaiementType::class, $paiement);
+
 
         return $this->render('fiche_client/index.html.twig', [
             'fiche_clients' => $ficheClientRepository->findAll(),
             'form' => $form->createView(),   // 🔥 clé "form" envoyée au Twig
+            'formPaiement' => $formPaiement->createView(), // 🔥 important
+
+
         ]);
     }
 
@@ -85,8 +93,11 @@ final class FicheClientController extends AbstractController
         ]);
     }
     #[Route('/{id}', name: 'app_fiche_client_show', methods: ['GET'])]
-    public function show(FicheClient $ficheClient, RendezVousRepository $rdvRepo): Response
-    {
+    public function show(
+        FicheClient $ficheClient,
+        RendezVousRepository $rdvRepo
+    ): Response {
+
         $now = new \DateTimeImmutable();
 
         // Récupération des rdv du client
@@ -107,6 +118,12 @@ final class FicheClientController extends AbstractController
             }
         }
 
+        // 🔥 Création du formulaire Paiement
+        $paiement = new Paiement();
+        $paiement->setClient($ficheClient);
+
+        $formPaiement = $this->createForm(PaiementType::class, $paiement);
+
         return $this->render('fiche_client/show.html.twig', [
             'fiche_client' => $ficheClient,
             'rdv_total'    => count($rdvs),
@@ -114,8 +131,12 @@ final class FicheClientController extends AbstractController
             'rdv_future'   => count($rdvFuture),
             'rdv_canceled' => count($rdvCanceled),
             'rdvs'         => $rdvs,
+
+            // 🔥 On envoie le formulaire à la vue
+            'formPaiement' => $formPaiement->createView(),
         ]);
     }
+
 
 
     #[Route('/fiche-client/delete/{id}', name: 'app_fiche_client_delete', methods: ['POST'])]

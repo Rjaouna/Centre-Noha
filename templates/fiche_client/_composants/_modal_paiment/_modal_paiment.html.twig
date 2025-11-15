@@ -1,0 +1,81 @@
+<div class="modal fade" id="paiementModal" tabindex="-1" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+
+			<div class="modal-header">
+				<h5 class="modal-title">Ajouter un paiement</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+			</div>
+
+			<div class="modal-body">
+
+				{{ form_start(formPaiement, { attr: { id: 'formPaiement' } }) }}
+				{{ form_widget(formPaiement) }}
+				{{ form_end(formPaiement) }}
+
+				<div id="paiementErrors" class="alert alert-danger d-none mt-3"></div>
+
+			</div>
+
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+
+				<button type="button" id="submitPaiement" class="btn btn-primary">
+					Enregistrer
+				</button>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+ <script>
+document.getElementById('submitPaiement').addEventListener('click', function () {
+
+    const form = document.getElementById('formPaiement');
+
+    if (!form) {
+        console.error("❌ Formulaire introuvable !");
+        return;
+    }
+
+    const url = "{{ path('ajouter_paiement_ajax', {id: fiche_client.id}) }}";
+
+    fetch(url, {
+        method: "POST",
+        body: new FormData(form)
+    })
+    .then(response => response.json())
+    .then(data => {
+
+        if (!data.success) {
+            document.getElementById('paiementErrors').classList.remove('d-none');
+            document.getElementById('paiementErrors').innerHTML = data.errors;
+            return;
+        }
+
+        // Cache les erreurs
+        document.getElementById('paiementErrors').classList.add('d-none');
+
+        // Fermer le modal
+        let modal = bootstrap.Modal.getInstance(document.getElementById('paiementModal'));
+        modal.hide();
+
+        // Mettre à jour la table
+        ajouterPaiementDansTableau(data.paiement);
+    });
+});
+
+function ajouterPaiementDansTableau(p) {
+    const table = document.querySelector('#paiementsTable tbody');
+    table.innerHTML += `
+        <tr>
+            <td>${p.date}</td>
+            <td>${p.montant}</td>
+            <td>${p.reste}</td>
+            <td>${p.type}</td>
+        </tr>
+    `;
+}
+</script>
+

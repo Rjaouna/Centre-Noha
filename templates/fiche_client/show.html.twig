@@ -27,11 +27,16 @@
 				</div>
 
 				<div class="d-flex gap-2">
+<button class="btn btn-table-success btn-lg rounded-pill px-4 shadow-sm d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#paiementModal">
 
-					<button class="btn btn-info btn-lg rounded-pill px-4 shadow-sm d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#modalAddRdv">
-						<i class="bi bi-calendar-plus fs-4"></i>
-						Donner un rendez-vous
-					</button>
+	Ajouter un paiement
+</button>
+
+
+
+
+
+					
 
 					<a href="#" class="btn btn-primary btn-lg rounded-pill px-4 shadow-sm d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#modalEditFiche">
 						<i class="bi bi-pencil-square"></i>
@@ -55,6 +60,11 @@
 
 			</div>
 		</div>
+
+
+
+
+
 
 
 		{# ----------------------------------------------------- #}
@@ -129,6 +139,10 @@
                         
 {{ include('fiche_client/_composants/_galerie/_galerie.html.twig') }}
 
+
+
+
+
 <button class="btn btn-primary rounded-pill mt-3" data-bs-toggle="modal" data-bs-target="#modalUploadImage">
 	<i class="bi bi-image"></i>
 	Ajouter une image
@@ -138,6 +152,9 @@
 
 				</div>
 			</div>
+
+
+
 
 			{# 🟢 INFO MÉDICALES #}
 			<div class="col-lg-6 d-flex">
@@ -173,7 +190,13 @@
 							{{ include('fiche_client/_composants/_maladies_chroniques.html.twig') }}
 							{{ include('fiche_client/_composants/_modal_edit_client/_modal_edit_client.html.twig') }}
 							{{ include('fiche_client/_composants/_modal_rdv/_modal_rdv.html.twig') }}
-							{{ include('fiche_client/_composants/_modal_image/_modal_image.html.twig') }}
+{{ include('fiche_client/_composants/_modal_image/_modal_image.html.twig') }}
+{% include 'fiche_client/_composants/_modal_paiment/_modal_paiment.html.twig' with {
+    formPaiement: formPaiement
+} %}
+
+
+
 						</div>
 
 					</div>
@@ -260,8 +283,11 @@
 			</div>
 
 		</div>
+{{ include('fiche_client/_composants/_historique_paiment/_historique_paiment.html.twig') }}
+
 
 	</div>
+
 
 	<style>
 		.rdv-circle {

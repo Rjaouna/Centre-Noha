@@ -2,23 +2,21 @@
 	<div
 		class="container-fluid">
 
-		<!-- Logo / Titre -->
+		<!-- Logo -->
 		<a class="navbar-brand fw-bold" href="{{ path('app_home') }}">
 			🏥 Centre Noha
 		</a>
 
 		<!-- Burger -->
-		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false">
+		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
 			<span class="navbar-toggler-icon"></span>
 		</button>
 
 		<!-- Menu -->
 		<div class="collapse navbar-collapse" id="mainNavbar">
 
-			<ul
-				class="navbar-nav me-auto mb-2 mb-lg-0">
+			<ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
-				<!-- Home -->
 				<li class="nav-item">
 					<a class="nav-link{% if app.request.attributes.get('_route') == 'app_home' %} active{% endif %}" href="{{ path('app_home') }}">
 						<i class="bi bi-house-door"></i>
@@ -26,32 +24,41 @@
 					</a>
 				</li>
 
-				<!-- Liste des patients -->
 				<li class="nav-item">
-<a class="nav-link{% if app.request.attributes.get('_route') starts with 'app_fiche_client' %} active{% endif %}" href="{{ path('app_fiche_client_index') }}">
-
+					<a class="nav-link{% if app.request.attributes.get('_route') starts with 'app_fiche_client' %} active{% endif %}" href="{{ path('app_fiche_client_index') }}">
 						<i class="bi bi-people"></i>
 						Patients
 					</a>
 				</li>
 
-				<!-- Paiements -->
 				<li class="nav-item">
 					<a class="nav-link disabled">
 						<i class="bi bi-credit-card"></i>
 						Paiements
 					</a>
 				</li>
-<!-- Rendez-vous -->
-<li class="nav-item">
-	<a class="nav-link d-flex align-items-center gap-1 {% if app.request.attributes.get('_route') starts with 'app_rdv' %} active{% endif %}" href="{{ path('app_rdv_index') }}">
-		<i class="bi bi-calendar-week"></i>
-		Rendez-vous
-	</a>
-</li>
 
+				<li class="nav-item">
+					<a class="nav-link{% if app.request.attributes.get('_route') starts with 'app_rdv' %} active{% endif %}" href="{{ path('app_rdv_index') }}">
+						<i class="bi bi-calendar-week"></i>
+						Rendez-vous
+					</a>
+				</li>
 
 			</ul>
+
+			{# -----------------------------------------------------
+						   BOUTON DONNER UN RDV (SEULEMENT SUR SHOW CLIENT)
+						------------------------------------------------------ #}
+
+			{% if app.request.attributes.get('_route') == 'app_fiche_client_show' %}
+
+				<button class="btn btn-info btn-lg rounded-pill px-4 shadow-sm d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#modalAddRdv">
+					<i class="bi bi-calendar-plus fs-4"></i>
+					Donner un RDV
+				</button>
+
+			{% endif %}
 
 		</div>
 	</div>
