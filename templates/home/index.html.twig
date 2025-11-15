@@ -5,19 +5,16 @@
 
 {% block body %}
 
-
-
-
 	<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
 
 		<div class="row text-center">
 
-			<h1 class="fw-bold mb-5 text-primary">
+			<h1 class="fw-bold my-4 text-primary">
 				🏥 Espace Gestion Centre Noha
 			</h1>
 
 			<!-- Carte 1 : Ajouter un client -->
-			<div class="col-md-3 mb-4">
+			<div class="col-md-4 mb-4">
 				<div class="card shadow border-0 rounded-4">
 					<div class="card-body py-5">
 						<i class="bi bi-person-plus-fill text-success" style="font-size: 3rem;"></i>
@@ -33,21 +30,20 @@
 			</div>
 
 			<!-- Carte 2 : Liste des clients -->
-			<div class="col-md-3 mb-4">
+			<div class="col-md-4 mb-4">
 				<div class="card shadow border-0 rounded-4 position-relative">
 
-					
+					{% if totalClients is defined %}
+						<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-primary bg-secondary shadow">
+							{{ totalClients }}
+							Clients
+						</span>
+					{% endif %}
 
 					<div class="card-body py-5">
 						<i class="bi bi-people-fill text-primary" style="font-size: 3rem;"></i>
 						<h4 class="mt-3 fw-bold">Liste des clients</h4>
 						<p class="text-muted small">Voir, rechercher et gérer les patients</p>
-{% if totalClients is defined %}
-	<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-primary bg-secondary shadow">
-		{{ totalClients }}
-		Clients
-	</span>
-{% endif %}
 
 						<a class="btn btn-primary rounded-pill px-4 mt-3" href="{{ path('app_fiche_client_index') }}">
 							<i class="bi bi-search"></i>
@@ -58,7 +54,7 @@
 			</div>
 
 			<!-- Carte 3 : Paiements -->
-			<div class="col-md-3 mb-4">
+			<div class="col-md-4 mb-4">
 				<div class="card shadow border-0 rounded-4">
 					<div class="card-body py-5">
 						<i class="bi bi-credit-card-fill text-danger" style="font-size: 3rem;"></i>
@@ -75,7 +71,7 @@
 			</div>
 
 			<!-- Carte 4 : Rendez-vous -->
-			<div class="col-md-3 mb-4">
+			<div class="col-md-4 mb-4">
 				<div class="card shadow border-0 rounded-4 position-relative">
 
 					{% if totalRdv is defined %}
@@ -99,8 +95,34 @@
 				</div>
 			</div>
 
+			<!-- Carte 5 : Suivi des soins -->
+			<div class="col-md-4 mb-4">
+				<div class="card shadow border-0 rounded-4 position-relative">
+
+					{% if totalSuivi is defined %}
+						<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-white bg-danger shadow">
+							{{ totalSuivi }}
+							Suivis
+						</span>
+					{% endif %}
+
+					<div class="card-body py-5 text-center">
+						<i class="bi bi-heart-pulse-fill text-danger" style="font-size: 3rem;"></i>
+
+						<h4 class="mt-3 fw-bold">Suivi des soins</h4>
+						<p class="text-muted small">Historique des consultations médicales</p>
+
+						<a class="btn btn-danger rounded-pill px-4 mt-3" href="{{ path('app_suivi_soin_index') }}">
+							<i class="bi bi-clipboard2-pulse"></i>
+							Accéder
+						</a>
+					</div>
+				</div>
+			</div>
+
 		</div>
 	</div>
+
 
 	<!-- MODAL AJOUT PATIENT -->
 	<div class="modal fade" id="modalAddClient" tabindex="-1" aria-hidden="true">

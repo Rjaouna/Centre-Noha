@@ -2,12 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\FicheClientRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
-use App\Entity\Traits\TimestampableTrait;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Traits\TimestampableTrait;
+use App\Repository\FicheClientRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Entity(repositoryClass: FicheClientRepository::class)]
@@ -22,27 +23,34 @@ class FicheClient
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['suivi_read'])]
     private ?string $nom = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['suivi_read'])]
     private ?string $ville = null;
 
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]
+    #[Groups(['suivi_read'])]
     private ?int $age = null;
 
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]
+    #[Groups(['suivi_read'])]
     private ?int $poids = null;
 
     #[ORM\Column(length: 19)]
     private ?string $telephone = null;
 
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]
+    #[Groups(['suivi_read'])]
     private ?int $dureeMaladie = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['suivi_read'])]
     private ?string $typeMaladie = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['suivi_read'])]
     private ?string $traitement = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -98,11 +106,18 @@ class FicheClient
     #[ORM\OneToMany(targetEntity: RendezVous::class, mappedBy: 'client')]
     private Collection $rendezVouses;
 
+    /**
+     * @var Collection<int, SuiviSoin>
+     */
+    #[ORM\OneToMany(targetEntity: SuiviSoin::class, mappedBy: 'patient')]
+    private Collection $suiviSoins;
+
     public function __construct()
     {
         $this->paiements = new ArrayCollection();
         $this->rendezVouses = new ArrayCollection();
         $this->images = new ArrayCollection(); // 👍
+        $this->suiviSoins = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -322,6 +337,36 @@ class FicheClient
             // set the owning side to null (unless already changed)
             if ($rendezVouse->getClient() === $this) {
                 $rendezVouse->setClient(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, SuiviSoin>
+     */
+    public function getSuiviSoins(): Collection
+    {
+        return $this->suiviSoins;
+    }
+
+    public function addSuiviSoin(SuiviSoin $suiviSoin): static
+    {
+        if (!$this->suiviSoins->contains($suiviSoin)) {
+            $this->suiviSoins->add($suiviSoin);
+            $suiviSoin->setPatient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSuiviSoin(SuiviSoin $suiviSoin): static
+    {
+        if ($this->suiviSoins->removeElement($suiviSoin)) {
+            // set the owning side to null (unless already changed)
+            if ($suiviSoin->getPatient() === $this) {
+                $suiviSoin->setPatient(null);
             }
         }
 

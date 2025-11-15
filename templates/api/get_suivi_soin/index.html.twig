@@ -1,0 +1,26 @@
+<script>
+async function getSuiviSoin() {
+const patientId =
+{{ suivi_soin.patient.id }};
+
+    const url = "{{ path('app_api_get_suivi_soin', {'patient': 'ID_PLACEHOLDER'}) }}".replace('ID_PLACEHOLDER', patientId);
+
+
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`);
+    }
+
+    const result = await response.json();
+    const data = result[0]
+
+    console.log(data);
+  } catch (error) {
+    console.error(error.message);
+  }
+
+}
+getSuiviSoin()
+
+</script>

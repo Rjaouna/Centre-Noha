@@ -1,0 +1,88 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détail du Suivi de Soin
+{% endblock %}
+
+{% block body %}
+	<div class="container-fluid mt-4">
+
+		{# ------------------------------------------------------- #}
+		{# 🔵 HEADER — STYLE IDENTIQUE À LA FICHE PATIENT          #}
+		{# ------------------------------------------------------- #}
+			<div class="card shadow-lg border-0 rounded-4 mb-4"> <div class="card-body d-flex justify-content-between align-items-center py-4 px-4">
+
+				<div class="d-flex align-items-center">
+					<i class="bi bi-heart-pulse-fill text-danger fs-1 me-3"></i>
+					<div>
+						<h2 class="fw-bold text-danger mb-1">Détail du Suivi de Soin</h2>
+						<p class="text-muted mb-0">Informations complètes sur la consultation</p>
+					</div>
+				</div>
+
+				<a href="{{ path('app_suivi_soin_index') }}" class="btn btn-outline-secondary btn-lg px-4">
+					<i class="bi bi-arrow-left me-2"></i>
+					Retour à la liste
+				</a>
+
+			</div>
+		</div>
+
+
+		{# ------------------------------------------------------- #}
+		{# 🔧 CARD PRINCIPALE — STYLE FICHE CLIENT                 #}
+		{# ------------------------------------------------------- #}
+			<div class="card shadow-lg border-0 rounded-4 p-4"> <div class="row mb-4">
+				<div class="col">
+					<h4 class="fw-bold text-primary mb-3">
+						<i class="bi bi-info-circle me-2"></i>
+						Informations du soin
+					</h4>
+				</div>
+
+				<div class="col text-end">
+					<a href="{{ path('app_suivi_soin_edit', {'id': suivi_soin.id}) }}" class="btn btn-primary px-4 rounded-pill shadow-sm">
+						<i class="bi bi-pencil-square me-2"></i>
+						Modifier
+					</a>
+				</div>
+			</div>
+
+			<table class="table table-borderless mb-0">
+				<tbody>
+
+					<tr class="border-bottom">
+						<th class="fw-bold text-secondary w-25">
+							<i class="bi bi-hash me-2"></i>ID
+						</th>
+						<td class="fw-semibold">{{ suivi_soin.id }}</td>
+					</tr>
+
+					<tr class="border-bottom">
+						<th class="fw-bold text-secondary">
+							<i class="bi bi-clipboard2-pulse me-2"></i>Diagnostic
+						</th>
+						<td>{{ suivi_soin.diagnostic }}</td>
+					</tr>
+
+					<tr class="border-bottom">
+						<th class="fw-bold text-secondary">
+							<i class="bi bi-calendar-check me-2"></i>Créé le
+						</th>
+						<td>{{ suivi_soin.createdAt ? suivi_soin.createdAt|date('d/m/Y H:i') : '' }}</td>
+					</tr>
+
+					<tr>
+						<th class="fw-bold text-secondary">
+							<i class="bi bi-calendar2-week me-2"></i>Mis à jour le
+						</th>
+						<td>{{ suivi_soin.updatedAt ? suivi_soin.updatedAt|date('d/m/Y H:i') : '' }}</td>
+					</tr>
+
+				</tbody>
+			</table>
+
+		</div>
+
+	</div>
+{% endblock %}
+
