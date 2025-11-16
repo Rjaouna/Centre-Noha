@@ -21,7 +21,9 @@
 						<h4 class="mt-3 fw-bold">Ajouter un client</h4>
 						<p class="text-muted small">Créer une nouvelle fiche patient</p>
 
-						<button class="btn btn-success rounded-pill px-4 mt-3" data-bs-toggle="modal" data-bs-target="#modalAddClient">
+<button id="addClient" class="btn btn-success rounded-pill px-4 mt-3" data-bs-toggle="modal" data-bs-target="#modalAddClient">
+
+
 							<i class="bi bi-plus-lg"></i>
 							Accéder
 						</button>
@@ -30,7 +32,7 @@
 			</div>
 
 			<!-- Carte 2 : Liste des clients -->
-			<div class="col-md-4 mb-4">
+			<div class="col-md-4 mb-4 " id="blocListClient">
 				<div class="card shadow border-0 rounded-4 position-relative">
 
 					{% if totalClients is defined %}
@@ -45,7 +47,8 @@
 						<h4 class="mt-3 fw-bold">Liste des clients</h4>
 						<p class="text-muted small">Voir, rechercher et gérer les patients</p>
 
-						<a class="btn btn-primary rounded-pill px-4 mt-3" href="{{ path('app_fiche_client_index') }}">
+<a id="listClient" class="btn btn-primary rounded-pill px-4 mt-3" href="{{ path('app_fiche_client_index') }}">
+
 							<i class="bi bi-search"></i>
 							Accéder
 						</a>
@@ -62,10 +65,10 @@
 						<h4 class="mt-3 fw-bold">Paiements</h4>
 						<p class="text-muted small">Suivi et enregistrement des paiements</p>
 
-						<button class="btn btn-danger rounded-pill px-4 mt-3" disabled>
+						<a id="paiyment" class="btn btn-danger rounded-pill px-4 mt-3" disabled>
 							<i class="bi bi-wallet2"></i>
 							Accéder
-						</button>
+						</a>
 					</div>
 				</div>
 			</div>
@@ -87,7 +90,8 @@
 						<h4 class="mt-3 fw-bold">Rendez-vous</h4>
 						<p class="text-muted small">Consulter tous les rendez-vous</p>
 
-						<a class="btn btn-info rounded-pill px-4 mt-3" href="{{ path('app_rdv_index') }}">
+<a id="rendezVous" class="btn btn-info rounded-pill px-4 mt-3" href="{{ path('app_rdv_index') }}">
+
 							<i class="bi bi-calendar-check"></i>
 							Accéder
 						</a>
@@ -112,7 +116,7 @@
 						<h4 class="mt-3 fw-bold">Suivi des soins</h4>
 						<p class="text-muted small">Historique des consultations médicales</p>
 
-						<a class="btn btn-danger rounded-pill px-4 mt-3" href="{{ path('app_suivi_soin_index') }}">
+						<a id="suiviDesSoins" class="btn btn-danger rounded-pill px-4 mt-3" href="{{ path('app_suivi_soin_index') }}">
 							<i class="bi bi-clipboard2-pulse"></i>
 							Accéder
 						</a>
@@ -142,6 +146,26 @@
 			</div>
 		</div>
 	</div>
-
 {% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+
+	 <script>
+document.addEventListener("DOMContentLoaded", () => {
+
+buttonSoundClick('addClient');
+buttonSoundClick('listClient');
+buttonSoundClick('rendezVous');
+buttonSoundClick('paiment');
+buttonSoundClick('suiviDesSoins');
+
+
+
+
+
+})
+		    </script>
+{% endblock %}
+
 

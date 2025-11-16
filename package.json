@@ -16,7 +16,8 @@
   "description": "",
   "dependencies": {
     "@hotwired/stimulus": "^3.2.2",
-    "bootstrap-icons": "^1.13.1"
+    "bootstrap-icons": "^1.13.1",
+    "core-js": "^3.46.0"
   },
   "devDependencies": {
     "@symfony/webpack-encore": "^4.7.0"

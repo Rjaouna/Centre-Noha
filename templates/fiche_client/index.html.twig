@@ -19,7 +19,7 @@
 					</div>
 				</div>
 
-				<button class="btn btn-success btn-lg px-4 d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#modalAddClient">
+				<button id="addClient" class="btn btn-success btn-lg px-4 d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#modalAddClient">
 					<i class="bi bi-person-plus fs-4 me-2"></i>
 					Nouveau patient
 				</button>
@@ -27,14 +27,11 @@
 			</div>
 		</div>
 
-
 		{# -------------------------------------------- #}
 		{# 🟦 TABLEAU MODERNE DES PATIENTS              #}
 		{# -------------------------------------------- #}
 
-		<table id="patientsTable" class="table table-striped table-hover align-middle rounded-4 overflow-hidden" style="width:100%">
-
-			<thead class="table-primary text-dark">
+			<table id="patientsTable" class="table table-striped table-hover align-middle rounded-4 overflow-hidden" style="width:100%"> <thead class="table-primary text-dark">
 				<tr>
 					<th>#</th>
 					<th>
@@ -69,9 +66,7 @@
 						<td>{{ fiche_client.ville }}</td>
 						<td>{{ fiche_client.telephone }}</td>
 						<td>
-							<span class="badge bg-info text-dark px-3 py-2 rounded-pill shadow-sm">
-								{{ fiche_client.typeMaladie }}
-							</span>
+							<span class="badge bg-info text-dark px-3 py-2 rounded-pill shadow-sm">{{ fiche_client.typeMaladie }}</span>
 						</td>
 						<td>
 							<span class="text-muted">{{ fiche_client.createdAt|date('d/m/Y H:i') }}</span>
@@ -80,7 +75,7 @@
 							<span class="text-muted">{{ fiche_client.updatedAt|date('d/m/Y H:i') }}</span>
 						</td>
 						<td class="text-center">
-							<a href="{{ path('app_fiche_client_show', {'id': fiche_client.id}) }}" class="btn btn-outline-primary btn-sm px-3 rounded-pill shadow-sm">
+							<a href="{{ path('app_fiche_client_show', {'id': fiche_client.id}) }}" class="btn btn-outline-primary btn-sm px-3 rounded-pill shadow-sm detailsButton">
 								<i class="bi bi-eye"></i>
 								Voir
 							</a>
@@ -91,100 +86,63 @@
 
 		</table>
 
+		{# -------------------------------------------- #}
+		{# 🟢 MODAL AJOUT PATIENT                        #}
+		{# -------------------------------------------- #}
+			<div class="modal fade" id="modalAddClient" tabindex="-1"> <div class="modal-dialog modal-xl">
+				<div class="modal-content rounded-4 shadow-lg">
 
+					<div class="modal-header bg-primary text-white rounded-top-4">
+						<h5 class="modal-title fw-bold d-flex align-items-center">
+							<i class="bi bi-person-plus fs-4 me-2"></i>
+							Ajouter un patient
+						</h5>
+						<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+					</div>
 
+					<div class="modal-body p-4">
+						{{ include('fiche_client/_form.html.twig') }}
+					</div>
 
-
-	{# -------------------------------------------- #}
-	{# 📌 DATATABLES                                #}
-	{# -------------------------------------------- #}
-	 <script>
-	$(document).ready(function() {
-		$('#patientsTable').DataTable({
-			"pageLength": 10,
-			"language": {
-				"url": "//cdn.datatables.net/plug-ins/1.13.6/i18n/fr-FR.json"
-			},
-			"order": [[0, "desc"]],
-			responsive: true
-		});
-	});
-	</script>
-
-
-	{# -------------------------------------------- #}
-	{# 🟢 MODAL AJOUT PATIENT                        #}
-	{# -------------------------------------------- #}
-		<div class="modal fade" id="modalAddClient" tabindex="-1"> <div class="modal-dialog modal-xl">
-			<div class="modal-content rounded-4 shadow-lg">
-
-				<div class="modal-header bg-primary text-white rounded-top-4">
-					<h5 class="modal-title fw-bold d-flex align-items-center">
-						<i class="bi bi-person-plus fs-4 me-2"></i>
-						Ajouter un patient
-					</h5>
-					<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
 				</div>
-
-				<div class="modal-body p-4">
-					{{ include('fiche_client/_form.html.twig') }}
-				</div>
-
 			</div>
 		</div>
+
 	</div>
+{% endblock %}
 
 
-	{# -------------------------------------------- #}
-{# 🟡 FORMULAIRE AJAX                            #}
-	{# -------------------------------------------- #}
-	 <script>
-	document.addEventListener("DOMContentLoaded", () => {
-	
-		const form = document.getElementById("ficheForm");
-	
-		form.addEventListener("submit", async function (e) {
-			e.preventDefault();
-	
-			const formData = new FormData(form);
-	
-			// 🔥 Transforme "fiche_client[nom]" → "nom"
-			let data = {};
-			formData.forEach((value, key) => {
-				const cleanKey = key.replace('fiche_client[', '').replace(']', '');
-				data[cleanKey] = value;
-			});
-	
-			try {
-				const response = await fetch("{{ path('app_fiche_client_new') }}", {
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-						"X-Requested-With": "XMLHttpRequest"
-					},
-					body: JSON.stringify(data)
-				});
-	
-				const text = await response.text();
-	
-				if (!response.ok) {
-					showFlashMessage("Erreur lors de l’enregistrement !", "danger");
-					return;
-				}
-	
-				const result = JSON.parse(text);
-	
-				showFlashMessage("Fiche créée avec succès (Nom : " + result.nom + ")!", "success");
-	
-				form.reset();
-	
-			} catch (error) {
-				console.error("Erreur JS :", error);
-				alert("Erreur JS détectée, voir console.");
-			}
-		});
-	});
-	</script>
+{# -------------------------------------------- #}
+{# 🟡 JAVASCRIPTS                                 #}
+{# -------------------------------------------- #}
+	{% block javascripts %}
+{{ parent() }}
+
+	{# jQuery + DataTables #}
+	 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+	 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+	 <script src="https://cdn.datatables.net/responsive/2.4.1/js/dataTables.responsive.min.js"></script> <script>
+		        document.addEventListener("DOMContentLoaded", () => {
+		
+		            // Activation DataTables
+		            $('#patientsTable').DataTable({
+		                pageLength: 10,
+		                language: { url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/fr-FR.json" },
+		                order: [[0, "desc"]],
+		                responsive: true
+		            });
+		
+		            
+
+						// Ajoute un ID unique à chaque bouton Voir
+						document.querySelectorAll(".detailsButton").forEach((btn, index) => {
+							btn.id = "detailsButton-" + index;    // --> detailsButton-0, detailsButton-1, etc.
+							buttonSoundClick(btn.id);
+						});
+					
+		
+		        });
+		    </script>
 
 {% endblock %}
 

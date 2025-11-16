@@ -79,6 +79,8 @@ final class FicheClientController extends AbstractController
                 "success" => true,
                 "id" => $fiche->getId(),
                 "nom" => $fiche->getNom(),
+                "ville" => $fiche->getVille(),
+                "telephone" => $fiche->getTelephone(),
                 "message" => "Fiche créée avec succès"
             ]);
         }
