@@ -48,10 +48,10 @@ final class FicheClientController extends AbstractController
             // ---- STRINGS (jamais null)
             $fiche->setNom($data['nom'] ?? null);
             $fiche->setVille($data['ville'] ?? null);
-            $fiche->setAge(isset($data['age']) ? (int)$data['age'] : null);
-            $fiche->setPoids(isset($data['poids']) ? (int)$data['poids'] : null);
+            $fiche->setAge(isset($data['age']) ? (string)$data['age'] : null);
+            $fiche->setPoids(isset($data['poids']) ? (string)$data['poids'] : null);
             $fiche->setTelephone($data['telephone'] ?? null);
-            $fiche->setDureeMaladie(isset($data['dureeMaladie']) ? (int)$data['dureeMaladie'] : null);
+            $fiche->setDureeMaladie(isset($data['dureeMaladie']) ? (string)$data['dureeMaladie'] : null);
             $fiche->setTypeMaladie($data['typeMaladie'] ?? null);
             $fiche->setTraitement($data['traitement'] ?? null);
             $fiche->setObservation($data['observation'] ?? null);
@@ -60,14 +60,14 @@ final class FicheClientController extends AbstractController
             // ---- INT (converti ou null)
             $fiche->setAge(
                 isset($data['age']) && $data['age'] !== ""
-                    ? (int)$data['age']
+                    ? (string)$data['age']
                     : null
             );
 
             // ---- FLOAT (converti ou null)
             $fiche->setPoids(
                 isset($data['poids']) && $data['poids'] !== ""
-                    ? (float)$data['poids']
+                    ? (string)$data['poids']
                     : null
             );
 

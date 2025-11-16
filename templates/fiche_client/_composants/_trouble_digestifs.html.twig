@@ -187,6 +187,9 @@ document.addEventListener("DOMContentLoaded", function () {
 	
 	    const form = document.getElementById("digestifForm");
 	    const data = Object.fromEntries(new FormData(form));
+const pop  = document.getElementById("popupSuccess");
+
+
 	
 	    // Choix URL : ajout si pas de données, édition sinon
 	    const url = "{{ fiche_client.troublesDigestifs
@@ -203,11 +206,25 @@ document.addEventListener("DOMContentLoaded", function () {
 	    const result = await response.json();
 	
 	    if (result.success) {
-	showFlashMessage("Troubles digestifs enregistrés !", "success");
-	
-	
-	
-	        location.reload();
+			pop.style.display = "block";
+buttonSoundSuccess('btnSaveDigestif');
+pop.innerHTML = `
+<div class="d-flex align-items-start">
+	<i class="bi bi-check-circle-fill fs-1 text-white bg-success p-2 rounded-circle me-3"></i>
+
+	<div>
+		<h5 class="fw-bold mb-1">Mise à jour avec succès ! 🎉</h5>
+		<p class="mb-1">Le nouveau patient a été bien mis à jour.</p>
+		<br>
+		<small class="text-muted d-block mt-2">Merci pour votre ajout ✔️</small>
+	</div>
+
+	<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>`;
+
+
+
+            
 	    } else {
 	        alert("Erreur : " + (result.message ?? 'Erreur serveur'));
 	    }

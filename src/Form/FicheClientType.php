@@ -28,55 +28,130 @@ class FicheClientType extends AbstractType
             ->add('ville', ChoiceType::class, [
                 'label' => 'Ville',
                 'placeholder' => 'Sélectionnez une ville',
-                'choices' => [
-                    'Casablanca' => 'Casablanca',
-                    'Rabat' => 'Rabat',
-                    'Marrakech' => 'Marrakech',
-                    'Agadir' => 'Agadir',
-                    'Tanger' => 'Tanger',
-                    'Fès' => 'Fès',
+            'choices' => [
+                'Agadir' => 'Agadir',
+                'Ahfir' => 'Ahfir',
+                'Al Hoceima' => 'Al Hoceima',
+                'Asilah' => 'Asilah',
+                'Azemmour' => 'Azemmour',
+                'Azilal' => 'Azilal',
+                'Béni Mellal' => 'Béni Mellal',
+                'Berkane' => 'Berkane',
+                'Berrechid' => 'Berrechid',
+                'Bouarfa' => 'Bouarfa',
+                'Boujdour' => 'Boujdour',
+                'Boulemane' => 'Boulemane',
+                'Casablanca' => 'Casablanca',
+                'Chefchaouen' => 'Chefchaouen',
+                'Chichaoua' => 'Chichaoua',
+                'Dakhla' => 'Dakhla',
+                'El Jadida' => 'El Jadida',
+                'El Kelaâ des Sraghna' => 'El Kelaâ des Sraghna',
+                'Erfoud' => 'Erfoud',
+                'Errachidia' => 'Errachidia',
+                'Essaouira' => 'Essaouira',
+                'Fès' => 'Fès',
+                'Figuig' => 'Figuig',
+                'Guelmim' => 'Guelmim',
+                'Guercif' => 'Guercif',
+                'Ifrane' => 'Ifrane',
+                'Imzouren' => 'Imzouren',
+                'Jerada' => 'Jerada',
+                'Kénitra' => 'Kénitra',
+                'Khemisset' => 'Khemisset',
+                'Khénifra' => 'Khénifra',
+                'Khouribga' => 'Khouribga',
+                'Ksar El Kebir' => 'Ksar El Kebir',
+                'Laâyoune' => 'Laâyoune',
+                'Larache' => 'Larache',
+                'Marrakech' => 'Marrakech',
+                'Martil' => 'Martil',
+                'Mediouna' => 'Mediouna',
                     'Meknès' => 'Meknès',
-                    'Tétouan' => 'Tétouan',
-                    'Oujda' => 'Oujda',
-                    'El Jadida' => 'El Jadida',
-                    'Safi' => 'Safi',
-                    'Mohammedia' => 'Mohammedia',
-                    'Nador' => 'Nador',
-                    'Khouribga' => 'Khouribga',
-                    'Laâyoune' => 'Laâyoune',
+                'Midelt' => 'Midelt',
+                'Mohammedia' => 'Mohammedia',
+                'Nador' => 'Nador',
+                'Oualidia' => 'Oualidia',
+                'Ouarzazate' => 'Ouarzazate',
+                'Ouazzane' => 'Ouazzane',
+                'Ouezzane' => 'Ouezzane',
+                'Oujda' => 'Oujda',
+                'Rabat' => 'Rabat',
+                'Safi' => 'Safi',
+                'Salé' => 'Salé',
+                'Sefrou' => 'Sefrou',
+                'Settat' => 'Settat',
+                'Sidi Bennour' => 'Sidi Bennour',
+                'Sidi Ifni' => 'Sidi Ifni',
+                'Sidi Kacem' => 'Sidi Kacem',
+                'Sidi Slimane' => 'Sidi Slimane',
+                'Skhirat' => 'Skhirat',
+                'Tanger' => 'Tanger',
+                'Tan-Tan' => 'Tan-Tan',
+                'Taourirt' => 'Taourirt',
+                'Taroudant' => 'Taroudant',
+                'Taza' => 'Taza',
+                'Témara' => 'Témara',
+                'Tétouan' => 'Tétouan',
+                'Tiflet' => 'Tiflet',
+                'Tinghir' => 'Tinghir',
+                'Tiznit' => 'Tiznit',
+                'Youssoufia' => 'Youssoufia',
+                'Zagora' => 'Zagora',
                 ],
-                'constraints' => [
+
+            'constraints' => [
                     new Assert\NotBlank(['message' => 'La ville est obligatoire.'])
                 ]
             ])
 
-            ->add('age', null, [
+            ->add('age', ChoiceType::class, [
                 'label' => 'Âge',
-                'attr' => ['placeholder' => 'Ex : 30'],
+            'placeholder' => 'Sélectionnez une tranche d’âge',
+            'choices' => [
+                'Enfant (0 - 12 ans)' => '0-12',
+                'Adolescent (13 - 17 ans)' => '13-17',
+                'Jeune adulte (18 - 25 ans)' => '18-25',
+                'Adulte (26 - 40 ans)' => '26-40',
+                'Adulte (41 - 60 ans)' => '41-60',
+                'Senior (61 - 75 ans)' => '61-75',
+                'Âgé (76 ans et +)' => '76+',
+            ],
                 'constraints' => [
-                    new Assert\NotBlank(),
-                    new Assert\Type('integer'),
-                    new Assert\Range([
-                        'min' => 1,
-                        'max' => 120,
-                        'notInRangeMessage' => 'L’âge doit être entre 1 et 120 ans.',
+                new Assert\NotBlank([
+                    'message' => 'Veuillez sélectionner une tranche d’âge.'
                     ])
                 ]
             ])
 
-            ->add('poids', null, [
+            ->add('poids', ChoiceType::class, [
                 'label' => 'Poids (kg)',
-                'attr' => ['placeholder' => 'Ex : 72'],
+            'placeholder' => 'Sélectionnez un poids',
+            'choices' => [
+                '6 - 9 kg' => '6-9',
+                '10 - 19 kg' => '10-19',
+                '20 - 29 kg' => '20-29',
+                '30 - 39 kg' => '30-39',
+                '40 - 49 kg' => '40-49',
+                '50 - 59 kg' => '50-59',
+                '60 - 69 kg' => '60-69',
+                '70 - 79 kg' => '70-79',
+                '80 - 89 kg' => '80-89',
+                '90 - 99 kg' => '90-99',
+                '100 - 109 kg' => '100-109',
+                '110 - 119 kg' => '110-119',
+                '120 - 129 kg' => '120-129',
+                '130 - 139 kg' => '130-139',
+                '140 - 149 kg' => '140-149',
+                '150 kg et +' => '150+',
+            ],
                 'constraints' => [
-                    new Assert\NotBlank(),
-                    new Assert\Type('numeric'),
-                    new Assert\Range([
-                        'min' => 1,
-                        'max' => 250,
-                        'notInRangeMessage' => 'Le poids doit être entre 1 et 250 kg.'
+                new \Symfony\Component\Validator\Constraints\NotBlank([
+                    'message' => 'Veuillez sélectionner une tranche de poids.'
                     ])
                 ]
             ])
+
 
             ->add('telephone', null, [
                 'label' => 'Téléphone',
@@ -92,27 +167,50 @@ class FicheClientType extends AbstractType
                 ]
             ])
 
-            ->add('dureeMaladie', null, [
-                'label' => 'Durée de la maladie (jours)',
-                'attr' => ['placeholder' => 'Ex : 15'],
-                'constraints' => [
-                    new Assert\NotBlank(),
-                    new Assert\Type('integer'),
-                    new Assert\Range([
-                        'min' => 0,
-                        'max' => 10000,
-                    ])
-                ]
+            ->add('dureeMaladie', ChoiceType::class, [
+                'label' => 'Durée de la maladie',
+                'placeholder' => 'Sélectionnez une durée',
+                'choices' => [
+                    '1 à 5 jours' => '1-5',
+                    '6 à 10 jours' => '6-10',
+                    '11 à 20 jours' => '11-20',
+                    '21 à 30 jours' => '21-30',
+                    '31 à 50 jours' => '31-50',
+                    '51 à 80 jours' => '51-80',
+                    '81 à 100 jours' => '81-100',
+                    'Plus de 100 jours' => '100+',
+                ],
             ])
 
-            ->add('typeMaladie', null, [
+
+            ->add('typeMaladie', ChoiceType::class, [
                 'label' => 'Type de maladie',
-                'attr' => ['placeholder' => 'Ex : Diabète, tension, allergie…'],
+            'placeholder' => 'Sélectionnez un type de maladie',
+            'choices' => [
+                'Diabète' => 'Diabète',
+                'Hypertension (Tension)' => 'Hypertension',
+                'Allergies' => 'Allergies',
+                'Asthme' => 'Asthme',
+                'Arthrite' => 'Arthrite',
+                'Anémie' => 'Anémie',
+                'Cholestérol' => 'Cholestérol',
+                'Problèmes cardiaques' => 'Cardiaque',
+                'Problèmes respiratoires' => 'Respiratoire',
+                'Problèmes rénaux' => 'Rénal',
+                'Maladies digestives' => 'Digestif',
+                'Thyroïde' => 'Thyroïde',
+                'Migraine / Maux de tête' => 'Migraine',
+                'Infection' => 'Infection',
+                'Dermatite / Problèmes de peau' => 'Dermatite',
+                'Dépression / anxiété' => 'Psychologique',
+                'Douleurs chroniques' => 'Douleurs chroniques',
+                'Autre (spécifier)' => 'Autre',
+            ],
                 'constraints' => [
                     new Assert\NotBlank(),
-                    new Assert\Length(['min' => 3]),
-                ]
+            ],
             ])
+
 
             ->add('traitement', null, [
                 'label' => 'Traitement (si existant)',

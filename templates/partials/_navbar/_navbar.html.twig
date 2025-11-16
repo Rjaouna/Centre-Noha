@@ -1,9 +1,13 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+<nav class="navbar navbar-expand-xl navbar-dark bg-primary shadow-sm py-3">
+
+
 	<div
-		class="container-fluid">
+class="container-fluid">
+
 
 		<!-- Logo -->
-		<a class="navbar-brand fw-bold" href="{{ path('app_home') }}">
+<a class="navbar-brand fw-bold fs-3 me-4" href="{{ path('app_home') }}">
+
 			🏥 Centre Noha
 		</a>
 
@@ -15,31 +19,36 @@
 		<!-- Menu -->
 		<div class="collapse navbar-collapse" id="mainNavbar">
 
-			<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+<ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-2">
+
 
 				<li class="nav-item">
-					<a class="nav-link{% if app.request.attributes.get('_route') == 'app_home' %} active{% endif %}" href="{{ path('app_home') }}">
+<a class="nav-link px-3{% if app.request.attributes.get('_route') == 'app_home' %} active{% endif %}" href="{{ path('app_home') }}">
+
 						<i class="bi bi-house-door"></i>
 						Accueil
 					</a>
 				</li>
 
 				<li class="nav-item">
-					<a class="nav-link{% if app.request.attributes.get('_route') starts with 'app_fiche_client' %} active{% endif %}" href="{{ path('app_fiche_client_index') }}">
+<a class="nav-link px-3{% if app.request.attributes.get('_route') starts with 'app_fiche_client' %} active{% endif %}" href="{{ path('app_fiche_client_index') }}">
+
 						<i class="bi bi-people"></i>
 						Patients
 					</a>
 				</li>
 
 				<li class="nav-item">
-					<a class="nav-link disabled">
+<a class="nav-link px-3 disabled">
+
 						<i class="bi bi-credit-card"></i>
 						Paiements
 					</a>
 				</li>
 
 				<li class="nav-item">
-					<a class="nav-link{% if app.request.attributes.get('_route') starts with 'app_rdv' %} active{% endif %}" href="{{ path('app_rdv_index') }}">
+<a class="nav-link px-3{% if app.request.attributes.get('_route') starts with 'app_rdv' %} active{% endif %}" href="{{ path('app_rdv_index') }}">
+
 						<i class="bi bi-calendar-week"></i>
 						Rendez-vous
 					</a>
@@ -47,16 +56,14 @@
 
 			</ul>
 
-			{# -----------------------------------------------------
-						   BOUTON DONNER UN RDV (SEULEMENT SUR SHOW CLIENT)
-						------------------------------------------------------ #}
+{# Bouton Donner un RDV visible uniquement sur SHOW client #}
 
 			{% if app.request.attributes.get('_route') == 'app_fiche_client_show' %}
+<button class="btn btn-info btn-lg rounded-pill px-4 shadow-sm d-flex align-items-center gap-2">
 
-				<button class="btn btn-info btn-lg rounded-pill px-4 shadow-sm d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#modalAddRdv">
 					<i class="bi bi-calendar-plus fs-4"></i>
 					Donner un RDV
-				</button>
+</button>
 
 			{% endif %}
 
@@ -64,3 +71,10 @@
 	</div>
 </nav>
 
+<style>
+	.navbar-nav .nav-link {
+		font-size: 1.5rem;
+		padding-top: 10px !important;
+		padding-bottom: 10px !important;
+	}
+</style>

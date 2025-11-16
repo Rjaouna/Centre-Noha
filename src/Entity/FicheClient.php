@@ -30,20 +30,20 @@ class FicheClient
     #[Groups(['suivi_read'])]
     private ?string $ville = null;
 
-    #[ORM\Column(type: Types::SMALLINT, nullable: true)]
+    #[ORM\Column(type: Types::STRING, nullable: true)]
     #[Groups(['suivi_read'])]
-    private ?int $age = null;
+    private ?string $age = null;
 
-    #[ORM\Column(type: Types::SMALLINT, nullable: true)]
+    #[ORM\Column(type: Types::STRING, nullable: true)]
     #[Groups(['suivi_read'])]
-    private ?int $poids = null;
+    private ?string $poids = null;
 
     #[ORM\Column(length: 19)]
     private ?string $telephone = null;
 
-    #[ORM\Column(type: Types::SMALLINT, nullable: true)]
+    #[ORM\Column(type: Types::STRING, nullable: true)]
     #[Groups(['suivi_read'])]
-    private ?int $dureeMaladie = null;
+    private ?string $dureeMaladie = null;
 
     #[ORM\Column(length: 50)]
     #[Groups(['suivi_read'])]
@@ -193,34 +193,34 @@ class FicheClient
     }
 
     // INTEGERS
-    public function getAge(): ?int
+    public function getAge(): ?string
     {
         return $this->age;
     }
 
-    public function setAge(?int $age): self
+    public function setAge(?string $age): self
     {
         $this->age = $age;
         return $this;
     }
 
-    public function getPoids(): ?int
+    public function getPoids(): ?string
     {
         return $this->poids;
     }
 
-    public function setPoids(?int $poids): self
+    public function setPoids(?string $poids): self
     {
         $this->poids = $poids;
         return $this;
     }
 
-    public function getDureeMaladie(): ?int
+    public function getDureeMaladie(): ?string
     {
         return $this->dureeMaladie;
     }
 
-    public function setDureeMaladie(?int $dureeMaladie): self
+    public function setDureeMaladie(?string $dureeMaladie): self
     {
         $this->dureeMaladie = $dureeMaladie;
         return $this;

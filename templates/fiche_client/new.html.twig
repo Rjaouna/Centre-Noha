@@ -3,35 +3,19 @@
 </div>
 
  <script>
-
-
 document.addEventListener("DOMContentLoaded", () => {
- // ⬅️ Le bouton écoute déjà le clic AVANT le submit
+
     buttonSoundClick("buttonSave", "disabled");
+
     const form = document.getElementById("ficheForm");
-const pop = document.getElementById("popupSuccess");
-
-
-
-
-
-
-const modal = new bootstrap.Modal(document.getElementById('modalAddClient'));
-
-
-
-
+    const pop  = document.getElementById("popupSuccess");
+    const modal = new bootstrap.Modal(document.getElementById('modalAddClient'));
 
     form.addEventListener("submit", async function (e) {
         e.preventDefault();
 
+        const formData = new FormData(form);
 
-
-const formData = new FormData(form);
-
-		
-
-        // Nettoyage des clés
         let data = {};
         formData.forEach((value, key) => {
             const cleanKey = key.replace('fiche_client[', '').replace(']', '');
@@ -51,103 +35,65 @@ const formData = new FormData(form);
             const text = await response.text();
 
             if (!response.ok) {
-moveElement("modalAddClient")
-
-
-showFlashError("Erreur lors de l’enregistrement !");
-
-
-				buttonSoundError('buttonSave');
-
-
-                return;
-            }
-
-            // 🔥 Tentative de JSON.parse()
-            let result;
-            try {
-                result = JSON.parse(text);
-            } catch {
-
-showFlashError("Erreur lors de l’enregistrement !");
-
-
-moveElement("modalAddClient")
-
-showFlashError("Erreur lors de l’enregistrement !");
-
-
+                moveElement("modalAddClient");
+                showFlashError("Erreur lors de l’enregistrement !");
                 buttonSoundError('buttonSave');
                 return;
             }
 
-            // 🔔 Succès
+            let result;
+            try {
+                result = JSON.parse(text);
+            } catch {
+                moveElement("modalAddClient");
+                showFlashError("Erreur lors de l’enregistrement !");
+                buttonSoundError('buttonSave');
+                return;
+            }
+
             buttonSoundSuccess('buttonSave');
-            
-    pop.style.display = "block";
-	pop.innerHTML = `
+
+            pop.style.display = "block";
+            pop.innerHTML = `
 <div class="d-flex align-items-start">
 	<i class="bi bi-check-circle-fill fs-1 text-white bg-success p-2 rounded-circle me-3"></i>
 
 	<div>
 		<h5 class="fw-bold mb-1">Patient ajouté avec succès ! 🎉</h5>
-
-		<p class="mb-1">
-			Le nouveau patient a été bien enregistré dans le système.
-		</p>
+		<p class="mb-1">Le nouveau patient a été bien enregistré dans le système.</p>
 
 		<ul class="mb-1 ps-3" style="font-size: 0.9rem;">
-			<li>
-				<strong>Nom :</strong>
-				${result.nom}</li>
-			<li>
-				<strong>Ville :</strong>
-${result.ville}</li>
-
-			<li>
-				<strong>Téléphone :</strong>
-${result.telephone}</li>
-
+			<li><strong>Nom :</strong> ${result.nom}</li>
+			<li><strong>Ville :</strong> ${result.ville}</li>
+			<li><strong>Téléphone :</strong> ${result.telephone}</li>
 		</ul>
 
-		<small class="text-muted">Merci pour votre ajout ✔️</small>
+		<a href="/fiche/client/${result.id}" class="btn btn-secondary btn-sm rounded-pill px-3 py-1 shadow-sm">
+			<i class="bi bi-eye"></i> Voir la fiche
+		</a>
+
+		<br>
+		<small class="text-muted d-block mt-2">Merci pour votre ajout ✔️</small>
 	</div>
 
 	<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-	`
-
-   
-
-
+</div>`;
 
             form.reset();
-modal.hide();
-moveElement("blocListClient")
-
-
-
-
-
-
-
+            modal.hide();
+            moveElement("blocListClient");
 
         } catch (error) {
             console.error("Erreur JS :", error);
-
-
-buttonSoundError('buttonSave');
-moveElement("modalAddClient")
-
-
-
-showFlashError("Erreur lors de l’enregistrement !");
-
-
-
-
+            buttonSoundError('buttonSave');
+            moveElement("modalAddClient");
+            showFlashError("Erreur lors de l’enregistrement !");
         }
     });
-});
 
+    // Activation du shake loop sur téléphone
+    enableShakeLoop("fiche_client_telephone");
+
+});
 </script>
 

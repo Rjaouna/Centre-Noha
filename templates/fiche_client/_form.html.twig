@@ -31,10 +31,22 @@
 					{{ form_label(form.poids) }}
 				</div>
 
-				<div class="col-md-4 form-floating">
-					{{ form_widget(form.telephone, { attr: { class: 'form-control', placeholder: 'Téléphone' } }) }}
-					{{ form_label(form.telephone) }}
-				</div>
+<div class="col-md-4">
+	<div class="input-group">
+		<span class="input-group-text">+212</span>
+
+		<div class="form-floating flex-grow-1">
+			{{ form_widget(form.telephone, {
+                attr: { class: 'form-control', placeholder: 'Téléphone' }
+            }) }}
+			{{ form_label(form.telephone) }}
+		</div>
+
+</div>
+
+{{ form_errors(form.telephone) }}</div>{{ form_errors(form.telephone) }}
+
+
 			</div>
 		</div>
 
@@ -93,7 +105,9 @@
 
 
 		<div class="text-end mt-4">
-<button type="submit" class="btn btn-success btn-lg" id="buttonSave">
+<button type="submit" class="btn btn-success rounded-pill px-4 mt-3 btn-lg" id="buttonSave">
+
+
 
 
 				<i class="bi bi-check-circle"></i>

@@ -6,6 +6,8 @@
 
 {# 🟦 MODAL AJOUT / ÉDITION #}
 <div class="modal fade" id="modalAddMaladiesChroniques" tabindex="-1" aria-hidden="true">
+
+
 	<div class="modal-dialog modal-lg">
 		<div class="modal-content">
 
@@ -130,6 +132,7 @@ document.getElementById("btnEditMaladies")?.addEventListener("click", async () =
 	const response = await fetch("{{ path('api_maladies_show', {idClient: fiche_client.id}) }}");
 	const data = await response.json();
 
+
 	if (!data.exists || !data.data) return;
 
 	const values = data.data;
@@ -154,6 +157,9 @@ document.getElementById("btnEditMaladies")?.addEventListener("click", async () =
 document.getElementById("btnSaveMaladies").addEventListener("click", async () => {
 	const form = document.getElementById("maladiesForm");
 	const data = Object.fromEntries(new FormData(form));
+const pop  = document.getElementById("popupSuccess");
+
+
 
 	const url = "{{ fiche_client.maladiesChroniques
 		? path('api_maladies_edit', {id: fiche_client.id})
@@ -169,8 +175,24 @@ document.getElementById("btnSaveMaladies").addEventListener("click", async () =>
 	const result = await response.json();
 
 	if (result.success) {
-		showFlashMessage("Maladies chroniques enregistrées", "success");
-		location.reload();
+		pop.style.display = "block";
+buttonSoundSuccess('btnSaveMaladies');
+
+
+pop.innerHTML = `
+<div class="d-flex align-items-start">
+	<i class="bi bi-check-circle-fill fs-1 text-white bg-success p-2 rounded-circle me-3"></i>
+
+	<div>
+		<h5 class="fw-bold mb-1">Mise à jour avec succès ! 🎉</h5>
+		<p class="mb-1">Le nouveau patient a été bien mis à jour.</p>
+		<br>
+		<small class="text-muted d-block mt-2">Merci pour votre ajout ✔️</small>
+	</div>
+
+	<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>`;
+
 	} else {
 		alert("Erreur : " + (result.message ?? "Erreur serveur"));
 	}
