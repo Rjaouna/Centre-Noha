@@ -1,54 +1,45 @@
 <nav class="navbar navbar-expand-xl navbar-dark bg-primary shadow-sm py-3">
-
-
 	<div
-class="container-fluid">
-
+		class="container-fluid">
 
 		<!-- Logo -->
-<a class="navbar-brand fw-bold fs-3 me-4" href="{{ path('app_home') }}">
-
+		<a class="navbar-brand fw-bold fs-3 me-4" href="{{ path('app_home') }}" id="btnNavLogo">
 			🏥 Centre Noha
 		</a>
 
 		<!-- Burger -->
-		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" id="btnNavBurger">
 			<span class="navbar-toggler-icon"></span>
 		</button>
 
 		<!-- Menu -->
 		<div class="collapse navbar-collapse" id="mainNavbar">
 
-<ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-2">
-
+			<ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-2">
 
 				<li class="nav-item">
-<a class="nav-link px-3{% if app.request.attributes.get('_route') == 'app_home' %} active{% endif %}" href="{{ path('app_home') }}">
-
+					<a class="nav-link px-3{% if app.request.attributes.get('_route') == 'app_home' %} active{% endif %}" href="{{ path('app_home') }}" id="btnNavHome">
 						<i class="bi bi-house-door"></i>
 						Accueil
 					</a>
 				</li>
 
 				<li class="nav-item">
-<a class="nav-link px-3{% if app.request.attributes.get('_route') starts with 'app_fiche_client' %} active{% endif %}" href="{{ path('app_fiche_client_index') }}">
-
+					<a class="nav-link px-3{% if app.request.attributes.get('_route') starts with 'app_fiche_client' %} active{% endif %}" href="{{ path('app_fiche_client_index') }}" id="btnNavClients">
 						<i class="bi bi-people"></i>
 						Patients
 					</a>
 				</li>
 
 				<li class="nav-item">
-<a class="nav-link px-3 disabled">
-
+					<a class="nav-link px-3 disabled" id="btnNavPaiements">
 						<i class="bi bi-credit-card"></i>
 						Paiements
 					</a>
 				</li>
 
 				<li class="nav-item">
-<a class="nav-link px-3{% if app.request.attributes.get('_route') starts with 'app_rdv' %} active{% endif %}" href="{{ path('app_rdv_index') }}">
-
+					<a class="nav-link px-3{% if app.request.attributes.get('_route') starts with 'app_rdv' %} active{% endif %}" href="{{ path('app_rdv_index') }}" id="btnNavRdv">
 						<i class="bi bi-calendar-week"></i>
 						Rendez-vous
 					</a>
@@ -56,20 +47,19 @@ class="container-fluid">
 
 			</ul>
 
-{# Bouton Donner un RDV visible uniquement sur SHOW client #}
-
+			{# Bouton Donner un RDV visible uniquement sur SHOW client #}
 			{% if app.request.attributes.get('_route') == 'app_fiche_client_show' %}
-<button class="btn btn-info btn-lg rounded-pill px-4 shadow-sm d-flex align-items-center gap-2">
-
+				<button class="btn btn-info btn-lg rounded-pill px-4 shadow-sm d-flex align-items-center gap-2" id="btnNavAddRdv">
 					<i class="bi bi-calendar-plus fs-4"></i>
 					Donner un RDV
-</button>
-
+				</button>
 			{% endif %}
 
 		</div>
 	</div>
 </nav>
+
+
 
 <style>
 	.navbar-nav .nav-link {
