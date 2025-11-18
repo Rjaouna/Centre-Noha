@@ -6,13 +6,7 @@
 {# -------------------------------------------- #}
 {# CSS DATATABLES                               #}
 {# -------------------------------------------- #}
-	{% block stylesheets %}
-	{{ parent() }}
-
-	<!-- DataTables CSS -->
-	<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css"> <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.4.1/css/responsive.bootstrap5.min.css">
-{% endblock %}
-
+	
 
 {% block body %}
 
@@ -128,14 +122,8 @@
 	{% block javascripts %}
 {{ parent() }}
 
-	<!-- jQuery obligatoire AVANT DataTables -->
-	 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
-	<!-- DataTables JS -->
-	 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-	 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-	 <script src="https://cdn.datatables.net/responsive/2.4.1/js/dataTables.responsive.min.js"></script>
-	 <script src="https://cdn.datatables.net/responsive/2.4.1/js/responsive.bootstrap5.min.js"></script> <script>
+	 <script>
 		    document.addEventListener("DOMContentLoaded", () => {
 		
 		        // Vérification console
@@ -144,7 +132,7 @@
 		
 		        // Activation DataTables
 		        $('#patientsTable').DataTable({
-		            pageLength: 8,
+		            pageLength: 10,
 		            language: { url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/fr-FR.json" },
 		            order: [[0, "desc"]],
 		            responsive: true
@@ -214,6 +202,106 @@
 		        enableShakeLoop("fiche_client_telephone");
 		    });
 		    </script>
+ <script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    // Son au clic
+    buttonSoundClick("buttonSave", "disabled");
+
+    const form  = document.getElementById("ficheForm");
+    const pop   = document.getElementById("popupSuccess");
+    const modal = new bootstrap.Modal(document.getElementById('modalAddClient'));
+
+    form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(form);
+        let data = {};
+
+        formData.forEach((value, key) => {
+            const cleanKey = key.replace('fiche_client[', '').replace(']', '');
+            data[cleanKey] = value;
+        });
+
+        try {
+            const response = await fetch("{{ path('app_fiche_client_new') }}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-Requested-With": "XMLHttpRequest"
+                },
+                body: JSON.stringify(data)
+            });
+
+            const text = await response.text();
+
+            if (!response.ok) {
+                moveElement("modalAddClient");
+                showFlashError("Erreur lors de l’enregistrement !");
+                buttonSoundError('buttonSave');
+                return;
+            }
+
+            // Essayer JSON
+            let result;
+            try {
+                result = JSON.parse(text);
+            } catch {
+                moveElement("modalAddClient");
+                showFlashError("Erreur lors de l’enregistrement !");
+                buttonSoundError('buttonSave');
+                return;
+            }
+
+            // Succès
+            buttonSoundSuccess('buttonSave');
+             // Reset + fermeture modal + animation carte
+            form.reset();
+            pop.style.display = "block";               // ← remplace display:none
+
+modal.hide();
+moveElement("blocListClient")
+
+
+
+
+            // 🔥 AFFICHER LE POPUP IMMÉDIATEMENT ICI
+           
+            pop.innerHTML = `
+<div class="d-flex align-items-start">
+	<i class="bi bi-check-circle-fill fs-1 text-white bg-success p-2 rounded-circle me-3"></i>
+
+	<div>
+		<h5 class="fw-bold mb-1">Patient ajouté avec succès ! 🎉</h5>
+
+		<p class="mb-1">
+			Le nouveau patient a été bien enregistré dans le système.
+		</p>
+
+		<ul class="mb-1 ps-3" style="font-size: 0.9rem;">
+			<li><strong>Nom :</strong> ${result.nom}</li>
+			<li><strong>Ville :</strong> ${result.ville}</li>
+			<li><strong>Téléphone :</strong> ${result.telephone}</li>
+		</ul>
+
+		<small class="text-muted">Merci pour votre ajout ✔️</small>
+	</div>
+
+	<button type="button" class="btn-close" onclick="document.getElementById('popupSuccess').style.display='none';"></button>
+</div>
+            `;
+
+           
+
+        } catch (error) {
+            console.error("Erreur JS :", error);
+            buttonSoundError('buttonSave');
+            moveElement("modalAddClient");
+            showFlashError("Erreur lors de l’enregistrement !");
+        }
+    });
+});
+</script>
 
 {% endblock %}
 

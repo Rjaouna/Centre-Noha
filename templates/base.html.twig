@@ -9,18 +9,29 @@
 			{% endblock %}
 		</title>
 
-		<link rel="stylesheet" href="{{ asset('assets/css/bootstrap.css') }}">
-		<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+		{# Bootstrap CSS #}
+		<link
+		rel="stylesheet" href="{{ asset('assets/css/bootstrap.css') }}">
 
+		{# DataTables CSS — OK car CSS seulement #}
+		<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+		<link
+		rel="stylesheet" href="https://cdn.datatables.net/responsive/2.4.1/css/responsive.bootstrap5.min.css">
+
+		{# Icons #}
+		<link
+		rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+		{# CSS Webpack Encore #}
 		{% block stylesheets %}
 			{{ encore_entry_link_tags('app') }}
 		{% endblock %}
 	</head>
 
-	{# ❗️BODY OUVERT MAIS NON FERMÉ — ERREUR CORRIGÉE ICI ❗️#}
-	<body class="{% if app.request.attributes.get('_route') in ['app_home', 'app_login'] %}home-bg{% endif %}">
+	<body
+		data-turbo="false" class="{% if app.request.attributes.get('_route') in ['app_home', 'app_login'] %}home-bg{% endif %}">
 
+		{# NAVBAR #}
 		{{ include('partials/_navbar/_navbar.html.twig') }}
 
 		{# Flash Symfony #}
@@ -28,42 +39,37 @@
 			{% for message in messages %}
 				<div class="alert alert-{{ label }} alert-dismissible fade show shadow-sm mt-3 mx-3">
 					<strong>{{ message }}</strong>
-					<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+					<button class="btn-close" data-bs-dismiss="alert"></button>
 				</div>
 			{% endfor %}
 		{% endfor %}
 
 		<div id="flashMessageContainer" class="position-fixed top-0 start-50 translate-middle-x mt-3" style="z-index:9999;width:400px;"></div>
-{{ include('_partials/_popup.html.twig') }}
 
-		{# Contenu des pages #}
+		{{ include('_partials/_popup.html.twig') }}
+
+		{# Contenu principal #}
 		{% block body %}{% endblock %}
 
-		
+		{# ----------------------------------------------------------- #}
+		{# ⚠️ IMPORTANT : on NE CHARGE PAS jQuery ici. #}
+		{# jQuery est déjà géré par Webpack Encore dans app.js #}
+		{# ----------------------------------------------------------- #}
 
-		{# JS externes #}
-		 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-		 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-		 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+		{# Bootstrap JS #}
 		 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
+		{# JavaScript Webpack Encore (inclut jQuery + DataTables) #}
 			{% block javascripts %}
 		{{ encore_entry_script_tags('app') }}
 	{% endblock %}
 
-		{# 🔥 Ton script showFlashError conservé tel quel #}
+		{# Popup d’erreur — ton code conservé #}
 		 <script>
 		            function showFlashError(message) {
-		
 		                const alert = document.createElement("div");
-		
 		                alert.className = "alert alert-danger shadow-lg border-0 rounded-4 fade show";
-		                alert.style.width = "360px";
-		                alert.style.position = "fixed";
-		                alert.style.bottom = "20px";
-		                alert.style.right = "20px";
-		                alert.style.zIndex = "9999";
-		
+		                alert.style = "width:360px;position:fixed;bottom:20px;right:20px;z-index:9999;";
 		                alert.innerHTML = `
 		                    <div class="d-flex align-items-start">
 		                        <i class="bi bi-exclamation-triangle-fill fs-1 text-white bg-danger p-2 rounded-circle me-3"></i>
@@ -73,18 +79,11 @@
 		                            <small class="text-muted">Merci de réessayer ou de contacter le support.</small>
 		                        </div>
 		                        <button type="button" class="btn-close"></button>
-		                    </div>
-		                `;
-		
-		                alert.querySelector(".btn-close").addEventListener("click", () => alert.remove());
-		
+		                    </div>`;
 		                document.body.appendChild(alert);
 		
-		                setTimeout(() => {
-		                    alert.classList.remove("show");
-		                    alert.classList.add("fade");
-		                    setTimeout(() => alert.remove(), 800);
-		                }, 5000);
+		                alert.querySelector(".btn-close").onclick = () => alert.remove();
+		                setTimeout(() => alert.remove(), 5000);
 		            }
 		        </script>
 

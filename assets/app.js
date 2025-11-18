@@ -1,25 +1,59 @@
-/*
- * Welcome to your app's main JavaScript file!
- *
- * This file will be included onto the page via the importmap() Twig function,
- * which should already be in your base.html.twig.
+/**
+ * Import jQuery
+ */
+import $ from "jquery";
+window.$ = $;
+window.jQuery = $;
+
+/**
+ * Import DataTables (compatible BS5 + Responsive)
+ * Version validée pour Webpack Encore / AssetMapper
+ */
+import DataTable from "datatables.net-bs5";
+import "datatables.net-responsive-bs5";
+
+// Initialise DataTables pour jQuery
+DataTable($);
+
+/**
+ * Debug pour vérifier que tout est OK
+ */
+console.log("jQuery loaded:", typeof $);
+console.log("DataTables loaded:", typeof $().DataTable);
+
+/**
+ * Import de ton CSS principal
  */
 import "./styles/app.css";
-import { buttonSoundError } from "./js/AudioPlayer.js";
-import { buttonSoundSuccess } from "./js/AudioPlayer.js";
-import { buttonSoundClick } from "./js/AudioPlayer.js";
+
+/**
+ * Import de tes scripts audio
+ */
+import {
+    buttonSoundError,
+    buttonSoundSuccess,
+    buttonSoundClick,
+    sleep,
+} from "./js/AudioPlayer.js";
+
+/**
+ * Import de tes scripts animations
+ */
 import { moveElement, enableShakeLoop } from "./js/MoveElement.js";
-import { sleep } from "./js/AudioPlayer.js";
 
-// 👉 Pour AssetMapper : expose correctement la fonction dans globalThis
-globalThis.enableShakeLoop = enableShakeLoop;
-globalThis.buttonSoundError = buttonSoundError;
-globalThis.buttonSoundSuccess = buttonSoundSuccess;
-globalThis.buttonSoundClick = buttonSoundClick;
-globalThis.moveElement = moveElement;
-
+/**
+ * Expose les fonctions globales (nécessaire pour utilisation dans Twig)
+ */
+window.buttonSoundError = buttonSoundError;
+window.buttonSoundSuccess = buttonSoundSuccess;
+window.buttonSoundClick = buttonSoundClick;
+window.enableShakeLoop = enableShakeLoop;
+window.moveElement = moveElement;
 window.sleep = sleep;
 
+/**
+ * Activation auto des sons sur les éléments cliquables
+ */
 document.addEventListener("DOMContentLoaded", () => {
     document
         .querySelectorAll(
@@ -29,5 +63,3 @@ document.addEventListener("DOMContentLoaded", () => {
             buttonSoundClick(el.id);
         });
 });
-
-
