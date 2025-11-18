@@ -7,16 +7,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
     buttonSoundClick("buttonSave", "disabled");
 
-    const form = document.getElementById("ficheForm");
-    const pop  = document.getElementById("popupSuccess");
-    const modal = new bootstrap.Modal(document.getElementById('modalAddClient'));
+    const form    = document.getElementById("ficheForm");
+    const pop     = document.getElementById("popupSuccess");
+    const modalEl = document.getElementById("modalAddClient");
+    const modal   = modalEl ? new bootstrap.Modal(modalEl) : null;
 
     form.addEventListener("submit", async function (e) {
         e.preventDefault();
 
         const formData = new FormData(form);
-
         let data = {};
+
         formData.forEach((value, key) => {
             const cleanKey = key.replace('fiche_client[', '').replace(']', '');
             data[cleanKey] = value;
@@ -25,8 +26,8 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
             const response = await fetch("{{ path('app_fiche_client_new') }}", {
                 method: "POST",
-headers: {"Content-Type": "application/json",
-
+                headers: {
+                    "Content-Type": "application/json",
                     "X-Requested-With": "XMLHttpRequest"
                 },
                 body: JSON.stringify(data)
@@ -35,7 +36,7 @@ headers: {"Content-Type": "application/json",
             const text = await response.text();
 
             if (!response.ok) {
-                moveElement("modalAddClient");
+                if (modalEl) moveElement("modalAddClient");
                 showFlashError("Erreur lors de l’enregistrement !");
                 buttonSoundError('buttonSave');
                 return;
@@ -45,7 +46,7 @@ headers: {"Content-Type": "application/json",
             try {
                 result = JSON.parse(text);
             } catch {
-                moveElement("modalAddClient");
+                if (modalEl) moveElement("modalAddClient");
                 showFlashError("Erreur lors de l’enregistrement !");
                 buttonSoundError('buttonSave');
                 return;
@@ -53,47 +54,63 @@ headers: {"Content-Type": "application/json",
 
             buttonSoundSuccess('buttonSave');
 
-            pop.style.display = "block";
-            pop.innerHTML = `
+            // 🟢 Afficher le popup APRÈS fermeture de la modal
+            modalEl.addEventListener("hidden.bs.modal", () => {
+
+                if (pop) {
+                    pop.style.display = "block"; // ← remplace d-none par block
+
+                    pop.innerHTML = `
 <div class="d-flex align-items-start">
-	<i class="bi bi-check-circle-fill fs-1 text-white bg-success p-2 rounded-circle me-3"></i>
+    <i class="bi bi-check-circle-fill fs-1 text-white bg-success p-2 rounded-circle me-3"></i>
 
-	<div>
-		<h5 class="fw-bold mb-1">Patient ajouté avec succès ! 🎉</h5>
-		<p class="mb-1">Le nouveau patient a été bien enregistré dans le système.</p>
+    <div>
+        <h5 class="fw-bold mb-1">Patient ajouté avec succès ! 🎉</h5>
+        <p class="mb-1">Le nouveau patient a bien été enregistré.</p>
 
-		<ul class="mb-1 ps-3" style="font-size: 0.9rem;">
-			<li><strong>Nom :</strong> ${result.nom}</li>
-			<li><strong>Ville :</strong> ${result.ville}</li>
-			<li><strong>Téléphone :</strong> ${result.telephone}</li>
-		</ul>
+        <ul class="mb-1 ps-3" style="font-size: 0.9rem;">
+            <li><strong>Nom :</strong> ${result.nom}</li>
+            <li><strong>Ville :</strong> ${result.ville}</li>
+            <li><strong>Téléphone :</strong> ${result.telephone}</li>
+        </ul>
 
-		<a href="/fiche/client/${result.id}" class="btn btn-secondary btn-sm rounded-pill px-3 py-1 shadow-sm">
-			<i class="bi bi-eye"></i> Voir la fiche
-		</a>
+        <a href="/fiche/client/${result.id}" class="btn btn-secondary btn-sm rounded-pill px-3 py-1 shadow-sm">
+            <i class="bi bi-eye"></i> Voir la fiche
+        </a>
 
-		<br>
-		<small class="text-muted d-block mt-2">Merci pour votre ajout ✔️</small>
-	</div>
+        <br>
+        <small class="text-muted d-block mt-2">Merci ✔️</small>
+    </div>
 
-	<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    <button type="button" class="btn-close ms-2" onclick="document.getElementById('popupSuccess').style.display='none';"></button>
 </div>`;
+                }
 
+                // animation sur le bloc clients
+                if (document.getElementById("blocListClient")) {
+                    moveElement("blocListClient");
+                }
+
+            }, { once: true });
+
+            // reset + fermer modal
             form.reset();
-            modal.hide();
-            moveElement("blocListClient");
+            if (modal) modal.hide();
 
         } catch (error) {
             console.error("Erreur JS :", error);
             buttonSoundError('buttonSave');
-            moveElement("modalAddClient");
+
+            if (modalEl) moveElement("modalAddClient");
+
             showFlashError("Erreur lors de l’enregistrement !");
         }
     });
 
-    // Activation du shake loop sur téléphone
     enableShakeLoop("fiche_client_telephone");
 
 });
 </script>
+
+
 
