@@ -6,20 +6,40 @@ window.$ = $;
 window.jQuery = $;
 
 /**
- * Import DataTables (compatible BS5 + Responsive)
- * Version validée pour Webpack Encore / AssetMapper
+ * Import DataTables (Bootstrap 5 + Responsive)
+ * Version OFFICIELLE pour Webpack Encore (ES Modules)
  */
 import DataTable from "datatables.net-bs5";
-import "datatables.net-responsive-bs5";
+import DataTableResponsive from "datatables.net-responsive-bs5";
 
-// Initialise DataTables pour jQuery
-DataTable($);
+// Styles DataTables (optionnel, car déjà en CDN dans Twig)
+import "datatables.net-bs5/css/dataTables.bootstrap5.css";
+import "datatables.net-responsive-bs5/css/responsive.bootstrap5.css";
 
 /**
- * Debug pour vérifier que tout est OK
+ * Initialisation DataTables
+ * (avec ES Modules, DOIT être fait ainsi — pas avec $(...).DataTable)
+ */
+document.addEventListener("DOMContentLoaded", () => {
+    const table = document.querySelector("#patientsTable");
+
+    if (table) {
+        new DataTable(table, {
+            responsive: true,
+            pageLength: 10,
+            order: [[0, "desc"]],
+            language: {
+                url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/fr-FR.json",
+            },
+        });
+    }
+});
+
+/**
+ * Debug
  */
 console.log("jQuery loaded:", typeof $);
-console.log("DataTables loaded:", typeof $().DataTable);
+console.log("DataTables loaded:", typeof DataTable);
 
 /**
  * Import de ton CSS principal
@@ -27,7 +47,7 @@ console.log("DataTables loaded:", typeof $().DataTable);
 import "./styles/app.css";
 
 /**
- * Import de tes scripts audio
+ * Import de tes scripts audio et animation
  */
 import {
     buttonSoundError,
@@ -36,30 +56,23 @@ import {
     sleep,
 } from "./js/AudioPlayer.js";
 
-/**
- * Import de tes scripts animations
- */
 import { moveElement, enableShakeLoop } from "./js/MoveElement.js";
 
 /**
- * Expose les fonctions globales (nécessaire pour utilisation dans Twig)
+ * Expose les fonctions globalement
  */
 window.buttonSoundError = buttonSoundError;
 window.buttonSoundSuccess = buttonSoundSuccess;
 window.buttonSoundClick = buttonSoundClick;
-window.enableShakeLoop = enableShakeLoop;
-window.moveElement = moveElement;
 window.sleep = sleep;
+window.moveElement = moveElement;
+window.enableShakeLoop = enableShakeLoop;
 
 /**
- * Activation auto des sons sur les éléments cliquables
+ * Activation automatique des sons sur tous les IDs cliquables
  */
 document.addEventListener("DOMContentLoaded", () => {
-    document
-        .querySelectorAll(
-            "button[id], a[id], [role='button'][id], .clickable-alert[id]"
-        )
-        .forEach((el) => {
-            buttonSoundClick(el.id);
-        });
+    document.querySelectorAll("[id]").forEach((el) => {
+        buttonSoundClick(el.id);
+    });
 });

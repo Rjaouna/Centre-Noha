@@ -126,17 +126,7 @@
 	 <script>
 		    document.addEventListener("DOMContentLoaded", () => {
 		
-		        // Vérification console
-		        console.log("jQuery ?", typeof $);
-		        console.log("DataTables present ?", $.fn.DataTable);
-		
-		        // Activation DataTables
-		        $('#patientsTable').DataTable({
-		            pageLength: 10,
-		            language: { url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/fr-FR.json" },
-		            order: [[0, "desc"]],
-		            responsive: true
-		        });
+		       
 		
 		        // Boutons "Voir" avec son
 		        document.querySelectorAll(".detailsButton").forEach((btn, i) => {

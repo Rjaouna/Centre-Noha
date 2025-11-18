@@ -27,6 +27,11 @@ export function buttonSoundClick(id, disabled = "") {
     const tag = document.getElementById(id);
     if (!tag) return;
 
+    // ✅ On ne met le son que sur les éléments qui ont la classe "clic"
+    if (!tag.classList.contains("clic")) {
+        return;
+    }
+
     tag.addEventListener("click", async () => {
         // 🎵 Son du clic
         const clickSound = new Audio("/assets/media/light-switch-382712.mp3");
@@ -37,7 +42,7 @@ export function buttonSoundClick(id, disabled = "") {
 
         const icon = tag.querySelector("i");
 
-        // 🔒 Désactiver bouton
+        // 🔒 Désactiver bouton / lien
         tag.classList.add("disabled");
 
         // 🔄 Ajouter icône chargement
@@ -49,10 +54,11 @@ export function buttonSoundClick(id, disabled = "") {
         // ✔️ Retour à l'icone d'origine
         if (icon) icon.className = "bi bi-check-circle";
 
-        // 🔓 Réactiver bouton
+        // 🔓 Réactiver bouton / lien
         tag.classList.remove("disabled");
     });
 }
+
 
 // -------------------------------------------------------------
 // ❌ 2️⃣ Son erreur + loader rouge + réactivation
