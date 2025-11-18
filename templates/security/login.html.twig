@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Connexion
+{% endblock %}
+
+{% block body %}
+	<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+		<div class="card shadow-lg border-0 rounded-4 p-4" style="width: 420px;">
+
+			<h2 class="text-center text-primary fw-bold mb-4">
+				<i class="bi bi-person-circle"></i>
+				Connexion
+			</h2>
+
+			{% if error %}
+				<div class="alert alert-danger">
+					<i class="bi bi-exclamation-triangle"></i>
+					Identifiants incorrects
+				</div>
+			{% endif %}
+
+			<form method="post">
+				<div class="form-floating mb-3">
+					<input type="email" value="{{ last_username }}" name="_username" class="form-control" id="floatingEmail" placeholder="Email" required autofocus>
+					<label for="floatingEmail">Adresse e-mail</label>
+				</div>
+
+				<div class="form-floating mb-3">
+					<input type="password" name="_password" class="form-control" id="floatingPassword" placeholder="Mot de passe" required>
+					<label for="floatingPassword">Mot de passe</label>
+				</div>
+
+				<button class="btn btn-primary w-100 rounded-pill py-2">
+					<i class="bi bi-box-arrow-in-right"></i>
+					Se connecter
+				</button>
+			</form>
+
+		</div>
+	</div>
+{% endblock %}
+
