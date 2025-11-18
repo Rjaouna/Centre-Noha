@@ -4,6 +4,7 @@
 {% endblock %}
 
 {% block body %}
+
 	<div class="container-fluid mt-4">
 
 		{# -------------------------------------------- #}
@@ -19,7 +20,7 @@
 					</div>
 				</div>
 
-				<button id="addClient" class="btn btn-success btn-lg px-4 d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#modalAddClient">
+				<button id="addClient" class="btn btn-primary btn-lg rounded-pill px-4 shadow-sm d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#modalAddClient">
 					<i class="bi bi-person-plus fs-4 me-2"></i>
 					Nouveau patient
 				</button>
@@ -31,7 +32,7 @@
 		{# 🟦 TABLEAU MODERNE DES PATIENTS              #}
 		{# -------------------------------------------- #}
 
-			<table id="patientsTable" class="table table-striped table-hover align-middle rounded-4 overflow-hidden" style="width:100%"> <thead class="table-primary text-dark">
+			<table id="patientsTable" class="table table-striped table-hover align-middle rounded-4" style="width:100%"> <thead class="table-primary text-dark">
 				<tr>
 					<th>#</th>
 					<th>
@@ -83,7 +84,6 @@
 					</tr>
 				{% endfor %}
 			</tbody>
-
 		</table>
 
 		{# -------------------------------------------- #}
@@ -102,8 +102,6 @@
 
 					<div class="modal-body p-4">
 						{{ include('fiche_client/_form.html.twig') }}
-
-
 					</div>
 
 				</div>
@@ -114,37 +112,38 @@
 {% endblock %}
 
 
-{# -------------------------------------------- #}
-{# 🟡 JAVASCRIPTS                                 #}
-{# -------------------------------------------- #}
-	{% block javascripts %}
-{{ parent() }}
+{% block javascripts %}
+	{{ parent() }}
 
-	{# jQuery + DataTables #}
+	{# jQuery #}
 	 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-	 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-	 <script src="https://cdn.datatables.net/responsive/2.4.1/js/dataTables.responsive.min.js"></script> <script>
-		        document.addEventListener("DOMContentLoaded", () => {
-		
-		            // Activation DataTables
-		            $('#patientsTable').DataTable({
-		                pageLength: 10,
-		                language: { url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/fr-FR.json" },
-		                order: [[0, "desc"]],
-		                responsive: true
-		            });
-		
-		            
 
-						// Ajoute un ID unique à chaque bouton Voir
-						document.querySelectorAll(".detailsButton").forEach((btn, index) => {
-							btn.id = "detailsButton-" + index;    // --> detailsButton-0, detailsButton-1, etc.
-							buttonSoundClick(btn.id);
-						});
-					
-		
-		        });
-		    </script>
+	{# DataTables + Bootstrap 5 #}
+	<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css"> <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.4.1/css/responsive.bootstrap5.min.css">
+
+ <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+	 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+	 <script src="https://cdn.datatables.net/responsive/2.4.1/js/dataTables.responsive.min.js"></script>
+	 <script src="https://cdn.datatables.net/responsive/2.4.1/js/responsive.bootstrap5.min.js"></script>
+
+	 <script>
+	document.addEventListener("DOMContentLoaded", () => {
+	
+		// Activation DataTables Bootstrap 5
+		$('#patientsTable').DataTable({
+			pageLength: 8,
+			language: { url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/fr-FR.json" },
+			order: [[0, "desc"]],
+			responsive: true
+		});
+	
+		// Ajoute un ID unique à chaque bouton "Voir"
+		document.querySelectorAll(".detailsButton").forEach((btn, index) => {
+			btn.id = "detailsButton-" + index;
+			buttonSoundClick(btn.id);
+		});
+	});
+	</script>
  <script>
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -238,3 +237,6 @@ headers: {"Content-Type": "application/json",
 
 {% endblock %}
 
+
+
+ 
