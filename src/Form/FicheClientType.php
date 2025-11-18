@@ -160,6 +160,12 @@ class FicheClientType extends AbstractType
                 ],
                 'constraints' => [
                     new Assert\NotBlank(),
+                // Taille exacte : 10 chiffres
+                new Assert\Length([
+                    'min' => 10,
+                    'max' => 10,
+                    'exactMessage' => 'Le numéro doit contenir exactement 10 chiffres.',
+                ]),
                     new Assert\Regex([
                         'pattern' => '/^(06|07)[0-9]{8}$/',
                         'message' => 'Numéro marocain invalide.',

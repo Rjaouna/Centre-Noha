@@ -38,7 +38,7 @@ class FicheClient
     #[Groups(['suivi_read'])]
     private ?string $poids = null;
 
-    #[ORM\Column(length: 19)]
+    #[ORM\Column(length: 10)]
     private ?string $telephone = null;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]

@@ -192,6 +192,9 @@ headers: {"Content-Type": "application/json",
             }
 
             buttonSoundSuccess('buttonSave');
+			   setTimeout(() => {
+    window.location.reload();
+}, 2000);
 
             pop.style.display = "block";
             pop.innerHTML = `
