@@ -5,12 +5,12 @@
  <script>
 document.addEventListener("DOMContentLoaded", () => {
 
+    // Son au clic
     buttonSoundClick("buttonSave", "disabled");
 
-    const form    = document.getElementById("ficheForm");
-    const pop     = document.getElementById("popupSuccess");
-    const modalEl = document.getElementById("modalAddClient");
-    const modal   = modalEl ? new bootstrap.Modal(modalEl) : null;
+    const form  = document.getElementById("ficheForm");
+    const pop   = document.getElementById("popupSuccess");
+    const modal = new bootstrap.Modal(document.getElementById('modalAddClient'));
 
     form.addEventListener("submit", async function (e) {
         e.preventDefault();
@@ -36,81 +36,64 @@ document.addEventListener("DOMContentLoaded", () => {
             const text = await response.text();
 
             if (!response.ok) {
-                if (modalEl) moveElement("modalAddClient");
+                moveElement("modalAddClient");
                 showFlashError("Erreur lors de l’enregistrement !");
                 buttonSoundError('buttonSave');
                 return;
             }
 
+            // Essayer JSON
             let result;
             try {
                 result = JSON.parse(text);
             } catch {
-                if (modalEl) moveElement("modalAddClient");
+                moveElement("modalAddClient");
                 showFlashError("Erreur lors de l’enregistrement !");
                 buttonSoundError('buttonSave');
                 return;
             }
 
+            // Succès
             buttonSoundSuccess('buttonSave');
 
-            // 🟢 Afficher le popup APRÈS fermeture de la modal
-            modalEl.addEventListener("hidden.bs.modal", () => {
-
-                if (pop) {
-                    pop.style.display = "block"; // ← remplace d-none par block
-
-                    pop.innerHTML = `
+            // 🔥 AFFICHER LE POPUP IMMÉDIATEMENT ICI
+           
+            pop.innerHTML = `
 <div class="d-flex align-items-start">
-    <i class="bi bi-check-circle-fill fs-1 text-white bg-success p-2 rounded-circle me-3"></i>
+	<i class="bi bi-check-circle-fill fs-1 text-white bg-success p-2 rounded-circle me-3"></i>
 
-    <div>
-        <h5 class="fw-bold mb-1">Patient ajouté avec succès ! 🎉</h5>
-        <p class="mb-1">Le nouveau patient a bien été enregistré.</p>
+	<div>
+		<h5 class="fw-bold mb-1">Patient ajouté avec succès ! 🎉</h5>
 
-        <ul class="mb-1 ps-3" style="font-size: 0.9rem;">
-            <li><strong>Nom :</strong> ${result.nom}</li>
-            <li><strong>Ville :</strong> ${result.ville}</li>
-            <li><strong>Téléphone :</strong> ${result.telephone}</li>
-        </ul>
+		<p class="mb-1">
+			Le nouveau patient a été bien enregistré dans le système.
+		</p>
 
-        <a href="/fiche/client/${result.id}" class="btn btn-secondary btn-sm rounded-pill px-3 py-1 shadow-sm">
-            <i class="bi bi-eye"></i> Voir la fiche
-        </a>
+		<ul class="mb-1 ps-3" style="font-size: 0.9rem;">
+			<li><strong>Nom :</strong> ${result.nom}</li>
+			<li><strong>Ville :</strong> ${result.ville}</li>
+			<li><strong>Téléphone :</strong> ${result.telephone}</li>
+		</ul>
 
-        <br>
-        <small class="text-muted d-block mt-2">Merci ✔️</small>
-    </div>
+		<small class="text-muted">Merci pour votre ajout ✔️</small>
+	</div>
 
-    <button type="button" class="btn-close ms-2" onclick="document.getElementById('popupSuccess').style.display='none';"></button>
-</div>`;
-                }
+	<button type="button" class="btn-close" onclick="document.getElementById('popupSuccess').style.display='none';"></button>
+</div>
+            `;
 
-                // animation sur le bloc clients
-                if (document.getElementById("blocListClient")) {
-                    moveElement("blocListClient");
-                }
-
-            }, { once: true });
-
-            // reset + fermer modal
+            // Reset + fermeture modal + animation carte
             form.reset();
-            if (modal) modal.hide();
+            pop.style.display = "block";               // ← remplace display:none
+
 
         } catch (error) {
             console.error("Erreur JS :", error);
             buttonSoundError('buttonSave');
-
-            if (modalEl) moveElement("modalAddClient");
-
+            moveElement("modalAddClient");
             showFlashError("Erreur lors de l’enregistrement !");
         }
     });
-
-    enableShakeLoop("fiche_client_telephone");
-
 });
 </script>
-
-
 

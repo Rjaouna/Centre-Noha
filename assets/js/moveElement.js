@@ -1,15 +1,20 @@
 export function moveElement(tag) {
     const element = document.getElementById(tag);
+
+    // Sécurité : si l’élément n’existe pas, on quitte proprement
+    if (!element) return;
+
     element.classList.add("shake");
-    setInterval(() => {
+
+    // Retire l'effet après 2 secondes (SEULEMENT UNE FOIS)
+    setTimeout(() => {
         element.classList.remove("shake");
     }, 2000);
 }
 
-
 export function enableShakeLoop(inputId) {
     const input = document.getElementById(inputId);
-    console.log(input)
+    console.log(input);
     let shakeInterval = null;
 
     if (!input) return; // sécurité
@@ -33,4 +38,3 @@ export function enableShakeLoop(inputId) {
         }
     });
 }
-
