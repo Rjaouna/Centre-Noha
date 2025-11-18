@@ -34,11 +34,12 @@
 		{% endfor %}
 
 		<div id="flashMessageContainer" class="position-fixed top-0 start-50 translate-middle-x mt-3" style="z-index:9999;width:400px;"></div>
+{{ include('_partials/_popup.html.twig') }}
 
 		{# Contenu des pages #}
 		{% block body %}{% endblock %}
 
-		{{ include('_partials/_popup.html.twig') }}
+		
 
 		{# JS externes #}
 		 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>

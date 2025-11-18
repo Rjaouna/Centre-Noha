@@ -55,9 +55,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Succès
             buttonSoundSuccess('buttonSave');
-            setTimeout(() => {
-    window.location.reload();
-}, 2000);
+             // Reset + fermeture modal + animation carte
+            form.reset();
+            pop.style.display = "block";               // ← remplace display:none
+
+modal.hide();
+moveElement("blocListClient")
+
+
+
 
             // 🔥 AFFICHER LE POPUP IMMÉDIATEMENT ICI
            
@@ -85,10 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </div>
             `;
 
-            // Reset + fermeture modal + animation carte
-            form.reset();
-            pop.style.display = "block";               // ← remplace display:none
-
+           
 
         } catch (error) {
             console.error("Erreur JS :", error);

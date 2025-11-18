@@ -10,10 +10,7 @@ body {
 /* Animation vibration côté ultra rapide */
 .shake {
     animation: shake-fast 3s linear both;
-    box-shadow:
-        0 0 8px rgba(0, 200, 83, 0.6),
-        0 0 16px rgba(0, 200, 83, 0.4),
-        0 0 24px rgba(0, 200, 83, 0.2);
+    
     border-radius: 0.75rem; /* optionnel, pour des jolis coins */
 }
 
