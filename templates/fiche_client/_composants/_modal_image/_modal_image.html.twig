@@ -8,57 +8,110 @@
 			</div>
 
 			<div class="modal-body">
-<form id="imageUploadForm" enctype="multipart/form-data">
-	<input type="file" name="image[imageFile]" class="form-control mb-3" required>
 
-	<button type="submit" class="btn btn-success w-100 rounded-pill">
-		<i class="bi bi-upload"></i>
-		Upload
-	</button>
-</form>
+				<form id="imageUploadForm" enctype="multipart/form-data">
+					<input type="file" name="image[imageFile]" class="form-control mb-3" accept="image/*" required>
 
-<div id="uploadResult" class="mt-3"></div>
-
-
+					<button type="submit" class="btn btn-success w-100 rounded-pill">
+						<i class="bi bi-upload"></i>
+						Upload
+					</button>
+				</form>
 
 				<div id="uploadResult" class="mt-3"></div>
+
 			</div>
 
 		</div>
 	</div>
 </div>
 
+
  <script>
-document.getElementById('imageUploadForm').addEventListener('submit', function(e) {
+document.getElementById('imageUploadForm').addEventListener('submit', async function(e) {
     e.preventDefault();
 
-    let formData = new FormData(this);
+    const form    = this;
+    const formData = new FormData(form);
+    const resultBox = document.getElementById("uploadResult");
+    const pop = document.getElementById("popupSuccess");
 
-    fetch("{{ path('app_image_upload', { id: fiche_client.id }) }}", {
+    resultBox.innerHTML = "";
+
+    const url = "{{ path('app_image_upload', { id: fiche_client.id }) }}";
+
+    let response = await fetch(url, {
         method: "POST",
         body: formData
-    })
-    .then(async res => {
-        let data;
-
-        try {
-            data = await res.json(); // On tente JSON
-        } catch (err) {
-            document.getElementById("uploadResult").innerHTML =
-                `<div class="alert alert-danger rounded-4">Erreur interne</div>`;
-            return;
-        }
-
-        if (data.status === "success") {
-            document.getElementById("uploadResult").innerHTML =
-                `<div class="alert alert-success rounded-4">Image ajoutée !</div>`;
-        } else {
-            document.getElementById("uploadResult").innerHTML =
-                `<div class="alert alert-danger rounded-4">${data.message}</div>`;
-        }
     });
+
+    let data;
+    try {
+        data = await response.json();
+    } catch (error) {
+        resultBox.innerHTML = `
+            <div class="alert alert-danger rounded-4">Erreur interne.</div>
+        `;
+        return;
+    }
+
+    if (data.status === "success") {
+
+        // 🟢 Popup succès
+        pop.style.display = "block";
+        buttonSoundSuccess('imageUploadForm');
+
+        pop.innerHTML = `
+<div class="d-flex align-items-start">
+	<i class="bi bi-check-circle-fill fs-1 text-white bg-success p-2 rounded-circle me-3"></i>
+	<div>
+		<h5 class="fw-bold mb-1 text-light">Image ajoutée avec succès 🎉</h5>
+		<p class="text-light mb-1">Votre image a été enregistrée.</p>
+	</div>
+	<button type="button" class="btn-close" onclick="document.getElementById('popupSuccess').style.display='none';"></button>
+</div>
+        `;
+
+        // 🔒 Fermer la modal automatiquement
+        const modal = bootstrap.Modal.getInstance(document.getElementById('modalUploadImage'));
+        modal.hide();
+
+        // 🔄 Reset du formulaire
+        form.reset();
+
+        // 🎨 Ajouter l'image dans la galerie sans recharger
+        if (data.fileName) {
+            const gallery = document.getElementById("gallery");
+
+            if (gallery) {
+                gallery.insertAdjacentHTML("afterbegin", `
+                    <div class="gallery-item position-relative col-2">
+                        <img src="/uploads/clients/${data.fileName}"
+                             alt="Image du patient"
+                             class="img-fluid rounded shadow-sm gallery-thumb new-image"
+                             data-bs-toggle="modal"
+                             data-bs-target="#modalGalleryView"
+                             data-image="${data.fileName}">
+                    </div>
+                `);
+            }
+        }
+
+        // ✨ Animation d’apparition
+        setTimeout(() => {
+            document.querySelector(".new-image")?.classList.remove("new-image");
+        }, 50);
+
+    } else {
+        resultBox.innerHTML = `
+            <div class="alert alert-danger rounded-4">${data.message}</div>
+        `;
+    }
 });
 </script>
+
+
+
 
 
 

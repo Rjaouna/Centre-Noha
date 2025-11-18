@@ -154,11 +154,10 @@ document.getElementById("btnEditSymptomes")?.addEventListener("click", async () 
 {# 💾 JS ENREGISTREMENT (ADD / EDIT) #}
  <script>
 document.getElementById("btnSaveSymptomes").addEventListener("click", async () => {
+
 	const form = document.getElementById("symptomesForm");
 	const data = Object.fromEntries(new FormData(form));
-const pop  = document.getElementById("popupSuccess");
-
-
+	const pop  = document.getElementById("popupSuccess");
 
 	const url = "{{ fiche_client.symptomesGeneraux
 		? path('api_symptomes_edit', {id: fiche_client.id})
@@ -174,28 +173,34 @@ const pop  = document.getElementById("popupSuccess");
 	const result = await response.json();
 
 	if (result.success) {
-		// Tu as déjà une fonction showFlashMessage apparement
+
+		// 🔊 Son succès
+		buttonSoundSuccess('btnSaveSymptomes');
+
+		// 🔒 FERMETURE AUTOMATIQUE DE LA MODAL
+		const modal = bootstrap.Modal.getInstance(document.getElementById("modalAddSymptomesGeneraux"));
+		if (modal) modal.hide();
+
+		// ✨ POPUP SUCCÈS
 		pop.style.display = "block";
-buttonSoundSuccess('btnSaveSymptomes');
-
-
-
-pop.innerHTML = `
+		pop.innerHTML = `
 <div class="d-flex align-items-start">
 	<i class="bi bi-check-circle-fill fs-1 text-white bg-success p-2 rounded-circle me-3"></i>
 
 	<div>
-		<h5 class="fw-bold mb-1">Mise à jour avec succès ! 🎉</h5>
-		<p class="mb-1">Le nouveau patient a été bien mis à jour.</p>
-		<br>
-		<small class="text-muted d-block mt-2">Merci pour votre ajout ✔️</small>
+		<h5 class="fw-bold mb-1 text-light">Symptômes enregistrés ! 🎉</h5>
+		<p class="mb-1 text-light">Les informations ont été mises à jour avec succès.</p>
+		<small class="text-light opacity-75 d-block mt-2">Merci ✔️</small>
 	</div>
 
-	<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+	<button type="button" class="btn-close" onclick="document.getElementById('popupSuccess').style.display='none';"></button>
 </div>`;
-	} else {
+	} 
+	else {
 		alert('Erreur : ' + (result.message ?? 'Erreur serveur'));
 	}
 });
 </script>
+
+
 

@@ -155,47 +155,55 @@ document.getElementById("btnEditMaladies")?.addEventListener("click", async () =
 {# JS : Enregistrement #}
  <script>
 document.getElementById("btnSaveMaladies").addEventListener("click", async () => {
-	const form = document.getElementById("maladiesForm");
-	const data = Object.fromEntries(new FormData(form));
-const pop  = document.getElementById("popupSuccess");
 
+    const form = document.getElementById("maladiesForm");
+    const data = Object.fromEntries(new FormData(form));
+    const pop  = document.getElementById("popupSuccess");
 
+    const url = "{{ fiche_client.maladiesChroniques
+        ? path('api_maladies_edit', {id: fiche_client.id})
+        : path('api_maladies_add', {id: fiche_client.id})
+    }}";
 
-	const url = "{{ fiche_client.maladiesChroniques
-		? path('api_maladies_edit', {id: fiche_client.id})
-		: path('api_maladies_add', {id: fiche_client.id})
-	}}";
+    const response = await fetch(url, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(data)
+    });
 
-	const response = await fetch(url, {
-		method: "POST",
-		headers: {"Content-Type": "application/json"},
-		body: JSON.stringify(data)
-	});
+    const result = await response.json();
 
-	const result = await response.json();
+    if (result.success) {
 
-	if (result.success) {
-		pop.style.display = "block";
-buttonSoundSuccess('btnSaveMaladies');
+        // 🔊 Son validation
+        buttonSoundSuccess("btnSaveMaladies");
 
+        // 🔒 Fermeture automatique de la modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById("modalAddMaladiesChroniques"));
+        if (modal) modal.hide();
 
-pop.innerHTML = `
+        // 🎉 Popup succès
+        pop.style.display = "block";
+        pop.innerHTML = `
 <div class="d-flex align-items-start">
 	<i class="bi bi-check-circle-fill fs-1 text-white bg-success p-2 rounded-circle me-3"></i>
 
 	<div>
-		<h5 class="fw-bold mb-1">Mise à jour avec succès ! 🎉</h5>
-		<p class="mb-1">Le nouveau patient a été bien mis à jour.</p>
-		<br>
-		<small class="text-muted d-block mt-2">Merci pour votre ajout ✔️</small>
+		<h5 class="fw-bold mb-1 text-light">Mise à jour avec succès ! 🎉</h5>
+		<p class="mb-1 text-light">Les maladies chroniques ont été enregistrées.</p>
+
+		<small class="text-light opacity-75 d-block mt-2">Merci pour votre mise à jour ✔️</small>
 	</div>
 
-	<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-</div>`;
-
-	} else {
-		alert("Erreur : " + (result.message ?? "Erreur serveur"));
-	}
+	<button type="button" class="btn-close" onclick="document.getElementById('popupSuccess').style.display='none';"></button>
+</div>
+        `;
+    } 
+    else {
+        alert("Erreur : " + (result.message ?? "Erreur serveur"));
+    }
 });
 </script>
+
+
 

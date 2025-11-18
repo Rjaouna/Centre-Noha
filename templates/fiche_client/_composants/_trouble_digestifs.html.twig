@@ -182,54 +182,59 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 	<!-- 💾 JS SAUVEGARDE (ADD / EDIT) -->
-	 <script>
-	document.getElementById("btnSaveDigestif").addEventListener("click", async () => {
-	
-	    const form = document.getElementById("digestifForm");
-	    const data = Object.fromEntries(new FormData(form));
-const pop  = document.getElementById("popupSuccess");
+ <script>
+document.getElementById("btnSaveDigestif").addEventListener("click", async () => {
 
+    const form = document.getElementById("digestifForm");
+    const data = Object.fromEntries(new FormData(form));
+    const pop  = document.getElementById("popupSuccess");
 
-	
-	    // Choix URL : ajout si pas de données, édition sinon
-	    const url = "{{ fiche_client.troublesDigestifs
-	        ? path('api_digestifs_edit', {id: fiche_client.id})
-	        : path('api_digestifs_add', {id: fiche_client.id})
-	    }}";
-	
-	    const response = await fetch(url, {
-	        method: "POST",
-	        headers: {"Content-Type": "application/json"},
-	        body: JSON.stringify(data)
-	    });
-	
-	    const result = await response.json();
-	
-	    if (result.success) {
-			pop.style.display = "block";
-buttonSoundSuccess('btnSaveDigestif');
-pop.innerHTML = `
+    // Choix URL : ajout ou édition
+    const url = "{{ fiche_client.troublesDigestifs
+        ? path('api_digestifs_edit', {id: fiche_client.id})
+        : path('api_digestifs_add', {id: fiche_client.id})
+    }}";
+
+    const response = await fetch(url, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(data)
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+
+        // 🔊 Succès
+        buttonSoundSuccess('btnSaveDigestif');
+
+        // ✔ FERMETURE AUTOMATIQUE DE LA MODAL
+        const modal = bootstrap.Modal.getInstance(document.getElementById("modalAddDigestif"));
+        if (modal) modal.hide();
+
+        // 🎉 POPUP SUCCÈS
+        pop.style.display = "block";
+        pop.innerHTML = `
 <div class="d-flex align-items-start">
-	<i class="bi bi-check-circle-fill fs-1 text-white bg-success p-2 rounded-circle me-3"></i>
+    <i class="bi bi-check-circle-fill fs-1 text-white bg-success p-2 rounded-circle me-3"></i>
 
-	<div>
-		<h5 class="fw-bold mb-1">Mise à jour avec succès ! 🎉</h5>
-		<p class="mb-1">Le nouveau patient a été bien mis à jour.</p>
-		<br>
-		<small class="text-muted d-block mt-2">Merci pour votre ajout ✔️</small>
-	</div>
+    <div>
+        <h5 class="fw-bold mb-1">Mise à jour avec succès ! 🎉</h5>
+        <p class="mb-1">Les troubles digestifs du patient ont été enregistrés.</p>
+        <small class="text-muted d-block mt-2">Merci ✔️</small>
+    </div>
 
-	<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    <button type="button" class="btn-close" onclick="popupSuccess.style.display='none';"></button>
 </div>`;
 
+    } else {
+        buttonSoundError('btnSaveDigestif');
+        alert("Erreur : " + (result.message ?? 'Erreur serveur'));
+    }
+});
+</script>
 
 
-            
-	    } else {
-	        alert("Erreur : " + (result.message ?? 'Erreur serveur'));
-	    }
-	});
-	</script>
 
 
 	<!-- 🟡 MODAL DE VISUALISATION -->

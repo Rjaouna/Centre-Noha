@@ -10,7 +10,9 @@
 </style>
 <h5 class="mb-3 fw-bold text-primary">Galerie photo du suivi médical</h5>
 
-<div class="row d-flex">
+<div class="row d-flex" id="gallery">
+
+
 
 	{% if fiche_client.images is not empty %}
 		{% for img in fiche_client.images %}
