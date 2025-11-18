@@ -12,23 +12,18 @@ security:
 
     firewalls:
 
-        # 🔐 Firewall API → JWT
+        # 🔓 API interne → PAS DE JWT, utilise la session
         api:
             pattern: ^/api
-            stateless: true
+            stateless: false            # <-- important : on garde la session
             provider: app_user_provider
+            security: false             # <-- PAS de sécurité sur ces routes
 
-            json_login:
-                check_path: /api/login_check
-                username_path: email
-                password_path: password
-
-            jwt: ~
-
-        # 🔐 Firewall principale → LOGIN CLASSIQUE
+        # 🔐 Firewall principale → LOGIN FORMULAIRE
         main:
             provider: app_user_provider
             lazy: true
+
             form_login:
                 login_path: app_login
                 check_path: app_login
@@ -38,14 +33,12 @@ security:
                 target: app_login
 
     access_control:
+
         # Autoriser le login
         - { path: ^/login, roles: PUBLIC_ACCESS }
 
-        # Autoriser le endpoint JWT
-        - { path: ^/api/login_check, roles: PUBLIC_ACCESS }
-
-        # API obligatoire = JWT
-        - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
+        # Autoriser tout /api sans JWT et sans login
+        - { path: ^/api, roles: PUBLIC_ACCESS }
 
         # Tout le reste nécessite d’être connecté
         - { path: ^/, roles: ROLE_USER }

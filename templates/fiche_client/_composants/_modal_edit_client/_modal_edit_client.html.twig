@@ -1,40 +1,78 @@
 <div class="modal fade" id="modalEditFiche" tabindex="-1" aria-hidden="true">
 	<div class="modal-dialog">
-		<div class="modal-content">
+		<div
+			class="modal-content">
 
+			<!-- HEADER -->
 			<div class="modal-header bg-primary text-white">
 				<h5 class="modal-title">Modifier la fiche patient</h5>
 				<button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
 			</div>
 
+			<!-- BODY -->
 			<div class="modal-body">
 
-				<form id="formEditFiche">
+				<form
+					id="formEditFiche">
 
-					<div class="mb-3">
-						<label class="form-label">Nom</label>
-						<input type="text" class="form-control" name="nom" value="{{ fiche_client.nom }}">
+					<!-- Nom -->
+					<div class="form-floating mb-3">
+						<input type="text" class="form-control" id="inputNomEdit" name="nom" placeholder="Nom" value="{{ fiche_client.nom }}">
+						<label for="inputNomEdit">Nom du patient</label>
 					</div>
 
-					<div class="mb-3">
-						<label class="form-label">Ville</label>
-						<input type="text" class="form-control" name="ville" value="{{ fiche_client.ville }}">
+					<!-- Ville -->
+					<div class="form-floating mb-3">
+						<input type="text" class="form-control" id="inputVilleEdit" name="ville" placeholder="Ville" value="{{ fiche_client.ville }}">
+						<label for="inputVilleEdit">Ville</label>
 					</div>
 
-					<div class="mb-3">
-						<label class="form-label">Téléphone</label>
-						<input type="text" class="form-control" name="telephone" value="{{ fiche_client.telephone }}">
+					<!-- Téléphone -->
+					<div class="form-floating mb-3">
+						<input type="text" class="form-control" id="inputTelephoneEdit" name="telephone" placeholder="Téléphone" value="{{ fiche_client.telephone }}">
+						<label for="inputTelephoneEdit">Téléphone</label>
 					</div>
 
-					<div class="mb-3">
-						<label class="form-label">Âge</label>
-						<input type="number" class="form-control" name="age" value="{{ fiche_client.age }}">
+					<!-- Poids (liste déroulante) -->
+					<div class="form-floating mb-3">
+						<select class="form-select" id="inputPoidsEdit" name="poids">
+
+							<option value="" disabled>Choisir...</option>
+
+							{% set poidsOptions = {
+                                '6 - 9 kg': '6-9',
+                                '10 - 19 kg': '10-19',
+                                '20 - 29 kg': '20-29',
+                                '30 - 39 kg': '30-39',
+                                '40 - 49 kg': '40-49',
+                                '50 - 59 kg': '50-59',
+                                '60 - 69 kg': '60-69',
+                                '70 - 79 kg': '70-79',
+                                '80 - 89 kg': '80-89',
+                                '90 - 99 kg': '90-99',
+                                '100 - 109 kg': '100-109',
+                                '110 - 119 kg': '110-119',
+                                '120 - 129 kg': '120-129',
+                                '130 - 139 kg': '130-139',
+                                '140 - 149 kg': '140-149',
+                                '150 kg et +': '150+'
+                            } %}
+
+							{% for label, value in poidsOptions %}
+								<option value="{{ value }}" {% if fiche_client.poids == value %} selected {% endif %}>
+									{{ label }}
+								</option>
+							{% endfor %}
+						</select>
+
+						<label for="inputPoidsEdit">Poids du patient</label>
 					</div>
 
 				</form>
 
 			</div>
 
+			<!-- FOOTER -->
 			<div class="modal-footer">
 				<button class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
 
@@ -47,28 +85,76 @@
 	</div>
 </div>
 
+
+
  <script>
-document.getElementById("btnSaveFiche").addEventListener("click", async () => {
+document.addEventListener("DOMContentLoaded", () => {
 
+    const btn = document.getElementById("btnSaveFiche");
     const form = document.getElementById("formEditFiche");
-    const data = Object.fromEntries(new FormData(form));
+    const pop  = document.getElementById("popupSuccess");
+    const modal = new bootstrap.Modal(document.getElementById("modalEditFiche"));
 
-    const url = "{{ path('api_fiche_edit', {id: fiche_client.id}) }}";
+    btn.addEventListener("click", async () => {
 
-    const response = await fetch(url, {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify(data)
+        buttonSoundClick("btnSaveFiche"); // 🔊 Son clic
+
+        const data = Object.fromEntries(new FormData(form));
+
+        const url = "{{ path('api_fiche_edit', {id: fiche_client.id}) }}";
+
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (!result.success) {
+            buttonSoundError("btnSaveFiche");
+            showFlashError("Erreur lors de la mise à jour !");
+            return;
+        }
+
+        // 🔊 Succès
+        buttonSoundSuccess("btnSaveFiche");
+
+        // 🔒 Fermer la modal
+        modal.hide();
+
+        // Animation sur la carte patient
+        moveElement("blocListClient");
+
+        // 🔥 Construire la route show
+        const routeShow = "{{ path('app_fiche_client_show', {'id': fiche_client.id}) }}";
+
+        // 💬 Afficher popup succès
+        pop.style.display = "block";
+        pop.innerHTML = `
+<div class="d-flex align-items-start">
+	<i class="bi bi-check-circle-fill fs-1 text-white bg-success p-2 rounded-circle me-3"></i>
+
+	<div>
+		<h5 class="fw-bold mb-1 text-light">
+			🎉 Mise à jour effectuée avec succès !
+		</h5>
+
+		
+
+	
+	</div>
+
+	<button type="button" class="btn-close" onclick="document.getElementById('popupSuccess').style.display='none';"></button>
+</div>
+
+
+        `;
+
     });
 
-    const result = await response.json();
-
-    if (result.success) {
-        showFlashMessage("Fiche patient mise à jour !", "success");
-        location.reload();
-    } else {
-        alert("Erreur : " + result.message);
-    }
 });
 </script>
+
+
 

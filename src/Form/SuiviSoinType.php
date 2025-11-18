@@ -15,26 +15,7 @@ class SuiviSoinType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('diagnostic')
-            ->add('createdAt', null, [
-                'widget' => 'single_text'
-            ])
-            ->add('updatedAt', null, [
-                'widget' => 'single_text'
-            ])
-            ->add('patient', EntityType::class, [
-                'class' => FicheClient::class,
-                'choice_label' => 'id',
-            ])
-            ->add('createdBy', EntityType::class, [
-                'class' => User::class,
-                'choice_label' => 'id',
-            ])
-            ->add('updatedBy', EntityType::class, [
-                'class' => User::class,
-                'choice_label' => 'id',
-            ])
-        ;
+            ->add('diagnostic');
     }
 
     public function configureOptions(OptionsResolver $resolver): void

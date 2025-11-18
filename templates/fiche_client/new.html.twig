@@ -62,6 +62,9 @@ document.addEventListener("DOMContentLoaded", () => {
 modal.hide();
 moveElement("blocListClient")
 
+const routeShowPatient = "{{ path('app_fiche_client_show', {'id': 0}) }}".replace('/0', '');
+
+
 
 
 
@@ -84,7 +87,12 @@ moveElement("blocListClient")
 			<li><strong>Téléphone :</strong> ${result.telephone}</li>
 		</ul>
 
-		<small class="text-muted">Merci pour votre ajout ✔️</small>
+<a href="${routeShowPatient}/${result.id}" class="btn btn-outline-light btn-sm px-3 rounded-pill shadow-sm mt-2">
+	<i class="bi bi-eye"></i>
+	Voir le patient
+</a>
+
+
 	</div>
 
 	<button type="button" class="btn-close" onclick="document.getElementById('popupSuccess').style.display='none';"></button>

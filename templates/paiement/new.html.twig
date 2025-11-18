@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouveau Paiement
+{% endblock %}
+
+{% block body %}
+	<div
+		class="container-fluid mt-4">
+
+		<!-- HEADER -->
+		<div class="card shadow-lg border-0 rounded-4 mb-4">
+			<div class="card-body d-flex justify-content-between align-items-center py-4 px-4">
+
+				<div class="d-flex align-items-center">
+					<i class="bi bi-credit-card-2-front-fill text-success fs-1 me-3"></i>
+					<div>
+						<h2 class="fw-bold text-success mb-1">Nouveau Paiement</h2>
+						<p class="text-muted mb-0">Enregistrer un paiement pour un patient</p>
+					</div>
+				</div>
+
+<a href="{{ path('app_paiement_new', {'id': patient.id}) }}" class="btn btn-secondary btn-lg rounded-pill px-4 shadow-sm d-flex align-items-center gap-2">
+
+					<i class="bi bi-arrow-left"></i>
+					Retour
+				</a>
+
+			</div>
+		</div>
+
+
+		<!-- FORMULAIRE -->
+		<div class="card shadow-lg border-0 rounded-4 p-4">
+
+			<h4 class="fw-bold text-primary mb-4 d-flex align-items-center">
+				<i class="bi bi-pencil-square me-2"></i>
+				Formulaire de paiement
+			</h4>
+
+			{{ include('paiement/_form.html.twig', {
+            button_label: 'Enregistrer le paiement'
+        }) }}
+
+		</div>
+
+	</div>
+{% endblock %}
+

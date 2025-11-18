@@ -1,19 +1,59 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit SuiviSoin{% endblock %}
+{% block title %}Modifier un Soin
+{% endblock %}
+
 
 {% block body %}
-    <h1>Edit SuiviSoin</h1>
-
-    {{ include('suivi_soin/_form.html.twig', {'button_label': 'Update'}) }}
-
-    <a href="{{ path('app_suivi_soin_index') }}">back to list</a>
+<div class="container-fluid mt-4">
 
 
-    {{ include('suivi_soin/_delete_form.html.twig') }}
+{# ------------------------------------------------------- #}
+{# 🔵 HEADER — UNIFORMISÉ                                   #}
+{# ------------------------------------------------------- #}
+	<div class="card shadow-lg border-0 rounded-4 mb-4"> <div class="card-body d-flex justify-content-between align-items-center py-4 px-4">
+
+		<div class="d-flex align-items-center">
+			<i class="bi bi-heart-pulse-fill text-primary fs-1 me-3"></i>
+			<div>
+				<h2 class="fw-bold text-primary mb-1">Modifier un soin</h2>
+				<p class="text-muted mb-0">Mise à jour des informations de la consultation</p>
+			</div>
+		</div>
+
+		<a href="{{ path('app_suivi_soin_show', {'id': suivi_soin.id}) }}" class="btn btn-outline-secondary btn-lg px-4 rounded-pill shadow-sm">
+			<i class="bi bi-arrow-left me-2"></i>
+			Retour
+		</a>
+
+
+</div></div>
+
+
+
+{# ------------------------------------------------------- #}
+{# 📝 FORMULAIRE D'ÉDITION — STYLE FICHE PATIENT           #}
+{# ------------------------------------------------------- #}
+	<div class="card shadow-lg border-0 rounded-4 p-4">
+
+
+<h4 class="fw-bold text-primary mb-4 d-flex align-items-center">
+	<i class="bi bi-pencil-square me-2"></i>
+	Modifier les informations du soin
+</h4>
+
+
+{{ include('suivi_soin/_form.html.twig', {
+            button_label: 'Mettre à jour'
+        }) }}
 
 
 
 
+
+</div>
+
+
+</div>
 
 {% endblock %}

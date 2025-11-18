@@ -2,15 +2,50 @@
 	<div class="modal-dialog">
 		<div class="modal-content">
 
-			<div class="modal-header">
-				<h5 class="modal-title">Ajouter un paiement</h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+			<div class="modal-header bg-success text-white">
+				<h5 class="modal-title">
+					<i class="bi bi-credit-card-2-front me-2"></i>
+					Ajouter un paiement
+				</h5>
+				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
 			</div>
 
 			<div class="modal-body">
 
 				{{ form_start(formPaiement, { attr: { id: 'formPaiement' } }) }}
-				{{ form_widget(formPaiement) }}
+
+				<!-- PRIX TOTAL -->
+				<div class="form-floating mb-3">
+					{{ form_widget(formPaiement.prixTotal, {
+						'attr': { 'class': 'form-control', 'placeholder': 'Prix total' }
+					}) }}
+					<label for="{{ formPaiement.prixTotal.vars.id }}">Prix total (DH)</label>
+				</div>
+
+				<!-- MONTANT PAYÉ -->
+				<div class="form-floating mb-3">
+					{{ form_widget(formPaiement.montantPaye, {
+						'attr': { 'class': 'form-control', 'placeholder': 'Montant payé' }
+					}) }}
+					<label for="{{ formPaiement.montantPaye.vars.id }}">Montant payé (DH)</label>
+				</div>
+
+				<!-- RESTE -->
+				<div class="form-floating mb-3">
+					{{ form_widget(formPaiement.reste, {
+						'attr': { 'class': 'form-control', 'placeholder': 'Reste' }
+					}) }}
+					<label for="{{ formPaiement.reste.vars.id }}">Reste à payer (DH)</label>
+				</div>
+
+				<!-- TYPE PAIEMENT -->
+				<div class="form-floating mb-3">
+					{{ form_widget(formPaiement.typePaiement, {
+						'attr': { 'class': 'form-select', 'placeholder': 'Sélectionner le type' }
+					}) }}
+					<label for="{{ formPaiement.typePaiement.vars.id }}">Type de paiement</label>
+				</div>
+
 				{{ form_end(formPaiement) }}
 
 				<div id="paiementErrors" class="alert alert-danger d-none mt-3"></div>
@@ -18,9 +53,13 @@
 			</div>
 
 			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+					<i class="bi bi-x-lg me-1"></i>
+					Fermer
+				</button>
 
-				<button type="button" id="submitPaiement" class="btn btn-primary">
+				<button type="button" id="submitPaiement" class="btn btn-success">
+					<i class="bi bi-check-circle me-1"></i>
 					Enregistrer
 				</button>
 			</div>
@@ -29,53 +68,106 @@
 	</div>
 </div>
 
+
+
  <script>
-document.getElementById('submitPaiement').addEventListener('click', function () {
+document.addEventListener("DOMContentLoaded", () => {
 
-    const form = document.getElementById('formPaiement');
+    const btn    = document.getElementById("submitPaiement");
+    const form   = document.getElementById("formPaiement");
+    const modal  = new bootstrap.Modal(document.getElementById("paiementModal"));
+    const pop    = document.getElementById("popupSuccess");
+    const errors = document.getElementById("paiementErrors");
 
-    if (!form) {
-        console.error("❌ Formulaire introuvable !");
-        return;
-    }
+    btn.addEventListener("click", async () => {
 
-    const url = "{{ path('ajouter_paiement_ajax', {id: fiche_client.id}) }}";
+        // 🔊 Son de clic
+        buttonSoundClick("submitPaiement");
 
-    fetch(url, {
-        method: "POST",
-        body: new FormData(form)
-    })
-    .then(response => response.json())
-    .then(data => {
+        // Récupération des données (multipart)
+        const formData = new FormData(form);
 
+        const url = "{{ path('ajouter_paiement_ajax', {id: fiche_client.id}) }}";
+
+        // 🔄 Envoi AJAX
+        const response = await fetch(url, {
+            method: "POST",
+            body: formData
+        });
+
+        const data = await response.json();
+
+        // ❌ ERREURS
         if (!data.success) {
-            document.getElementById('paiementErrors').classList.remove('d-none');
-            document.getElementById('paiementErrors').innerHTML = data.errors;
+            buttonSoundError("submitPaiement");
+            errors.classList.remove("d-none");
+            errors.innerHTML = data.errors;
             return;
         }
 
-        // Cache les erreurs
-        document.getElementById('paiementErrors').classList.add('d-none');
+        // 👍 Succès
+        buttonSoundSuccess("submitPaiement");
+        errors.classList.add("d-none");
 
-        // Fermer le modal
-        let modal = bootstrap.Modal.getInstance(document.getElementById('paiementModal'));
+        // Fermer modal
         modal.hide();
 
-        // Mettre à jour la table
+        // Animation carte paiement
+        moveElement("blocListPaiement");
+
+        // Ajouter le paiement dans la table
         ajouterPaiementDansTableau(data.paiement);
+
+        // Afficher popup succès
+        pop.style.display = "block";
+        pop.innerHTML = `
+<div class="d-flex align-items-start">
+	<i class="bi bi-check-circle-fill fs-1 text-white bg-success p-2 rounded-circle me-3"></i>
+
+	<div>
+		<h5 class="fw-bold mb-1 text-light">
+			🎉 Paiement enregistré avec succès !
+		</h5>
+
+		<p class="text-light mb-1">
+			Le paiement a bien été ajouté au dossier du patient.
+		</p>
+
+		<p class="text-light small opacity-75 mb-0">
+			Montant payé : <strong>${data.paiement.montant} DH</strong><br>
+			Reste : <strong>${data.paiement.reste} DH</strong>
+		</p>
+	</div>
+
+	<button type="button" class="btn-close" onclick="document.getElementById('popupSuccess').style.display='none';"></button>
+</div>
+        `;
     });
+
 });
 
+
+// 📌 Insert nouveau paiement dans le tableau
 function ajouterPaiementDansTableau(p) {
+
     const table = document.querySelector('#paiementsTable tbody');
-    table.innerHTML += `
+
+    const newRow = `
         <tr>
             <td>${p.date}</td>
-            <td>${p.montant}</td>
-            <td>${p.reste}</td>
-            <td>${p.type}</td>
+            <td class="text-success fw-semibold">${p.montant} DH</td>
+            <td class="text-danger fw-semibold">${p.reste} DH</td>
+            <td>
+                <span class="badge bg-primary px-3 py-2 rounded-pill">
+                    ${p.type}
+                </span>
+            </td>
         </tr>
     `;
+
+    table.insertAdjacentHTML("afterbegin", newRow);
 }
 </script>
+
+
 
