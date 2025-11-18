@@ -5,179 +5,124 @@
 
 {% block body %}
 
-<div class="container-fluid d-flex justify-content-center align-items-center">
+<div class="container-fluid d-flex justify-content-center align-items-center" style="min-height: 80vh;">
 
+	<div class="row text-center">
 
+		<h1 class="fw-bold my-4 text-primary">
+			🏥 Espace Gestion Centre Noha
+		</h1>
 
-		<div
-			class="row text-center">
+		<!-- Carte 1 : Ajouter un client -->
+		<div class="col-6 col-md-2 mb-4">
+			<div class="card shadow border-0 rounded-4 h-100">
+				<div class="card-body py-5">
+					<i class="bi bi-person-plus-fill text-success" style="font-size: 3rem;"></i>
+					<h4 class="mt-3 fw-bold">Ajouter un client</h4>
+					<p class="text-muted small">Créer une nouvelle fiche patient</p>
 
-			<!-- Carte 1 : Ajouter un client -->
-			<div class="col-md-4 mb-4">
-				<div class="card shadow border-0 rounded-4 h-100">
-					<div class="card-body py-5">
-						<i class="bi bi-person-plus-fill text-success" style="font-size: 3rem;"></i>
-						<h4 class="mt-3 fw-bold">Ajouter un client</h4>
-						<p class="text-muted small">Créer une nouvelle fiche patient</p>
-
-						<button id="addClient" class="btn btn-success rounded-pill px-4 mt-3" data-bs-toggle="modal" data-bs-target="#modalAddClient">
-							<i class="bi bi-plus-lg"></i>
-							Accéder
-						</button>
-					</div>
+					<button id="addClient" class="btn btn-success rounded-pill px-4 mt-3" data-bs-toggle="modal" data-bs-target="#modalAddClient">
+						<i class="bi bi-plus-lg"></i>
+						Ajouter client
+					</button>
 				</div>
-			</div>
-
-			<!-- Carte 2 : Liste des clients -->
-			<div class="col-md-4 mb-4" id="blocListClient">
-				<div class="card shadow border-0 rounded-4 h-100 position-relative">
-
-					{% if totalClients is defined %}
-						<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-primary bg-secondary shadow">
-							{{ totalClients }}
-							Clients
-						</span>
-					{% endif %}
-
-					<div class="card-body py-5">
-						<i class="bi bi-people-fill text-primary" style="font-size: 3rem;"></i>
-						<h4 class="mt-3 fw-bold">Liste des clients</h4>
-						<p class="text-muted small">Voir, rechercher et gérer les patients</p>
-
-						<a id="listClient" class="btn btn-primary rounded-pill px-4 mt-3" href="{{ path('app_fiche_client_index') }}">
-							<i class="bi bi-search"></i>
-							Accéder
-						</a>
-					</div>
-				</div>
-			</div>
-
-			<!-- Carte 3 : Paiements -->
-			<div class="col-md-4 mb-4">
-				<div class="card shadow border-0 rounded-4 h-100">
-					<div class="card-body py-5">
-						<i class="bi bi-credit-card-fill text-danger" style="font-size: 3rem;"></i>
-						<h4 class="mt-3 fw-bold">Paiements</h4>
-						<p class="text-muted small">Suivi et enregistrement des paiements</p>
-
-						<a id="paiyment" class="btn btn-danger rounded-pill px-4 mt-3" disabled>
-							<i class="bi bi-wallet2"></i>
-							Accéder
-						</a>
-					</div>
-				</div>
-			</div>
-
-			<!-- Carte 4 : Rendez-vous -->
-			<div class="col-md-4 mb-4">
-				<div class="card shadow border-0 rounded-4 h-100 position-relative">
-
-					{% if totalRdv is defined %}
-						<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-primary bg-warning shadow">
-							{{ totalRdv }}
-							RDV
-						</span>
-					{% endif %}
-
-					<div class="card-body py-5">
-						<i class="bi bi-calendar-week text-info" style="font-size: 3rem;"></i>
-						<h4 class="mt-3 fw-bold">Rendez-vous</h4>
-						<p class="text-muted small">Consulter tous les rendez-vous</p>
-
-						<a id="rendezVous" class="btn btn-info rounded-pill px-4 mt-3" href="{{ path('app_rdv_index') }}">
-							<i class="bi bi-calendar-check"></i>
-							Accéder
-						</a>
-					</div>
-				</div>
-			</div>
-
-			<!-- Carte 5 : Suivi des soins -->
-			<div class="col-md-4 mb-4">
-				<div class="card shadow border-0 rounded-4 h-100 position-relative">
-
-					{% if totalSuivi is defined %}
-						<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-white bg-danger shadow">
-							{{ totalSuivi }}
-							Suivis
-						</span>
-					{% endif %}
-
-					<div class="card-body py-5 text-center">
-						<i class="bi bi-heart-pulse-fill text-danger" style="font-size: 3rem;"></i>
-						<h4 class="mt-3 fw-bold">Suivi des soins</h4>
-						<p class="text-muted small">Historique des consultations médicales</p>
-
-						<a id="suiviDesSoins" class="btn btn-danger rounded-pill px-4 mt-3" href="{{ path('app_suivi_soin_index') }}">
-							<i class="bi bi-clipboard2-pulse"></i>
-							Accéder
-						</a>
-					</div>
-				</div>
-			</div>
-
-			<!-- Carte 6 : Déconnexion -->
-			<div class="col-md-4 mb-4">
-				<div class="card shadow border-0 rounded-4 bg-danger text-white h-100 position-relative" id="logoutBlock">
-
-					<div
-						class="card-body py-5 text-center">
-
-						<!-- Icône animée -->
-						<i id="logoutIcon" class="bi-door-closed-fill text-light" style="font-size: 3rem; width:60px; display:inline-block;"></i>
-
-						<h4 class="mt-3 fw-bold">Déconnexion</h4>
-						<p class="text-light small">Quitter votre espace sécurisé</p>
-
-						<a id="logoutButton" class="btn btn-light rounded-pill px-4 mt-3" href="#">
-							<i class="bi bi-box-arrow-right"></i>
-							Se déconnecter
-						</a>
-
-					</div>
-				</div>
-			</div>
-
-		</div>
-	</div>
-
-	<!-- MODAL AJOUT PATIENT -->
-	<div class="modal fade" id="modalAddClient" tabindex="-1" aria-hidden="true">
-		<div class="modal-dialog modal-xl">
-			<div class="modal-content">
-
-				<div class="modal-header bg-primary text-white">
-					<h5 class="modal-title">
-						<i class="bi bi-person-plus"></i>
-						Ajouter un client
-					</h5>
-					<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-				</div>
-
-				{{ include('fiche_client/new.html.twig') }}
-
 			</div>
 		</div>
-	</div>
 
-	 <script>
-	document.addEventListener("DOMContentLoaded", () => {
-	    const block = document.querySelector("#logoutBlock");
-	    const icon = document.querySelector("#logoutIcon");
-	
-	    if (block && icon) {
-	        block.addEventListener("mouseenter", () => {
-	            icon.classList.remove("bi-door-closed-fill");
-	            icon.classList.add("bi-door-open-fill");
-	        });
-	
-	        block.addEventListener("mouseleave", () => {
-	            icon.classList.remove("bi-door-open-fill");
-	            icon.classList.add("bi-door-closed-fill");
-	        });
-	    }
-	});
-	</script>
+		<!-- Carte 2 : Liste des clients -->
+		<div class="col-6 col-md-2 mb-4">
+			<div class="card shadow border-0 rounded-4 h-100 position-relative">
+
+				{% if totalClients is defined %}
+					<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-primary bg-secondary shadow">
+						{{ totalClients }}
+						Clients
+					</span>
+				{% endif %}
+
+				<div class="card-body py-5">
+					<i class="bi bi-people-fill text-primary" style="font-size: 3rem;"></i>
+					<h4 class="mt-3 fw-bold">Liste des clients</h4>
+					<p class="text-muted small">Voir, rechercher et gérer les patients</p>
+
+					<a class="btn btn-primary rounded-pill px-4 mt-3" href="{{ path('app_fiche_client_index') }}">
+						<i class="bi bi-search"></i>
+						Liste clients
+					</a>
+				</div>
+			</div>
+		</div>
+
+		<!-- Carte 3 : Paiements -->
+		<div class="col-6 col-md-2 mb-4">
+			<div class="card shadow border-0 rounded-4 h-100">
+				<div class="card-body py-5">
+					<i class="bi bi-credit-card-fill text-danger" style="font-size: 3rem;"></i>
+					<h4 class="mt-3 fw-bold">Paiements</h4>
+					<p class="text-muted small">Suivi des paiements</p>
+
+					<a class="btn btn-danger rounded-pill px-4 mt-3" disabled>
+						<i class="bi bi-wallet2"></i>
+						Accéder
+					</a>
+				</div>
+			</div>
+		</div>
+
+		<!-- Carte 4 : Rendez-vous -->
+		<div class="col-6 col-md-2 mb-4">
+			<div class="card shadow border-0 rounded-4 h-100 position-relative">
+
+				{% if totalRdv is defined %}
+					<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-primary bg-warning shadow">
+						{{ totalRdv }}
+						RDV
+					</span>
+				{% endif %}
+
+				<div class="card-body py-5">
+					<i class="bi bi-calendar-week text-info" style="font-size: 3rem;"></i>
+					<h4 class="mt-3 fw-bold">Rendez-vous</h4>
+					<p class="text-muted small">Consulter tous les rendez-vous</p>
+
+					<a class="btn btn-info rounded-pill px-4 mt-3" href="{{ path('app_rdv_index') }}">
+						<i class="bi bi-calendar-check"></i>
+						Accéder
+					</a>
+				</div>
+			</div>
+		</div>
+
+		<!-- Carte 5 : Suivi des soins -->
+		<div class="col-6 col-md-2 mb-4">
+			<div class="card shadow border-0 rounded-4 h-100 position-relative">
+
+				{% if totalSuivi is defined %}
+					<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-white bg-danger shadow">
+						{{ totalSuivi }}
+						Suivis
+					</span>
+				{% endif %}
+
+				<div class="card-body py-5 text-center">
+					<i class="bi bi-heart-pulse-fill text-danger" style="font-size: 3rem;"></i>
+					<h4 class="mt-3 fw-bold">Suivi des soins</h4>
+					<p class="text-muted small">Historique des consultations médicales</p>
+
+					<a class="btn btn-danger rounded-pill px-4 mt-3" href="{{ path('app_suivi_soin_index') }}">
+						<i class="bi bi-clipboard2-pulse"></i>
+						Accéder
+					</a>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>
+
+
+
+
 
 {% endblock %}
 

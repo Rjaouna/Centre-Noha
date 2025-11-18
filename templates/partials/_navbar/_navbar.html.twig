@@ -49,17 +49,21 @@
 
 			{# Bouton Donner un RDV visible uniquement sur SHOW client #}
 			{% if app.request.attributes.get('_route') == 'app_fiche_client_show' %}
-				<button class="btn btn-info btn-lg rounded-pill px-4 shadow-sm d-flex align-items-center gap-2" id="btnNavAddRdv">
+				<button class="btn btn-info btn-lg rounded-pill px-4 shadow-sm d-flex align-items-center gap-2 me-3" id="btnNavAddRdv">
 					<i class="bi bi-calendar-plus fs-4"></i>
 					Donner un RDV
 				</button>
 			{% endif %}
 
+			{# 🔴 Bouton Déconnexion #}
+			<a href="#" class="btn btn-danger  rounded-pill px-4 d-flex align-items-center gap-2" id="btnNavLogout">
+				<i class="bi bi-box-arrow-right fs-4"></i>
+				Déconnexion
+			</a>
+
 		</div>
 	</div>
 </nav>
-
-
 
 <style>
 	.navbar-nav .nav-link {
