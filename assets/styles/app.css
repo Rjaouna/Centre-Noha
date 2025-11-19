@@ -59,3 +59,24 @@ body {
     80%  { transform: translateX(2px); }
     100% { transform: translateX(0); }
 }
+
+
+.pulse-btn {
+    animation: pulse 1.5s ease-in-out infinite;
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.12);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+

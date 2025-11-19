@@ -46,32 +46,106 @@
 				</li>
 
 				<li class="nav-item">
-					<a class="nav-link px-3{% if app.request.attributes.get('_route') starts with 'app_rdv' %} active{% endif %}" href="{{ path('app_rdv_index') }}" id="btnNavRdv">
-						<i class="bi bi-calendar-week"></i>
-						Rendez-vous
-					</a>
+<a class="nav-link px-3{{ app.request.attributes.get('_route') starts with 'app_rdv' ? ' active' : '' }}" href="{{ path('app_rdv_index') }}" id="btnNavRdv">
+
+	<i class="bi bi-calendar-week"></i>
+	Rendez-vous
+</a>
+
+
+
+
+
+
 				</li>
 
 			</ul>
 
-			{# Bouton Donner un RDV visible uniquement sur SHOW client #}
-			{% if app.request.attributes.get('_route') == 'app_fiche_client_show' %}
-				<button class="btn btn-info btn-lg rounded-pill px-4 shadow-sm d-flex align-items-center gap-2 me-3" id="btnNavAddRdv">
-					<i class="bi bi-calendar-plus fs-4"></i>
-					Donner un RDV
-				</button>
-			{% endif %}
-
-			{# 🔴 Bouton Déconnexion #}
-<a href="{{path('app_logout')}}" class="btn btn-danger  rounded-pill px-4 d-flex align-items-center gap-2" id="btnNavLogout">
+			
 
 
-				<i class="bi bi-box-arrow-right fs-4"></i>
-				Déconnexion
-			</a>
 
 		</div>
 	</div>
+<ul class="navbar-nav ms-md-auto align-items-center">
+
+	{# --------------------------------------------- #}
+	{# 🔵 Bouton Donner un RDV (activé seulement sur SHOW client) #}
+	{# --------------------------------------------- #}
+	{% set isShowPage = app.request.attributes.get('_route') == 'app_fiche_client_show' %}
+<span class="toast-body text-light text-nowrap">{{ isShowPage ? 'Rdv prochain ?':''}}</span>
+
+
+
+
+		<li class="nav-item mx-2"> 
+
+		<a class="btn btn-link btn-sm rounded-pill px-3 d-flex align-items-center gap-2 
+{{ not isShowPage ? 'disabled pointer-events-none opacity-50' : 'pulse-btn text-light' }}"
+{% if isShowPage %}
+	data-bs-toggle="modal" data-bs-target="#modalAddRdv"
+{% endif %}>
+
+<i class="bi bi-calendar-plus fs-4 text-info"></i>
+
+
+		</a>
+	</li>
+
+	{# Séparateur #}
+	<li class="nav-item d-none d-lg-flex">
+		<div class="vr mx-2 text-white opacity-50"></div>
+	</li>
+
+	{# --------------------------------------------- #}
+	{# 🟢 Nouveau bouton : NOUVELLES ADMISSIONS } #}
+	{# --------------------------------------------- #}
+		<li class="nav-item dropdown mx-2"> <a class="nav-link dropdown-toggle fw-semibold d-flex align-items-center text-white" href="#" id="admissionMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+
+			<i class="bi bi-person-lines-fill me-2 fs-3 text-success"></i>
+Admissions
+		</a>
+
+		<ul class="dropdown-menu dropdown-menu-end shadow rounded-3">
+			<li>
+<a class="dropdown-item d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#modalAddClient">
+
+					<i class="bi bi-person-plus text-success"></i>
+					Ajouter une admission
+				</a>
+			</li>
+			<li>
+				<a class="dropdown-item d-flex align-items-center gap-2" href="#">
+					<i class="bi bi-list-ul text-primary"></i>
+					Voir toutes les admissions
+				</a>
+			</li>
+			<li><hr class="dropdown-divider"></li>
+			<li>
+				<a class="dropdown-item d-flex align-items-center gap-2" href="#">
+					<i class="bi bi-clock-history text-secondary"></i>
+					Historique admissions
+				</a>
+			</li>
+		</ul>
+	</li>
+
+	{# Séparateur #}
+	<li class="nav-item d-none d-lg-flex">
+		<div class="vr mx-2 text-white opacity-50"></div>
+	</li>
+
+	{# --------------------------------------------- #}
+	{# 🔴 Bouton Déconnexion #}
+	{# --------------------------------------------- #}
+		<li class="nav-item mx-2"> <a href="{{ path('app_logout') }}" class="btn btn-link btn-sm rounded-pill px-3 d-flex align-items-center gap-2" id="btnNavLogout">
+			<i class="bi bi-box-arrow-right fs-4 text-info"></i>
+		</a>
+	</li>
+
+</ul>
+
+
 </nav>
 
 {% endif %}
