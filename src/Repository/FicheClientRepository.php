@@ -15,29 +15,60 @@ class FicheClientRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, FicheClient::class);
     }
+    public function countByTypeMaladie(string $type): int
+    {
+        return $this->createQueryBuilder('f')
+            ->select('COUNT(f.id)')
+            ->andWhere('f.typeMaladie = :t')
+            ->setParameter('t', $type)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 
-//    /**
-//     * @return FicheClient[] Returns an array of FicheClient objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('f')
-//            ->andWhere('f.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('f.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    public function countAutresMaladies(): int
+    {
+        return $this->createQueryBuilder('f')
+            ->select('COUNT(f.id)')
+            ->andWhere('f.typeMaladie NOT IN(:list)')
+            ->setParameter('list', ['Aiguë', 'Chronique'])
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 
-//    public function findOneBySomeField($value): ?FicheClient
-//    {
-//        return $this->createQueryBuilder('f')
-//            ->andWhere('f.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    public function countAllMaladies(): array
+    {
+        return $this->createQueryBuilder('f')
+            ->select('f.typeMaladie AS typeMaladie, COUNT(f.id) AS count')
+            ->groupBy('f.typeMaladie')
+            ->orderBy('count', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+
+
+    //    /**
+    //     * @return FicheClient[] Returns an array of FicheClient objects
+    //     */
+    //    public function findByExampleField($value): array
+    //    {
+    //        return $this->createQueryBuilder('f')
+    //            ->andWhere('f.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->orderBy('f.id', 'ASC')
+    //            ->setMaxResults(10)
+    //            ->getQuery()
+    //            ->getResult()
+    //        ;
+    //    }
+
+    //    public function findOneBySomeField($value): ?FicheClient
+    //    {
+    //        return $this->createQueryBuilder('f')
+    //            ->andWhere('f.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->getQuery()
+    //            ->getOneOrNullResult()
+    //        ;
+    //    }
 }

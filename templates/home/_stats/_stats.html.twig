@@ -1,0 +1,298 @@
+<!-- ============================= -->
+<!-- 🔥 SECTION ANALYTIQUE        -->
+<!-- ============================= -->
+	<style>
+/* ===== TIMELINE WITH SCROLL ===== */
+.timeline-wrapper {
+	max-height: 250px; /* même hauteur que les charts */
+	overflow-y: auto;
+	padding-right: 10px;
+}
+
+/* Scrollbar élégante */
+.timeline-wrapper::-webkit-scrollbar {
+	width: 6px;
+}
+
+.timeline-wrapper::-webkit-scrollbar-thumb {
+	background: #cfd3d7;
+	border-radius: 10px;
+}
+
+.timeline-wrapper::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+/* ===== TIMELINE STRUCTURE ===== */
+.timeline {
+	border-left: 6px solid #ddd;
+	padding-left: 20px;
+	margin-top: 10px;
+	position: relative;
+}
+
+.timeline-item {
+	position: relative;
+	padding-bottom: 20px;
+	margin-bottom: 20px;
+}
+
+.timeline-item:last-child {
+	margin-bottom: 0;
+}
+
+.timeline-dot {
+	width: 16px;
+	height: 16px;
+	border-radius: 50%;
+	position: absolute;
+	left: -29px;
+	top: 2px;
+	border: 3px solid #fff;
+	box-shadow: 0 0 6px rgba(0, 0, 0, 0.15);
+}
+
+/* Statuts colorés */
+.dot-confirmed {
+	background: #28a745;
+}
+.dot-canceled {
+	background: #dc3545;
+}
+.dot-pending {
+	background: #ffc107;
+}
+.dot-default {
+	background: #0d6efd;
+}
+
+/* Texte */
+.timeline-title {
+	font-size: 1rem;
+	font-weight: 600;
+}
+
+.timeline-details {
+	font-size: 0.85rem;
+	color: #6c757d;
+}
+
+/* ===== CHART SIZE FIX ===== */
+.chart-container {
+	height: 200px !important;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+canvas {
+	max-height: 180px !important;
+}
+</style>
+
+
+	<div class="container mt-3 px-0"> <div
+		class="row g-4">
+
+		<!-- 🟦 CAMEMBERTS (9 colonnes) -->
+		<div class="col-lg-9">
+			<div class="card shadow-lg border-0 rounded-4 p-4">
+
+				<h4 class="fw-bold text-primary mb-3 d-flex align-items-center">
+					<i class="bi bi-pie-chart-fill me-2"></i>
+					Statistiques graphiques
+				</h4>
+				<hr>
+
+				<div
+					class="row text-center">
+
+					<!-- CAMEMBERT 1 -->
+					<div class="col-md-6 mb-4">
+						<h6 class="fw-bold text-secondary mb-2">Types de maladies</h6>
+						<div class="chart-container">
+							<canvas id="chartPieMaladies"></canvas>
+						</div>
+					</div>
+
+					<!-- CAMEMBERT 2 -->
+					<div class="col-md-6 mb-4">
+						<h6 class="fw-bold text-secondary mb-2">Symptômes généraux</h6>
+						<div class="chart-container">
+							<canvas id="chartSymptomes"></canvas>
+						</div>
+					</div>
+
+				</div>
+
+			</div>
+		</div>
+
+		<!-- 🟩 RDV (3 colonnes) -->
+<div class="col-lg-3">
+	<div class="card shadow-lg border-0 rounded-4 p-4">
+
+		<h4 class="fw-bold text-primary  mb-3 d-flex align-items-center">
+			<i class="bi bi-clock-history me-2"></i>
+			RDV d’aujourd’hui
+		</h4>
+		<hr>
+
+		<div class="timeline-wrapper">
+			<div class="timeline">
+
+				{% for rdv in rdvs %}
+					{% set statut = rdv.statut|lower %}
+					{% set dotClass =
+                        statut == 'confirmé' ? 'dot-confirmed' :
+                        (statut == 'annulé' ? 'dot-canceled' :
+                        (statut == 'en attente' ? 'dot-pending' : 'dot-default'))
+                    %}
+
+					<div class="timeline-item">
+
+						<span class="timeline-dot {{ dotClass }}"></span>
+
+						<p class="timeline-title mb-1 d-flex justify-content-between align-items-center">
+							<span>
+								{{ rdv.client.nom }}
+								—
+								<span class="text-muted">{{ rdv.motif ?? 'Sans motif' }}</span>
+							</span>
+
+							<!-- BOUTON VALIDER -->
+<a id="rdvValidator" href="#" class="btn btn-success btn-sm rounded-pill px-3 py-1 btn-validate-rdv" data-id="{{ rdv.id }}">
+	<i class="bi bi-check-circle"></i>
+</a>
+
+
+						</p>
+
+						<small class="timeline-details">
+							{{ rdv.dateRdvAt|date('d/m/Y H:i') }}
+							—
+							<i>{{ rdv.statut }}</i>
+						</small>
+
+					</div>
+
+				{% else %}
+					<p class="text-muted text-center">Aucun rendez-vous aujourd’hui</p>
+				{% endfor %}
+
+			</div>
+		</div>
+
+	</div>
+</div>
+
+
+
+	</div>
+</div>
+
+
+ <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+ <script>
+/* ============================
+   🍩 CAMEMBERT MALADIES
+   ============================ */
+async function loadMaladiesChart() {
+
+    const res = await fetch("{{ path('api_statistics_maladies') }}");
+    const stats = await res.json();
+
+    new Chart(document.getElementById('chartPieMaladies'), {
+        type: 'pie',
+        data: {
+            labels: stats.labels,
+            datasets: [{
+                data: stats.values,
+                backgroundColor: [
+                    'rgba(255,99,132,0.8)',
+                    'rgba(54,162,235,0.8)',
+                    'rgba(255,206,86,0.8)',
+                    'rgba(75,192,192,0.8)',
+                    'rgba(153,102,255,0.8)',
+                    'rgba(255,159,64,0.8)'
+                ]
+            }]
+        }
+    });
+}
+
+/* ============================
+   🍩 CAMEMBERT SYMPTÔMES
+   ============================ */
+async function loadSymptomesChart() {
+
+    const res = await fetch("{{ path('api_statistics_symptomes') }}");
+    const stats = await res.json();
+
+    new Chart(document.getElementById('chartSymptomes'), {
+        type: 'pie',
+        data: {
+            labels: stats.labels,
+            datasets: [{
+                data: stats.values,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.8)',
+                    'rgba(54, 162, 235, 0.8)',
+                    'rgba(255, 206, 86, 0.8)',
+                    'rgba(75, 192, 192, 0.8)',
+                    'rgba(153, 102, 255, 0.8)'
+                ]
+            }]
+        }
+    });
+}
+
+/* ============================
+   🚀 LANCEMENT DES CHARTS
+   ============================ */
+document.addEventListener("DOMContentLoaded", () => {
+    loadMaladiesChart();
+    loadSymptomesChart();
+});
+</script>
+ <script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    document.querySelectorAll('.btn-validate-rdv').forEach(btn => {
+
+        btn.addEventListener('click', async (e) => {
+            e.preventDefault();
+
+            const rdvId = btn.dataset.id;
+
+            const res = await fetch(`/api/rdv/validate/${rdvId}`, {
+                method: "POST"
+            });
+
+            const data = await res.json();
+
+            if (data.success) {
+                // 🔄 Mise à jour du statut dans l’interface
+                const statusText = btn.closest('.timeline-item').querySelector('.timeline-details i');
+                statusText.textContent = data.newStatus;
+
+                // ♻️ Changer la couleur de la dot
+                const dot = btn.closest('.timeline-item').querySelector('.timeline-dot');
+                dot.className = "timeline-dot dot-confirmed";
+
+                // 🟢 Feedback visuel
+                btn.innerHTML = "<i class='bi bi-check-circle-fill'></i>";
+                btn.classList.remove('btn-success');
+                btn.classList.add('btn-secondary');
+                btn.disabled = true;
+            }
+        });
+
+    });
+
+});
+</script>
+
+
+

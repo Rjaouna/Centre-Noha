@@ -25,6 +25,7 @@ function sleep(ms) {
 // -------------------------------------------------------------
 export function buttonSoundClick(id, disabled = "") {
     const tag = document.getElementById(id);
+
     if (!tag) return;
 
     // ✅ On ne met le son que sur les éléments qui ont la classe "clic"

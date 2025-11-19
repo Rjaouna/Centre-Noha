@@ -16,13 +16,15 @@ final class HomeController extends AbstractController
     public function index(FicheClientRepository $repo, RendezVousRepository $rdvRepo): Response
     {
         // 👉 ON CRÉE LE FORMULAIRE
+        $rdvs = $rdvRepo->findBy(['statut' => 'A venir'], ['dateRdvAt' => 'ASC']);
         $fiche = new FicheClient();
         $form = $this->createForm(FicheClientType::class, $fiche);
 
         return $this->render('home/index.html.twig', [
             'form' => $form->createView(),   // 🔥 IMPORTANT
             'totalClients' => $repo->count([]),
-            'totalRdv'     => $rdvRepo->count([]),
+            'totalRdv'     => $rdvRepo->count(['statut' => 'A venir']),
+            'rdvs' => $rdvs
         ]);
     }
 }

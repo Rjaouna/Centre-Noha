@@ -5,156 +5,166 @@
 
 {% block body %}
 
-<div class="container-fluid d-flex justify-content-center align-items-center" style="min-height: 40vh;">
+	<style>
+		/* Effet hover premium */
+		.dashboard-card {
+			transition: all 0.25s ease-in-out;
+			cursor: pointer;
+		}
 
+		.dashboard-card:hover {
+			transform: translateY(-6px);
+			box-shadow: 0 12px 22px rgba(0, 0, 0, 0.12) !important;
+		}
 
+		/* Badge visible et animé */
+		.dashboard-badge {
+			overflow: visible !important;
+			animation: pulse 2s infinite;
+			font-size: 0.70rem;
+			padding: 6px 10px;
+		}
 
-	<div class="row text-center">
+		@keyframes pulse {
+			0% {
+				transform: scale(1);
+			}
+			50% {
+				transform: scale(1.12);
+			}
+			100% {
+				transform: scale(1);
+			}
+		}
+	</style>
 
-		<h1 class="fw-bold my-4 text-primary">
-			🏥 Espace Gestion Centre Noha
+	<div class="container py-4">
+
+		<h1 class="fw-bold my-4 text-primary text-center">
+			🏥 Espace Gestion – Centre Noha
 		</h1>
 
-		<!-- Carte 1 : Ajouter un client -->
-		<div class="col-6 col-md-3 mb-4">
-<div class="card shadow border-0 rounded-4">
-	<div class="card-body py-2">
+		<div class="row g-4 justify-content-center">
 
+			<!-- ========================== -->
+			<!-- 🔹 1 — Ajouter un client  -->
+			<!-- ========================== -->
+				<div class="col-6 col-md-3"> <div class="card dashboard-card shadow border-0 rounded-4 text-center p-3">
 
-					<i class="bi bi-person-plus-fill text-success" style="font-size: 3rem;"></i>
-					<h4 class="mt-3 fw-bold">Ajouter un client</h4>
+					<i class="bi bi-person-plus-fill text-success" style="font-size: 3.2rem;"></i>
+
+					<h5 class="mt-3 fw-bold">Ajouter un client</h5>
 					<p class="text-muted small">Créer une nouvelle fiche patient</p>
 
-<button id="addClient" class="btn btn-success rounded-pill px-4 mt-3 clic" data-bs-toggle="modal" data-bs-target="#modalAddClient">
+<button id="addClientHome" class="btn btn-outline-success btn-sm rounded-pill px-4 mt-2" data-bs-toggle="modal" data-bs-target="#modalAddClient">
 
-
-	<i class="bi bi-plus-lg"></i>
-	Ajouter client
-</button>
+						<i class="bi bi-plus-lg"></i>
+						Ajouter
+					</button>
 
 				</div>
 			</div>
-		</div>
 
-		<!-- Carte 2 : Liste des clients -->
-		<div class="col-6 col-md-3 mb-4">
-<div class="card shadow border-0 rounded-4 position-relative">
+			<!-- ========================== -->
+			<!-- 🔹 2 — Liste des clients  -->
+			<!-- ========================== -->
+				<div class="col-6 col-md-3"> <div class="card dashboard-card shadow border-0 rounded-4 text-center p-3 position-relative">
 
+					{% if totalClients is defined %}
+						<span class="badge bg-info text-white position-absolute top-0 start-100 translate-middle dashboard-badge shadow">
+							{{ totalClients }}
+							
+						</span>
+					{% endif %}
 
+					<i class="bi bi-people-fill text-primary" style="font-size: 3.2rem;"></i>
 
-				{% if totalClients is defined %}
-					<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-primary bg-secondary shadow">
-						{{ totalClients }}
-						Clients
-					</span>
-				{% endif %}
+					<h5 class="mt-3 fw-bold">Liste des clients</h5>
+					<p class="text-muted small">Gérer et consulter les patients</p>
 
-<div class="card-body py-2">
-
-
-
-
-	<div id="blocListClient">
-
-
-
-
-<i class="bi bi-people-fill text-primary" style="font-size: 3rem;"></i>
-
-</div>
-
-
-					<h4 class="mt-3 fw-bold">Liste des clients</h4>
-					<p class="text-muted small">Voir, rechercher et gérer les patients</p>
-
-<a id="listClient" class="btn btn-primary rounded-pill px-4 mt-3 clic" href="{{ path('app_fiche_client_index') }}">
+<a id="listClientHome"  class="btn btn-outline-primary btn-sm rounded-pill px-4 mt-2" href="{{ path('app_fiche_client_index') }}">
 
 
 						<i class="bi bi-search"></i>
-						Liste clients
+						Voir
 					</a>
+
 				</div>
 			</div>
-		</div>
 
-		<!-- Carte 3 : Paiements -->
-		<div class="col-6 col-md-3 mb-4">
-<div class="card shadow border-0 rounded-4">
-	<div class="card-body py-2">
+			<!-- ========================== -->
+			<!-- 🔹 3 — Paiements -->
+			<!-- ========================== -->
+				<div class="col-6 col-md-3"> <div class="card dashboard-card shadow border-0 rounded-4 text-center p-3">
 
+					<i class="bi bi-credit-card-fill text-danger" style="font-size: 3.2rem;"></i>
 
-					<i class="bi bi-credit-card-fill text-danger" style="font-size: 3rem;"></i>
-					<h4 class="mt-3 fw-bold">Paiements</h4>
-					<p class="text-muted small">Suivi des paiements</p>
+					<h5 class="mt-3 fw-bold">Paiements</h5>
+					<p class="text-muted small">Suivi & gestion des paiements</p>
 
-<a id="gestionClient" class="btn btn-danger rounded-pill px-4 mt-3 clic" disabled>
-
+<button class="btn btn-outline-danger btn-sm rounded-pill px-4 mt-2" disabled>
 
 						<i class="bi bi-wallet2"></i>
-Gestion paiment
+						Indisponible
+					</button>
 
-
-					</a>
 				</div>
 			</div>
-		</div>
 
-		<!-- Carte 4 : Rendez-vous -->
-		<div class="col-6 col-md-3 mb-4">
-<div class="card shadow border-0 rounded-4 position-relative">
+			<!-- ========================== -->
+			<!-- 🔹 4 — Rendez-vous -->
+			<!-- ========================== -->
+				<div class="col-6 col-md-3"> <div class="card dashboard-card shadow border-0 rounded-4 text-center p-3 position-relative">
 
+					{% if totalRdv is defined %}
+						<span class="badge bg-info text-dark position-absolute top-0 start-100 translate-middle dashboard-badge shadow">
+							{{ totalRdv }}
+							
+						</span>
+					{% endif %}
 
+					<i class="bi bi-calendar-week text-info" style="font-size: 3.2rem;"></i>
 
-				{% if totalRdv is defined %}
-					<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-primary bg-warning shadow">
-						{{ totalRdv }}
-						RDV
-					</span>
-				{% endif %}
+					<h5 class="mt-3 fw-bold">Rendez-vous</h5>
+					<p class="text-muted small">Consulter & gérer les RDV</p>
 
-<div class="card-body py-2">
-
-
-					<i class="bi bi-calendar-week text-info" style="font-size: 3rem;"></i>
-					<h4 class="mt-3 fw-bold">Rendez-vous</h4>
-					<p class="text-muted small">Consulter tous les rendez-vous</p>
-
-<a id="gestionRdv" class="btn btn-info rounded-pill px-4 mt-3 clic" href="{{ path('app_rdv_index') }}">
+<a id="rdvClientHome" class="btn btn-outline-info btn-sm rounded-pill px-4 mt-2" href="{{ path('app_rdv_index') }}">
 
 
 						<i class="bi bi-calendar-check"></i>
-Gestion RDV
-
-
+						Ouvrir
 					</a>
+
 				</div>
 			</div>
+
 		</div>
 
+		<!-- 📊 SECTION STATISTIQUES -->
+		{{ include('home/_stats/_stats.html.twig') }}
+
+	</div>
 
 
+	<!-- MODAL AJOUT PATIENT -->
+	<div class="modal fade" id="modalAddClient" tabindex="-1" aria-hidden="true">
+		<div class="modal-dialog modal-xl">
+			<div class="modal-content">
 
-<!-- MODAL AJOUT PATIENT -->
-<div class="modal fade" id="modalAddClient" tabindex="-1" aria-hidden="true">
-	<div class="modal-dialog modal-xl">
-		<div class="modal-content">
+				<div class="modal-header bg-primary text-white">
+					<h5 class="modal-title">
+						<i class="bi bi-person-plus"></i>
+						Ajouter un client
+					</h5>
+<button type="button" class="btn-close btn-sm btn-close-white" data-bs-dismiss="modal"></button>
 
-			<div class="modal-header bg-primary text-white">
-				<h5 class="modal-title">
-					<i class="bi bi-person-plus"></i>
-					Ajouter un client
-				</h5>
-				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+				</div>
+
+				{{ include('fiche_client/new.html.twig') }}
+
 			</div>
-
-			{{ include('fiche_client/new.html.twig') }}
-
 		</div>
 	</div>
-</div>
-
-
-
 
 {% endblock %}
 
