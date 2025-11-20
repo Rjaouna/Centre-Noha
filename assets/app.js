@@ -59,12 +59,14 @@ import {
 import {
     getNewAdmissions,
     validateAllAdmissions,
+    jsLog,
 } from "./js/getNewAdmissions.js";
 import { moveElement, enableShakeLoop } from "./js/MoveElement.js";
 
 /**
  * Expose les fonctions globalement
  */
+window.jsLog = jsLog;
 window.buttonSoundError = buttonSoundError;
 window.buttonSoundSuccess = buttonSoundSuccess;
 window.buttonSoundClick = buttonSoundClick;

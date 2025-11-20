@@ -17,9 +17,15 @@ export async function getNewAdmissions() {
 
         const data = await response.json();
 
-        notifications.replaceChildren(); // on vide avant d'afficher
+        notifications.replaceChildren(); // On vide
 
-        data.forEach((element) => {
+        // 🟡 Aucun nouveau patient
+        if (!data.success || !data.admissions || data.admissions.length === 0) {
+            return; // On ne crée aucune notification
+        }
+
+        // 🟢 Traitement des admissions
+        data.admissions.forEach((element) => {
             const notif = document.createElement("div");
 
             notif.classList.add(
@@ -30,6 +36,7 @@ export async function getNewAdmissions() {
                 "rounded-3",
                 "shadow"
             );
+
             notif.innerHTML = `
                 <p class="notif-title mb-1 d-flex justify-content-between align-items-center">
                     <span>
@@ -45,32 +52,55 @@ export async function getNewAdmissions() {
                     ${new Date().toLocaleString()}
                 </small>
             `;
+
             playSuccessSound();
 
             notifications.appendChild(notif);
 
-            // 🟣 Auto-disparition après X secondes
+            // Disparition automatique
             setTimeout(() => {
                 notif.classList.add("fade-out");
-                setTimeout(() => notif.remove(), 700); // après l’animation
+                setTimeout(() => notif.remove(), 700);
             }, NOTIFICATION_DURATION);
         });
     } catch (error) {
         console.error("Erreur getNewAdmissions():", error);
     }
 }
+
 export async function validateAllAdmissions() {
     const res = await fetch("/api/plugins/admission/validate-all", {
         method: "POST",
     });
 
     const json = await res.json();
-    console.log(json);
 
     if (json.success) {
         // nettoyer le DOM
         document.getElementById("notifications").innerHTML = "";
     }
+}
+
+export function jsLog(message) {
+    const consoleDiv = document.getElementById("js-console");
+    if (!consoleDiv) return;
+
+    // 🔥 Conversion propre (évite undefined, object, etc.)
+    let text = "";
+
+    if (typeof message === "object") {
+        text = JSON.stringify(message, null, 2);
+    } else if (message === undefined) {
+        text = "undefined";
+    } else {
+        text = String(message);
+    }
+
+    const line = document.createElement("div");
+    line.textContent = `[${new Date().toLocaleTimeString()}] ${text}`;
+    consoleDiv.appendChild(line);
+
+    consoleDiv.scrollTop = consoleDiv.scrollHeight;
 }
 
 async function refreshAdmissions() {
@@ -81,7 +111,7 @@ async function refreshAdmissions() {
         setTimeout(resolve, NOTIFICATION_DURATION + 800);
     });
 
-    await validateAllAdmissions();
+    await setInterval(validateAllAdmissions, 30000);
 }
 
 setInterval(refreshAdmissions, NOTIFICATION_DURATION + 1500);

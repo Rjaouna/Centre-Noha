@@ -13,12 +13,25 @@ final class GetNewAdmissionsController extends AbstractController
     #[Route('/api/plugins/get/new/admissions', name: 'app_api_plugins_get_new_admissions')]
     public function index(FicheClientRepository $ficheClient): JsonResponse
     {
-        $newAdmission = $ficheClient->findBy(['isOpen' => false]);
+        $newAdmissions = $ficheClient->findBy(['isOpen' => false]);
 
-        return $this->json($newAdmission, 200, [], [
+        // 🟡 Aucun nouveau patient ?
+        if (count($newAdmissions) === 0) {
+            return $this->json([
+                'success' => false,
+            ]);
+        }
+
+        // 🟢 Des admissions trouvées
+        return $this->json([
+            'success' => true,
+            'message' => 'Nouvelle(s) admission(s) détectée(s)',
+            'admissions' => $newAdmissions
+        ], 200, [], [
             'groups' => 'admission_read'
         ]);
     }
+
 
     #[Route('/api/plugins/admission/validate-all', name: 'api_admission_validate_all', methods: ['POST'])]
     public function validateAll(
@@ -32,7 +45,6 @@ final class GetNewAdmissionsController extends AbstractController
             return new JsonResponse([
                 'success' => true,
                 'updated' => 0,
-                'message' => 'Aucune admission à valider'
             ]);
         }
 
