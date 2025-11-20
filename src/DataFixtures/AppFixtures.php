@@ -49,8 +49,8 @@ class AppFixtures extends Fixture
             $client->setTypeMaladie($faker->randomElement(['Diabète', 'Hypertension', 'Migraine', 'Stress', 'Aucune']));
             $client->setTraitement($faker->randomElement(['Doliprane', 'Ibuprofène', 'Tisane', 'Repos', null]));
             $client->setObservation($faker->sentence(10));
-            $client->isOpen(true);
-            $client->isOpen(true);
+            $client->setIsOpen(true);
+            $client->setIsConsulted(true);
 
             $manager->persist($client);
 

@@ -1,163 +1,164 @@
 {% if app.user %}
 
-<nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
+	<nav class="navbar navbar-expand-lg bg-primary navbar-dark">
+		<div
+			class="container-fluid">
+
+			<!-- Logo -->
+			<a class="navbar-brand fw-bold fs-3" href="{{ path('app_home') }}">
+				🏥 Centre Noha
+			</a>
+
+			<!-- Burger -->
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+
+			<!-- Menu -->
+			<div
+				class="collapse navbar-collapse" id="mainNavbar">
+
+				<!-- MENU GAUCHE -->
+				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+					<li class="nav-item">
+						<a class="nav-link {{ app.request.attributes.get('_route') == 'app_home' ? 'active' : '' }}" href="{{ path('app_home') }}">
+							<i class="bi bi-house-door"></i>
+							Accueil
+						</a>
+					</li>
+
+					<li class="nav-item">
+						<a class="nav-link {{ app.request.attributes.get('_route') starts with 'app_fiche_client' ? 'active' : '' }}" href="{{ path('app_fiche_client_index') }}">
+							<i class="bi bi-people"></i>
+							Patients
+						</a>
+					</li>
+
+					<li class="nav-item">
+						<a class="nav-link disabled">
+							<i class="bi bi-credit-card"></i>
+							Paiements
+						</a>
+					</li>
+
+					<li class="nav-item">
+						<a class="nav-link {{ app.request.attributes.get('_route') starts with 'app_rdv' ? 'active' : '' }}" href="{{ path('app_rdv_index') }}">
+							<i class="bi bi-calendar-week"></i>
+							Rendez-vous
+						</a>
+					</li>
+
+				</ul>
 
 
+				<!-- MENU DROITE -->
+				<ul class="navbar-nav ms-auto">
 
+					{% set isShowPage = app.request.attributes.get('_route') == 'app_fiche_client_show' %}
 
-
-	<div
-		class="container-fluid">
-
-		<!-- Logo -->
-		<a class="navbar-brand fw-bold fs-3 me-4" href="{{ path('app_home') }}" id="btnNavLogo">
-			🏥 Centre Noha
-		</a>
-
-		<!-- Burger -->
-		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" id="btnNavBurger">
-			<span class="navbar-toggler-icon"></span>
-		</button>
-
-		<!-- Menu -->
-		<div class="collapse navbar-collapse" id="mainNavbar">
-
-			<ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-2">
-
-				<li class="nav-item">
-					<a class="nav-link px-3{% if app.request.attributes.get('_route') == 'app_home' %} active{% endif %}" href="{{ path('app_home') }}" id="btnNavHome">
-						<i class="bi bi-house-door"></i>
-						Accueil
-					</a>
-				</li>
-
-				<li class="nav-item">
-					<a class="nav-link px-3{% if app.request.attributes.get('_route') starts with 'app_fiche_client' %} active{% endif %}" href="{{ path('app_fiche_client_index') }}" id="btnNavClients">
-						<i class="bi bi-people"></i>
-						Patients
-					</a>
-				</li>
-
-				<li class="nav-item">
-					<a class="nav-link px-3 disabled" id="btnNavPaiements">
-						<i class="bi bi-credit-card"></i>
-						Paiements
-					</a>
-				</li>
-
-				<li class="nav-item">
-<a class="nav-link px-3{{ app.request.attributes.get('_route') starts with 'app_rdv' ? ' active' : '' }}" href="{{ path('app_rdv_index') }}" id="btnNavRdv">
-
-	<i class="bi bi-calendar-week"></i>
-	Rendez-vous
+					<!-- RDV (bouton animé) -->
+					<a class="btn btn-link btn-sm rounded-pill px-3 d-flex align-items-center gap-2 
+{{ not isShowPage ? 'disabled pointer-events-none opacity-50' : 'pulse-btn text-light' }}"
+{% if isShowPage %}
+    data-bs-toggle="modal" data-bs-target="#modalAddRdv"
+{% endif %}>
+    <i class="bi bi-calendar-plus fs-5 text-info"></i>
 </a>
 
 
+					<!-- Admissions -->
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle text-white" href="#" data-bs-toggle="dropdown">
+							<i class="bi bi-person-lines-fill me-1 fs-4 text-success"></i>
+							Admissions
+						</a>
 
+						<ul class="dropdown-menu dropdown-menu-end shadow-sm">
 
+							<li>
+								<a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalAddClient">
+									<i class="bi bi-person-plus text-success"></i>
+									Ajouter une admission
+								</a>
+							</li>
 
+							<li>
+								<a class="dropdown-item" href="{{ path('app_fiche_client_index') }}">
+									<i class="bi bi-list-ul text-primary"></i>
+									Consulter admissions
+								</a>
+							</li>
 
-				</li>
+							<li><hr class="dropdown-divider"></li>
 
-			</ul>
+							<li>
+								<a class="dropdown-item" href="#">
+									<i class="bi bi-clock-history text-secondary"></i>
+									Historique admissions
+								</a>
+							</li>
 
-			
+						</ul>
+					</li>
 
+					<!-- Logout -->
+					<li class="nav-item">
+						<a href="{{ path('app_logout') }}" class="nav-link">
+							<i class="bi bi-box-arrow-right fs-3 text-info"></i>
+						</a>
+					</li>
 
+				</ul>
 
+			</div>
 		</div>
-	</div>
-<ul class="navbar-nav ms-md-auto align-items-center">
-
-	{# --------------------------------------------- #}
-	{# 🔵 Bouton Donner un RDV (activé seulement sur SHOW client) #}
-	{# --------------------------------------------- #}
-	{% set isShowPage = app.request.attributes.get('_route') == 'app_fiche_client_show' %}
-<span class="toast-body text-light text-nowrap">{{ isShowPage ? 'Rdv prochain ?':''}}</span>
-
-
-
-
-		<li class="nav-item mx-2"> 
-
-		<a class="btn btn-link btn-sm rounded-pill px-3 d-flex align-items-center gap-2 
-{{ not isShowPage ? 'disabled pointer-events-none opacity-50' : 'pulse-btn text-light' }}"
-{% if isShowPage %}
-	data-bs-toggle="modal" data-bs-target="#modalAddRdv"
-{% endif %}>
-
-<i class="bi bi-calendar-plus fs-4 text-info"></i>
-
-
-		</a>
-	</li>
-
-	{# Séparateur #}
-	<li class="nav-item d-none d-lg-flex">
-		<div class="vr mx-2 text-white opacity-50"></div>
-	</li>
-
-	{# --------------------------------------------- #}
-	{# 🟢 Nouveau bouton : NOUVELLES ADMISSIONS } #}
-	{# --------------------------------------------- #}
-		<li class="nav-item dropdown mx-2"> <a class="nav-link dropdown-toggle fw-semibold d-flex align-items-center text-white" href="#" id="admissionMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-
-			<i class="bi bi-person-lines-fill me-2 fs-3 text-success"></i>
-Admissions
-		</a>
-
-		<ul class="dropdown-menu dropdown-menu-end shadow rounded-3">
-			<li>
-<a class="dropdown-item d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#modalAddClient">
-
-					<i class="bi bi-person-plus text-success"></i>
-					Ajouter une admission
-				</a>
-			</li>
-			<li>
-				<a class="dropdown-item d-flex align-items-center gap-2" href="#">
-					<i class="bi bi-list-ul text-primary"></i>
-					Voir toutes les admissions
-				</a>
-			</li>
-			<li><hr class="dropdown-divider"></li>
-			<li>
-				<a class="dropdown-item d-flex align-items-center gap-2" href="#">
-					<i class="bi bi-clock-history text-secondary"></i>
-					Historique admissions
-				</a>
-			</li>
-		</ul>
-	</li>
-
-	{# Séparateur #}
-	<li class="nav-item d-none d-lg-flex">
-		<div class="vr mx-2 text-white opacity-50"></div>
-	</li>
-
-	{# --------------------------------------------- #}
-	{# 🔴 Bouton Déconnexion #}
-	{# --------------------------------------------- #}
-		<li class="nav-item mx-2"> <a href="{{ path('app_logout') }}" class="btn btn-link btn-sm rounded-pill px-3 d-flex align-items-center gap-2" id="btnNavLogout">
-			<i class="bi bi-box-arrow-right fs-4 text-info"></i>
-		</a>
-	</li>
-
-</ul>
-
-
-</nav>
+	</nav>
 
 {% endif %}
 
 
+<!-- --------------- CSS ANIMATION + RESPONSIVE ---------------- -->
 <style>
+
+	/* Taille des liens */
 	.navbar-nav .nav-link {
-		font-size: 1.5rem;
-		padding-top: 10px !important;
-		padding-bottom: 10px !important;
+		font-size: 1.1rem;
+		padding: 8px 12px !important;
+	}
+
+	/* Animation pulse uniquement sur l’icône */
+	.pulse-icon {
+		animation: pulse 1.3s infinite ease-in-out;
+		transform-origin: center;
+	}
+
+	@keyframes pulse {
+		0% {
+			transform: scale(1);
+		}
+		50% {
+			transform: scale(1.25);
+		}
+		100% {
+			transform: scale(1);
+		}
+	}
+
+	/* Version mobile : animation plus douce */
+	@media(max-width: 768px) {
+		.navbar-brand {
+			font-size: 1.4rem !important;
+		}
+		.navbar-nav .nav-link i {
+			font-size: 1.2rem !important;
+		}
+		.pulse-icon {
+			animation: pulse 1.8s infinite ease-in-out;
+		}
 	}
 </style>
+
  <script>
     window.ADMISSIONS_URL = "{{ path('app_api_plugins_get_new_admissions') }}";
 </script>

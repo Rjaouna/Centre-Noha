@@ -103,6 +103,7 @@ final class FicheClientController extends AbstractController
         EntityManagerInterface $em
     ): Response {
         $ficheClient->setIsConsulted(true);
+        $ficheClient->setIsOpen(true);
         $em->flush();
 
         $now = new \DateTimeImmutable();
