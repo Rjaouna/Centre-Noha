@@ -78,24 +78,33 @@
 			</thead>
 			<tbody>
 				{% for fiche_client in fiche_clients %}
-					<tr>
+{% set isConsulted = fiche_client.isConsulted ? '' : 'text-success' %}
+
+
+					<tr class=" {{ isConsulted }}">
 						<td class="fw-bold">{{ fiche_client.id }}</td>
 						<td class="fw-semibold">{{ fiche_client.nom }}</td>
+
+
 						<td>{{ fiche_client.ville }}</td>
 						<td>{{ fiche_client.telephone }}</td>
 						<td>
-							<span class="badge bg-info text-dark px-3 py-2 rounded-pill shadow-sm">
+							<span class="badge bg-info  px-3 py-2 rounded-pill shadow-sm">
 								{{ fiche_client.typeMaladie }}
 							</span>
 						</td>
 						<td>
-							<span class="text-muted">{{ fiche_client.createdAt|date('d/m/Y H:i') }}</span>
+<span class="{{ isConsulted ? 'text-success' : 'text-muted' }}">{{ fiche_client.createdAt|date('d/m/Y H:i') }}</span>
+
+
 						</td>
 						<td>
-							<span class="text-muted">{{ fiche_client.updatedAt|date('d/m/Y H:i') }}</span>
+<span class="{{ isConsulted ? 'text-success' : 'text-muted' }}">{{ fiche_client.updatedAt|date('d/m/Y H:i') }}</span>
+
 						</td>
 						<td class="text-center">
-							<a href="{{ path('app_fiche_client_show', {'id': fiche_client.id}) }}" class="btn btn-outline-primary btn-sm px-3 rounded-pill shadow-sm detailsButton">
+<a href="{{ path('app_fiche_client_show', {'id': fiche_client.id}) }}" class="btn btn-outline-{{ isConsulted ? 'success' : 'info' }} btn-sm px-3 rounded-pill shadow-sm detailsButton">
+
 								<i class="bi bi-eye"></i>
 								Voir
 							</a>

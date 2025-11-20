@@ -50,6 +50,7 @@ class AppFixtures extends Fixture
             $client->setTraitement($faker->randomElement(['Doliprane', 'Ibuprofène', 'Tisane', 'Repos', null]));
             $client->setObservation($faker->sentence(10));
             $client->isOpen(true);
+            $client->isOpen(true);
 
             $manager->persist($client);
 

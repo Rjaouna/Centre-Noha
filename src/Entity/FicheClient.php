@@ -115,6 +115,9 @@ class FicheClient
     #[ORM\Column]
     private ?bool $isOpen = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $isConsulted = null;
+
     public function __construct()
     {
         $this->paiements = new ArrayCollection();
@@ -384,6 +387,18 @@ class FicheClient
     public function setIsOpen(bool $isOpen): static
     {
         $this->isOpen = $isOpen;
+
+        return $this;
+    }
+
+    public function isConsulted(): ?bool
+    {
+        return $this->isConsulted;
+    }
+
+    public function setIsConsulted(?bool $isConsulted): static
+    {
+        $this->isConsulted = $isConsulted;
 
         return $this;
     }

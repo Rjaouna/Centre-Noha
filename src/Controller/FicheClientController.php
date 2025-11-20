@@ -56,6 +56,7 @@ final class FicheClientController extends AbstractController
             $fiche->setTraitement($data['traitement'] ?? null);
             $fiche->setObservation($data['observation'] ?? null);
             $fiche->setIsOpen(false);
+            $fiche->setIsConsulted(false);
 
 
             // ---- INT (converti ou null)
@@ -98,8 +99,11 @@ final class FicheClientController extends AbstractController
     #[Route('/{id}', name: 'app_fiche_client_show', methods: ['GET'])]
     public function show(
         FicheClient $ficheClient,
-        RendezVousRepository $rdvRepo
+        RendezVousRepository $rdvRepo,
+        EntityManagerInterface $em
     ): Response {
+        $ficheClient->setIsConsulted(true);
+        $em->flush();
 
         $now = new \DateTimeImmutable();
 
