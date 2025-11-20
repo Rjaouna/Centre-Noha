@@ -1,8 +1,4 @@
-<div id ="notifications" class="notif-fixed">
-
-	
-</div>
-
+	<div id="notifications" class="notif-fixed"></div>
 
 
 <style>
@@ -16,33 +12,31 @@
     transform: translateY(15px);
 }
 
-	/* Conteneur des notifications */
-	.notif-fixed {
-		position: fixed;
-		bottom: 20px;
-		left: 20px;
-		width: 320px;
-		z-index: 99999;
-	}
+/* Conteneur des notifications */
+.notif-fixed {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    width: 320px;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 99999;
+}
 
-	/* Style d'une notification */
-	.notif-item {
-		margin-bottom: 10px;
-		border-left: 5px solid #fff;
-	}
+/* Style d'une notification */
+.notif-item {
+    margin-bottom: 10px;
+    border-left: 5px solid #fff;
+}
 
-	/* Scroll si plusieurs notifs */
-	.notif-fixed {
-		max-height: 300px;
-		overflow-y: auto;
-	}
+/* Scrollbar douce */
+.notif-fixed::-webkit-scrollbar {
+    width: 6px;
+}
+.notif-fixed::-webkit-scrollbar-thumb {
+    background: #ffffff77;
+    border-radius: 10px;
+}
 
-	/* Scrollbar douce */
-	.notif-fixed::-webkit-scrollbar {
-		width: 6px;
-	}
-	.notif-fixed::-webkit-scrollbar-thumb {
-		background: #ffffff77;
-		border-radius: 10px;
-	}
 </style>
+

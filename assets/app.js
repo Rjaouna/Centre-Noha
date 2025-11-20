@@ -52,10 +52,14 @@ import "./styles/app.css";
 import {
     buttonSoundError,
     buttonSoundSuccess,
+    playSuccessSound,
     buttonSoundClick,
     sleep,
 } from "./js/AudioPlayer.js";
-import getNewAdmissions from "./js/getNewAdmissions.js";
+import {
+    getNewAdmissions,
+    validateAllAdmissions,
+} from "./js/getNewAdmissions.js";
 import { moveElement, enableShakeLoop } from "./js/MoveElement.js";
 
 /**
@@ -68,6 +72,8 @@ window.sleep = sleep;
 window.moveElement = moveElement;
 window.enableShakeLoop = enableShakeLoop;
 window.getNewAdmissions = getNewAdmissions;
+window.validateAllAdmissions = validateAllAdmissions;
+window.playSuccessSound = playSuccessSound;
 
 /**
  * Activation automatique des sons sur tous les IDs cliquables

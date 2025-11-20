@@ -99,3 +99,12 @@ export function buttonSoundSuccess(id) {
 
     tag.classList.remove("disabled");
 }
+
+// -------------------------------------------------------------
+// 🎵 Son succès global
+// -------------------------------------------------------------
+const audioSuccess = new Audio("/assets/media/success-340660.mp3");
+
+export function playSuccessSound() {
+    audioSuccess.play().catch(() => {});
+}
