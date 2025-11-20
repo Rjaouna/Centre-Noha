@@ -23,15 +23,15 @@ class FicheClient
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
-    #[Groups(['suivi_read'])]
+    #[Groups(['suivi_read', 'admission_read'])]
     private ?string $nom = null;
 
     #[ORM\Column(length: 50)]
-    #[Groups(['suivi_read'])]
+    #[Groups(['suivi_read', 'admission_read'])]
     private ?string $ville = null;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]
-    #[Groups(['suivi_read'])]
+    #[Groups(['suivi_read', 'admission_read'])]
     private ?string $age = null;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]
@@ -46,7 +46,7 @@ class FicheClient
     private ?string $dureeMaladie = null;
 
     #[ORM\Column(length: 50)]
-    #[Groups(['suivi_read'])]
+    #[Groups(['suivi_read', 'admission_read'])]
     private ?string $typeMaladie = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -111,6 +111,9 @@ class FicheClient
      */
     #[ORM\OneToMany(targetEntity: SuiviSoin::class, mappedBy: 'patient')]
     private Collection $suiviSoins;
+
+    #[ORM\Column]
+    private ?bool $isOpen = null;
 
     public function __construct()
     {
@@ -369,6 +372,18 @@ class FicheClient
                 $suiviSoin->setPatient(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isOpen(): ?bool
+    {
+        return $this->isOpen;
+    }
+
+    public function setIsOpen(bool $isOpen): static
+    {
+        $this->isOpen = $isOpen;
 
         return $this;
     }

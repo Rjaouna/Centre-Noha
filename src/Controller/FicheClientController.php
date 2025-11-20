@@ -55,6 +55,7 @@ final class FicheClientController extends AbstractController
             $fiche->setTypeMaladie($data['typeMaladie'] ?? null);
             $fiche->setTraitement($data['traitement'] ?? null);
             $fiche->setObservation($data['observation'] ?? null);
+            $fiche->setIsOpen(false);
 
 
             // ---- INT (converti ou null)

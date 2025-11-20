@@ -55,7 +55,7 @@ import {
     buttonSoundClick,
     sleep,
 } from "./js/AudioPlayer.js";
-
+import getNewAdmissions from "./js/getNewAdmissions.js";
 import { moveElement, enableShakeLoop } from "./js/MoveElement.js";
 
 /**
@@ -67,6 +67,7 @@ window.buttonSoundClick = buttonSoundClick;
 window.sleep = sleep;
 window.moveElement = moveElement;
 window.enableShakeLoop = enableShakeLoop;
+window.getNewAdmissions = getNewAdmissions;
 
 /**
  * Activation automatique des sons sur tous les IDs cliquables
