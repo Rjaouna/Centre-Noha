@@ -26,6 +26,9 @@ class SuiviSoin
     #[Groups(['suivi_read'])]
     private ?string $diagnostic = null;
 
+    #[ORM\ManyToOne(inversedBy: 'suiviSoins')]
+    private ?DossierMedical $dossierMedical = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -51,6 +54,18 @@ class SuiviSoin
     public function setDiagnostic(?string $diagnostic): static
     {
         $this->diagnostic = $diagnostic;
+
+        return $this;
+    }
+
+    public function getDossierMedical(): ?DossierMedical
+    {
+        return $this->dossierMedical;
+    }
+
+    public function setDossierMedical(?DossierMedical $dossierMedical): static
+    {
+        $this->dossierMedical = $dossierMedical;
 
         return $this;
     }

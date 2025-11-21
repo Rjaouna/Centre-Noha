@@ -118,12 +118,19 @@ class FicheClient
     #[ORM\Column(nullable: true)]
     private ?bool $isConsulted = null;
 
+    /**
+     * @var Collection<int, DossierMedical>
+     */
+    #[ORM\OneToMany(targetEntity: DossierMedical::class, mappedBy: 'patient')]
+    private Collection $dossierMedicals;
+
     public function __construct()
     {
         $this->paiements = new ArrayCollection();
         $this->rendezVouses = new ArrayCollection();
         $this->images = new ArrayCollection(); // 👍
         $this->suiviSoins = new ArrayCollection();
+        $this->dossierMedicals = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -399,6 +406,36 @@ class FicheClient
     public function setIsConsulted(?bool $isConsulted): static
     {
         $this->isConsulted = $isConsulted;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, DossierMedical>
+     */
+    public function getDossierMedicals(): Collection
+    {
+        return $this->dossierMedicals;
+    }
+
+    public function addDossierMedical(DossierMedical $dossierMedical): static
+    {
+        if (!$this->dossierMedicals->contains($dossierMedical)) {
+            $this->dossierMedicals->add($dossierMedical);
+            $dossierMedical->setPatient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDossierMedical(DossierMedical $dossierMedical): static
+    {
+        if ($this->dossierMedicals->removeElement($dossierMedical)) {
+            // set the owning side to null (unless already changed)
+            if ($dossierMedical->getPatient() === $this) {
+                $dossierMedical->setPatient(null);
+            }
+        }
 
         return $this;
     }

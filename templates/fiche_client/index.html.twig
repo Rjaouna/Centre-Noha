@@ -71,12 +71,11 @@
 					<th>
 						<i class="bi bi-heart-pulse"></i>
 						Type maladie</th>
+					
 					<th>
-						<i class="bi bi-clock"></i>
-						Créé</th>
-					<th>
-						<i class="bi bi-pencil"></i>
-						Modifié</th>
+<i class="bi bi-folder"></i>
+
+						Gestion des dossiers</th>
 					<th class="text-center">
 						<i class="bi bi-gear"></i>
 						Actions</th>
@@ -89,26 +88,39 @@
 
 					<tr class=" {{ isConsulted }}">
 						<td class="fw-bold">{{ fiche_client.id }}</td>
-						<td class="fw-semibold">{{ fiche_client.nom }}</td>
+						<td class="fw-semibold"><a class="text-decoration-none text-secondary" href="{{ path('app_fiche_client_show', {'id': fiche_client.id}) }}">{{ fiche_client.nom }}</a></td>
 
 
-						<td>{{ fiche_client.ville }}</td>
-						<td>{{ fiche_client.telephone }}</td>
+						<td><a class="text-decoration-none text-secondary" href="{{ path('app_fiche_client_show', {'id': fiche_client.id}) }}">{{ fiche_client.ville }}</a></td>
+						<td><a class="text-decoration-none text-secondary" href="{{ path('app_fiche_client_show', {'id': fiche_client.id}) }}">{{ fiche_client.telephone }}</a></td>
 						<td>
 							<span class="badge bg-info  px-3 py-2 rounded-pill shadow-sm">
 								{{ fiche_client.typeMaladie }}
 							</span>
 						</td>
+					
 						<td>
-<span class="{{ isConsulted ? 'text-success' : 'text-muted' }}">{{ fiche_client.createdAt|date('d/m/Y H:i') }}</span>
+<a href="{{ path('app_dossier_medical_index', { id: fiche_client.id }) }}" class="btn btn-outline-{{ isConsulted ? 'success' : 'info' }} btn-sm px-3 rounded-pill shadow-sm detailsButton">
 
 
-						</td>
-						<td>
-<span class="{{ isConsulted ? 'text-success' : 'text-muted' }}">{{ fiche_client.updatedAt|date('d/m/Y H:i') }}</span>
+	<i class="bi bi-folder"></i>
+	{% if fiche_client.dossierMedicals|length > 0 %}
+
+		Voir les dossiers de suivi
+		<span class="text-warning">({{fiche_client.dossierMedicals|length}})</span>
+
+	{% else %}
+		Ajouter un dossier de suivi
+	{% endif %}
+
+
+</a>
 
 						</td>
 						<td class="text-center">
+
+
+
 <a href="{{ path('app_fiche_client_show', {'id': fiche_client.id}) }}" class="btn btn-outline-{{ isConsulted ? 'success' : 'info' }} btn-sm px-3 rounded-pill shadow-sm detailsButton">
 
 								<i class="bi bi-eye"></i>

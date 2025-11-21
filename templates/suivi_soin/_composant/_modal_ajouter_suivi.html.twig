@@ -1,0 +1,139 @@
+<!-- ===== MODAL AJOUT SUIVI ===== -->
+<div class="modal fade" id="modalAddSuivi" tabindex="-1">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content rounded-4 shadow-lg">
+
+			<div class="modal-header bg-primary text-white rounded-top-4">
+				<h5 class="modal-title fw-bold">
+					<i class="bi bi-clipboard-plus me-2"></i>
+					Nouveau suivi médical
+				</h5>
+				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+			</div>
+
+			<div class="modal-body p-4">
+
+				<form id="formAddSuivi">
+
+					<input type="hidden" id="patient_id" value="{{ patient.id }}">
+					<input type="hidden" id="dossier_id" value="{{ dossier.id }}">
+
+					<div class="form-floating mb-3">
+						<textarea id="suivi_diagnostic" class="form-control" style="height:120px;" placeholder="Diagnostic" required></textarea>
+						<label for="suivi_diagnostic">Diagnostic</label>
+					</div>
+
+					<button id="addSuivi" class="btn btn-primary w-100 rounded-pill py-2">
+						<i class="bi bi-check-circle"></i>
+						Enregistrer
+					</button>
+
+				</form>
+
+			</div>
+
+		</div>
+	</div>
+</div>
+
+ <script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    const form = document.getElementById("formAddSuivi");
+    const modal = new bootstrap.Modal(document.getElementById("modalAddSuivi"));
+    const addBtn = document.getElementById("addSuivi");
+
+    const patientId = document.getElementById("patient_id").value;
+    const dossierId = document.getElementById("dossier_id").value;
+
+    // Conteneur des cards
+    const cardContainer = document.querySelector("#cardsContainer");
+
+    form.addEventListener("submit", async e => {
+        e.preventDefault();
+
+        // Spinner + countdown
+        let seconds = 2;
+        addBtn.disabled = true;
+        addBtn.innerHTML = `
+            <span class="spinner-border spinner-border-sm me-2"></span>
+            Enregistrement... (${seconds}s)
+        `;
+
+        const countdown = setInterval(() => {
+            seconds--;
+            addBtn.innerHTML = `
+                <span class="spinner-border spinner-border-sm me-2"></span>
+                Enregistrement... (${seconds}s)
+            `;
+            if (seconds <= 0) clearInterval(countdown);
+        }, 1000);
+
+        // Payload
+        const payload = {
+            diagnostic: document.getElementById("suivi_diagnostic").value
+        };
+
+        // Url API
+        const apiUrl = `{{ path('api_suivi_create', { patientId: patient.id, dossierId: dossier.id }) }}`;
+
+        const res = await fetch(apiUrl, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("jwt_token")
+            },
+            body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+
+        if (!data.success) {
+            addBtn.innerHTML = `<i class="bi bi-x-circle"></i> Erreur`;
+            addBtn.classList.add("btn-danger");
+            return;
+        }
+
+        // 🔥 AJOUT INSTANTANÉ DE LA CARD DANS L’INTERFACE
+        const card = `
+            <div class="col-12 col-md-6 col-lg-4 fade-in">
+                <div class="card shadow-sm border-0 rounded-4 h-100">
+
+                    <div class="card-header bg-primary text-white rounded-top-4 d-flex align-items-center">
+                        <i class="bi bi-clipboard2-pulse fs-4 me-2"></i>
+                        <h5 class="mb-0 fw-bold">Diagnostic</h5>
+                    </div>
+
+                    <div class="card-body">
+                        <p class="card-text text-secondary mb-3">${data.diagnostic}</p>
+                        <div class="small text-muted">
+                            <i class="bi bi-clock-history"></i>
+                            Ajouté maintenant
+                        </div>
+                    </div>
+
+                    <div class="card-footer bg-light d-flex justify-content-end gap-2 rounded-bottom-4">
+                        <a href="#" class="btn btn-outline-danger btn-sm rounded-pill shadow-sm">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        `;
+
+        cardContainer.insertAdjacentHTML("afterbegin", card);
+
+        // RESET + FERMETURE DU MODAL APRÈS 5 secondes
+        setTimeout(() => {
+            form.reset();
+            modal.hide();
+            addBtn.disabled = false;
+            addBtn.innerHTML = `<i class="bi bi-check-circle"></i> Enregistrer`;
+        }, 2000);
+
+    });
+
+});
+</script>
+

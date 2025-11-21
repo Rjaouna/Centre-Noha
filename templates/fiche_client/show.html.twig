@@ -25,11 +25,31 @@
             <!-- BOUTONS -->
             <div class="d-flex flex-column flex-lg-row gap-2">
 
-                <button class="btn btn-outline-info btn-lg rounded-pill px-4 shadow-sm d-flex align-items-center gap-2"
+{# <button class="btn btn-outline-info btn-lg rounded-pill px-4 shadow-sm d-flex align-items-center gap-2"
+
+
                         data-bs-toggle="modal" data-bs-target="#modalAddRdv">
-                    <i class="bi bi-calendar-plus fs-4"></i>
-                    Donner un rendez-vous
-                </button>
+<i class="bi bi-calendar-plus fs-4"></i>
+
+</button>
+
+
+#}
+<a href="{{ path('app_dossier_medical_index', { id: fiche_client.id }) }}" class="btn btn-outline-primary btn-lg rounded-pill px-4 shadow-sm d-flex align-items-center gap-2">
+
+	<i class="bi bi-folder"></i>
+{% if fiche_client.dossierMedicals|length > 0 %}
+
+Voir les dossiers de suivi <span class="text-warning">({{fiche_client.dossierMedicals|length}})</span>
+
+{% else %}
+	Ajouter un dossier de suivi
+{% endif %}
+
+
+	
+</a>
+
 
                 <a href="#" 
                    class="btn btn-outline-primary btn-lg rounded-pill px-4 shadow-sm d-flex align-items-center gap-2"
@@ -41,20 +61,17 @@
 
 	<button type="button" class="btn btn-outline-primary  btn-lg rounded-pill shadow-sm dropdown-toggle px-4 d-flex align-items-center gap-2" data-bs-toggle="dropdown" aria-expanded="false">
 		<i class="bi bi-person-lines-fill"></i>
-		Actions patient
+Gestion de paiment
+
 	</button>
 
 	<ul class="dropdown-menu" style="">
-		<li>
-			<a class="dropdown-item" href="/suivi/soin/suivi-soin/423">
-
-				<i class="bi bi-clock-history me-2"></i>
-				Historique des soins
-			</a>
-		</li>
+	
 
 		<li>
-			<a class="dropdown-item" href="/paiement/suivi-paiement/423">
+<a class="dropdown-item" href="{{path('app_paiement_index',{id: fiche_client.id})}}">
+
+
 
 
 				<i class="bi bi-clock-history me-2"></i>

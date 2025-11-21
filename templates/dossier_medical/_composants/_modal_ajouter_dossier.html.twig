@@ -1,0 +1,166 @@
+<div class="modal fade" id="modalAddDossier" tabindex="-1">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content rounded-4 shadow-lg">
+
+			<div class="modal-header bg-primary text-white rounded-top-4">
+				<h5 class="modal-title fw-bold">
+					<i class="bi bi-folder-plus me-2"></i>
+					Nouveau dossier médical
+				</h5>
+				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+			</div>
+
+			<div class="modal-body p-4">
+				<form id="formAddDossier">
+
+					<input
+					type="hidden" id="patient_id" value="{{ patient.id }}">
+
+					<!-- SELECT TITRE -->
+					<div class="form-floating mb-3">
+						<select id="dossier_titre" class="form-select" required>
+							<option value="" selected disabled>Choisir un titre</option>
+							<option value="Suivi général">Suivi général</option>
+							<option value="Diagnostic">Diagnostic</option>
+							<option value="Analyse">Analyse</option>
+							<option value="Conseil">Conseil</option>
+							<option value="Traitement">Traitement</option>
+							<option value="Autre">Autre (spécifier)</option>
+						</select>
+						<label for="dossier_titre">Titre du dossier</label>
+					</div>
+
+					<!-- AUTRE TITRE -->
+					<div class="form-floating mb-3 d-none" id="autreTitreWrapper">
+						<input type="text" id="autre_titre" class="form-control" placeholder="Autre titre">
+						<label for="autre_titre">Précisez le titre</label>
+					</div>
+
+					<!-- DESCRIPTION -->
+					<div class="form-floating mb-3">
+						<textarea id="dossier_description" class="form-control" style="height:120px;" placeholder="Description"></textarea>
+						<label for="dossier_description">Description</label>
+					</div>
+
+					<!-- BOUTON -->
+					<button id="addDossier" class="btn btn-primary w-100 rounded-pill py-2">
+						<i class="bi bi-check-circle"></i>
+						Enregistrer
+					</button>
+
+				</form>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+ <script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    const form = document.getElementById("formAddDossier");
+    const modal = new bootstrap.Modal(document.getElementById("modalAddDossier"));
+    const addDossier = document.querySelector("#addDossier");
+
+    const selectTitre = document.getElementById("dossier_titre");
+    const otherWrapper = document.getElementById("autreTitreWrapper");
+    const otherInput = document.getElementById("autre_titre");
+
+    // ==============================
+    // 🟦 AFFICHAGE DU CHAMP AUTRE
+    // ==============================
+    selectTitre.addEventListener("change", () => {
+        if (selectTitre.value === "Autre") {
+            otherWrapper.classList.remove("d-none");
+            otherInput.required = true;
+            otherInput.focus();
+        } else {
+            otherWrapper.classList.add("d-none");
+            otherInput.required = false;
+            otherInput.value = "";
+        }
+    });
+
+    // ===================================
+    // 🟩 SUBMIT FORMULAIRE + COUNTDOWN 5s
+    // ===================================
+    form.addEventListener("submit", async e => {
+        e.preventDefault();
+
+        // Déterminer le vrai titre
+        const titre =
+            (selectTitre.value === "Autre")
+                ? otherInput.value
+                : selectTitre.value;
+
+        const payload = {
+            titre: titre,
+            description: document.getElementById("dossier_description").value
+        };
+
+        const apiUrl = `{{ path('api_dossier_medical_create', { id: patient.id }) }}`;
+
+        // Désactiver bouton
+        addDossier.disabled = true;
+
+        let seconds = 5;
+
+        addDossier.innerHTML = `
+            <span class="spinner-border spinner-border-sm me-2"></span>
+            Création du dossier... (${seconds}s)
+        `;
+
+        // Countdown
+        const countdown = setInterval(() => {
+            seconds--;
+            addDossier.innerHTML = `
+                <span class="spinner-border spinner-border-sm me-2"></span>
+                Création du dossier... (${seconds}s)
+            `;
+
+            if (seconds <= 0) {
+                clearInterval(countdown);
+
+                // 🔥 Reset + fermeture modal
+                form.reset();
+                otherWrapper.classList.add("d-none");
+
+                modal.hide();
+
+                // Retour au bouton normal
+                addDossier.innerHTML = `
+                    <i class="bi bi-check-circle"></i>
+                    Enregistrer
+                `;
+                addDossier.disabled = false;
+            }
+        }, 1000);
+
+
+        // =======================
+        // 🟧 Envoi API
+        // =======================
+        const res = await fetch(apiUrl, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("jwt_token")
+            },
+            body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+
+        if (!data.success) {
+            clearInterval(countdown);
+            addDossier.disabled = false;
+            addDossier.innerHTML = `
+                <i class="bi bi-exclamation-triangle"></i> Erreur
+            `;
+            return;
+        }
+    });
+
+});
+</script>
+
