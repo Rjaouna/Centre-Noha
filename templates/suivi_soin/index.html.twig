@@ -126,7 +126,6 @@
 			</div>
 		</div>
 
-	</div>
 
 	<!-- DATATABLES FIX -->
 	 <script>
@@ -141,6 +140,9 @@
 	            pageLength: 10,
 	            order: [[2, "desc"]], // tri par date soin
 	            responsive: true
+				columnDefs: [
+    { defaultContent: "-", targets: "_all" }
+]
 	        });
 	    }
 	
