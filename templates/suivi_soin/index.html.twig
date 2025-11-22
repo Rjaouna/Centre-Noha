@@ -173,12 +173,59 @@
 	{% endfor %}
 
 </div>
+<!-- Modal Confirmation Suppression -->
+<div class="modal fade" id="modalConfirmDelete" tabindex="-1">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content rounded-4 shadow">
+
+			<div class="modal-header bg-danger text-white rounded-top-4">
+				<h5 class="modal-title fw-bold">
+					<i class="bi bi-exclamation-triangle me-2"></i>
+					Confirmer la suppression
+				</h5>
+				<button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+			</div>
+
+			<div class="modal-body">
+				<p class="mb-0">
+					Voulez-vous vraiment supprimer ce suivi ?<br>
+					<strong>Cette action est irréversible.</strong>
+				</p>
+			</div>
+
+			<div class="modal-footer">
+				<button class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Annuler</button>
+				<button id="confirmDeleteBtn" class="btn btn-danger rounded-pill">
+					Supprimer
+				</button>
+			</div>
+
+		</div>
+	</div>
+</div>
+
 
 
 <script>
-async function deleteSuivi(id, element) {
+let pendingDelete = {
+    id: null,
+    element: null
+};
 
-    // Twig génère une URL modèle, on remplace juste la partie "replace_id" en JS
+async function deleteSuivi(id, element) {
+    // On stocke temporairement les infos pour confirmation
+    pendingDelete.id = id;
+    pendingDelete.element = element;
+
+    const modal = new bootstrap.Modal(document.getElementById("modalConfirmDelete"));
+    modal.show();
+}
+
+// Quand l’utilisateur confirme :
+document.getElementById("confirmDeleteBtn").addEventListener("click", async () => {
+
+    const { id, element } = pendingDelete;
+
     const url = `{{ path('api_suivi_delete', {id : 'replace_id'}) }}`.replace("replace_id", id);
 
     const res = await fetch(url, {
@@ -188,25 +235,25 @@ async function deleteSuivi(id, element) {
         }
     });
 
-    let text = await res.text();
-    console.log("Réponse brute :", text);
-
+    const text = await res.text();
     let data;
     try {
         data = JSON.parse(text);
     } catch (e) {
-        console.error(e);
         alert("Erreur interne du serveur");
         return;
     }
 
     if (data.success) {
+        // Animation de suppression
         element.classList.add("fade-out");
         setTimeout(() => element.remove(), 300);
+
+        bootstrap.Modal.getInstance(document.getElementById("modalConfirmDelete")).hide();
     } else {
         alert("Erreur : " + data.message);
     }
-}
+});
 
 </script>
 
