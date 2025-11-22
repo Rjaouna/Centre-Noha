@@ -5,6 +5,76 @@
 {% endblock %}
 
 {% block body %}
+<style>
+.timeline-container {
+    position: relative;
+    padding-left: 40px;
+    margin-top: 20px;
+}
+
+.timeline-container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 15px;
+    width: 4px;
+    height: 100%;
+    background: rgba(13, 110, 253, 0.2); /* Bleu Bootstrap */
+    border-radius: 4px;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 40px;
+}
+
+.timeline-marker {
+    position: absolute;
+    left: 7px;
+    width: 18px;
+    height: 18px;
+    background: #0d6efd; /* Bleu Bootstrap */
+    border: 3px solid #fff;
+    border-radius: 50%;
+    z-index: 2;
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.3);
+}
+
+.timeline-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    margin-left: 25px;
+    transition: 0.2s ease-in-out;
+}
+
+.timeline-content:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+.timeline-header {
+    display: flex;
+    align-items: center;
+
+}
+.fade-in {
+	animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+	from { opacity: 0; transform: translateY(10px); }
+	to { opacity: 1; transform: translateY(0); }
+}
+.fade-out {
+    opacity: 0;
+    transition: 0.3s ease;
+    transform: translateX(-20px);
+}
+
+</style>
+{{ include('suivi_soin/_composant/_modal_ajouter_suivi.html.twig') }}
+
 
 	<div
 		class="container-fluid mt-4">
@@ -34,20 +104,24 @@
 					</div>
 
 					<!-- BOUTONS -->
-					<div class="col-12 col-md-4 d-flex justify-content-md-end justify-content-center gap-2">
-<!-- Bouton Ajouter un suivi -->
-<button class="btn btn-outline-primary btn-lg rounded-pill px-4 shadow-sm" data-bs-toggle="modal" data-bs-target="#modalAddSuivi">
-	<i class="bi bi-clipboard-plus fs-4"></i>
-	Nouveau suivi
-</button>
+<div
+	class="col-12 col-md-4 d-flex flex-column flex-md-row justify-content-md-end justify-content-center gap-2">
+
+	<!-- Bouton Ajouter -->
+	<button class="btn btn-outline-primary btn-lg rounded-pill px-4 shadow-sm w-100 w-md-auto" data-bs-toggle="modal" data-bs-target="#modalAddSuivi">
+		<i class="bi bi-clipboard-plus fs-4"></i>
+		Nouveau suivi
+	</button>
+
+	<!-- Bouton Retour -->
+	<a href="{{ path('app_dossier_medical_index', { id: patient.id }) }}" class="btn btn-outline-secondary btn-lg rounded-pill px-4 shadow-sm w-100 w-md-auto">
+		<i class="bi bi-arrow-left"></i>
+		Retour
+	</a>
+
+</div>
 
 
-						<a href="{{ path('app_dossier_medical_index', { id: patient.id }) }}" class="btn btn-outline-secondary btn-lg rounded-pill px-4 shadow-sm">
-							<i class="bi bi-arrow-left"></i>
-							Retour
-						</a>
-
-					</div>
 
 				</div>
 
@@ -56,62 +130,85 @@
 
 	</div>
 
-{{ include('suivi_soin/_composant/_modal_ajouter_suivi.html.twig') }}
 
 
 	<!-- ===== TABLEAU DES SUIVIS ===== -->
-<div class="row g-4" id="cardsContainer">
+<div class="timeline-container">
+
 	{% for suivi in suivis %}
+		<div class="timeline-item">
+			<div class="timeline-marker"></div>
 
+			<div class="timeline-content shadow-sm rounded-4">
 
-		<div class="col-12 col-md-6 col-lg-4">
-			<div
-				class="card shadow-sm border-0 rounded-4 h-100">
-
-				<!-- HEADER -->
-				<div class="card-header bg-primary text-white rounded-top-4 d-flex align-items-center">
-					<i class="bi bi-clipboard2-pulse fs-4 me-2"></i>
-					<h5 class="mb-0 fw-bold">Diagnostic</h5>
+				<div class="timeline-header">
+					<i class="bi bi-clipboard2-pulse text-primary fs-4 me-2"></i>
+					<h5 class="mb-0 fw-bold text-primary">Diagnostic</h5>
 				</div>
 
-				<!-- BODY -->
-				<div class="card-body">
+				<p class="text-secondary mt-3">{{ suivi.diagnostic }}</p>
 
-					<p class="card-text text-secondary mb-3">
-						{{ suivi.diagnostic }}
-					</p>
-
-					<div class="d-flex flex-column small text-muted">
-						<span>
-							<i class="bi bi-clock-history me-1"></i>
-							Créé :
-							<strong>{{ suivi.createdAt|date('d/m/Y H:i') }}</strong>
-						</span>
-					</div>
-
+				<div class="timeline-meta text-muted small mt-2">
+					<i class="bi bi-clock-history me-1"></i>
+					{{ suivi.createdAt|date('d/m/Y H:i') }}
 				</div>
 
-				<!-- FOOTER -->
-				<div class="card-footer bg-light d-flex justify-content-end gap-2 rounded-bottom-4">
+				<div class="mt-3 text-end">
+<a href="#" onclick="deleteSuivi({{ suivi.id }}, this.closest('.timeline-item'))" class="btn btn-outline-danger btn-sm rounded-pill">
 
-					<a href="#" class="btn btn-outline-danger btn-sm rounded-pill shadow-sm">
+
+
+
 						<i class="bi bi-trash"></i>
 					</a>
-
 				</div>
 
 			</div>
 		</div>
 
 	{% else %}
-		<div class="col-12">
-			<div class="alert alert-info text-center rounded-pill py-3">
-				Aucun suivi enregistré pour ce dossier.
-			</div>
+		<div id="noData" class="alert alert-info text-center rounded-pill py-3 mt-4">
+			Aucun suivi enregistré pour ce dossier.
 		</div>
 	{% endfor %}
+
 </div>
 
+
+<script>
+async function deleteSuivi(id, element) {
+
+    // Twig génère une URL modèle, on remplace juste la partie "replace_id" en JS
+    const url = `{{ path('api_suivi_delete', {id : 'replace_id'}) }}`.replace("replace_id", id);
+
+    const res = await fetch(url, {
+        method: "DELETE",
+        headers: {
+            "Authorization": "Bearer " + localStorage.getItem("jwt_token")
+        }
+    });
+
+    let text = await res.text();
+    console.log("Réponse brute :", text);
+
+    let data;
+    try {
+        data = JSON.parse(text);
+    } catch (e) {
+        console.error(e);
+        alert("Erreur interne du serveur");
+        return;
+    }
+
+    if (data.success) {
+        element.classList.add("fade-out");
+        setTimeout(() => element.remove(), 300);
+    } else {
+        alert("Erreur : " + data.message);
+    }
+}
+
+</script>
 
 
 {% endblock %}
