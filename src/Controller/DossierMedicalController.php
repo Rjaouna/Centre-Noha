@@ -62,6 +62,7 @@ final class DossierMedicalController extends AbstractController
                 'description' => $d->getDescription(),
                 'createdAt' => $d->getCreatedAt()?->format('Y-m-d H:i'),
                 'updatedAt' => $d->getUpdatedAt()?->format('Y-m-d H:i'),
+                'suiviCount' => $d->getSuiviSoins()->count()
             ];
         }
 

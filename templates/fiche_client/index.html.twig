@@ -100,7 +100,9 @@
 						</td>
 					
 						<td>
-<a href="{{ path('app_dossier_medical_index', { id: fiche_client.id }) }}" class="btn btn-outline-{{ isConsulted ? 'success' : 'info' }} btn-sm px-3 rounded-pill shadow-sm detailsButton">
+<a href="{{ path('app_dossier_medical_index', { id: fiche_client.id }) }}" class="btn btn-link-{{ isConsulted ? 'success' : 'info' }} btn-sm px-3 rounded-pill shadow-sm detailsButton">
+
+
 
 
 	<i class="bi bi-folder"></i>
@@ -165,75 +167,7 @@
 {{ parent() }}
 
 
-	 <script>
-		    document.addEventListener("DOMContentLoaded", () => {
-		
-		       
-		
-		        // Boutons "Voir" avec son
-		        document.querySelectorAll(".detailsButton").forEach((btn, i) => {
-		            btn.id = "detailsButton-" + i;
-		            buttonSoundClick(btn.id);
-		        });
-		
-		        // Soumission AJAX du form
-		        const form = document.getElementById("ficheForm");
-		        const pop = document.getElementById("popupSuccess");
-		        const modal = new bootstrap.Modal(document.getElementById('modalAddClient'));
-		
-		        form.addEventListener("submit", async function (e) {
-		            e.preventDefault();
-		
-		            const fd = new FormData(form);
-		            const data = {};
-		
-		            fd.forEach((v, k) => data[k.replace('fiche_client[', '').replace(']', '')] = v);
-		
-		            try {
-		                const res = await fetch("{{ path('app_fiche_client_new') }}", {
-		                    method: "POST",
-		                    headers: { "Content-Type": "application/json", "X-Requested-With": "XMLHttpRequest" },
-		                    body: JSON.stringify(data)
-		                });
-		
-		                const txt = await res.text();
-		
-		                if (!res.ok) {
-		                    buttonSoundError("buttonSave");
-		                    showFlashError("Erreur lors de l’enregistrement !");
-		                    return;
-		                }
-		
-		                let result = JSON.parse(txt);
-		
-		                buttonSoundSuccess("buttonSave");
-		
-		                pop.innerHTML = `
-		                    <div class="d-flex align-items-start">
-		                        <i class="bi bi-check-circle-fill fs-1 text-white bg-success p-2 rounded-circle me-3"></i>
-		                        <div>
-		                            <h5 class="fw-bold mb-1">Patient ajouté avec succès ! 🎉</h5>
-		                            <p class="mb-1">Le nouveau patient a été bien enregistré.</p>
-		                        </div>
-		                        <button type="button" class="btn-close"></button>
-		                    </div>
-		                `;
-		
-		                pop.style.display = "block";
-		
-		                form.reset();
-		                modal.hide();
-		            }
-		            catch (err) {
-		                console.error(err);
-		                showFlashError("Erreur inconnue");
-		                buttonSoundError("buttonSave");
-		            }
-		        });
-		
-		        enableShakeLoop("fiche_client_telephone");
-		    });
-		    </script>
+	
  <script>
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -244,6 +178,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const pop   = document.getElementById("popupSuccess");
     const modal = new bootstrap.Modal(document.getElementById('modalAddClient'));
 const routeShowPatient = "{{ path('app_fiche_client_show', {'id': 0}) }}".replace('/0', '');
+
 
 
 

@@ -38,54 +38,51 @@
 
 {% block javascripts %}
 
-	 <script>
+ <script>
 	document.addEventListener("DOMContentLoaded", () => {
-	
+
 	    const form = document.getElementById("formAddSuivi");
-	
-	    // Le modal existe forcément car il est INCLUS avant ce script
+
 	    const modalElement = document.getElementById("modalAddSuivi");
 	    const modal = new bootstrap.Modal(modalElement);
-	
-	    // Bouton enregistrer
+
 	    const addBtn = document.getElementById("addSuivi");
-	
-	    // Vérification sécurité
+
 	    if (!addBtn) {
 	        console.error("❌ ERREUR : Le bouton #addSuivi n'existe pas dans le DOM.");
 	        return;
 	    }
-	
+
 	    const timeline = document.querySelector(".timeline-container");
-	
+
 	    form.addEventListener("submit", async (e) => {
 	        e.preventDefault();
-	
+
 	        // Spinner + countdown
 	        let seconds = 2;
 	        addBtn.disabled = true;
 	        addBtn.innerHTML = `
 	            <span class="spinner-border spinner-border-sm me-2"></span>
-	            Enregistrement... (${seconds}s)
+	            Création de suivi en cours... (${seconds}s)
 	        `;
-	
+
 	        const countdown = setInterval(() => {
 	            seconds--;
 	            addBtn.innerHTML = `
 	                <span class="spinner-border spinner-border-sm me-2"></span>
-	                Enregistrement... (${seconds}s)
+                    Création de suivi en cours... (${seconds}s)
+
 	            `;
 	            if (seconds <= 0) clearInterval(countdown);
 	        }, 1000);
-	
+
 	        // Payload
 	        const payload = {
 	            diagnostic: document.getElementById("suivi_diagnostic").value
 	        };
-	
-	        // API URL
+
 	        const apiUrl = `{{ path('api_suivi_create', { patientId: patient.id, dossierId: dossier.id }) }}`;
-	
+
 	        const res = await fetch(apiUrl, {
 	            method: "POST",
 	            headers: {
@@ -94,63 +91,69 @@
 	            },
 	            body: JSON.stringify(payload)
 	        });
-	
+
 	        const data = await res.json();
-	
+
 	        if (!data.success) {
 	            addBtn.innerHTML = `<i class="bi bi-x-circle"></i> Erreur`;
 	            addBtn.classList.add("btn-danger");
 	            return;
 	        }
-	
-	        // Supprimer le message "Aucun suivi"
+
+	        // 🔹 data.id doit être renvoyé par l'API
+	        if (!data.id) {
+	            console.error("L'API ne renvoie pas l'id du suivi créé.");
+	            return;
+	        }
+
+	        // Cacher le message "Aucun suivi"
 	        const noData = document.getElementById("noData");
-	        if (noData) noData.remove();
-	
-	        // Création du nouvel item timeline 🚀
+	        if (noData) noData.classList.add("d-none");
+
+	        // ✨ Nouvel élément timeline avec bouton supprimer qui appelle deleteSuivi(...)
 	        const newItem = `
 	            <div class="timeline-item fade-in">
 	                <div class="timeline-marker"></div>
-	
+
 	                <div class="timeline-content shadow-sm rounded-4">
-	
+
 	                    <div class="timeline-header">
 	                        <i class="bi bi-clipboard2-pulse text-primary fs-4 me-2"></i>
 	                        <h5 class="mb-0 fw-bold text-primary">Diagnostic</h5>
 	                    </div>
-	
+
 	                    <p class="text-secondary mt-3">${data.diagnostic}</p>
-	
+
 	                    <div class="timeline-meta text-muted small mt-2">
 	                        <i class="bi bi-clock-history me-1"></i>
 	                        Ajouté maintenant
 	                    </div>
-	
+
 	                    <div class="mt-3 text-end">
-	                        <a href="#" class="btn btn-outline-danger btn-sm rounded-pill">
+	                        <a href="#"
+	                           onclick="deleteSuivi(${data.id}, this.closest('.timeline-item'))"
+	                           class="btn btn-outline-danger btn-sm rounded-pill">
 	                            <i class="bi bi-trash"></i>
 	                        </a>
 	                    </div>
-	
+
 	                </div>
 	            </div>
 	        `;
-	
-	        // Ajout au début de la timeline
+
 	        timeline.insertAdjacentHTML("afterbegin", newItem);
-	
-	        // Reset & fermeture modal
+
 	        setTimeout(() => {
 	            form.reset();
 	            modal.hide();
 	            addBtn.disabled = false;
 	            addBtn.innerHTML = `<i class="bi bi-check-circle"></i> Enregistrer`;
 	        }, 2000);
-	
 	    });
-	
+
 	});
 	</script>
+
 
 {% endblock %}
 

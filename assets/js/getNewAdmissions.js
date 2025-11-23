@@ -1,117 +1,117 @@
-const NOTIFICATION_DURATION = 8000; // 8000 ms = 8 sec
+// const NOTIFICATION_DURATION = 8000; // 8000 ms = 8 sec
 
-export async function getNewAdmissions() {
-    const url = window.ADMISSIONS_URL;
-    const notifications = document.getElementById("notifications");
+// export async function getNewAdmissions() {
+//     const url = window.ADMISSIONS_URL;
+//     const notifications = document.getElementById("notifications");
 
-    if (!notifications) return;
+//     if (!notifications) return;
 
-    try {
-        const response = await fetch(url, {
-            method: "GET",
-            headers: { Accept: "application/json" },
-            credentials: "same-origin",
-        });
+//     try {
+//         const response = await fetch(url, {
+//             method: "GET",
+//             headers: { Accept: "application/json" },
+//             credentials: "same-origin",
+//         });
 
-        if (!response.ok) throw new Error("Erreur serveur");
+//         if (!response.ok) throw new Error("Erreur serveur");
 
-        const data = await response.json();
+//         const data = await response.json();
 
-        notifications.replaceChildren(); // On vide
+//         notifications.replaceChildren(); // On vide
 
-        // 🟡 Aucun nouveau patient
-        if (!data.success || !data.admissions || data.admissions.length === 0) {
-            return; // On ne crée aucune notification
-        }
+//         // 🟡 Aucun nouveau patient
+//         if (!data.success || !data.admissions || data.admissions.length === 0) {
+//             return; // On ne crée aucune notification
+//         }
 
-        // 🟢 Traitement des admissions
-        data.admissions.forEach((element) => {
-            const notif = document.createElement("div");
+//         // 🟢 Traitement des admissions
+//         data.admissions.forEach((element) => {
+//             const notif = document.createElement("div");
 
-            notif.classList.add(
-                "notif-item",
-                "bg-success",
-                "text-white",
-                "p-3",
-                "rounded-3",
-                "shadow"
-            );
+//             notif.classList.add(
+//                 "notif-item",
+//                 "bg-success",
+//                 "text-white",
+//                 "p-3",
+//                 "rounded-3",
+//                 "shadow"
+//             );
 
-            notif.innerHTML = `
-                <p class="notif-title mb-1 d-flex justify-content-between align-items-center">
-                    <span>
-                        ${element.nom} —
-                        <span class="text-light opacity-75">
-                            ${element.typeMaladie ?? "Non spécifié"}
-                        </span>
-                    </span>
-                </p>
+//             notif.innerHTML = `
+//                 <p class="notif-title mb-1 d-flex justify-content-between align-items-center">
+//                     <span>
+//                         ${element.nom} —
+//                         <span class="text-light opacity-75">
+//                             ${element.typeMaladie ?? "Non spécifié"}
+//                         </span>
+//                     </span>
+//                 </p>
 
-                <small class="notif-details">
-                    <i>Nouvelle admission</i> :
-                    ${new Date().toLocaleString()}
-                </small>
-            `;
+//                 <small class="notif-details">
+//                     <i>Nouvelle admission</i> :
+//                     ${new Date().toLocaleString()}
+//                 </small>
+//             `;
 
-            playSuccessSound();
+//             playSuccessSound();
 
-            notifications.appendChild(notif);
+//             notifications.appendChild(notif);
 
-            // Disparition automatique
-            setTimeout(() => {
-                notif.classList.add("fade-out");
-                setTimeout(() => notif.remove(), 700);
-            }, NOTIFICATION_DURATION);
-        });
-    } catch (error) {
-        console.error("Erreur getNewAdmissions():", error);
-    }
-}
+//             // Disparition automatique
+//             setTimeout(() => {
+//                 notif.classList.add("fade-out");
+//                 setTimeout(() => notif.remove(), 700);
+//             }, NOTIFICATION_DURATION);
+//         });
+//     } catch (error) {
+//         console.error("Erreur getNewAdmissions():", error);
+//     }
+// }
 
-export async function validateAllAdmissions() {
-    const res = await fetch("/api/plugins/admission/validate-all", {
-        method: "POST",
-    });
+// export async function validateAllAdmissions() {
+//     const res = await fetch("/api/plugins/admission/validate-all", {
+//         method: "POST",
+//     });
 
-    const json = await res.json();
+//     const json = await res.json();
 
-    if (json.success) {
-        // nettoyer le DOM
-        document.getElementById("notifications").innerHTML = "";
-    }
-}
+//     if (json.success) {
+//         // nettoyer le DOM
+//         document.getElementById("notifications").innerHTML = "";
+//     }
+// }
 
-export function jsLog(message) {
-    const consoleDiv = document.getElementById("js-console");
-    if (!consoleDiv) return;
+// export function jsLog(message) {
+//     const consoleDiv = document.getElementById("js-console");
+//     if (!consoleDiv) return;
 
-    // 🔥 Conversion propre (évite undefined, object, etc.)
-    let text = "";
+//     // 🔥 Conversion propre (évite undefined, object, etc.)
+//     let text = "";
 
-    if (typeof message === "object") {
-        text = JSON.stringify(message, null, 2);
-    } else if (message === undefined) {
-        text = "undefined";
-    } else {
-        text = String(message);
-    }
+//     if (typeof message === "object") {
+//         text = JSON.stringify(message, null, 2);
+//     } else if (message === undefined) {
+//         text = "undefined";
+//     } else {
+//         text = String(message);
+//     }
 
-    const line = document.createElement("div");
-    line.textContent = `[${new Date().toLocaleTimeString()}] ${text}`;
-    consoleDiv.appendChild(line);
+//     const line = document.createElement("div");
+//     line.textContent = `[${new Date().toLocaleTimeString()}] ${text}`;
+//     consoleDiv.appendChild(line);
 
-    consoleDiv.scrollTop = consoleDiv.scrollHeight;
-}
+//     consoleDiv.scrollTop = consoleDiv.scrollHeight;
+// }
 
-async function refreshAdmissions() {
-    await getNewAdmissions();
+// // async function refreshAdmissions() {
+// //     await getNewAdmissions();
 
-    // attendre la fin de l'affichage des notifications
-    await new Promise((resolve) => {
-        setTimeout(resolve, NOTIFICATION_DURATION + 800);
-    });
+// //     // attendre la fin de l'affichage des notifications
+// //     await new Promise((resolve) => {
+// //         setTimeout(resolve, NOTIFICATION_DURATION + 800);
+// //     });
 
-    await setInterval(validateAllAdmissions, 30000);
-}
+// //     await setInterval(validateAllAdmissions, 30000);
+// // }
 
-setInterval(refreshAdmissions, NOTIFICATION_DURATION + 1500);
+// // setInterval(refreshAdmissions, NOTIFICATION_DURATION + 1500);
