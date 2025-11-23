@@ -1,46 +1,36 @@
 <!-- ============================= -->
-<!-- 🔥 SECTION ANALYTIQUE        -->
+<!-- 🔥 SECTION ANALYTIQUE -->
 <!-- ============================= -->
+
 	<style>
 /* ===== TIMELINE WITH SCROLL ===== */
 .timeline-wrapper {
-	max-height: 250px; /* même hauteur que les charts */
+	max-height: 500px;
 	overflow-y: auto;
 	padding-right: 10px;
 }
-
-/* Scrollbar élégante */
 .timeline-wrapper::-webkit-scrollbar {
 	width: 6px;
 }
-
 .timeline-wrapper::-webkit-scrollbar-thumb {
 	background: #cfd3d7;
 	border-radius: 10px;
 }
-
 .timeline-wrapper::-webkit-scrollbar-track {
 	background: transparent;
 }
 
-/* ===== TIMELINE STRUCTURE ===== */
+/* TIMELINE */
 .timeline {
 	border-left: 6px solid #ddd;
 	padding-left: 20px;
 	margin-top: 10px;
-	position: relative;
 }
-
 .timeline-item {
 	position: relative;
 	padding-bottom: 20px;
 	margin-bottom: 20px;
 }
-
-.timeline-item:last-child {
-	margin-bottom: 0;
-}
-
 .timeline-dot {
 	width: 16px;
 	height: 16px;
@@ -49,10 +39,7 @@
 	left: -29px;
 	top: 2px;
 	border: 3px solid #fff;
-	box-shadow: 0 0 6px rgba(0, 0, 0, 0.15);
 }
-
-/* Statuts colorés */
 .dot-confirmed {
 	background: #28a745;
 }
@@ -66,122 +53,167 @@
 	background: #0d6efd;
 }
 
-/* Texte */
 .timeline-title {
 	font-size: 1rem;
 	font-weight: 600;
 }
-
 .timeline-details {
 	font-size: 0.85rem;
 	color: #6c757d;
 }
 
-/* ===== CHART SIZE FIX ===== */
+/* CHARTS */
 .chart-container {
-	height: 200px !important;
+	height: 180px !important;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 }
-
 canvas {
-	max-height: 180px !important;
+	max-height: 160px !important;
+}
+
+/* TITRES */
+.block-title {
+	font-size: 1.1rem;
+	font-weight: bold;
+	color: var(--bs-primary);
+	text-align: center;
+	margin-bottom: 10px;
+}
+
+/* LÉGENDES EN POINTS */
+.legend-dots {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 8px;
+	margin-top: 8px;
+}
+.legend-item {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	font-size: 0.8rem;
+	color: #555;
+}
+.legend-color {
+	width: 12px;
+	height: 12px;
+	border-radius: 50%;
+	display: inline-block;
 }
 </style>
 
 
-	<div class="container mt-3 px-0"> <div
-		class="row g-4">
+	<div class="container mt-3 px-0"> <div class="row g-4">
 
-		<!-- 🟦 CAMEMBERTS (9 colonnes) -->
-		<div class="col-lg-9">
-			<div class="card shadow-lg border-0 rounded-4 p-4">
+		<!-- ============================= -->
+		<!-- 🟦 STATS GRAPHIQUES -->
+		<!-- ============================= -->
+			<div class="col-lg-9"> <div class="card shadow-lg border-0 rounded-4 p-4">
 
 				<h4 class="fw-bold text-primary mb-3 d-flex align-items-center">
-					<i class="bi bi-pie-chart-fill me-2"></i>
+					<i class="bi bi-bar-chart-fill me-2"></i>
 					Statistiques graphiques
 				</h4>
+
 				<hr>
 
+				<!-- 🔥 3 CAMEMBERTS SUR UNE LIGNE -->
 				<div
-					class="row text-center">
+					class="row text-center mb-4">
 
-					<!-- CAMEMBERT 1 -->
-					<div class="col-md-6 mb-4">
-						<h6 class="fw-bold text-secondary mb-2">Types de maladies</h6>
+					<!-- Paiements -->
+					<div class="col-md-4 mb-4">
+						<h6 class="block-title">Répartition des paiements</h6>
+						<div class="chart-container">
+							<canvas id="chartPaiements"></canvas>
+						</div>
+						<div id="legendPaiements" class="legend-dots"></div>
+					</div>
+
+					<!-- Types de maladies -->
+					<div class="col-md-4 mb-4">
+						<h6 class="block-title">Types de maladies</h6>
 						<div class="chart-container">
 							<canvas id="chartPieMaladies"></canvas>
 						</div>
+						<div id="legendMaladies" class="legend-dots"></div>
 					</div>
 
-					<!-- CAMEMBERT 2 -->
-					<div class="col-md-6 mb-4">
-						<h6 class="fw-bold text-secondary mb-2">Symptômes généraux</h6>
+					<!-- Symptômes -->
+					<div class="col-md-4 mb-4">
+						<h6 class="block-title">Symptômes généraux</h6>
 						<div class="chart-container">
 							<canvas id="chartSymptomes"></canvas>
 						</div>
+						<div id="legendSymptomes" class="legend-dots"></div>
 					</div>
 
+				</div>
+
+				<hr
+				class="my-4">
+
+				<!-- 📊 Clients par jour -->
+				<h6 class="block-title">Clients passés par jour</h6>
+				<div style="height:280px;">
+					<canvas id="chartClientsPerDay"></canvas>
 				</div>
 
 			</div>
 		</div>
 
-		<!-- 🟩 RDV (3 colonnes) -->
-<div class="col-lg-3 mb-2">
+		<!-- ============================= -->
+		<!-- 🟩 RDV D’AUJOURD’HUI -->
+		<!-- ============================= -->
+			<div class="col-lg-3 mb-2"> <div class="card shadow-lg border-0 rounded-4 p-4">
 
+				<h4 class="fw-bold text-primary mb-2 d-flex align-items-center">
+					<i class="bi bi-clock-history me-2"></i>
+					RDV d’aujourd’hui
+				</h4>
+				<hr>
 
-	<div class="card shadow-lg border-0 rounded-4 p-4">
+				<div class="timeline-wrapper">
+					<div class="timeline">
 
-<h4 class="fw-bold text-primary  mb-2 d-flex align-items-center">
+						{% for rdv in rdvs %}
+							{% set statut = rdv.statut|lower %}
+							{% set dotClass =
+								statut == 'confirmé' ? 'dot-confirmed' :
+								(statut == 'annulé' ? 'dot-canceled' :
+								(statut == 'en attente' ? 'dot-pending' : 'dot-default'))
+							%}
 
-			<i class="bi bi-clock-history me-2"></i>
-			RDV d’aujourd’hui
-		</h4>
-		<hr>
+							<div class="timeline-item">
+								<span class="timeline-dot {{ dotClass }}"></span>
 
-		<div class="timeline-wrapper">
-			<div class="timeline">
+								<p class="timeline-title mb-1 d-flex justify-content-between align-items-center">
+									<span>
+										{{ rdv.client.nom }}
+										—
+										<span class="text-muted">{{ rdv.motif ?? "Sans motif" }}</span>
+									</span>
+									<a href="#" class="btn btn-success btn-sm rounded-pill px-3 py-1 btn-validate-rdv" data-id="{{ rdv.id }}">
+										<i class="bi bi-check-circle"></i>
+									</a>
+								</p>
 
-				{% for rdv in rdvs %}
-					{% set statut = rdv.statut|lower %}
-					{% set dotClass =
-                        statut == 'confirmé' ? 'dot-confirmed' :
-                        (statut == 'annulé' ? 'dot-canceled' :
-                        (statut == 'en attente' ? 'dot-pending' : 'dot-default'))
-                    %}
+								<small class="timeline-details">
+									{{ rdv.dateRdvAt|date("d/m/Y H:i") }}
+									—
+									<i>{{ rdv.statut }}</i>
+								</small>
+							</div>
 
-					<div class="timeline-item">
-
-						<span class="timeline-dot {{ dotClass }}"></span>
-
-						<p class="timeline-title mb-1 d-flex justify-content-between align-items-center">
-							<span>
-								{{ rdv.client.nom }}
-								—
-								<span class="text-muted">{{ rdv.motif ?? 'Sans motif' }}</span>
-							</span>
-
-							<!-- BOUTON VALIDER -->
-<a id="rdvValidator" href="#" class="btn btn-success btn-sm rounded-pill px-3 py-1 btn-validate-rdv" data-id="{{ rdv.id }}">
-	<i class="bi bi-check-circle"></i>
-</a>
-
-
-						</p>
-
-						<small class="timeline-details">
-							{{ rdv.dateRdvAt|date('d/m/Y H:i') }}
-							—
-							<i>{{ rdv.statut }}</i>
-						</small>
+						{% else %}
+							<p class="text-muted text-center">Aucun rendez-vous aujourd’hui</p>
+						{% endfor %}
 
 					</div>
-
-				{% else %}
-					<p class="text-muted text-center">Aucun rendez-vous aujourd’hui</p>
-				{% endfor %}
+				</div>
 
 			</div>
 		</div>
@@ -190,112 +222,217 @@ canvas {
 </div>
 
 
-
-	</div>
-</div>
-
-
+<!-- ============================= -->
+<!-- 📊 CHART JS -->
+<!-- ============================= -->
  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
  <script>
-/* ============================
-   🍩 CAMEMBERT MALADIES
-   ============================ */
+/* ============================= */
+/* 🎯 TOOLTIP (nom + valeur) */
+/* ============================= */
+const tooltipLabel = (context) => context.label + " : " + context.raw;
+
+/* ============================= */
+/* 🎨 GÉNÉRATION DES LÉGENDES EN POINTS */
+/* ============================= */
+function generateLegend(containerId, labels, colors) {
+	const container = document.getElementById(containerId);
+	if (!container) return;
+
+	container.innerHTML = "";
+	labels.forEach((label, index) => {
+		container.innerHTML += `
+			<div class="legend-item">
+				<span class="legend-color" style="background:${colors[index]}"></span>
+				${label}
+			</div>
+		`;
+	});
+}
+
+/* ============================= */
+/* 🟦 CAMEMBERT PAIEMENTS */
+/* ============================= */
+async function loadPaiementsChart() {
+	const res = await fetch("/api/statistics/paiements");
+	const stats = await res.json();
+
+	const colors = [
+		"rgba(13,110,253,0.8)",
+		"rgba(25,135,84,0.8)",
+		"rgba(255,193,7,0.8)",
+		"rgba(220,53,69,0.8)",
+		"rgba(89, 181, 10, 0.8)",
+		"rgba(111, 153, 191, 0.8)",
+		"rgba(164, 13, 144, 0.8)",
+		"rgba(242, 249, 37, 0.8)",
+		"rgba(108,117,125,0.8)",
+	];
+
+	new Chart(document.getElementById("chartPaiements"), {
+		type: "pie",
+		data: {
+			labels: stats.labels,
+			datasets: [{
+				data: stats.values,
+				backgroundColor: colors
+			}]
+		},
+		options: {
+			plugins: {
+				legend: { display: false },
+				tooltip: { callbacks: { label: tooltipLabel } }
+			}
+		}
+	});
+
+	generateLegend("legendPaiements", stats.labels, colors);
+}
+
+/* ============================= */
+/* 🟦 TYPES DE MALADIES */
+/* ============================= */
 async function loadMaladiesChart() {
+	const res = await fetch("{{ path('api_statistics_maladies') }}");
+	const stats = await res.json();
 
-    const res = await fetch("{{ path('api_statistics_maladies') }}");
-    const stats = await res.json();
+	const colors = [
+		'rgba(255,99,132,0.8)',
+		'rgba(54,162,235,0.8)',
+		'rgba(255,206,86,0.8)',
+		'rgba(75,192,192,0.8)',
+		'rgba(153,102,255,0.8)',
+		'rgba(144, 255, 64, 0.8)',
+		'rgba(94, 50, 7, 0.8)',
+		'rgba(242, 194, 147, 0.8)',
+		'rgba(255,159,64,0.8)',
+	];
 
-    new Chart(document.getElementById('chartPieMaladies'), {
-        type: 'pie',
-        data: {
-            labels: stats.labels,
-            datasets: [{
-                data: stats.values,
-                backgroundColor: [
-                    'rgba(255,99,132,0.8)',
-                    'rgba(54,162,235,0.8)',
-                    'rgba(255,206,86,0.8)',
-                    'rgba(75,192,192,0.8)',
-                    'rgba(153,102,255,0.8)',
-                    'rgba(255,159,64,0.8)'
-                ]
-            }]
-        }
-    });
+	new Chart(document.getElementById("chartPieMaladies"), {
+		type: "pie",
+		data: {
+			labels: stats.labels,
+			datasets: [{
+				data: stats.values,
+				backgroundColor: colors
+			}]
+		},
+		options: {
+			plugins: {
+				legend: { display: false },
+				tooltip: { callbacks: { label: tooltipLabel } }
+			}
+		}
+	});
+
+	generateLegend("legendMaladies", stats.labels, colors);
 }
 
-/* ============================
-   🍩 CAMEMBERT SYMPTÔMES
-   ============================ */
+/* ============================= */
+/* 🟦 SYMPTÔMES */
+/* ============================= */
 async function loadSymptomesChart() {
+	const res = await fetch("{{ path('api_statistics_symptomes') }}");
+	const stats = await res.json();
 
-    const res = await fetch("{{ path('api_statistics_symptomes') }}");
-    const stats = await res.json();
+	const colors = [
+		'rgba(255,99,132,0.8)',
+		'rgba(54,162,235,0.8)',
+		'rgba(255,206,86,0.8)',
+		'rgba(75,192,192,0.8)',
+		'rgba(153,102,255,0.8)'
+	];
 
-    new Chart(document.getElementById('chartSymptomes'), {
-        type: 'pie',
-        data: {
-            labels: stats.labels,
-            datasets: [{
-                data: stats.values,
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.8)',
-                    'rgba(54, 162, 235, 0.8)',
-                    'rgba(255, 206, 86, 0.8)',
-                    'rgba(75, 192, 192, 0.8)',
-                    'rgba(153, 102, 255, 0.8)'
-                ]
-            }]
-        }
-    });
+	new Chart(document.getElementById("chartSymptomes"), {
+		type: "pie",
+		data: {
+			labels: stats.labels,
+			datasets: [{
+				data: stats.values,
+				backgroundColor: colors
+			}]
+		},
+		options: {
+			plugins: {
+				legend: { display: false },
+				tooltip: { callbacks: { label: tooltipLabel } }
+			}
+		}
+	});
+
+	generateLegend("legendSymptomes", stats.labels, colors);
 }
 
-/* ============================
-   🚀 LANCEMENT DES CHARTS
-   ============================ */
+/* ============================= */
+/* 📊 CLIENTS PAR JOUR */
+/* ============================= */
+async function loadClientsPerDayChart() {
+	const res = await fetch("/api/statistics/clients-per-day");
+	const stats = await res.json();
+
+	new Chart(document.getElementById("chartClientsPerDay"), {
+		type: "bar",
+		data: {
+			labels: stats.labels,
+			datasets: [{
+				data: stats.values,
+				backgroundColor: "rgba(13,110,253,0.7)",
+				borderColor: "rgba(13,110,253,1)",
+				borderWidth: 1
+			}]
+		},
+		options: {
+			scales: { y: { beginAtZero: true }},
+			plugins: { legend: { display: false } }
+		}
+	});
+}
+
+/* ============================= */
+/* 🚀 LANCEMENT + BOUTONS RDV */
+/* ============================= */
 document.addEventListener("DOMContentLoaded", () => {
-    loadMaladiesChart();
-    loadSymptomesChart();
+
+	// Lancement des graphs
+	loadPaiementsChart();
+	loadMaladiesChart();
+	loadSymptomesChart();
+	loadClientsPerDayChart();
+
+	// Boutons validation RDV
+	document.querySelectorAll('.btn-validate-rdv').forEach(btn => {
+		btn.addEventListener('click', async (e) => {
+			e.preventDefault();
+
+			const rdvId = btn.dataset.id;
+
+			const res = await fetch(`/api/rdv/validate/${rdvId}`, {
+				method: "POST"
+			});
+
+			const data = await res.json();
+
+			if (data.success) {
+				// Optionnel : mettre à jour statut / point
+				const statusText = btn.closest('.timeline-item')
+					.querySelector('.timeline-details i');
+				if (data.newStatus) {
+					statusText.textContent = data.newStatus;
+				}
+
+				const dot = btn.closest('.timeline-item')
+					.querySelector('.timeline-dot');
+				dot.className = "timeline-dot dot-confirmed";
+
+				btn.innerHTML = "<i class='bi bi-check-circle-fill'></i>";
+				btn.classList.remove('btn-success');
+				btn.classList.add('btn-secondary');
+				btn.disabled = true;
+			}
+		});
+	});
+
 });
 </script>
- <script>
-document.addEventListener("DOMContentLoaded", () => {
-
-    document.querySelectorAll('.btn-validate-rdv').forEach(btn => {
-
-        btn.addEventListener('click', async (e) => {
-            e.preventDefault();
-
-            const rdvId = btn.dataset.id;
-
-            const res = await fetch(`/api/rdv/validate/${rdvId}`, {
-                method: "POST"
-            });
-
-            const data = await res.json();
-
-            if (data.success) {
-                // 🔄 Mise à jour du statut dans l’interface
-                const statusText = btn.closest('.timeline-item').querySelector('.timeline-details i');
-                statusText.textContent = data.newStatus;
-
-                // ♻️ Changer la couleur de la dot
-                const dot = btn.closest('.timeline-item').querySelector('.timeline-dot');
-                dot.className = "timeline-dot dot-confirmed";
-
-                // 🟢 Feedback visuel
-                btn.innerHTML = "<i class='bi bi-check-circle-fill'></i>";
-                btn.classList.remove('btn-success');
-                btn.classList.add('btn-secondary');
-                btn.disabled = true;
-            }
-        });
-
-    });
-
-});
-</script>
-
-
 
