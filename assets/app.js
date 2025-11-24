@@ -61,7 +61,7 @@ import {
 //     validateAllAdmissions,
 //     jsLog,
 // } from "./js/getNewAdmissions.js";
-import { moveElement, enableShakeLoop } from "./js/MoveElement.js";
+import { moveElement, enableShakeLoop } from "./js/moveElement.js";
 
 /**
  * Expose les fonctions globalement

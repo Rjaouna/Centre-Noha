@@ -36,23 +36,48 @@
 				transform: scale(1);
 			}
 		}
+		.separator {
+    position: relative;
+    padding: 10px 0;
+}
+
+.separator::before,
+.separator::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 40%;
+    height: 1px;
+    background: #d9d9d9;
+}
+
+.separator::before {
+    left: 0;
+}
+
+.separator::after {
+    right: 0;
+}
+
 	</style>
 
 	<div class="container py-4">
 
-<h1 class="fw-bold mb-4 text-primary text-left">
+<h1 class="fw-bold mb-5 text-primary text-left">
 
 
 
 			🏥 Espace Gestion – Centre Noha
 		</h1>
 
-		<div class="row g-4 justify-content-center">
+<div class="row g-4 justify-content-center row g-4 justify-content-center bg-primary py-3 bg-opacity-25 rounded-4">
+
+
 
 			<!-- ========================== -->
 			<!-- 🔹 1 — Ajouter un client  -->
 			<!-- ========================== -->
-				<div class="col-6 col-md-3"> <div class="card dashboard-card shadow border-0 rounded-4 text-center p-3">
+				<div class="col-12 col-md-3"> <div class="card dashboard-card shadow border-0 rounded-4 text-center p-3">
 
 					<i class="bi bi-person-plus-fill text-success" style="font-size: 3.2rem;"></i>
 
@@ -71,7 +96,7 @@
 			<!-- ========================== -->
 			<!-- 🔹 2 — Liste des clients  -->
 			<!-- ========================== -->
-				<div class="col-6 col-md-3"> <div class="card dashboard-card shadow border-0 rounded-4 text-center p-3 position-relative">
+				<div class="col-12 col-md-3"> <div class="card dashboard-card shadow border-0 rounded-4 text-center p-3 position-relative">
 
 					{% if totalClients is defined %}
 						<span class="badge bg-info text-white position-absolute top-0 start-100 translate-middle dashboard-badge shadow">
@@ -100,7 +125,7 @@ Patients
 			<!-- ========================== -->
 			<!-- 🔹 3 — Paiements -->
 			<!-- ========================== -->
-				<div class="col-6 col-md-3"> <div class="card dashboard-card shadow border-0 rounded-4 text-center p-3">
+				<div class="col-12 col-md-3"> <div class="card dashboard-card shadow border-0 rounded-4 text-center p-3">
 
 					<i class="bi bi-credit-card-fill text-danger" style="font-size: 3.2rem;"></i>
 
@@ -121,7 +146,7 @@ Paiements
 			<!-- ========================== -->
 			<!-- 🔹 4 — Rendez-vous -->
 			<!-- ========================== -->
-				<div class="col-6 col-md-3"> <div class="card dashboard-card shadow border-0 rounded-4 text-center p-3 position-relative">
+				<div class="col-12 col-md-3"> <div class="card dashboard-card shadow border-0 rounded-4 text-center p-3 position-relative">
 
 					{% if totalRdv is defined %}
 						<span class="badge bg-info text-dark position-absolute top-0 start-100 translate-middle dashboard-badge shadow">
@@ -146,6 +171,11 @@ Paiements
 			</div>
 
 		</div>
+<div class="separator my-3 text-center">
+	<i class="bi bi-heart-pulse-fill text-danger" style="font-size: 1.8rem;"></i>
+</div>
+
+
 
 		<!-- 📊 SECTION STATISTIQUES -->
 		{{ include('home/_stats/_stats.html.twig') }}

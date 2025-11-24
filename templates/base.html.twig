@@ -22,6 +22,9 @@
 		<link
 		rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 
+{# Police Oxygen #}
+
+
 		{# CSS Webpack Encore #}
 		{% block stylesheets %}
 			{{ encore_entry_link_tags('app') }}
@@ -51,12 +54,15 @@
 		{{ include('_partials/_popup.html.twig') }}
 {{ include('partials/_footer/_footer.html.twig') }}
 
-<div class="container-fluid pb-5">
+
+
+<div class="container-fluid pb-5 mb-5">
 
 
 
 		{# Contenu principal #}
 		{% block body %}{% endblock %}
+		
 </div>
 
 

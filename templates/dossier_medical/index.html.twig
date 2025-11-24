@@ -6,7 +6,9 @@
 {% block body %}
 
 <div
-	class="container-fluid mt-4">
+class="mt-4">
+
+
 
 	<!-- ===== HEADER ===== -->
 	<div class="card shadow-lg border-0 rounded-4 mb-4">
@@ -98,9 +100,14 @@ async function getDossier() {
 
 		if (dossiers.length === 0) {
 			container.innerHTML = `
-				<div class="col-12 text-center py-4">
-					<div class="text-muted fs-5">Aucun dossier trouvé</div>
-				</div>
+<div class="alert alert-info text-center rounded-pill py-3 mt-4">
+
+
+	Aucun dossier trouvé pour ce patient
+
+
+</div>
+
 			`;
 			return;
 		}

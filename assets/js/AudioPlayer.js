@@ -16,7 +16,7 @@ class AudioPlayer {
 // -------------------------------------------------------------
 // 🕒 Sleep (promise)
 // -------------------------------------------------------------
-function sleep(ms) {
+export function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
