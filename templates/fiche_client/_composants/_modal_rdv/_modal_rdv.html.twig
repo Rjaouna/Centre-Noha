@@ -19,9 +19,19 @@
 					</div>
 
 					<div class="mb-3">
-						<label class="form-label fw-semibold">Motif</label>
-						<input type="text" name="motif" class="form-control" placeholder="Ex : Consultation, Suivi…" required>
-					</div>
+<label class="form-label fw-semibold">Motif</label>
+
+<select name="motif" id="rdv_motif" class="form-select" required>
+	<option value="" disabled selected>Choisir un motif</option>
+	<option value="Consultation">Consultation</option>
+	<option value="Suivi">Suivi</option>
+	<option value="Diagnostic">Diagnostic</option>
+	<option value="Conseil">Conseil</option>
+	<option value="Traitement">Traitement</option>
+	<option value="Autre">Autre (spécifier)</option>
+</select></div>
+
+
 
 					<div class="mb-3">
 						<label class="form-label fw-semibold">Commentaire</label>

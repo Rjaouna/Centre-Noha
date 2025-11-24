@@ -2,10 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\RendezVousRepository;
 use Doctrine\DBAL\Types\Types;
-use App\Entity\Traits\TimestampableTrait;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\RendezVousRepository;
+use App\Entity\Traits\TimestampableTrait;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Entity(repositoryClass: RendezVousRepository::class)]
@@ -17,16 +18,20 @@ class RendezVous
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(['rdv:read'])]
     #[ORM\ManyToOne(inversedBy: 'rendezVouses')]
     private ?FicheClient $client = null;
 
+    #[Groups(['rdv:read'])]
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $dateRdvAt = null;
 
     #[ORM\Column(length: 50, nullable: true)]
+    #[Groups(['rdv:read'])]
     private ?string $motif = null;
 
     #[ORM\Column(length: 50, nullable: true)]
+    #[Groups(['rdv:read'])]
     private ?string $statut = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]

@@ -1,7 +1,10 @@
+<!-- MODAL AJOUT DOSSIER -->
 <div class="modal fade" id="modalAddDossier" tabindex="-1">
 	<div class="modal-dialog modal-lg">
-		<div class="modal-content rounded-4 shadow-lg">
+		<div
+			class="modal-content rounded-4 shadow-lg">
 
+			<!-- HEADER -->
 			<div class="modal-header bg-primary text-white rounded-top-4">
 				<h5 class="modal-title fw-bold">
 					<i class="bi bi-folder-plus me-2"></i>
@@ -10,34 +13,205 @@
 				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
 			</div>
 
+			<!-- BODY -->
 			<div class="modal-body p-4">
 				<form id="formAddDossier">
 
-					<input
-					type="hidden" id="patient_id" value="{{ patient.id }}">
+					<input type="hidden" id="patient_id" value="{{ patient.id }}">
 
-					<!-- SELECT TITRE -->
-					<div class="form-floating mb-3">
-						<select id="dossier_titre" class="form-select" required>
-							<option value="" selected disabled>Choisir un titre</option>
-							<option value="Suivi général">Suivi général</option>
-							<option value="Diagnostic">Diagnostic</option>
-							<option value="Analyse">Analyse</option>
-							<option value="Conseil">Conseil</option>
-							<option value="Traitement">Traitement</option>
-							<option value="Autre">Autre (spécifier)</option>
-						</select>
-						<label for="dossier_titre">Titre du dossier</label>
-					</div>
+					<!-- ----------------------------- -->
+					<!--     CHOIX MOTIF DOCTOLIB      -->
+					<!-- ----------------------------- --><h6 class="fw-bold mb-3"> Motif de consultation</h6>
 
-					<!-- AUTRE TITRE -->
-					<div class="form-floating mb-3 d-none" id="autreTitreWrapper">
-						<input type="text" id="autre_titre" class="form-control" placeholder="Autre titre">
-						<label for="autre_titre">Précisez le titre</label>
+					<div class="docto-grid">
+
+						<label class="docto-option">
+							<input type="radio" name="motif" value="sante_mentale">
+							<div class="docto-content">
+<img src="{{asset('assets/img/unhappiness_anxiety.a365c3f.png')}}" height="48">
+
+
+								<div>
+									<div class="docto-title">Santé mentale</div>
+									<div class="docto-desc">Mal-être, anxiété, stress…</div>
+								</div>
+							</div>
+						</label>
+
+						<label class="docto-option">
+							<input type="radio" name="motif" value="fievre">
+							<div class="docto-content">
+<img src="{{asset('assets/img/fever.23b4eaa.png')}}" height="48">
+
+
+
+
+								<div>
+									<div class="docto-title">Fièvre</div>
+									<div class="docto-desc">Température, frissons…</div>
+								</div>
+							</div>
+						</label>
+
+						<label class="docto-option">
+							<input type="radio" name="motif" value="rhume">
+							<div class="docto-content">
+<img src="{{asset('assets/img/cold.c695c4b.png')}}" height="48">
+
+
+
+								<div>
+									<div class="docto-title">Rhume</div>
+									<div class="docto-desc">Toux, nez bouché…</div>
+								</div>
+							</div>
+						</label>
+
+						<label class="docto-option">
+							<input type="radio" name="motif" value="maux_gorge">
+							<div class="docto-content">
+<img src="{{asset('assets/img/sore_throat.8470dea.png')}}" height="48">
+
+
+
+								<div>
+									<div class="docto-title">Maux de gorge</div>
+									<div class="docto-desc">Douleur, irritation…</div>
+								</div>
+							</div>
+						</label>
+
+						<label class="docto-option">
+							<input type="radio" name="motif" value="renouvellement_traitement">
+							<div class="docto-content">
+<img src="{{asset('assets/img/prescription_renewal.642ea0e.png')}}" height="48">
+
+
+
+								<div>
+									<div class="docto-title">Renouvellement / réévaluation</div>
+									<div class="docto-desc">Ordonnance, suivi traitement.</div>
+								</div>
+							</div>
+						</label>
+
+						<label class="docto-option">
+							<input type="radio" name="motif" value="consultation_suivi">
+							<div class="docto-content">
+<img src="{{asset('assets/img/follow_up_consultation.4252df6.png')}}" height="48">
+
+
+
+								<div>
+									<div class="docto-title">Consultation de suivi</div>
+									<div class="docto-desc">Lecture de résultats…</div>
+								</div>
+							</div>
+						</label>
+
+						<label class="docto-option">
+							<input type="radio" name="motif" value="troubles_digestifs">
+							<div class="docto-content">
+<img src="{{asset('assets/img/digestive_disorders.2ad3b67.png')}}" height="48">
+
+
+
+								<div>
+									<div class="docto-title">Troubles digestifs</div>
+									<div class="docto-desc">Diarrhée, douleurs…</div>
+								</div>
+							</div>
+						</label>
+
+						<label class="docto-option">
+							<input type="radio" name="motif" value="gene_urinaire">
+							<div class="docto-content">
+<img src="{{asset('assets/img/urinary_discomfort.59e5fe8.png')}}" height="48">
+
+
+
+								<div>
+									<div class="docto-title">Gêne urinaire</div>
+									<div class="docto-desc">Brûlures, gêne…</div>
+								</div>
+							</div>
+						</label>
+
+						<label class="docto-option">
+							<input type="radio" name="motif" value="douleur_dos">
+							<div class="docto-content">
+<img src="{{asset('assets/img/back_pain.afa5b94.png')}}" height="48">
+
+
+
+								<div>
+									<div class="docto-title">Douleur au dos</div>
+									<div class="docto-desc">Blocage, lombalgie…</div>
+								</div>
+							</div>
+						</label>
+
+						<label class="docto-option">
+							<input type="radio" name="motif" value="symptomes_allergiques">
+							<div class="docto-content">
+<img src="{{asset('assets/img/allergic_symptoms.9ed0379.png')}}" height="48">
+
+
+
+								<div>
+									<div class="docto-title">Symptômes allergiques</div>
+									<div class="docto-desc">Démangeaisons, éternuements…</div>
+								</div>
+							</div>
+						</label>
+
+						<label class="docto-option">
+							<input type="radio" name="motif" value="gynecologie">
+							<div class="docto-content">
+<img src="{{asset('assets/img/gynecology.4337453.png')}}" height="48">
+
+
+
+								<div>
+									<div class="docto-title">Gynécologie</div>
+									<div class="docto-desc">Grossesse, règles…</div>
+								</div>
+							</div>
+						</label>
+
+						<label class="docto-option">
+							<input type="radio" name="motif" value="probleme_peau">
+							<div class="docto-content">
+<img src="{{asset('assets/img/skin_problems.e9e7d3f.png')}}" height="48">
+
+
+
+								<div>
+									<div class="docto-title">Problème de peau</div>
+									<div class="docto-desc">Éruptions, plaques…</div>
+								</div>
+							</div>
+						</label>
+
+						<label class="docto-option">
+							<input type="radio" name="motif" value="maux_tete">
+							<div class="docto-content">
+<img src="{{asset('assets/img/headaches.e9972ce.png')}}" height="48">
+
+
+
+
+								<div>
+									<div class="docto-title">Maux de tête</div>
+									<div class="docto-desc">Céphalées, migraine…</div>
+								</div>
+							</div>
+						</label>
+
 					</div>
 
 					<!-- DESCRIPTION -->
-					<div class="form-floating mb-3">
+					<div class="form-floating mt-4 mb-3">
 						<textarea id="dossier_description" class="form-control" style="height:120px;" placeholder="Description"></textarea>
 						<label for="dossier_description">Description</label>
 					</div>
@@ -55,6 +229,55 @@
 	</div>
 </div>
 
+<!-- CSS DOCTOLIB -->
+<style>
+	.docto-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+		gap: 15px;
+	}
+
+	.docto-option {
+		border: 2px solid #ddd;
+		padding: 12px;
+		border-radius: 14px;
+		display: flex;
+		cursor: pointer;
+		transition: 0.2s;
+		background: #fff;
+	}
+
+	.docto-option:hover {
+		border-color: #0d6efd;
+	}
+
+	.docto-option input {
+		display: none;
+	}
+
+	.docto-option input:checked + .docto-content {
+		background: #e7f1ff;
+		border-radius: 12px;
+		border: 2px solid #0d6efd;
+	}
+
+	.docto-content {
+		display: flex;
+		gap: 12px;
+		width: 100%;
+	}
+
+	.docto-title {
+		font-weight: bold;
+		font-size: 1rem;
+	}
+	.docto-desc {
+		font-size: 0.8rem;
+		color: #555;
+	}
+</style>
+
+<!-- SCRIPT -->
  <script>
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -62,87 +285,42 @@ document.addEventListener("DOMContentLoaded", () => {
     const modal = new bootstrap.Modal(document.getElementById("modalAddDossier"));
     const addDossier = document.querySelector("#addDossier");
 
-    const selectTitre = document.getElementById("dossier_titre");
-    const otherWrapper = document.getElementById("autreTitreWrapper");
-    const otherInput = document.getElementById("autre_titre");
-
-    // ==============================
-    // 🟦 AFFICHAGE DU CHAMP AUTRE
-    // ==============================
-    selectTitre.addEventListener("change", () => {
-        if (selectTitre.value === "Autre") {
-            otherWrapper.classList.remove("d-none");
-            otherInput.required = true;
-            otherInput.focus();
-        } else {
-            otherWrapper.classList.add("d-none");
-            otherInput.required = false;
-            otherInput.value = "";
-        }
-    });
-
-    // ===================================
-    // 🟩 SUBMIT FORMULAIRE + COUNTDOWN 5s
-    // ===================================
     form.addEventListener("submit", async e => {
         e.preventDefault();
 
-        // Déterminer le vrai titre
-        const titre =
-            (selectTitre.value === "Autre")
-                ? otherInput.value
-                : selectTitre.value;
+        const motif = document.querySelector('input[name="motif"]:checked');
+        if (!motif) {
+            alert("Veuillez sélectionner un motif.");
+            return;
+        }
 
         const payload = {
-            titre: titre,
+            titre: motif.value,
             description: document.getElementById("dossier_description").value
         };
 
         const apiUrl = `{{ path('api_dossier_medical_create', { id: patient.id }) }}`;
 
-        // Désactiver bouton
         addDossier.disabled = true;
+        let seconds = 2;
 
-let seconds = 2;
+        addDossier.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Création... (${seconds}s)`;
 
-
-
-        addDossier.innerHTML = `
-            <span class="spinner-border spinner-border-sm me-2"></span>
-            Création du dossier... (${seconds}s)
-        `;
-
-        // Countdown
         const countdown = setInterval(() => {
             seconds--;
-            addDossier.innerHTML = `
-                <span class="spinner-border spinner-border-sm me-2"></span>
-                Création du dossier... (${seconds}s)
-            `;
+            addDossier.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Création... (${seconds}s)`;
 
             if (seconds <= 0) {
                 clearInterval(countdown);
-
-                // 🔥 Reset + fermeture modal
                 form.reset();
-                otherWrapper.classList.add("d-none");
-
                 modal.hide();
 
-                // Retour au bouton normal
-                addDossier.innerHTML = `
-                    <i class="bi bi-check-circle"></i>
-                    Enregistrer
-                `;
+                addDossier.innerHTML = `<i class="bi bi-check-circle"></i> Enregistrer`;
                 addDossier.disabled = false;
             }
         }, 1000);
 
-
-        // =======================
-        // 🟧 Envoi API
-        // =======================
-        const res = await fetch(apiUrl, {
+        await fetch(apiUrl, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -150,17 +328,6 @@ let seconds = 2;
             },
             body: JSON.stringify(payload)
         });
-
-        const data = await res.json();
-
-        if (!data.success) {
-            clearInterval(countdown);
-            addDossier.disabled = false;
-            addDossier.innerHTML = `
-                <i class="bi bi-exclamation-triangle"></i> Erreur
-            `;
-            return;
-        }
     });
 
 });

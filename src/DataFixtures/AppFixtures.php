@@ -46,11 +46,16 @@ class AppFixtures extends Fixture
             $client->setPoids($faker->numberBetween(55, 110));
             $client->setTelephone('06' . $faker->numberBetween(10000000, 99999999));
             $client->setDureeMaladie($faker->numberBetween(1, 24));
-            $client->setTypeMaladie($faker->randomElement(['Diabète', 'Hypertension', 'Migraine', 'Stress', 'Aucune']));
+            $client->setTypeMaladie($faker->randomElement(['Diabète', 'Hypertension', 'Migraine', 'Stress', 'gynecologie']));
             $client->setTraitement($faker->randomElement(['Doliprane', 'Ibuprofène', 'Tisane', 'Repos', null]));
             $client->setObservation($faker->sentence(10));
+            $date = (\DateTimeImmutable::createFromMutable($faker->dateTimeBetween('-7 days', 'now')));
+            $client->setCreatedAt($date);
+            $client->setUpdatedAt($date);
+
             $client->setIsOpen(true);
             $client->setIsConsulted(true);
+
 
             $manager->persist($client);
 
@@ -117,11 +122,11 @@ class AppFixtures extends Fixture
 
                 // Dates réalistes
                 if ($statut === 'A venir') {
-                    $rdv->setDateRdvAt(new \DateTimeImmutable('+ ' . rand(1, 30) . ' days'));
+                    $rdv->setDateRdvAt(new \DateTimeImmutable('+ ' . rand(0, 2) . ' days'));
                 } elseif ($statut === 'Passé') {
-                    $rdv->setDateRdvAt(new \DateTimeImmutable('- ' . rand(1, 30) . ' days'));
+                    $rdv->setDateRdvAt(new \DateTimeImmutable('- ' . rand(1, 2) . ' days'));
                 } else {
-                    $rdv->setDateRdvAt(new \DateTimeImmutable('- ' . rand(1, 15) . ' days'));
+                    $rdv->setDateRdvAt(new \DateTimeImmutable('- ' . rand(0, 15) . ' days'));
                 }
 
                 $manager->persist($rdv);

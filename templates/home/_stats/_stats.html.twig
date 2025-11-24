@@ -108,7 +108,7 @@ canvas {
 		<!-- ============================= -->
 		<!-- 🟩 RDV D’AUJOURD’HUI (5 derniers) -->
 		<!-- ============================= -->
-			<div class="col-lg-3"> <div class="card shadow-lg border-0 rounded-4 p-4 h-100">
+			<div class="col-lg-3"> <div class="card  border-0 rounded-4 p-4 h-100">
 
 				<h4 class="fw-bold text-primary mb-3 d-flex align-items-center">
 					<i class="bi bi-clock-history me-2"></i>
@@ -119,50 +119,20 @@ canvas {
 
 				<div class="d-flex flex-column gap-3">
 
-					{% set last5 = rdvs|slice(0, 4) %}
 
-					{% for rdv in last5 %}
 
-						{% set statut = rdv.statut|lower %}
-						{% set badgeClass =
-							statut == 'confirmé' ? 'success' :
-							(statut == 'annulé' ? 'danger' :
-							(statut == 'en attente' ? 'warning' : 'secondary'))
-						%}
 
-						<div class="card border-0 shadow-sm rounded-3 p-3 rdv-card">
+					
 
-							<div class="d-flex justify-content-between align-items-start">
-								<div>
-									<h6 class="fw-bold mb-1">
-										<i class="bi bi-person-circle text-primary"></i>
-										{{ rdv.client.nom }}
-									</h6>
-									<p class="text-muted small mb-1">
-										<i class="bi bi-chat-left-dots"></i>
-										{{ rdv.motif ?? "Sans motif" }}
-									</p>
+<div id="rdvList" class="card border-0 shadow-sm rounded-3 p-3 rdv-card">
 
-									<span class="badge bg-{{ badgeClass }} px-2 py-1">
-										{{ rdv.statut }}
-									</span>
-								</div>
 
-								<a href="#" class="btn btn-success btn-sm rounded-pill px-2 py-1 btn-validate-rdv" data-id="{{ rdv.id }}">
-									<i class="bi bi-check-circle"></i>
-								</a>
-							</div>
 
-							<div class="text-muted small mt-2">
-								<i class="bi bi-clock"></i>
-								{{ rdv.dateRdvAt|date("d/m/Y H:i") }}
-							</div>
+							
 
 						</div>
 
-					{% else %}
-						<p class="text-muted text-center">Aucun rendez-vous aujourd’hui</p>
-					{% endfor %}
+			
 
 				</div>
 
@@ -226,7 +196,9 @@ async function loadMaladiesChart() {
 
 	const colors = [
 		'rgba(255,99,132,0.8)','rgba(54,162,235,0.8)','rgba(255,206,86,0.8)',
-		'rgba(75,192,192,0.8)','rgba(153,102,255,0.8)','rgba(255,159,64,0.8)'
+		'rgba(75,192,192,0.8)','rgba(153,102,255,0.8)','rgba(255,159,64,0.8)',
+		'rgba(11, 136, 214, 0.8)','rgba(178, 156, 221, 0.8)','rgba(137, 38, 106, 0.8)',
+		'rgba(208, 217, 223, 0.8)','rgba(109, 77, 173, 0.8)','rgba(64, 255, 115, 0.8)'
 	];
 
 	new Chart(document.getElementById("chartPieMaladies"), {
@@ -311,9 +283,90 @@ document.addEventListener("DOMContentLoaded", () => {
 				btn.classList.replace("btn-success", "btn-secondary");
 				btn.disabled = true;
 			}
+
+
 		});
+
+
+
 	});
 
 });
+
+	async function loadRDV() {
+
+    const res = await fetch("/api/rdv/today");
+    const rdvs = await res.json();
+
+    const list = document.getElementById("rdvList");
+    list.innerHTML = "";
+
+    if (rdvs.length === 0) {
+        list.innerHTML = `<p class="text-muted text-center">Aucun rendez-vous aujourd’hui</p>`;
+        return;
+    }
+
+    rdvs.forEach(rdv => {
+        list.insertAdjacentHTML("beforeend", `
+            <div class="card border-0  rounded-3 p-3 mb-3">
+
+                <div class="d-flex justify-content-between align-items-start">
+
+                    <div>
+                        <h6 class="fw-bold mb-1">
+                            <i class="bi bi-person-circle text-primary"></i>
+                            ${rdv.nom}
+                        </h6>
+
+                        <p class="text-muted small mb-1">
+                            <i class="bi bi-chat-left-dots"></i>
+                            ${rdv.motif ?? "Sans motif"}
+                        </p>
+
+                        <span class="badge bg-success px-2 py-1">
+                            ${rdv.statut}
+                        </span>
+                    </div>
+
+                    <a href="#" class="btn btn-success btn-sm rounded-pill px-2 py-1 btn-validate-rdv"
+                       data-id="${rdv.id}">
+                        <i class="bi bi-check-circle"></i>
+                    </a>
+
+                </div>
+
+                <div class="text-muted small mt-2">
+                    <i class="bi bi-clock"></i> ${rdv.date}
+                </div>
+
+            </div>
+        `);
+    });
+
+    attachValidationEvents(); // Re-bind des events car on a modifié le DOM
+}
+function attachValidationEvents() {
+    document.querySelectorAll(".btn-validate-rdv").forEach(btn => {
+        btn.addEventListener("click", async e => {
+            e.preventDefault();
+
+            const id = btn.dataset.id;
+
+            const res = await fetch(`/api/rdv/validate/${id}`, { method: "POST" });
+            const data = await res.json();
+
+            if (data.success) {
+                // 🔥 Recharge toute la liste
+                loadRDV();
+            }
+        });
+    });
+}
+document.addEventListener("DOMContentLoaded", () => {
+    loadRDV();
+});
+
+
+
 </script>
 

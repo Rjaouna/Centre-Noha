@@ -23,11 +23,11 @@ class FicheClient
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
-    #[Groups(['suivi_read', 'admission_read'])]
+    #[Groups(['suivi_read', 'admission_read', 'rdv:read'])]
     private ?string $nom = null;
 
     #[ORM\Column(length: 50)]
-    #[Groups(['suivi_read', 'admission_read'])]
+    #[Groups(['suivi_read', 'admission_read', 'rdv:read'])]
     private ?string $ville = null;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]
