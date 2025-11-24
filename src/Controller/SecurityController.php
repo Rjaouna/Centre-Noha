@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Form\LoginFormType;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
@@ -11,28 +13,25 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 class SecurityController extends AbstractController
 {
 	#[Route('/login', name: 'app_login')]
-	public function login(AuthenticationUtils $authenticationUtils): Response
+	public function login(AuthenticationUtils $authenticationUtils, CsrfTokenManagerInterface $csrf): Response
 	{
-		// Si l'utilisateur est déjà connecté
+
+
 		if ($this->getUser()) {
+
 			return $this->redirectToRoute('app_home');
 		}
 
-		// Récupère l'erreur de connexion
-		$error = $authenticationUtils->getLastAuthenticationError();
-
-		// Dernier email entré
-		$lastUsername = $authenticationUtils->getLastUsername();
+		$form = $this->createForm(LoginFormType::class, null, [
+			'csrf_token' => $csrf->getToken('authenticate'),
+		]);
 
 		return $this->render('security/login.html.twig', [
-			'last_username' => $lastUsername,
-			'error' => $error,
+			'form' => $form->createView(),
+			'error' => $authenticationUtils->getLastAuthenticationError(),
 		]);
 	}
+
 	#[Route('/logout', name: 'app_logout')]
-	public function logout(): void
-	{
-		// Le code ne sera jamais exécuté :
-		// Symfony intercepte automatiquement la route.
-	}
+	public function logout(): void {}
 }

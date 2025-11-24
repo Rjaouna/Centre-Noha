@@ -1,143 +1,133 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Connexion – Centre Noha
-
 {% endblock %}
 
 {% block body %}
-<style>
-	.login-card {
-		max-width: 900px;
-		width: 100%;
-		border-radius: 1.5rem;
-		overflow: hidden;
-	}
 
-	.login-left {
-		padding: 2.5rem;
-		background: #ffffff;
-	}
-
-	.login-right {
-		background: linear-gradient(rgba(255,255,255,0.92), rgba(255,255,255,0.92)), url('{{ asset("img/centre-noha-bg.jpg") }}') center/cover no-repeat;
-		min-height: 350px;
-	}
-
-	.admin-box {
-		display: none;
-		border-left: 4px solid #0d6efd;
-		background: #f1f7ff;
-		padding: 15px;
-		border-radius: 0.5rem;
-	}
-
-	.admin-link {
-		cursor: pointer;
-	}
-
-	/* 📱 Responsive Mobile */
-	@media(max-width: 768px) {
-		.login-left {
-			padding: 1.5rem;
-		}
+	<style>
 		.login-card {
-			border-radius: 1rem;
+			max-width: 900px;
+			width: 100%;
+			border-radius: 1.5rem;
+			overflow: hidden;
 		}
-		.login-right {
-			display: none !important; /* Cache l'image pour mobile */
+		.login-left {
+			padding: 2.5rem;
+			background: #ffffff;
 		}
-		h2 {
-			font-size: 1.6rem;
+		
+		.admin-box {
+			display: none;
+			border-left: 4px solid #0d6efd;
+			background: #f1f7ff;
+			padding: 15px;
+			border-radius: 0.5rem;
 		}
-	}
-</style>
+		.admin-link {
+			cursor: pointer;
+		}
+		@media(max-width: 768px) {
+			.login-left {
+				padding: 1.5rem;
+			}
+			.login-card {
+				border-radius: 1rem;
+			}
+			.login-right {
+				display: none !important;
+			}
+		}
+	</style>
 
 
-<div class="container d-flex justify-content-center align-items-center" style="min-height: 90vh;">
+	<div class="container d-flex justify-content-center align-items-center" style="min-height: 90vh;">
+		<div class="card shadow-lg login-card">
+			<div
+				class="row g-0">
 
-	<div class="card shadow-lg login-card">
+				<!-- LEFT : FORM -->
+				<div class="col-md-6 login-left">
 
+					<h2 class="text-primary fw-bold mb-4 d-flex align-items-center">
+						<i class="bi bi-person-circle me-2"></i>
+						Connexion
+					</h2>
 
-<div class="row g-0">
+					{% if error %}
+						<div class="alert alert-danger shadow-sm">
+							<i class="bi bi-exclamation-triangle"></i>
+							Identifiants incorrects
+						</div>
+					{% endif %}
 
+{{ form_start(form, { attr: { class: 'mb-3' } }) }}
 
-<!-- LEFT PART : FORMULAIRE -->
-<div class="col-md-6 login-left">
+<div class="mb-3">
+	{{ form_row(form.email) }}
+</div>
 
+<div class="mb-3">
+	{{ form_row(form.password) }}
+</div>
 
-<h2 class="text-primary fw-bold mb-4 d-flex align-items-center">
-	<i class="bi bi-person-circle me-2"></i>
-	Connexion
-</h2>
-
-
-{% if error %}
-
-<div class="alert alert-danger shadow-sm">
-	<i class="bi bi-exclamation-triangle"></i>
-	Identifiants incorrects
-</div>{% endif %}
-
-
-<form method="post" class="mb-3">
-
-	<div class="form-floating mb-3">
-
-<input type="email" value="{{ last_username }}" name="_username" class="form-control rounded-3" id="floatingEmail" placeholder="Email" required autofocus>
-<label for="floatingEmail">Adresse e-mail</label></div>
-
-
-<div class="form-floating mb-3">
-
-<input type="password" name="_password" class="form-control rounded-3" id="floatingPassword" placeholder="Mot de passe" required>
-<label for="floatingPassword">Mot de passe</label></div>
-
+{{ form_widget(form._csrf_token) }}
 
 <button class="btn btn-primary w-100 rounded-pill py-2 fw-semibold shadow-sm">
 	<i class="bi bi-box-arrow-in-right"></i>
 	Se connecter
-</button></form>
+</button>
+
+{{ form_end(form) }}
 
 
-<!-- Lien "pas de compte" -->
-<p class="text-muted small admin-link">
-	<i class="bi bi-info-circle"></i>
-	Vous n’avez pas de compte ?
-	<span class="text-primary fw-semibold">Contacter l’administrateur</span>
-</p>
 
-<!-- Bloc caché -->
-<div id="adminInfo" class="admin-box mt-2">
-	<p class="small mb-1">
-		<i class="bi bi-person-badge-fill text-primary"></i>
-		<strong>Administrateur :</strong>
-		Centre Noha
-	</p>
-	<p class="small mb-1">
-		<i class="bi bi-telephone-fill text-primary"></i>
-		+33 6 59 22 10 04
-	</p>
-	<p class="small mb-0">
-		<i class="bi bi-envelope-fill text-primary"></i>
-		contact@wedigitall.com
-	</p>
+					<!-- Admin -->
+					<p class="text-muted small admin-link">
+						<i class="bi bi-info-circle"></i>
+						Vous n’avez pas de compte ?
+						<span class="text-primary fw-semibold">Contacter l’administrateur</span>
+					</p>
+
+					<div id="adminInfo" class="admin-box mt-2">
+						<p class="small mb-1">
+							<i class="bi bi-person-badge-fill text-primary"></i>
+							<strong>Administrateur :</strong>
+							Centre Noha
+						</p>
+						<p class="small mb-1">
+							<i class="bi bi-telephone-fill text-primary"></i>
+							+33 6 59 22 10 04</p>
+						<p class="small mb-0">
+							<i class="bi bi-envelope-fill text-primary"></i>
+							contact@wedigitall.com</p>
+					</div>
+
+					<p class="text-center text-muted small mt-4">
+						🔐 Accès réservé au personnel autorisé du Centre Noha.
+					</p>
+				</div>
+
+				<!-- RIGHT IMAGE -->
+<div class="col-md-6 login-right d-none d-md-flex bg-primary justify-content-center align-items-center">
+<img src="{{ asset('assets/img/logo-transparent-svg.svg') }}" class="img-fluid p-3" />
+
 
 </div>
 
-<p class="text-center text-muted small mt-4">
-	🔐 Accès réservé au personnel autorisé du Centre Noha.
-</p>
 
-</div>
 
-<!-- RIGHT PART : IMAGE -->
-<div class="col-md-6 login-right d-none d-md-block"></div></div></div></div> <script>
-		    document.querySelector('.admin-link').addEventListener('click', () => {
-		        const box = document.getElementById('adminInfo');
-		        box.style.display = box.style.display === 'block' ? 'none' : 'block';
-		    });
-		</script>
 
+			</div>
+		</div>
+	</div>
+
+	 <script>
+	    document.querySelector('.admin-link').addEventListener('click', () => {
+	        const box = document.getElementById('adminInfo');
+	        box.style.display = box.style.display === 'block' ? 'none' : 'block';
+	    });
+	</script>
 
 {% endblock %}
 

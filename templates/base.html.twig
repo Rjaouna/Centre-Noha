@@ -9,34 +9,24 @@
 			{% endblock %}
 		</title>
 
-		{# Bootstrap CSS #}
-		<link
-		rel="stylesheet" href="{{ asset('assets/css/bootstrap.css') }}">
-
-		{# DataTables CSS — OK car CSS seulement #}
+		<link rel="stylesheet" href="{{ asset('assets/css/bootstrap.css') }}">
 		<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
-		<link
-		rel="stylesheet" href="https://cdn.datatables.net/responsive/2.4.1/css/responsive.bootstrap5.min.css">
-
-		{# Icons #}
+		<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.4.1/css/responsive.bootstrap5.min.css">
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 
-		{# Police Oxygen #}
-
-
-		{# CSS Webpack Encore #}
-			{% block stylesheets %}
-		{{ encore_entry_link_tags('app') }}
-	{% endblock %}
+		{% block stylesheets %}
+			{{ encore_entry_link_tags('app') }}
+		{% endblock %}
 	</head>
 
-		<body
-		data-turbo="false" class="{% if app.request.attributes.get('_route') in ['app_home', 'app_login'] %}home-bg{% endif %}"> {# NAVBAR #}
+	<body data-turbo="false" class="{% if app.request.attributes.get('_route') in ['app_home', 'app_login'] %}home-bg{% endif %}">
+
 		{{ include('home/_notifications/_notifications.html.twig') }}
 
-		{{ include('partials/_navbar/_navbar.html.twig') }}
+		{% if app.request.attributes.get('_route') != 'app_login' %}
+			{{ include('partials/_navbar/_navbar.html.twig') }}
+		{% endif %}
 
-		{# Flash Symfony #}
 		{% for label, messages in app.flashes %}
 			{% for message in messages %}
 				<div class="alert alert-{{ label }} alert-dismissible fade show shadow-sm mt-3 mx-3">
@@ -49,58 +39,19 @@
 		<div id="flashMessageContainer" class="position-fixed top-0 start-50 translate-middle-x mt-3" style="z-index:9999;width:400px;"></div>
 
 		{{ include('_partials/_popup.html.twig') }}
-		{{ include('partials/_footer/_footer.html.twig') }}
 
+		<div class="container-fluid pb-5 mb-5"> {% block body %}{% endblock %}
+			</div>
 
-		<div
-			class="container-fluid pb-5 mb-5">
+			{# FOOTER PLACÉ À LA FIN — CORRECTION MAJEURE #}
+			{{ include('partials/_footer/_footer.html.twig') }}
 
+			 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-			{# Contenu principal #}
-			{% block body %}{% endblock %}
-
-		</div>
-
-
-		{# ----------------------------------------------------------- #}
-		{# ⚠️ IMPORTANT : on NE CHARGE PAS jQuery ici. #}
-		{# jQuery est déjà géré par Webpack Encore dans app.js #}
-		{# ----------------------------------------------------------- #}
-
-		{# Bootstrap JS #}
-		 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-		{# JavaScript Webpack Encore (inclut jQuery + DataTables) #}
 			{% block javascripts %}
-		{{ encore_entry_script_tags('app') }}
-	{% endblock %}
+				{{ encore_entry_script_tags('app') }}
+			{% endblock %}
 
-		{# Popup d’erreur — ton code conservé #}
-		 <script>
-				            function showFlashError(message) {
-				                const alert = document.createElement("div");
-				                alert.className = "alert alert-danger shadow-lg border-0 rounded-4 fade show";
-				                alert.style = "width:360px;position:fixed;bottom:20px;right:20px;z-index:9999;";
-				                alert.innerHTML = `
-				                    <div class="d-flex align-items-start">
-				                        <i class="bi bi-exclamation-triangle-fill fs-1 text-white bg-danger p-2 rounded-circle me-3"></i>
-				                        <div>
-				                            <h5 class="fw-bold mb-1">Erreur lors de l'opération ❌</h5>
-				                            <p class="mb-1">${message}</p>
-				                            <small class="text-muted">Merci de réessayer ou de contacter le support.</small>
-				                        </div>
-				                        <button type="button" class="btn-close"></button>
-				                    </div>`;
-				                document.body.appendChild(alert);
-				
-				                alert.querySelector(".btn-close").onclick = () => alert.remove();
-				                setTimeout(() => alert.remove(), 5000);
-				            }
-				        </script>
-
-
-	</body>
-
-
-</html>
+		</body>
+	</html>
 

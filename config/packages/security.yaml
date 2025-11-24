@@ -1,44 +1,73 @@
 security:
 
+    # -------------------------------------------------------------------------
+    # 🔐 HASHAGE DES MOTS DE PASSE
+    # -------------------------------------------------------------------------
     password_hashers:
-        App\Entity\User:
-            algorithm: auto
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
 
+    # -------------------------------------------------------------------------
+    # 👤 PROVIDERS : On charge les users par leur email
+    # -------------------------------------------------------------------------
     providers:
         app_user_provider:
             entity:
                 class: App\Entity\User
                 property: email
 
+
+    # -------------------------------------------------------------------------
+    # 🔥 FIREWALLS
+    # -------------------------------------------------------------------------
     firewalls:
 
-        # 🔓 API interne → PAS DE JWT, utilise la session
-        api:
-            pattern: ^/api
-            stateless: false            # <-- important : on garde la session
-            provider: app_user_provider
-            security: false             # <-- PAS de sécurité sur ces routes
+        # Dev profiler
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
 
-        # 🔐 Firewall principale → LOGIN FORMULAIRE
+        # ⭐️ FIREWALL PRINCIPAL
         main:
-            provider: app_user_provider
             lazy: true
+            provider: app_user_provider
 
-            form_login:
-                login_path: app_login
-                check_path: app_login
+            # Ton authenticator personnalisé
+            custom_authenticator: App\Security\LoginAuthenticator
 
+            # Optionnel : Remember Me
+            remember_me:
+                secret: '%kernel.secret%'
+                lifetime: 604800   # 7 jours
+                path: /
+                always_remember_me: true
+
+            # Déconnexion
             logout:
                 path: app_logout
                 target: app_login
 
+
+    # -------------------------------------------------------------------------
+    # 🔒 ACCESS CONTROL
+    # -------------------------------------------------------------------------
     access_control:
 
-        # Autoriser le login
+        # Autoriser l'accès public au login
         - { path: ^/login, roles: PUBLIC_ACCESS }
 
-        # Autoriser tout /api sans JWT et sans login
-        - { path: ^/api, roles: PUBLIC_ACCESS }
+        # Si à l'avenir tu veux un /admin
+        - { path: ^/admin, roles: ROLE_ADMIN }
 
-        # Tout le reste nécessite d’être connecté
+        # Toute la zone app /home /fiche-client etc
         - { path: ^/, roles: ROLE_USER }
+
+
+
+when@test:
+    security:
+        password_hashers:
+            Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
+                algorithm: auto
+                cost: 4
+                time_cost: 3
+                memory_cost: 10
