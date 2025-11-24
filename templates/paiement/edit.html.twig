@@ -1,13 +1,60 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Paiement{% endblock %}
+{% block title %}Modifier un paiement
+{% endblock %}
 
 {% block body %}
-    <h1>Edit Paiement</h1>
 
-    {{ include('paiement/_form.html.twig', {'button_label': 'Update'}) }}
+	<div
+		class="container-fluid mt-4">
 
-    <a href="{{ path('app_paiement_index') }}">back to list</a>
+		<!-- HEADER -->
+		<div class="card shadow-lg border-0 rounded-4 mb-4">
+			<div
+				class="card-body d-flex justify-content-between align-items-center py-4 px-4">
 
-    {{ include('paiement/_delete_form.html.twig') }}
+				<!-- Titre + icône -->
+				<div class="d-flex align-items-center">
+					<i class="bi bi-pencil-square text-warning fs-1 me-3"></i>
+					<div>
+						<h2 class="fw-bold text-warning mb-1">Modifier le paiement</h2>
+						<p class="text-muted mb-0">Mettre à jour les informations du paiement #{{ paiement.id }}</p>
+					</div>
+				</div>
+
+				<!-- Boutons -->
+				<div
+					class="d-flex gap-3">
+
+					<!-- Retour liste -->
+					<a href="{{ path('app_paiement_index', {'id': paiement.client.id}) }}" class="btn btn-secondary btn-lg rounded-pill px-4 shadow-sm d-flex align-items-center gap-2">
+						<i class="bi bi-arrow-left"></i>
+						Retour
+					</a>
+
+				</div>
+
+			</div>
+		</div>
+
+		<!-- FORMULAIRE -->
+		<div class="card shadow-sm border-0 rounded-4">
+			<div class="card-body p-4">
+
+				{{ include('paiement/_form.html.twig', { button_label: 'Mettre à jour' }) }}
+
+				<hr
+				class="my-4">
+
+				<!-- SUPPRESSION -->
+				<div class="d-flex justify-content-end">
+					{{ include('paiement/_delete_form.html.twig') }}
+				</div>
+
+			</div>
+		</div>
+
+	</div>
+
 {% endblock %}
+

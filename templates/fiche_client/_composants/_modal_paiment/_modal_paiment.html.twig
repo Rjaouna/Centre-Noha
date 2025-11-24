@@ -9,6 +9,8 @@
 				</h5>
 				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
 			</div>
+<div id="paiementError" class="text-danger fw-bold mt-2 d-none"></div>
+
 
 			<div class="modal-body">
 
@@ -167,6 +169,60 @@ function ajouterPaiementDansTableau(p) {
 
     table.insertAdjacentHTML("afterbegin", newRow);
 }
+
+function calculePaiment(){
+const prixTotalInput = document.getElementById('paiement_prixTotal');
+const montantPayeInput = document.getElementById('paiement_montantPaye');
+const resteInput = document.getElementById('paiement_reste');
+const errorDiv = document.getElementById('paiementError');
+
+
+
+
+
+// 🟢 Fonction de calcul automatique
+function updateReste() {
+    const total = parseFloat(prixTotalInput.value) || 0;
+    const paye = parseFloat(montantPayeInput.value) || 0;
+
+    // Remet l'erreur à zéro
+    errorDiv.classList.add("d-none");
+    errorDiv.innerHTML = "";
+    montantPayeInput.classList.remove("is-invalid");
+
+    // Si total vide → bloque Montant payé
+    if (total <= 0) {
+        montantPayeInput.value = "";
+        montantPayeInput.disabled = true;
+        resteInput.value = "";
+        return;
+    } else {
+        montantPayeInput.disabled = false;
+    }
+
+    // Erreur si montant payé > total
+    if (paye > total) {
+        errorDiv.innerHTML = "⚠ Le montant payé ne peut pas dépasser le prix total.";
+        errorDiv.classList.remove("d-none");
+        montantPayeInput.classList.add("is-invalid");
+        resteInput.value = "";
+        return;
+    }
+
+    // Calcul du reste
+    const reste = total - paye;
+    resteInput.value = reste.toFixed(2);
+}
+
+// 🎯 Événements
+prixTotalInput.addEventListener("input", updateReste);
+montantPayeInput.addEventListener("input", updateReste);
+
+
+
+}
+calculePaiment()
+
 </script>
 
 
