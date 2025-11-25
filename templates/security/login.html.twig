@@ -12,11 +12,12 @@
 			border-radius: 1.5rem;
 			overflow: hidden;
 		}
+
 		.login-left {
 			padding: 2.5rem;
 			background: #ffffff;
 		}
-		
+
 		.admin-box {
 			display: none;
 			border-left: 4px solid #0d6efd;
@@ -24,9 +25,23 @@
 			padding: 15px;
 			border-radius: 0.5rem;
 		}
+
 		.admin-link {
 			cursor: pointer;
 		}
+
+		/* Style flottant plus doux */
+		.form-floating > .form-control {
+			border-radius: 0.75rem !important;
+			padding-top: 1.3rem !important;
+			padding-bottom: 0.5rem !important;
+		}
+
+		.form-floating label {
+			padding-left: 0.75rem;
+		}
+
+		/* Responsive */
 		@media(max-width: 768px) {
 			.login-left {
 				padding: 1.5rem;
@@ -40,7 +55,6 @@
 		}
 	</style>
 
-
 	<div class="container d-flex justify-content-center align-items-center" style="min-height: 90vh;">
 		<div class="card shadow-lg login-card">
 			<div
@@ -53,7 +67,6 @@
 						<i class="bi bi-person-circle me-2"></i>
 						Connexion
 					</h2>
-
 					{% if error %}
 						<div class="alert alert-danger shadow-sm">
 							<i class="bi bi-exclamation-triangle"></i>
@@ -61,29 +74,41 @@
 						</div>
 					{% endif %}
 
-{{ form_start(form, { attr: { class: 'mb-3' } }) }}
+					{{ form_start(form, { attr: { class: 'mb-3' } }) }}
 
-<div class="mb-3">
-	{{ form_row(form.email) }}
-</div>
+					<!-- EMAIL -->
+					<div class="form-floating mb-3">
+						{{ form_widget(form.email, {
+						attr: { 
+							class: 'form-control rounded-3',
+							placeholder: 'Adresse e-mail'
+						}
+					}) }}
+						<label for="{{ form.email.vars.id }}">Adresse e-mail</label>
+					</div>
 
-<div class="mb-3">
-	{{ form_row(form.password) }}
-</div>
+					<!-- PASSWORD -->
+					<div class="form-floating mb-3">
+						{{ form_widget(form.password, {
+						attr: { 
+							class: 'form-control rounded-3',
+							placeholder: 'Mot de passe'
+						}
+					}) }}
+						<label for="{{ form.password.vars.id }}">Mot de passe</label>
+					</div>
 
-{{ form_widget(form._csrf_token) }}
+					{{ form_widget(form._csrf_token) }}
 
-<button class="btn btn-primary w-100 rounded-pill py-2 fw-semibold shadow-sm">
-	<i class="bi bi-box-arrow-in-right"></i>
-	Se connecter
-</button>
+					<button class="btn btn-primary w-100 rounded-pill py-2 fw-semibold shadow-sm">
+						<i class="bi bi-box-arrow-in-right"></i>
+						Se connecter
+					</button>
 
-{{ form_end(form) }}
-
-
+					{{ form_end(form) }}
 
 					<!-- Admin -->
-					<p class="text-muted small admin-link">
+					<p class="text-muted small admin-link mt-3">
 						<i class="bi bi-info-circle"></i>
 						Vous n’avez pas de compte ?
 						<span class="text-primary fw-semibold">Contacter l’administrateur</span>
@@ -93,16 +118,16 @@
 						<p class="small mb-1">
 							<i class="bi bi-person-badge-fill text-primary"></i>
 							<strong>Administrateur :</strong>
-We Digit All
-
-
+							We Digit All
 						</p>
 						<p class="small mb-1">
 							<i class="bi bi-telephone-fill text-primary"></i>
-							+33 6 59 22 10 04</p>
+							+33 6 59 22 10 04
+						</p>
 						<p class="small mb-0">
 							<i class="bi bi-envelope-fill text-primary"></i>
-							contact@wedigitall.com</p>
+							contact@wedigitall.com
+						</p>
 					</div>
 
 					<p class="text-center text-muted small mt-4">
@@ -111,26 +136,19 @@ We Digit All
 				</div>
 
 				<!-- RIGHT IMAGE -->
-<div class="col-md-6 login-right d-none d-md-flex bg-primary justify-content-center align-items-center">
-<img src="{{ asset('assets/img/logo-transparent-png.png') }}" class="img-fluid p-3"/>
-
-
-
-
-</div>
-
-
-
+				<div class="col-md-6 login-right d-none d-md-flex bg-primary justify-content-center align-items-center">
+					<img src="{{ asset('assets/img/logo-transparent-png.png') }}" class="img-fluid p-3"/>
+				</div>
 
 			</div>
 		</div>
 	</div>
 
 	 <script>
-	    document.querySelector('.admin-link').addEventListener('click', () => {
-	        const box = document.getElementById('adminInfo');
-	        box.style.display = box.style.display === 'block' ? 'none' : 'block';
-	    });
+	document.querySelector('.admin-link').addEventListener('click', () => {
+		const box = document.getElementById('adminInfo');
+		box.style.display = box.style.display === 'block' ? 'none' : 'block';
+	});
 	</script>
 
 {% endblock %}
