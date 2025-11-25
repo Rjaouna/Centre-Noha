@@ -35,13 +35,13 @@ $focus-ring-color: rgba(76, 201, 166, 0.35);
 @import "bootstrap/scss/utilities";
 
 // Bootswatch variables DOIVENT être importées APRÈS variables Bootstrap
-@import "bootswatch/dist/Lumen/variables";
+@import "bootswatch/dist/lumen/variables";
 
 // Bootstrap complet
 @import "bootstrap/scss/bootstrap";
 
 // Bootswatch styles APRES bootstrap
-@import "bootswatch/dist/Lumen/bootswatch";
+@import "bootswatch/dist/lumen/bootswatch";
 
 
 // ==========================
