@@ -1,4 +1,13 @@
 /**
+ * Import de ton CSS principal
+ */
+import "./styles/app.css";
+/**
+ * Import de ton CSS principal
+ */
+import "./styles/app.scss";
+
+/**
  * Import jQuery
  */
 import $ from "jquery";
@@ -40,11 +49,6 @@ document.addEventListener("DOMContentLoaded", () => {
  */
 console.log("jQuery loaded:", typeof $);
 console.log("DataTables loaded:", typeof DataTable);
-
-/**
- * Import de ton CSS principal
- */
-import "./styles/app.css";
 
 /**
  * Import de tes scripts audio et animation

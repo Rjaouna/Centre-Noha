@@ -1,11 +1,11 @@
 body {
-    background-color: gainsboro;
+    background-color: rgb(255, 255, 255);
     
 }
 .home-bg {
-    background: url('../img/centre-noha-bg.jpg') no-repeat center center fixed;
+    /* background: url('../img/centre-noha-bg.webp') no-repeat center center fixed; */
     background-size: cover;
-    background-color: gainsboro;
+    background-color: rgb(255, 255, 255);
 }
 
 

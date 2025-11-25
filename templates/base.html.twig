@@ -31,6 +31,9 @@
 	</head>
 
 		<body
+
+
+
 		data-turbo="false" class="{% if app.request.attributes.get('_route') in ['app_home', 'app_login'] %}home-bg{% endif %}"> {# NAVBAR #}
 		{{ include('home/_notifications/_notifications.html.twig') }}
 
@@ -54,8 +57,6 @@
 
 		<div
 			class="container-fluid pb-5 mb-5">
-
-
 			{# Contenu principal #}
 			{% block body %}{% endblock %}
 
