@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\FicheClient;
-use App\Entity\SuiviSoin;               // ✅ La bonne importation
 use App\Entity\DossierMedical;
 use App\Repository\SuiviSoinRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -12,10 +11,63 @@ use App\Repository\DossierMedicalRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Entity\SuiviSoin;               // ✅ La bonne importation
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 final class SuiviSoinController extends AbstractController
 {
+    #[Route(
+        '/patient/{patientId}/dossier/{dossierId}/suivis/api',
+        name: 'api_suivis_list',
+        methods: ['GET']
+    )]
+    public function apiListeSuivi(
+        int $patientId,
+        int $dossierId,
+        SuiviSoinRepository $repo,
+        DossierMedicalRepository $dossierRepo
+    ): JsonResponse {
+
+        $dossier = $dossierRepo->find($dossierId);
+
+        if (!$dossier || $dossier->getPatient()->getId() !== $patientId) {
+            return new JsonResponse(['error' => 'Dossier invalide'], 404);
+        }
+
+        $suivis = $repo->findBy(
+            ['patient' => $patientId, 'dossierMedical' => $dossierId],
+            ['createdAt' => 'DESC']
+        );
+
+        $data = [];
+
+        foreach ($suivis as $s) {
+
+            // ⭐⭐ AJOUT : médicaments du suivi
+            $meds = [];
+            foreach ($s->getMedicine() as $m) {
+                $meds[] = [
+                    'id'   => $m->getId(),
+                    'name' => $m->getName(),
+                    'code' => $m->getCode(),
+                    'dci'  => $m->getDci(),
+                    'ppv'  => $m->getPpv(),
+                    'isGeneric' => $m->isGeneric(),
+                ];
+            }
+
+            $data[] = [
+                'id'         => $s->getId(),
+                'diagnostic' => $s->getDiagnostic(),
+                'createdAt'  => $s->getCreatedAt()->format('d/m/Y H:i'),
+                'medicines'  => $meds,  // 👈 ajouté ici !
+            ];
+        }
+
+        return new JsonResponse($data);
+    }
+
     #[Route(
         '/patient/{patientId}/dossier/{dossierId}/suivis',
         name: 'app_suivi_par_dossier',
@@ -26,36 +78,18 @@ final class SuiviSoinController extends AbstractController
         int $dossierId,
         FicheClientRepository $ficheRepo,
         DossierMedicalRepository $dossierRepo,
-        SuiviSoinRepository $suiviRepo
     ): Response {
 
         $patient = $ficheRepo->find($patientId);
-        if (!$patient) {
-            throw $this->createNotFoundException("Patient introuvable.");
-        }
-
         $dossier = $dossierRepo->find($dossierId);
-        if (!$dossier) {
-            throw $this->createNotFoundException("Dossier médical introuvable.");
-        }
-
-        if ($dossier->getPatient()->getId() !== $patient->getId()) {
-            throw $this->createAccessDeniedException("Ce dossier n'appartient pas à ce patient.");
-        }
-
-        $suivis = $suiviRepo->findBy([
-            'patient' => $patient,
-            'dossierMedical' => $dossier
-        ], [
-            'createdAt' => 'DESC'
-        ]);
 
         return $this->render('suivi_soin/index.html.twig', [
             'patient' => $patient,
             'dossier' => $dossier,
-            'suivis' => $suivis,
         ]);
     }
+
+
 
     #[Route(
         '/api/patient/{patientId}/dossier/{dossierId}/suivi/create',
