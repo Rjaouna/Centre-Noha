@@ -84,15 +84,19 @@
 
 				<tbody>
 					{% for m in medicines %}
-						<tr class="clickable-row" onclick="window.location='{{ path('medicine_show', {'id': m.id}) }}'">
+<tr></tr>
+
+
 
 							<td class="fw-bold">{{ m.id }}</td>
-							<td>{{ m.code }}</td>
-							<td class="fw-semibold">{{ m.name }}</td>
-							<td>{{ m.dci ?: '-' }}</td>
-							<td>{{ m.dosage ~ ' ' ~ m.uniteDosage }}</td>
-							<td>{{ m.forme ?: '-' }}</td>
-							<td>{{ m.presentation ?: '-' }}</td>
+<td class="clickable-row" onclick="window.location='{{ path('medicine_show', {'id': m.id}) }}'">{{ m.code }}</td>
+<td class="clickable-row" onclick="window.location='{{ path('medicine_show', {'id': m.id}) }}'" class="fw-semibold">{{ m.name }}</td>
+<td class="clickable-row" onclick="window.location='{{ path('medicine_show', {'id': m.id}) }}'">{{ m.dci ?: '-' }}</td>
+<td class="clickable-row" onclick="window.location='{{ path('medicine_show', {'id': m.id}) }}'">{{ m.dosage ~ ' ' ~ m.uniteDosage }}</td>
+<td class="clickable-row" onclick="window.location='{{ path('medicine_show', {'id': m.id}) }}'">{{ m.forme ?: '-' }}</td>
+<td class="clickable-row" onclick="window.location='{{ path('medicine_show', {'id': m.id}) }}'">{{ m.presentation ?: '-' }}</td>
+
+
 							<td>
 								<span class="badge bg-info text-dark px-3">{{ m.ppv }}
 									DH</span>
