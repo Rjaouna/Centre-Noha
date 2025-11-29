@@ -19,7 +19,7 @@ class MedicineController extends AbstractController
 			'medicines' => $medicines,
 		]);
 	}
-	#[Route('/medicine/{id}', name: 'medicine_show')]
+	#[Route('/medicine/details/{id}', name: 'medicine_show')]
 	public function show(Medicine $medicine): Response
 	{
 		return $this->render('medicine/show.html.twig', [
