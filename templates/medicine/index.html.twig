@@ -19,13 +19,9 @@
 					<div class="col-12 col-md-7 d-flex align-items-center mb-3 mb-md-0">
 						<i class="bi bi-capsule-pill text-primary fs-1 me-3"></i>
 						<div>
-							<h2 class="fw-bold text-primary mb-1">
-								Gestion des Médicaments
-							</h2>
-							<p class="text-secondary m-0">
-								{{ medicines|length }}
-								médicaments enregistrés
-							</p>
+							<h2 class="fw-bold text-primary mb-1">Gestion des Médicaments</h2>
+							<p class="text-secondary m-0">{{ medicines|length }}
+								médicaments enregistrés</p>
 						</div>
 					</div>
 
@@ -49,7 +45,7 @@
 	<div class="card shadow-lg border-0 rounded-4">
 		<div class="card-body px-4 py-4">
 
-			<table id="medicineTable" class="table table-hover align-middle table-striped rounded-4" style="width:100%">
+			<table id="medicineTable" class="table table-striped table-hover align-middle rounded-4" style="width:100%">
 				<thead class="table-primary text-dark">
 					<tr>
 						<th>#</th>
@@ -86,76 +82,91 @@
 					</tr>
 				</thead>
 
-<tbody>
-	{% for m in medicines %}
-		<tr class="clickable-row" onclick="window.location='{{ path('medicine_show', {'id': m.id}) }}'">
+				<tbody>
+					{% for m in medicines %}
+						<tr class="clickable-row" onclick="window.location='{{ path('medicine_show', {'id': m.id}) }}'">
 
-			<td class="fw-bold">{{ m.id }}</td>
-			<td>{{ m.code }}</td>
-			<td class="fw-semibold">{{ m.name }}</td>
-			<td>{{ m.dci ?: '-' }}</td>
-			<td>{{ m.dosage ~ ' ' ~ m.uniteDosage }}</td>
-			<td>{{ m.forme ?: '-' }}</td>
-			<td>{{ m.presentation ?: '-' }}</td>
-			<td>
-				<span class="badge bg-info text-dark px-3">{{ m.ppv }}
-					DH</span>
-			</td>
-			<td>{{ m.ph ?: '-' }}</td>
-			<td>
-				{% if m.isGeneric %}
-					<span class="badge bg-success px-3 py-2">Générique</span>
-				{% else %}
-					<span class="badge bg-warning text-dark px-3 py-2">Princeps</span>
-				{% endif %}
-			</td>
-			<td>
-				{% if m.tauxRembourssement %}
-					<span class="badge bg-primary px-3">{{ m.tauxRembourssement }}%</span>
-				{% else %}
-					-
-				{% endif %}
-			</td>
+							<td class="fw-bold">{{ m.id }}</td>
+							<td>{{ m.code }}</td>
+							<td class="fw-semibold">{{ m.name }}</td>
+							<td>{{ m.dci ?: '-' }}</td>
+							<td>{{ m.dosage ~ ' ' ~ m.uniteDosage }}</td>
+							<td>{{ m.forme ?: '-' }}</td>
+							<td>{{ m.presentation ?: '-' }}</td>
+							<td>
+								<span class="badge bg-info text-dark px-3">{{ m.ppv }}
+									DH</span>
+							</td>
+							<td>{{ m.ph ?: '-' }}</td>
 
-		</tr>
-	{% endfor %}
-</tbody>
+							<td>
+								{% if m.isGeneric %}
+									<span class="badge bg-success px-3 py-2">Générique</span>
+								{% else %}
+									<span class="badge bg-warning text-dark px-3 py-2">Princeps</span>
+								{% endif %}
+							</td>
 
+							<td>
+								{% if m.tauxRembourssement %}
+									<span class="badge bg-primary px-3">{{ m.tauxRembourssement }}%</span>
+								{% else %}
+									-
+								{% endif %}
+							</td>
 
+						</tr>
+					{% endfor %}
+				</tbody>
 
 			</table>
 
 		</div>
 	</div>
-<style>
-	.clickable-row {
-		cursor: pointer;
-		transition: background-color 0.2s ease;
-	}
-	.clickable-row:hover {
-		background-color: #e6f0ff !important;
-	}
-</style>
 
-</style>	
+
+	<style>
+		.clickable-row {
+			cursor: pointer;
+			transition: background-color 0.2s ease;
+		}
+		.clickable-row:hover {
+			background-color: #e6f0ff !important;
+		}
+	</style>
+
 {% endblock %}
 
 
-{% block javascripts %}
+{# -------------------------------------------- #}
+{# JAVASCRIPTS RESPONSIVE DATATABLES          #}
+{# -------------------------------------------- #}
+	{% block javascripts %}
 	{{ parent() }}
 
-<!-- DATATABLES JS -->
+	<!-- CSS -->
+	<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css"> <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
+
+<!-- JS -->
+	 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+	 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+	 <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+	 <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
+
 	 <script>
-	document.addEventListener("DOMContentLoaded", function () {
-		$('#medicineTable').DataTable({
-			pageLength: 25,
-			language: {
-				url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/fr-FR.json"
-			},
-			order: [[0, 'desc']]
-		});
-	});
-	</script>
+	        document.addEventListener("DOMContentLoaded", () => {
+	
+	            $('#medicineTable').DataTable({
+	                responsive: true,         // ⭐ Rend le tableau RESPONSIVE
+	                pageLength: 25,
+	                language: {
+	                    url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/fr-FR.json"
+	                },
+	                order: [[0, 'desc']]
+	            });
+	
+	        });
+	    </script>
 
 {% endblock %}
 
