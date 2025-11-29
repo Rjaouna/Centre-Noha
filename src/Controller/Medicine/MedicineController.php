@@ -4,9 +4,11 @@ namespace App\Controller\Medicine;
 
 use App\Entity\Medicine;
 use App\Repository\MedicineRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class MedicineController extends AbstractController
 {
@@ -19,7 +21,16 @@ class MedicineController extends AbstractController
 			'medicines' => $medicines,
 		]);
 	}
-	#[Route('/medicine/details/{id}', name: 'medicine_show')]
+	#[Route('/medicine/search/api', name: 'medicine_api_search', methods: ['GET'])]
+	public function search(Request $request, MedicineRepository $repo): JsonResponse
+	{
+		$term = $request->query->get('search', '');
+
+		$results = $repo->searchLimited($term);
+
+		return new JsonResponse($results);
+	}
+	#[Route('/medicine/{id}', name: 'medicine_show')]
 	public function show(Medicine $medicine): Response
 	{
 		return $this->render('medicine/show.html.twig', [

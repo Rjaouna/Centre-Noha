@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Liste des Médicaments
+{% block title %}Recherche des Médicaments
 {% endblock %}
 
 {% block body %}
@@ -8,24 +8,23 @@
 	<div
 		class="mt-4">
 
-		<!-- CARD HEADER -->
+		<!-- ⭐⭐ ENTÊTE STYLE PATIENTS ⭐⭐ -->
 		<div class="card shadow-lg border-0 rounded-4 mb-4">
 			<div class="card-body py-4 px-4">
 
-				<div
-					class="row align-items-center">
+				<div class="row align-items-center">
 
-					<!-- TITRE -->
 					<div class="col-12 col-md-7 d-flex align-items-center mb-3 mb-md-0">
-						<i class="bi bi-capsule-pill text-primary fs-1 me-3"></i>
+<i class="bi bi-capsule-pill text-danger fs-1 me-3"></i>
+
 						<div>
-							<h2 class="fw-bold text-primary mb-1">Gestion des Médicaments</h2>
-							<p class="text-secondary m-0">{{ medicines|length }}
-								médicaments enregistrés</p>
+<h2 class="fw-bold text-danger mb-1">Recherche des Médicaments</h2>
+
+							<p class="text-secondary m-0">Tapez pour rechercher un médicament</p>
 						</div>
 					</div>
 
-					<!-- BOUTON RETOUR -->
+					<!-- 🔙 Bouton retour conservé -->
 					<div class="col-12 col-md-5 d-flex justify-content-md-end">
 						<a href="{{ path('app_home') }}" class="btn btn-outline-secondary btn-lg rounded-pill px-4 shadow-sm d-flex align-items-center gap-2">
 							<i class="bi bi-arrow-left"></i>
@@ -40,137 +39,172 @@
 
 	</div>
 
+	<!-- ⭐⭐ CHAMP DE RECHERCHE ⭐⭐ -->
+	<div class="position-relative my-4">
+		<i class="bi bi-search text-secondary position-absolute top-50 start-3 translate-middle-y"></i>
 
-	<!-- TABLEAU -->
-	<div class="card shadow-lg border-0 rounded-4">
-		<div class="card-body px-4 py-4">
-
-			<table id="medicineTable" class="table table-striped table-hover align-middle rounded-4" style="width:100%">
-				<thead class="table-primary text-dark">
-					<tr>
-						<th>#</th>
-						<th>
-							<i class="bi bi-upc"></i>
-							Code</th>
-						<th>
-							<i class="bi bi-capsule"></i>
-							Nom commercial</th>
-						<th>
-							<i class="bi bi-flower3"></i>
-							DCI</th>
-						<th>
-							<i class="bi bi-bezier2"></i>
-							Dosage</th>
-						<th>
-							<i class="bi bi-collection"></i>
-							Forme</th>
-						<th>
-							<i class="bi bi-box-seam"></i>
-							Présentation</th>
-						<th>
-							<i class="bi bi-currency-euro"></i>
-							PPV</th>
-						<th>
-							<i class="bi bi-currency-euro"></i>
-							PH</th>
-						<th>
-							<i class="bi bi-check-circle"></i>
-							Générique</th>
-						<th>
-							<i class="bi bi-percent"></i>
-							Remboursement</th>
-					</tr>
-				</thead>
-
-				<tbody>
-					{% for m in medicines %}
-<tr></tr>
-
-
-
-							<td class="fw-bold">{{ m.id }}</td>
-<td class="clickable-row" onclick="window.location='{{ path('medicine_show', {'id': m.id}) }}'">{{ m.code }}</td>
-<td class="clickable-row" onclick="window.location='{{ path('medicine_show', {'id': m.id}) }}'" class="fw-semibold">{{ m.name }}</td>
-<td class="clickable-row" onclick="window.location='{{ path('medicine_show', {'id': m.id}) }}'">{{ m.dci ?: '-' }}</td>
-<td class="clickable-row" onclick="window.location='{{ path('medicine_show', {'id': m.id}) }}'">{{ m.dosage ~ ' ' ~ m.uniteDosage }}</td>
-<td class="clickable-row" onclick="window.location='{{ path('medicine_show', {'id': m.id}) }}'">{{ m.forme ?: '-' }}</td>
-<td class="clickable-row" onclick="window.location='{{ path('medicine_show', {'id': m.id}) }}'">{{ m.presentation ?: '-' }}</td>
-
-
-							<td>
-								<span class="badge bg-info text-dark px-3">{{ m.ppv }}
-									DH</span>
-							</td>
-							<td>{{ m.ph ?: '-' }}</td>
-
-							<td>
-								{% if m.isGeneric %}
-									<span class="badge bg-success px-3 py-2">Générique</span>
-								{% else %}
-									<span class="badge bg-warning text-dark px-3 py-2">Princeps</span>
-								{% endif %}
-							</td>
-
-							<td>
-								{% if m.tauxRembourssement %}
-									<span class="badge bg-primary px-3">{{ m.tauxRembourssement }}%</span>
-								{% else %}
-									-
-								{% endif %}
-							</td>
-
-						</tr>
-					{% endfor %}
-				</tbody>
-
-			</table>
-
-		</div>
+		<input type="text" id="medicineSearch" class="form-control-lg shadow-sm form-control rounded-pill ps-5" placeholder="Rechercher un médicament...">
 	</div>
 
-
 	<style>
-		.clickable-row {
-			cursor: pointer;
-			transition: background-color 0.2s ease;
-		}
-		.clickable-row:hover {
-			background-color: #e6f0ff !important;
+		.start-3 {
+			left: 16px;
 		}
 	</style>
 
-{% endblock %}
+	<!-- ⭐⭐ CONTENU STATIQUE D’INTRO ⭐⭐ -->
+	<div id="staticIntro" class="mb-4">
 
+		
 
-{# -------------------------------------------- #}
-{# JAVASCRIPTS RESPONSIVE DATATABLES          #}
-{# -------------------------------------------- #}
-	{% block javascripts %}
-	{{ parent() }}
+		<div class="row g-4">
 
-	<!-- CSS -->
-	<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css"> <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
+			<div class="col-md-4">
+				<div class="card med-info shadow-sm border-0 rounded-4 p-4 h-100">
+					<i class="bi bi-capsule text-danger fs-2 mb-3"></i>
+					<h5 class="fw-bold">Vue d’ensemble rapide</h5>
+					<p class="text-secondary small">
+						Accédez en un coup d’œil aux médicaments les plus courants de votre pratique
+						                    et aux informations essentielles qui les concernent.
+					</p>
+				</div>
+			</div>
 
-<!-- JS -->
-	 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-	 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-	 <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
-	 <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
+			<div class="col-md-4">
+				<div class="card med-info shadow-sm border-0 rounded-4 p-4 h-100">
+<i class="bi bi-search text-danger fs-2 mb-3"></i>
+
+					<h5 class="fw-bold">Recherche intelligente</h5>
+					<p class="text-secondary small">
+						Tapez quelques lettres du nom, de la DCI ou du code pour filtrer instantanément
+						                    les médicaments de votre base.
+					</p>
+				</div>
+			</div>
+
+			<div class="col-md-4">
+				<div class="card med-info shadow-sm border-0 rounded-4 p-4 h-100">
+<i class="bi bi-shield-check text-danger fs-2 mb-3"></i>
+
+					<h5 class="fw-bold">Suivi sécurisé</h5>
+					<p class="text-secondary small">
+						Chaque fiche médicament est liée à votre système de suivi, pour une prise de décision plus simple
+						                    et plus sécurisée.
+					</p>
+				</div>
+			</div>
+
+		</div>
+
+	</div>
+
+	<!-- ⭐⭐ ZONE DES RÉSULTATS API ⭐⭐ -->
+	<div id="results"></div>
+
+	<style>
+		.med-card {
+			background: white;
+			border-radius: 20px;
+			padding: 22px;
+			margin-bottom: 18px;
+			border: 1px solid rgba(0, 0, 0, 0.08);
+			transition: 0.3s ease;
+			cursor: pointer;
+		}
+		.med-card:hover {
+			transform: translateY(-6px);
+			box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
+		}
+
+		.med-info {
+			transition: 0.3s ease;
+		}
+		.med-info:hover {
+			transform: translateY(-5px);
+			box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+		}
+	</style>
 
 	 <script>
-	        document.addEventListener("DOMContentLoaded", () => {
+	document.addEventListener("DOMContentLoaded", () => {
 	
-	            $('#medicineTable').DataTable({
-	                responsive: true,         // ⭐ Rend le tableau RESPONSIVE
-	                pageLength: 25,
-	                language: {
-	                    url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/fr-FR.json"
-	                },
-	                order: [[0, 'desc']]
-	            });
+	    const input       = document.getElementById("medicineSearch");
+	    const results     = document.getElementById("results");
+	    const staticIntro = document.getElementById("staticIntro");
+	    let timer         = null;
 	
+	    function renderResults(data) {
+	        results.innerHTML = "";
+	
+	        data.forEach(m => {
+	            const card = `
+	                <div class="med-card shadow-sm" onclick="window.location='/medicine/${m.id}'">
+	                    <div class="d-flex justify-content-between">
+	
+	                        <div>
+<h4 class="fw-bold text-danger mb-1">${m.name}</h4>
+
+	                            <p class="text-secondary small mb-1">
+	                                <i class="bi bi-upc"></i> ${m.code}
+	                                &nbsp; • &nbsp;
+	                                <i class="bi bi-flower3"></i> ${m.dci ?? "-"}
+	                            </p>
+	                        </div>
+	
+	                        <div class="text-end">
+	                            <span class="badge bg-info text-dark px-3 py-2">${m.ppv} DH</span><br>
+	                            ${
+	                                m.isGeneric
+	                                    ? `<span class="badge bg-success mt-2 px-3 py-2">Générique</span>`
+	                                    : `<span class="badge bg-warning text-dark mt-2 px-3 py-2">Princeps</span>`
+	                            }
+	                        </div>
+	
+	                    </div>
+	                </div>
+	            `;
+	            results.insertAdjacentHTML("beforeend", card);
 	        });
-	    </script>
+	    }
+	
+	    input.addEventListener("keyup", () => {
+	
+	        clearTimeout(timer);
+	
+	        timer = setTimeout(() => {
+	
+	            const q = input.value.trim();
+	
+	            // Si moins de 2 caractères → on remet l'intro et on vide les résultats
+	            if (q.length < 2) {
+	                staticIntro.style.display = "block";
+	                results.innerHTML = "";
+	                return;
+	            }
+	
+	            // Dès qu'on commence une vraie recherche → cacher l'intro
+	            staticIntro.style.display = "none";
+	
+	            fetch(`/medicine/search/api?search=${encodeURIComponent(q)}`)
+	                .then(res => res.json())
+	                .then(data => {
+	
+	                    if (data.length === 0) {
+	                        results.innerHTML = `
+	                            <div class="alert alert-warning text-center rounded-4 py-3">
+	                                Aucun médicament trouvé.
+	                            </div>`;
+	                        return;
+	                    }
+	
+	                    renderResults(data);
+	                });
+	
+	        }, 250);
+	    });
+	
+	});
+	</script>
 
 {% endblock %}
 
