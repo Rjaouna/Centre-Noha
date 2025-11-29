@@ -84,7 +84,7 @@
 
 					<i class="bi bi-person-plus-fill text-success" style="font-size: 3.2rem;"></i>
 
-<h5 class="mt-3 fw-bold">Ajouter un client</h5>
+<h5 class="mt-3 fw-bold">Ajouter un patient</h5>
 
 					<p class="text-muted small">Créer une nouvelle fiche patient</p>
 
@@ -126,26 +126,25 @@ Patients
 				</div>
 			</div>
 
-			<!-- ========================== -->
-			<!-- 🔹 3 — Paiements -->
-			<!-- ========================== -->
-				<div class="col-12 col-md-3"> <div class="card dashboard-card shadow border-0 rounded-4 text-center p-3">
+<!-- ========================== -->
+<!-- 🔹 3 — Médicaments -->
+<!-- ========================== -->
+	<div class="col-12 col-md-3"> <div class="card dashboard-card shadow border-0 rounded-4 text-center p-3">
 
-					<i class="bi bi-credit-card-fill text-danger" style="font-size: 3.2rem;"></i>
+		<i class="bi bi-capsule-pill text-danger" style="font-size: 3.2rem;"></i>
 
-					<h5 class="mt-3 fw-bold">Paiements</h5>
-					<p class="text-muted small">Suivi & gestion des paiements</p>
+		<h5 class="mt-3 fw-bold">Liste des Médicaments</h5>
+		<p class="text-muted small">Consultation & gestion des médicaments</p>
 
-<button class="btn btn-outline-danger btn-sm rounded-pill px-4 mt-2" disabled>
+		<a href="{{ path('medicine_index') }}" class="btn btn-outline-danger btn-sm rounded-pill px-4 mt-2">
+			<i class="bi bi-prescription2"></i>
+			Liste
+		</a>
 
-						<i class="bi bi-wallet2"></i>
-Paiements
+	</div>
+</div>
 
 
-					</button>
-
-				</div>
-			</div>
 
 			<!-- ========================== -->
 			<!-- 🔹 4 — Rendez-vous -->

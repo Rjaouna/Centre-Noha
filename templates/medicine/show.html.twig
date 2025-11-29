@@ -1,0 +1,185 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	{{ medicine.name }}
+	- Médicament
+{% endblock %}
+
+{% block body %}
+
+	<div class="mt-4">
+
+		<!-- ============================= -->
+		<!-- 🔹 HEADER (style uniforme)    -->
+		<!-- ============================= -->
+			<div class="card shadow-lg border-0 rounded-4 mb-4"> <div class="card-body py-4 px-4">
+
+				<div
+					class="row align-items-center">
+
+					<!-- Icône + titre -->
+					<div class="col-12 col-md-7 d-flex align-items-center mb-3 mb-md-0">
+						<i class="bi bi-capsule-pill text-primary fs-1 me-3"></i>
+
+						<div>
+							<h2 class="fw-bold text-primary mb-1">{{ medicine.name }}</h2>
+							<p class="text-secondary m-0">
+								Code :
+								<strong>{{ medicine.code }}</strong>
+							</p>
+						</div>
+					</div>
+
+					<!-- Retour -->
+					<div class="col-12 col-md-5 d-flex justify-content-md-end">
+						<a href="{{ path('medicine_index') }}" class="btn btn-outline-secondary btn-lg rounded-pill px-4 shadow-sm d-flex align-items-center gap-2">
+							<i class="bi bi-arrow-left"></i>
+							Retour
+						</a>
+					</div>
+
+				</div>
+
+			</div>
+		</div>
+
+
+		<!-- ============================= -->
+		<!-- 🔹 FICHE DU MÉDICAMENT        -->
+		<!-- ============================= -->
+			<div class="card shadow-lg border-0 rounded-4"> <div class="card-body p-4">
+
+				<h4 class="fw-bold text-primary mb-4 d-flex align-items-center">
+					<i class="bi bi-info-circle-fill me-2"></i>
+					Informations détaillées
+				</h4>
+
+				<div
+					class="row g-4">
+
+					<!-- Nom commercial -->
+					<div class="col-md-6">
+						<div class="info-bloc p-3 border rounded-4 bg-light shadow-sm-sm">
+							<span class="text-secondary small d-flex align-items-center mb-1">
+								<i class="bi bi-capsule me-2"></i>
+								Nom commercial
+							</span>
+							<p class="fw-bold fs-5 m-0">{{ medicine.name }}</p>
+						</div>
+					</div>
+
+					<!-- DCI -->
+					<div class="col-md-6">
+						<div class="info-bloc p-3 border rounded-4 shadow-sm-sm">
+							<span class="text-secondary small d-flex align-items-center mb-1">
+								<i class="bi bi-flower3 me-2"></i>
+								DCI
+							</span>
+							<p class="fw-semibold m-0">{{ medicine.dci ?: '-' }}</p>
+						</div>
+					</div>
+
+					<!-- Dosage -->
+					<div class="col-md-6">
+						<div class="info-bloc p-3 border rounded-4 bg-light shadow-sm-sm">
+							<span class="text-secondary small d-flex align-items-center mb-1">
+								<i class="bi bi-bezier2 me-2"></i>
+								Dosage
+							</span>
+							<p class="fw-semibold m-0">
+								{{ medicine.dosage }}
+								{{ medicine.uniteDosage }}
+							</p>
+						</div>
+					</div>
+
+					<!-- Forme -->
+					<div class="col-md-6">
+						<div class="info-bloc p-3 border rounded-4 shadow-sm-sm">
+							<span class="text-secondary small d-flex align-items-center mb-1">
+								<i class="bi bi-collection me-2"></i>
+								Forme
+							</span>
+							<p class="fw-semibold m-0">{{ medicine.forme ?: '-' }}</p>
+						</div>
+					</div>
+
+					<!-- Présentation -->
+					<div class="col-md-6">
+						<div class="info-bloc p-3 border rounded-4 bg-light shadow-sm-sm">
+							<span class="text-secondary small d-flex align-items-center mb-1">
+								<i class="bi bi-box-seam me-2"></i>
+								Présentation
+							</span>
+							<p class="fw-semibold m-0">{{ medicine.presentation ?: '-' }}</p>
+						</div>
+					</div>
+
+					<!-- PPV -->
+					<div class="col-md-6">
+						<div class="info-bloc p-3 border rounded-4 shadow-sm-sm">
+							<span class="text-secondary small d-flex align-items-center mb-1">
+								<i class="bi bi-currency-euro me-2"></i>
+								Prix public (PPV)
+							</span>
+							<p class="m-0">
+								<span class="badge bg-info text-dark px-3 py-2 shadow-sm">
+									{{ medicine.ppv }}
+									DH
+								</span>
+							</p>
+						</div>
+					</div>
+
+					<!-- PH -->
+					<div class="col-md-6">
+						<div class="info-bloc p-3 border rounded-4 bg-light shadow-sm-sm">
+							<span class="text-secondary small d-flex align-items-center mb-1">
+								<i class="bi bi-currency-exchange me-2"></i>
+								Prix hôpital (PH)
+							</span>
+							<p class="fw-semibold m-0">{{ medicine.ph ?: '-' }}</p>
+						</div>
+					</div>
+
+					<!-- Générique -->
+					<div class="col-md-6">
+						<div class="info-bloc p-3 border rounded-4 shadow-sm-sm">
+							<span class="text-secondary small d-flex align-items-center mb-1">
+								<i class="bi bi-check-circle me-2"></i>
+								Type
+							</span>
+							<p class="m-0">
+								{% if medicine.isGeneric %}
+									<span class="badge bg-success px-3 py-2">Générique</span>
+								{% else %}
+									<span class="badge bg-warning text-dark px-3 py-2">Princeps</span>
+								{% endif %}
+							</p>
+						</div>
+					</div>
+
+					<!-- Taux remboursement -->
+					<div class="col-md-6">
+						<div class="info-bloc p-3 border rounded-4 bg-light shadow-sm-sm">
+							<span class="text-secondary small d-flex align-items-center mb-1">
+								<i class="bi bi-percent me-2"></i>
+								Taux de remboursement
+							</span>
+							<p class="fw-bold m-0">
+								{{ medicine.tauxRembourssement ?: '-' }}
+								{% if medicine.tauxRembourssement %}%
+								{% endif %}
+							</p>
+						</div>
+					</div>
+
+				</div>
+
+			</div>
+		</div>
+
+	</div>
+
+{% endblock %}
+

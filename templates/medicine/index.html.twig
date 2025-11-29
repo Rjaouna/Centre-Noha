@@ -1,0 +1,161 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Médicaments
+{% endblock %}
+
+{% block body %}
+
+	<div
+		class="mt-4">
+
+		<!-- CARD HEADER -->
+		<div class="card shadow-lg border-0 rounded-4 mb-4">
+			<div class="card-body py-4 px-4">
+
+				<div
+					class="row align-items-center">
+
+					<!-- TITRE -->
+					<div class="col-12 col-md-7 d-flex align-items-center mb-3 mb-md-0">
+						<i class="bi bi-capsule-pill text-primary fs-1 me-3"></i>
+						<div>
+							<h2 class="fw-bold text-primary mb-1">
+								Gestion des Médicaments
+							</h2>
+							<p class="text-secondary m-0">
+								{{ medicines|length }}
+								médicaments enregistrés
+							</p>
+						</div>
+					</div>
+
+					<!-- BOUTON RETOUR -->
+					<div class="col-12 col-md-5 d-flex justify-content-md-end">
+						<a href="{{ path('app_home') }}" class="btn btn-outline-secondary btn-lg rounded-pill px-4 shadow-sm d-flex align-items-center gap-2">
+							<i class="bi bi-arrow-left"></i>
+							Retour
+						</a>
+					</div>
+
+				</div>
+
+			</div>
+		</div>
+
+	</div>
+
+
+	<!-- TABLEAU -->
+	<div class="card shadow-lg border-0 rounded-4">
+		<div class="card-body px-4 py-4">
+
+			<table id="medicineTable" class="table table-hover align-middle table-striped rounded-4" style="width:100%">
+				<thead class="table-primary text-dark">
+					<tr>
+						<th>#</th>
+						<th>
+							<i class="bi bi-upc"></i>
+							Code</th>
+						<th>
+							<i class="bi bi-capsule"></i>
+							Nom commercial</th>
+						<th>
+							<i class="bi bi-flower3"></i>
+							DCI</th>
+						<th>
+							<i class="bi bi-bezier2"></i>
+							Dosage</th>
+						<th>
+							<i class="bi bi-collection"></i>
+							Forme</th>
+						<th>
+							<i class="bi bi-box-seam"></i>
+							Présentation</th>
+						<th>
+							<i class="bi bi-currency-euro"></i>
+							PPV</th>
+						<th>
+							<i class="bi bi-currency-euro"></i>
+							PH</th>
+						<th>
+							<i class="bi bi-check-circle"></i>
+							Générique</th>
+						<th>
+							<i class="bi bi-percent"></i>
+							Remboursement</th>
+					</tr>
+				</thead>
+
+<tbody>
+	{% for m in medicines %}
+		<tr class="clickable-row" onclick="window.location='{{ path('medicine_show', {'id': m.id}) }}'">
+
+			<td class="fw-bold">{{ m.id }}</td>
+			<td>{{ m.code }}</td>
+			<td class="fw-semibold">{{ m.name }}</td>
+			<td>{{ m.dci ?: '-' }}</td>
+			<td>{{ m.dosage ~ ' ' ~ m.uniteDosage }}</td>
+			<td>{{ m.forme ?: '-' }}</td>
+			<td>{{ m.presentation ?: '-' }}</td>
+			<td>
+				<span class="badge bg-info text-dark px-3">{{ m.ppv }}
+					DH</span>
+			</td>
+			<td>{{ m.ph ?: '-' }}</td>
+			<td>
+				{% if m.isGeneric %}
+					<span class="badge bg-success px-3 py-2">Générique</span>
+				{% else %}
+					<span class="badge bg-warning text-dark px-3 py-2">Princeps</span>
+				{% endif %}
+			</td>
+			<td>
+				{% if m.tauxRembourssement %}
+					<span class="badge bg-primary px-3">{{ m.tauxRembourssement }}%</span>
+				{% else %}
+					-
+				{% endif %}
+			</td>
+
+		</tr>
+	{% endfor %}
+</tbody>
+
+
+
+			</table>
+
+		</div>
+	</div>
+<style>
+	.clickable-row {
+		cursor: pointer;
+		transition: background-color 0.2s ease;
+	}
+	.clickable-row:hover {
+		background-color: #e6f0ff !important;
+	}
+</style>
+
+</style>	
+{% endblock %}
+
+
+{% block javascripts %}
+	{{ parent() }}
+
+<!-- DATATABLES JS -->
+	 <script>
+	document.addEventListener("DOMContentLoaded", function () {
+		$('#medicineTable').DataTable({
+			pageLength: 25,
+			language: {
+				url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/fr-FR.json"
+			},
+			order: [[0, 'desc']]
+		});
+	});
+	</script>
+
+{% endblock %}
+

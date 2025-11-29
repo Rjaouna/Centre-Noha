@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\SuiviSoinRepository;
@@ -28,6 +30,17 @@ class SuiviSoin
 
     #[ORM\ManyToOne(inversedBy: 'suiviSoins')]
     private ?DossierMedical $dossierMedical = null;
+
+    /**
+     * @var Collection<int, Medicine>
+     */
+    #[ORM\ManyToMany(targetEntity: Medicine::class, inversedBy: 'suiviSoins')]
+    private Collection $medicine;
+
+    public function __construct()
+    {
+        $this->medicine = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -66,6 +79,30 @@ class SuiviSoin
     public function setDossierMedical(?DossierMedical $dossierMedical): static
     {
         $this->dossierMedical = $dossierMedical;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Medicine>
+     */
+    public function getMedicine(): Collection
+    {
+        return $this->medicine;
+    }
+
+    public function addMedicine(Medicine $medicine): static
+    {
+        if (!$this->medicine->contains($medicine)) {
+            $this->medicine->add($medicine);
+        }
+
+        return $this;
+    }
+
+    public function removeMedicine(Medicine $medicine): static
+    {
+        $this->medicine->removeElement($medicine);
 
         return $this;
     }
