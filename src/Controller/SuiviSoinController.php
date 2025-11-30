@@ -53,6 +53,10 @@ final class SuiviSoinController extends AbstractController
                     'code' => $m->getCode(),
                     'dci'  => $m->getDci(),
                     'ppv'  => $m->getPpv(),
+                    'forme'  => $m->getForme(),
+                    'presentation'  => $m->getPresentation(),
+                    'dosage'  => $m->getDosage(),
+                    'uniteDosage'  => $m->getUniteDosage(),
                     'isGeneric' => $m->isGeneric(),
                 ];
             }

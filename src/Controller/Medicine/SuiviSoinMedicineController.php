@@ -54,6 +54,8 @@ class SuiviSoinMedicineController extends AbstractController
 				'name' => $medicine->getName(),
 				'code' => $medicine->getCode(),
 				'dci' => $medicine->getDci(),
+				'dosage' => $medicine->getDosage(),
+				'uniteDosage' => $medicine->getUniteDosage()
 			]
 		]);
 	}

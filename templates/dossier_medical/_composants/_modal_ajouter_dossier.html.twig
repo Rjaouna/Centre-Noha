@@ -302,7 +302,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const apiUrl = `{{ path('api_dossier_medical_create', { id: patient.id }) }}`;
 
         addDossier.disabled = true;
-        let seconds = 2;
+let seconds = 1;
+
+
 
         addDossier.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Création... (${seconds}s)`;
 

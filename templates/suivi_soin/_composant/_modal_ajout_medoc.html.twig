@@ -118,43 +118,35 @@ document.addEventListener("DOMContentLoaded", () => {
 
         data.forEach(m => {
             const card = `
-<div
-	class="med-card shadow-sm position-relative">
-
-	<!-- Contenu principal -->
+<div class="med-card shadow-sm" onclick="window.location='/medicine/${m.id}'">
 	<div class="d-flex justify-content-between">
 
 		<div>
-			<h4 class="fw-bold text-danger mb-1">${m.name}</h4>
+			<p class="fw-bold text-secondary mb-1">${m.name} - ${m.dosage} ${m.uniteDosage}
+
+			</p>
+
+
 			<p class="text-secondary small mb-1">
-				<i class="bi bi-upc"></i>
-				${m.code}
-								&nbsp; • &nbsp;
-				<i class="bi bi-flower3"></i>
-				${m.dci ?? "-"}
+				${m.forme} - ${m.presentation}
+
+
+				<span class="text-${m.tauxRembourssement != 0 ? 'success' : 'danger'}">
+					${m.tauxRembourssement != 0 ? '(Taux de rembourssement : 70%)' : '(Non Rembourssable)'}</span>
+
+
 			</p>
 		</div>
 
-		<div class="text-end">
-			<span class="badge bg-info text-dark px-3 py-2">${m.ppv} DH</span><br>
-			${
-							m.isGeneric
-								? `<span class="badge bg-success mt-2 px-3 py-2">Générique</span>`
-									: `<span class="badge bg-warning text-dark mt-2 px-3 py-2">Princeps</span>`
-							}
-		</div>
-	</div>
+		
+<button onclick="event.stopPropagation(); addMedicineToSuivi(${m.id})" class="btn btn-outline-danger btn-sm rounded">
+	Préscrire
+</button>
 
-	<!-- Bouton Ajouter -->
-	<div class="text-end mt-3">
-		<button onclick="addMedicineToSuivi(${m.id})" class="btn btn-outline-danger btn-sm rounded-pill px-3 py-1 add-btn">
-			<i class="bi bi-plus-circle me-1"></i>
-			Ajouter au suivi
-		</button>
-	</div>
 
-</div>
-            `;
+
+	</div>
+</div>`;
             results.insertAdjacentHTML("beforeend", card);
         });
     }
@@ -217,6 +209,10 @@ function addMedicineToSuivi(medicineId) {
         return;
     }
 
+    if (!confirm("Voulez-vous vraiment ajouter ce médicament ?")) {
+        return; // Annulé par l’utilisateur
+    }
+
     fetch(`/suivi/${suiviId}/medicine/add`, {
         method: "POST",
         headers: {
@@ -233,7 +229,6 @@ function addMedicineToSuivi(medicineId) {
         }
 
         alert("✔ Médicament ajouté !");
-		// ➕ Rafraîchir automatiquement
         reloadTimeline();
     })
     .catch(err => {
@@ -241,6 +236,7 @@ function addMedicineToSuivi(medicineId) {
         console.error(err);
     });
 }
+
 
 
 </script>
