@@ -112,7 +112,9 @@ class="mt-4">
 	<!-- Bouton Ajouter -->
 	<button class="btn btn-outline-primary btn-lg rounded-pill px-4 shadow-sm w-100 w-md-auto" data-bs-toggle="modal" data-bs-target="#modalAddSuivi">
 		<i class="bi bi-clipboard-plus fs-4"></i>
-		Nouveau suivi
+Ordonnance
+
+
 	</button>
 
 	<!-- Bouton Retour -->
@@ -169,7 +171,8 @@ class="mt-4">
 
         <div class="timeline-header">
             <i class="bi bi-clipboard2-pulse text-primary fs-4 me-2"></i>
-<h5 class="mb-0 fw-bold text-primary">Ordonnance</h5>
+<h5 class="mb-0 fw-bold text-primary">Ordonnance  N° : ${suivi.id}</h5>
+
 
 
         </div>
@@ -371,10 +374,16 @@ function reloadTimeline() {
 
         <div class="timeline-header">
             <i class="bi bi-clipboard2-pulse text-primary fs-4 me-2"></i>
-            <h5 class="mb-0 fw-bold text-primary">Diagnostic</h5>
+<h5 class="mb-0 fw-bold text-primary">Ordonnance  N° : ${suivi.id}</h5>
+
+
+
+
         </div>
 
-        <p class="text-secondary mt-3">${suivi.diagnostic}</p>
+<p class="text-secondary mt-3">${suivi.diagnostic}</p>
+
+
 
         ${suivi.medicines.length > 0 ? `
         <div class="mt-3">
