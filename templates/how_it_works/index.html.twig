@@ -1,193 +1,201 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Comment ça marche !{% endblock %}
+{% block title %}Comment ça marche !
+{% endblock %}
 
 {% block body %}
-<section class="container my-5">
+	<section class="container my-5">
 
+		<div
+			class="timeline">
 
-
-	<div
-		class="timeline">
-
-		<!-- Étape 1 -->
-		<div class="timeline-item">
-			<div class="timeline-icon bg-primary text-white">
-				<i class="bi bi-door-open"></i>
+			<!-- Étape 1 -->
+			<div class="timeline-item">
+				<div class="timeline-icon bg-primary text-white">
+					<i class="bi bi-door-open"></i>
+				</div>
+				<div class="timeline-content">
+					<h4 class="fw-bold">1. Accueil du patient</h4>
+					<p class="mb-0 text-muted">
+						Le patient est accueilli au centre. Vous vérifiez s’il existe déjà dans le système 
+						                    ou s’il s’agit d’une nouvelle admission.
+					</p>
+				</div>
 			</div>
-			<div class="timeline-content">
-				<h4 class="fw-bold">1. Accueil du patient</h4>
-				<p class="mb-0 text-muted">
-					Le patient est accueilli au centre. Vous vérifiez s’il existe déjà dans le système ou s’il s’agit d’une nouvelle admission.
-				</p>
+
+			<!-- Étape 2 -->
+			<div class="timeline-item">
+				<div class="timeline-icon bg-info text-white">
+					<i class="bi bi-person-vcard"></i>
+				</div>
+				<div class="timeline-content">
+					<h4 class="fw-bold">2. Création ou mise à jour de la fiche patient</h4>
+					<p class="mb-0 text-muted">
+						Lors d’une nouvelle admission, une
+						<strong>fiche patient complète</strong>
+						est créée 
+						                    (informations générales, historique médical, symptômes, antécédents…).
+						<br><br>
+						Les nouvelles admissions apparaissent en
+						<strong>surbrillance verte</strong>
+						tant que la fiche n’a pas été consultée.
+						<br><br>
+						Une
+						<strong>notification de confirmation</strong>
+						apparaît automatiquement après l’enregistrement.
+					</p>
+				</div>
 			</div>
+
+			<!-- Étape 3 -->
+			<div class="timeline-item">
+				<div class="timeline-icon bg-success text-white">
+					<i class="bi bi-activity"></i>
+				</div>
+				<div class="timeline-content">
+					<h4 class="fw-bold">3. Consultation</h4>
+					<p class="mb-0 text-muted">
+						Le praticien réalise l’examen médical, ajoute des observations, met à jour l’état du patient
+						                    et analyse les symptômes ou antécédents.
+						<br><br>
+						Il peut ensuite décider de créer une
+						<strong>ordonnance associée à cette consultation</strong>.
+					</p>
+				</div>
+			</div>
+
+			<!-- Étape 4 - Ordonnance -->
+			<div class="timeline-item">
+				<div class="timeline-icon bg-purple text-white" style="background:#6f42c1;">
+					<i class="bi bi-file-medical"></i>
+				</div>
+				<div class="timeline-content">
+					<h4 class="fw-bold">4. Création d’une ordonnance</h4>
+					<p class="mb-0 text-muted">
+						Dans chaque dossier, vous pouvez créer une
+						<strong>ordonnance médicale</strong>
+						comprenant :
+						<br><br>
+						• Un
+						<strong>diagnostic</strong>
+						détaillé<br>
+						• Un ou plusieurs
+						<strong>médicaments</strong>
+						issus de la base des médicaments<br>
+						
+						<br><br>
+						L’ordonnance peut être imprimée, consultée ou modifiée ultérieurement.
+					</p>
+				</div>
+			</div>
+
+			<!-- Étape 5 - Base des médicaments -->
+			<div class="timeline-item">
+				<div class="timeline-icon bg-secondary text-white">
+					<i class="bi bi-capsule"></i>
+				</div>
+				<div class="timeline-content">
+					<h4 class="fw-bold">5. Liste des médicaments</h4>
+					<p class="mb-0 text-muted">
+						Vous disposez d'une page dédiée contenant
+						<strong>tous les médicaments</strong>
+						enregistrés : 
+						                    code, nom, DCI, dosage, unité, forme, présentation, PPV, PH, générique ou non.
+						<br><br>
+						Cette base est utilisée lors de la création d’une ordonnance afin de
+						<strong>sélectionner rapidement les médicaments</strong>
+						à prescrire.
+					</p>
+				</div>
+			</div>
+
+			<!-- Étape 6 - Paiement -->
+			<div class="timeline-item">
+				<div class="timeline-icon bg-warning text-white">
+					<i class="bi bi-credit-card"></i>
+				</div>
+				<div class="timeline-content">
+					<h4 class="fw-bold">6. Paiement de la séance</h4>
+					<p class="mb-0 text-muted">
+						Le paiement est enregistré (montant total, payé, reste dû, mode de paiement).
+						                    Cela clôture administrativement la séance.
+					</p>
+				</div>
+			</div>
+
+			<!-- Étape 7 - Rendez-vous -->
+			<div class="timeline-item">
+				<div class="timeline-icon bg-dark text-white">
+					<i class="bi bi-calendar-plus"></i>
+				</div>
+				<div class="timeline-content">
+					<h4 class="fw-bold">7. Programmation du prochain rendez-vous</h4>
+					<p class="mb-0 text-muted">
+						Le bouton
+						<strong>“Donner un rendez-vous”</strong>
+						permet de planifier la prochaine visite : date, heure, motif, statut.
+					</p>
+				</div>
+			</div>
+
 		</div>
 
-<!-- Étape 2 -->
-<div class="timeline-item">
-	<div class="timeline-icon bg-info text-white">
-		<i class="bi bi-person-vcard"></i>
-	</div>
-	<div class="timeline-content">
-		<h4 class="fw-bold">2. Création ou mise à jour de la fiche patient</h4>
-		<p class="mb-0 text-muted">
-			Lorsqu’un nouveau patient est admis, une
-			<strong>nouvelle fiche</strong>
-			est créée 
-			            (nom, ville, téléphone, informations médicales, symptômes, antécédents…).
-			<br><br>
-			Les
-			<strong>nouvelles admissions apparaissent en surbrillance verte</strong>
-			dans la liste des patients 
-			            tant que la fiche n’a pas encore été ouverte (page “show”).
-			<br><br>
-			Une
-			<strong>notification automatique</strong>
-			est également affichée au moment de la création d’une admission,
-			            afin de confirmer l’enregistrement de la fiche.
-		</p>
-	</div>
-</div>
+	</section>
 
-
-
-		<!-- Étape 3 -->
-<div class="timeline-item">
-	<div class="timeline-icon bg-success text-white">
-		<i class="bi bi-activity"></i>
-	</div>
-	<div class="timeline-content">
-		<h4 class="fw-bold">3. Consultation</h4>
-		<p class="mb-0 text-muted">
-			Le praticien réalise la consultation et met à jour la fiche patient si nécessaire :
-			            observations, traitements, symptômes, maladies chroniques, etc.
-			<br><br>
-			Il peut également
-			<strong>ajouter un soin effectué</strong>
-			lors de la séance 
-			            (massage, ventouse, suivi, autre protocole…)
-			            ou
-			<strong>visualiser les soins précédemment réalisés</strong>
-			grâce à l’historique intégré dans la fiche.
-		</p>
-	</div>
-</div>
-
-
-
-		<!-- Étape 4 -->
-		<div class="timeline-item">
-			<div class="timeline-icon bg-warning text-white">
-				<i class="bi bi-credit-card"></i>
-			</div>
-			<div class="timeline-content">
-				<h4 class="fw-bold">4. Paiement de la séance</h4>
-				<p class="mb-0 text-muted">
-					Le paiement est enregistré dans l’application : montant total, montant payé, reste et type de paiement
-					                    (espèces, carte, virement…). La séance en cours est ainsi clôturée administrativement.
-				</p>
-			</div>
-		</div>
-
-		<!-- Étape 5 -->
-		<div class="timeline-item">
-			<div class="timeline-icon bg-secondary text-white">
-				<i class="bi bi-calendar-plus"></i>
-			</div>
-			<div class="timeline-content">
-				<h4 class="fw-bold">5. Programmation du prochain rendez-vous</h4>
-				<p class="mb-0 text-muted">
-					Après le paiement, vous utilisez le bouton
-					<strong>“Donner un rendez-vous”</strong>
-					dans la fiche patient
-					                    pour planifier la prochaine visite : date, heure, motif et statut du rendez-vous.
-				</p>
-			</div>
-		</div>
-
-		<!-- Étape 6 -->
-		<div class="timeline-item">
-			<div class="timeline-icon bg-dark text-white">
-				<i class="bi bi-clock-history"></i>
-			</div>
-			<div class="timeline-content">
-				<h4 class="fw-bold">6. Suivi & historique</h4>
-				<p class="mb-0 text-muted">
-					À chaque retour du patient, vous retrouvez son historique complet : consultations, rendez-vous passés et à venir,
-					                    paiements et évolutions de son état, pour un suivi continu et structuré.
-				</p>
-			</div>
-		</div>
-
-	</div>
-
-</section>
-<style>
-.timeline {
-    position: relative;
-    margin-bottom: 5rem;
-    padding-left: 2rem;
-}
-
-/* Ligne verticale */
-.timeline::before {
-    content: "";
-    position: absolute;
-    top: 0.5rem;
-    left: 1rem;
-    width: 3px;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.08);
-}
-
-/* Bloc étape */
-.timeline-item {
-    position: relative;
-    margin-bottom: 2rem;
-}
-
-/* Pastille / icône */
-.timeline-icon {
-    position: absolute;
-    left: -0.1rem;
-    top: 0;
-    width: 2.3rem;
-    height: 2.3rem;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 0 0 4px #fff;
-    font-size: 1.2rem;
-}
-
-/* Contenu texte */
-.timeline-content {
-    margin-left: 3.5rem;
-    padding: 0.75rem 1rem;
-    border-radius: 0.75rem;
-    background-color: #ffffff;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.04);
-}
-
-/* Responsive */
-@media (max-width: 576px) {
-    .timeline {
-        padding-left: 1.5rem;
-    }
-
-    .timeline::before {
-        left: 0.8rem;
-    }
-
-    .timeline-icon {
-        left: -0.3rem;
-    }
-
-    .timeline-content {
-        margin-left: 3.1rem;
-    }
-}
-</style>
+	<style>
+		.timeline {
+			position: relative;
+			margin-bottom: 5rem;
+			padding-left: 2rem;
+		}
+		.timeline::before {
+			content: "";
+			position: absolute;
+			top: 0.5rem;
+			left: 1rem;
+			width: 3px;
+			height: 100%;
+			background: rgba(0, 0, 0, 0.08);
+		}
+		.timeline-item {
+			position: relative;
+			margin-bottom: 2rem;
+		}
+		.timeline-icon {
+			position: absolute;
+			left: -0.1rem;
+			top: 0;
+			width: 2.3rem;
+			height: 2.3rem;
+			border-radius: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			box-shadow: 0 0 0 4px #fff;
+			font-size: 1.2rem;
+		}
+		.timeline-content {
+			margin-left: 3.5rem;
+			padding: 0.75rem 1rem;
+			border-radius: 0.75rem;
+			background-color: #ffffff;
+			box-shadow: 0 5px 15px rgba(0, 0, 0, 0.04);
+		}
+		@media(max-width: 576px) {
+			.timeline {
+				padding-left: 1.5rem;
+			}
+			.timeline::before {
+				left: 0.8rem;
+			}
+			.timeline-icon {
+				left: -0.3rem;
+			}
+			.timeline-content {
+				margin-left: 3.1rem;
+			}
+		}
+	</style>
 
 {% endblock %}
+
