@@ -142,22 +142,31 @@
 	                    <div class="d-flex justify-content-between">
 	
 	                        <div>
-<h4 class="fw-bold text-danger mb-1">${m.name}</h4>
+<p class="fw-bold text-secondary mb-1">${m.name} - ${m.dosage} ${m.uniteDosage} ${
+		                                m.isGeneric
+		                                    ? `<span class="fw-light badge bg-success py-1 mx-1">Générique</span>`
+		                                    : `<span class="fw-light badge bg-warning py-1 mx-1">Princeps</span>`
+		                            }
+
+
+</p>
+
+
 
 	                            <p class="text-secondary small mb-1">
-	                                <i class="bi bi-upc"></i> ${m.code}
-	                                &nbsp; • &nbsp;
-	                                <i class="bi bi-flower3"></i> ${m.dci ?? "-"}
+${m.forme} - ${m.presentation}
+
+
+<span class="text-${m.tauxRembourssement != 0 ? 'success' : 'danger'}">
+	${m.tauxRembourssement != 0 ? '(Taux de rembourssement : 70%)' : '(Non Rembourssable)'}</span>
+
+
 	                            </p>
 	                        </div>
 	
 	                        <div class="text-end">
 	                            <span class="badge bg-info text-dark px-3 py-2">${m.ppv} DH</span><br>
-	                            ${
-	                                m.isGeneric
-	                                    ? `<span class="badge bg-success mt-2 px-3 py-2">Générique</span>`
-	                                    : `<span class="badge bg-warning text-dark mt-2 px-3 py-2">Princeps</span>`
-	                            }
+	                            
 	                        </div>
 	
 	                    </div>

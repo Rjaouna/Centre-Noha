@@ -167,7 +167,8 @@
 								Taux de remboursement
 							</span>
 							<p class="fw-bold m-0">
-								{{ medicine.tauxRembourssement ?: '-' }}
+{{ medicine.tauxRembourssement ?: 'Nom rembourssable' }}
+
 								{% if medicine.tauxRembourssement %}%
 								{% endif %}
 							</p>

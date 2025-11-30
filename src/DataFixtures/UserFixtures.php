@@ -42,6 +42,14 @@ class UserFixtures extends Fixture
 		$assist->setPassword($password);
 		$manager->persist($assist);
 
+		// 🟢 Medecin
+		$assist = new User();
+		$assist->setEmail('dr.brouk@gmail.com');
+		$assist->setRoles(['ROLE_ASSIST']);
+		$password = $this->hasher->hashPassword($assist, 'brouk2025');
+		$assist->setPassword($password);
+		$manager->persist($assist);
+
 		// 💾 Sauvegarde en BDD
 		$manager->flush();
 	}
