@@ -111,6 +111,88 @@
 		</div>
 
 	</div>
+<!-- ⭐ SECTION LETTRE DE RECOMMANDATION ⭐ -->
+<div class="card shadow-lg border-0 rounded-4 mt-4">
+	<div class="card-body p-4">
+
+		<h4 class="fw-bold text-primary mb-4 d-flex align-items-center">
+			<i class="bi bi-envelope-paper-heart me-2"></i>
+			Lettre de recommandation
+		</h4>
+
+		<!-- Patients -->
+		<div class="form-floating mb-3">
+			<select id="selectPatient" class="form-select">
+				<option value="">-- Sélectionner un patient --</option>
+
+				{% for p in patients %}
+					<option value="{{ p.id }}">
+						{{ p.nom }}
+					</option>
+				{% endfor %}
+			</select>
+			<label for="selectPatient">Choisir un patient</label>
+		</div>
+		<!-- Motif de recommandation -->
+		<div class="form-floating mb-3">
+			<textarea class="form-control" placeholder="Motif de la recommandation" id="motifRecommandation" style="height: 120px"></textarea>
+			<label for="motifRecommandation">Motif de recommandation</label>
+		</div>
+
+
+		<button id="btnRecommandation" class="btn btn-primary btn-lg rounded-pill px-4 shadow-sm">
+			<i class="bi bi-pencil-square me-2"></i>
+			Créer la lettre
+		</button>
+
+		<div id="recAlert" class="mt-3"></div>
+	</div>
+</div>
+
+ <script>
+document.getElementById('btnRecommandation').addEventListener('click', () => {
+
+    const patientId = document.getElementById('selectPatient').value;
+    const hopitalId = "{{ hopital.id }}";
+    const motif = document.getElementById('motifRecommandation').value.trim();
+    const alertBox = document.getElementById('recAlert');
+
+    alertBox.innerHTML = "";
+
+    if (!patientId) {
+        alertBox.innerHTML = `
+            <div class="alert alert-warning rounded-4 mt-2">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                Veuillez sélectionner un patient.
+            </div>`;
+        return;
+    }
+
+    if (!motif) {
+        alertBox.innerHTML = `
+            <div class="alert alert-warning rounded-4 mt-2">
+                <i class="bi bi-exclamation-circle-fill"></i>
+                Veuillez saisir un motif de recommandation.
+            </div>`;
+        return;
+    }
+
+    alertBox.innerHTML = `
+        <div class="alert alert-info rounded-4 mt-2 d-flex align-items-center">
+            <div class="spinner-border spinner-border-sm text-primary me-2"></div>
+            Préparation de la lettre...
+        </div>
+    `;
+
+    setTimeout(() => {
+        const url = `/recommendation/new?patient=${patientId}&hopital=${hopitalId}&motif=${encodeURIComponent(motif)}`;
+        window.location.href = url;
+    }, 1500);
+
+});
+</script>
+
+
 
 {% endblock %}
 

@@ -2,6 +2,7 @@
 
 namespace App\Controller\Hopital;
 
+use App\Repository\FicheClientRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -31,7 +32,7 @@ class HopitalController extends AbstractController
 	}
 
 	#[Route('/hopital/{id}', name: 'hopital_show')]
-	public function show(int $id, HopitalRepository $repo): Response
+	public function show(int $id, HopitalRepository $repo, FicheClientRepository $patientRepository): Response
 	{
 		$hopital = $repo->find($id);
 
@@ -40,7 +41,8 @@ class HopitalController extends AbstractController
 		}
 
 		return $this->render('hopital/show.html.twig', [
-			'hopital' => $hopital
+			'hopital' => $hopital,
+			'patients' => $patientRepository->findAll()
 		]);
 	}
 }

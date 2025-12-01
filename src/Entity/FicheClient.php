@@ -124,6 +124,15 @@ class FicheClient
     #[ORM\OneToMany(targetEntity: DossierMedical::class, mappedBy: 'patient')]
     private Collection $dossierMedicals;
 
+    /**
+     * @var Collection<int, RecommendationLetter>
+     */
+    #[ORM\OneToMany(targetEntity: RecommendationLetter::class, mappedBy: 'patient')]
+    private Collection $recommendationLetters;
+
+    #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $dateNaissance = null;
+
     public function __construct()
     {
         $this->paiements = new ArrayCollection();
@@ -131,6 +140,7 @@ class FicheClient
         $this->images = new ArrayCollection(); // 👍
         $this->suiviSoins = new ArrayCollection();
         $this->dossierMedicals = new ArrayCollection();
+        $this->recommendationLetters = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -436,6 +446,48 @@ class FicheClient
                 $dossierMedical->setPatient(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, RecommendationLetter>
+     */
+    public function getRecommendationLetters(): Collection
+    {
+        return $this->recommendationLetters;
+    }
+
+    public function addRecommendationLetter(RecommendationLetter $recommendationLetter): static
+    {
+        if (!$this->recommendationLetters->contains($recommendationLetter)) {
+            $this->recommendationLetters->add($recommendationLetter);
+            $recommendationLetter->setPatient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRecommendationLetter(RecommendationLetter $recommendationLetter): static
+    {
+        if ($this->recommendationLetters->removeElement($recommendationLetter)) {
+            // set the owning side to null (unless already changed)
+            if ($recommendationLetter->getPatient() === $this) {
+                $recommendationLetter->setPatient(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getDateNaissance(): ?\DateTimeImmutable
+    {
+        return $this->dateNaissance;
+    }
+
+    public function setDateNaissance(?\DateTimeImmutable $dateNaissance): static
+    {
+        $this->dateNaissance = $dateNaissance;
 
         return $this;
     }

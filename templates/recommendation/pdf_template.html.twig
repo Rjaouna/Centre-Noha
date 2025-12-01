@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="UTF-8">
+		<style>
+			body {
+				font-family: Helvetica, Arial, sans-serif;
+				line-height: 1.6;
+				font-size: 13px;
+			}
+
+			.pdf-container {
+				width: 100%;
+				padding: 20px;
+			}
+
+			.header {
+				text-align: right;
+				font-size: 12px;
+				margin-bottom: 20px;
+			}
+
+			.title {
+				text-align: center;
+				font-size: 22px;
+				font-weight: bold;
+				text-decoration: underline;
+				margin-bottom: 25px;
+			}
+
+			.bloc {
+				margin-bottom: 20px;
+			}
+		</style>
+	</head>
+	<body>
+
+		<div class="pdf-container">
+
+			<div class="header">
+				<strong>{{ "now"|date("d/m/Y") }}</strong>
+			</div>
+
+			<div class="title">Lettre de Recommandation</div>
+
+			<p>
+				Je soussigné(e),
+				<strong>{{ cabinet.nom }}</strong>,
+				{{ cabinet.type }},
+				        recommande vivement mon patient :
+			</p>
+
+			<p class="bloc">
+				<strong>{{ patient.nom }}</strong><br>
+				Né(e) le :
+				<strong>{{ patient.dateNaissance ? patient.dateNaissance|date("d/m/Y") : "—" }}</strong><br>
+				Téléphone :
+				{{ patient.telephone ?? '-' }}
+			</p>
+
+			<p>Pour une prise en charge au sein de l’établissement :</p>
+
+			<p class="bloc">
+				<strong>{{ hopital.etablissement }}</strong><br>
+				Commune :
+				{{ hopital.commune }}<br>
+				Délégation :
+				{{ hopital.delegation }}<br>
+				Région :
+				{{ hopital.region }}
+			</p>
+<p class="mt-3">
+	<strong>Motif de recommandation :</strong><br>
+	{{ motif|nl2br }}
+</p>
+
+
+
+			<br><br>
+
+			<p>
+				Fait le :
+				<strong>{{ "now"|date("d/m/Y") }}</strong>
+			</p>
+
+			<br>
+
+			<p>
+				Cordialement,<br>
+				<strong>{{ user.prenom }}
+					{{ user.nom }}</strong><br>
+				{{ cabinet.type }}<br>
+				<strong>{{ cabinet.nom }}</strong>
+			</p>
+
+		</div>
+
+	</body>
+</html>
+

@@ -1,0 +1,187 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	{{ hopital.etablissement }}
+	- Établissement hospitalier
+{% endblock %}
+
+{% block body %}
+
+<style>
+	body {
+		font-family: Helvetica, Arial, sans-serif;
+		line-height: 1.6;
+		font-size: 13px;
+	}
+
+	/* Conteneur centré */
+	.pdf-wrapper {
+		display: flex;
+		justify-content: center;
+		margin-top: 30px;
+		margin-bottom: 50px;
+	}
+
+	.pdf-container {
+		width: 100%;
+		max-width: 650px; /* 👈 plus étroit et centré */
+		background: white;
+		padding: 40px 50px;
+		border-radius: 12px;
+		box-shadow: 0 5px 25px rgba(0, 0, 0, 0.12);
+	}
+
+	.header {
+		text-align: right;
+		margin-bottom: 40px;
+	}
+
+	.title {
+		font-size: 22px;
+		font-weight: bold;
+		text-align: center;
+		margin-bottom: 25px;
+		text-decoration: underline;
+	}
+
+	.bloc {
+		margin-bottom: 20px;
+	}
+</style>
+
+
+	<div class="mt-4">
+
+
+		<div class="card shadow-lg border-0 rounded-4 mb-4">
+			<div class="card-body py-4 px-4">
+
+				<div
+					class="row align-items-center">
+
+					<!-- TITRE -->
+					<div class="col-12 col-md-7 d-flex align-items-center mb-3 mb-md-0">
+<i class="bi bi-pen text-primary fs-1 me-3"></i>
+
+						<div>
+							<h2 class="fw-bold text-primary mb-1">Nouvelle recommandation</h2>
+
+						</div>
+					</div>
+
+					<!-- BOUTONS -->
+					<div class="col-12 col-md-5 d-flex flex-column flex-md-row gap-2">
+
+<button onclick="generatePdf(this)" class="btn btn-outline-danger btn-lg rounded-pill clic px-4 shadow-sm d-flex align-items-center gap-2 w-100 w-md-auto">
+
+
+	<i class="bi bi-filetype-pdf"></i>
+	Générer le PDF
+</button>
+
+
+
+
+
+						<a id="returnButtonShow" href="{{ path('app_home') }}" class="btn btn-outline-secondary btn-lg rounded-pill clic px-4 shadow-sm d-flex align-items-center gap-2 w-100 w-md-auto">
+							<i class="bi bi-arrow-left"></i>
+							Retour
+						</a>
+
+					</div>
+
+				</div>
+
+			</div>
+		</div>
+
+	</div>
+
+
+<div class="pdf-wrapper">
+	<div class="pdf-container">
+
+		<div class="header">
+			<strong>{{ "now"|date("d/m/Y") }}</strong>
+		</div>
+
+		<div class="title">Lettre de Recommandation</div>
+
+		<p>
+			Je soussigné(e),
+			<strong>{{ cabinet.nom }}</strong>,
+				        professionnel de santé, recommande vivement mon patient :
+		</p>
+
+		<p class="bloc">
+			<strong>{{ patient.nom }}</strong><br>
+			Né(e) le :
+			<strong>{{ patient.dateNaissance ? patient.dateNaissance|date("d/m/Y") : "—" }}</strong><br>
+			Téléphone :
+			{{ patient.telephone ?? '-' }}
+		</p>
+
+		<p>Pour une prise en charge au sein de l’établissement :</p>
+
+		<p class="bloc">
+			<strong>{{ hopital.etablissement }}</strong><br>
+			Commune :
+			{{ hopital.commune }}<br>
+			Délégation :
+			{{ hopital.delegation }}<br>
+			Région :
+			{{ hopital.region }}
+		</p>
+
+<p class="mt-3">
+	<strong>Motif de recommandation :</strong><br>
+	{{ motif|nl2br }}
+</p>
+
+
+
+
+		<br><br>
+
+		<p>
+			Fait le :
+			<strong>{{ "now"|date("d/m/Y") }}</strong>
+		</p>
+
+		<br>
+
+		<p>
+			Cordialement,<br>
+			<strong>{{ app.user.prenom }}
+				{{ app.user.nom }}</strong><br>
+			{{ cabinet.type }}<br>
+			<strong>{{ cabinet.nom }}</strong>
+		</p>
+
+	</div>
+</div>
+
+ <script>
+function generatePdf(button) {
+
+    const patientId = "{{ patient.id }}";
+    const hopitalId = "{{ hopital.id }}";
+    const motif = `{{ motif|e('js') }}`;
+
+    // Animation de chargement
+    button.disabled = true;
+    button.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span> Génération...`;
+
+    const encodedMotif = encodeURIComponent(motif);
+
+    window.location.href = `/recommendation/pdf/${patientId}/${hopitalId}?motif=${encodedMotif}`;
+}
+
+</script>
+
+
+
+
+
+
+{% endblock %}
