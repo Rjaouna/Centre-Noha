@@ -209,6 +209,16 @@ Historique paiment</a></li>
 									<p class="fs-5 fw-bold">{{ fiche_client.updatedAt|date('d/m/Y H:i') }}</p>
 								</div>
 							</div>
+{{ include('fiche_client/_composants/_galerie/_galerie.html.twig') }}
+{{ include('fiche_client/_composants/_modal_image/_modal_image.html.twig') }}
+
+
+<button class="btn btn-primary rounded-pill mt-3" data-bs-toggle="modal" data-bs-target="#modalUploadImage">
+	<i class="bi bi-image"></i>
+	Ajouter une image
+</button>
+
+
 
 						</div>
 
