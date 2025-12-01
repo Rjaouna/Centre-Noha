@@ -6,7 +6,6 @@ use App\Entity\Medicine;
 use Doctrine\ORM\EntityManagerInterface;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,7 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class MedicineImportController extends AbstractController
 {
-	#[Route('/medicine/import', name: 'medicine_import_form')]
+	#[Route('/medicine/import/medicine', name: 'medicine_import_form')]
 	public function importForm(): Response
 	{
 		return $this->render('medicine/import.html.twig');
@@ -26,17 +25,22 @@ class MedicineImportController extends AbstractController
 		EntityManagerInterface $em
 	): JsonResponse {
 
-		/** @var UploadedFile $file */
-		$file = $request->files->get('file');
+		$projectDir = $this->getParameter('kernel.project_dir');
 
-		if (!$file) {
-			return new JsonResponse(['error' => 'Aucun fichier reçu'], 400);
+		// Chemin complet vers ton fichier Excel
+		$filePath = $projectDir . '/public/assets/doc/ref-des-medicaments-cnops-2014.xlsx';
+
+		if (!file_exists($filePath)) {
+			throw new \Exception("Le fichier n'existe pas : " . $filePath);
 		}
 
 		try {
 			$reader = IOFactory::createReader('Xlsx');
 			$reader->setReadDataOnly(true);
-			$spreadsheet = $reader->load($file->getPathname());
+
+			// ⬅️ Correction ici
+			$spreadsheet = $reader->load($filePath);
+
 			$sheet = $spreadsheet->getActiveSheet();
 
 			$batchSize = 1000;
@@ -44,7 +48,7 @@ class MedicineImportController extends AbstractController
 
 			foreach ($sheet->getRowIterator() as $rowIndex => $row) {
 
-				if ($rowIndex === 1) continue; // header
+				if ($rowIndex === 1) continue; // Skip header
 
 				$cellIterator = $row->getCellIterator();
 				$cellIterator->setIterateOnlyExistingCells(false);
@@ -72,17 +76,13 @@ class MedicineImportController extends AbstractController
 				$em->persist($medicine);
 				$count++;
 
-				// 🟦 Quand 1000 lignes sont prêtes → flush + clear
 				if ($count % $batchSize === 0) {
 					$em->flush();
 					$em->clear();
-
-					// Facultatif : pause 100ms pour éviter surcharge CPU
 					usleep(100000);
 				}
 			}
 
-			// Flush final pour les derniers enregistrements
 			$em->flush();
 			$em->clear();
 

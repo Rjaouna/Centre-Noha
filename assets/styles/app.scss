@@ -9,12 +9,12 @@
 // ==========================
 
 /* 🎨 PALETTE MEDICALE DOUCE */
-$primary:       #015a75;   // Vert médical principal
-$secondary:       #7ca1a1;   // Vert santé
-$success:       #82b225;   // Vert santé
-$danger:        #f1553f;   // Rouge doux
-$info:          #a6dbf4;   // Bleu clair doux
-$warning:       #ffb933;   // Orange/ambre pastel
+$primary:       #329ef4;   // Vert médical principal
+$secondary:       #e9ecef;   // Vert santé
+$success:       #68d391;   // Vert santé
+$danger:        #f56565;   // Rouge doux
+$info:          #a841ba;   // Bleu clair doux
+$warning:       #ffc700;   // Orange/ambre pastel
 $light:         #F5FAF8;   // Blanc légèrement vert
 $dark:          #000000;   // Vert profond/professionnel
 
@@ -35,13 +35,13 @@ $focus-ring-color: rgba(76, 201, 166, 0.35);
 @import "bootstrap/scss/utilities";
 
 // Bootswatch variables DOIVENT être importées APRÈS variables Bootstrap
-@import "bootswatch/dist/lumen/variables";
+@import "bootswatch/dist/materia/variables";
 
 // Bootstrap complet
 @import "bootstrap/scss/bootstrap";
 
 // Bootswatch styles APRES bootstrap
-@import "bootswatch/dist/lumen/bootswatch";
+@import "bootswatch/dist/materia/bootswatch";
 
 
 // ==========================

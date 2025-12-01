@@ -65,59 +65,26 @@
 
 
 				<!-- MENU DROITE -->
-				<ul class="navbar-nav ms-auto">
+				<ul class="navbar-nav ms-auto me-2 gap-2">
 
-					{% set isShowPage = app.request.attributes.get('_route') == 'app_fiche_client_show' %}
+					<!-- Importer des Médicaments -->
+<a class="btn btn-secondary btn-sm my-1 rounded px-3 d-flex align-items-center gap-2" href=" {{path('medicine_import_form')}} ">
 
-					<!-- RDV (bouton animé) -->
-					<a class="btn btn-link btn-sm rounded-pill px-3 d-flex align-items-center gap-2 
-{{ not isShowPage ? 'disabled pointer-events-none opacity-50' : 'pulse-btn text-light' }}"
-{% if isShowPage %}
-    data-bs-toggle="modal" data-bs-target="#modalAddRdv"
-{% endif %}>
-    <i class="bi bi-calendar-plus fs-5 text-info"></i>
-</a>
+<i class="bi bi-upload fs-3"></i>
+Import...</a>
 
 
-					<!-- Admissions -->
-					<li class="nav-item dropdown">
-						<a class="nav-link dropdown-toggle text-white" href="#" data-bs-toggle="dropdown">
-							<i class="bi bi-person-lines-fill me-1 fs-4 text-success"></i>
-							Admissions
-						</a>
 
-						<ul class="dropdown-menu dropdown-menu-end shadow-sm">
 
-							<li>
-								<a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalAddClient">
-									<i class="bi bi-person-plus text-success"></i>
-									Ajouter une admission
-								</a>
-							</li>
 
-							<li>
-								<a class="dropdown-item" href="{{ path('app_fiche_client_index') }}">
-									<i class="bi bi-list-ul text-primary"></i>
-									Consulter admissions
-								</a>
-							</li>
-
-							<li><hr class="dropdown-divider"></li>
-
-							<li>
-								<a class="dropdown-item" href="#">
-									<i class="bi bi-clock-history text-secondary"></i>
-									Historique admissions
-								</a>
-							</li>
-
-						</ul>
-					</li>
 
 					<!-- Logout -->
 					<li class="nav-item">
-						<a href="{{ path('app_logout') }}" class="nav-link">
-							<i class="bi bi-box-arrow-right fs-3 text-info"></i>
+<a href="{{ path('app_logout') }}" class="btn btn-danger btn-sm my-1 rounded px-3 d-flex align-items-center gap-2">
+
+
+
+							<i class="bi bi-box-arrow-right fs-3 text-light"></i> Déconnexion
 						</a>
 					</li>
 
