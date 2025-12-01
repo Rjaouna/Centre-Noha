@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class MedicineImportController extends AbstractController
 {
-	#[Route('/medicine/import/medicine', name: 'medicine_import_form')]
+	#[Route('/import/medicine', name: 'medicine_import_form')]
 	public function importForm(): Response
 	{
 		return $this->render('medicine/import.html.twig');
