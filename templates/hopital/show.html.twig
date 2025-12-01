@@ -1,0 +1,116 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	{{ hopital.etablissement }}
+	- Établissement hospitalier
+{% endblock %}
+
+{% block body %}
+
+	<div class="mt-4">
+
+		<!-- ============================= -->
+		<!-- 🔹 HEADER STYLE IDENTIQUE     -->
+		<!-- ============================= -->
+			<div class="card shadow-lg border-0 rounded-4 mb-4"> <div class="card-body py-4 px-4">
+
+				<div
+					class="row align-items-center">
+
+					<!-- Icône + titre -->
+					<div class="col-12 col-md-7 d-flex align-items-center mb-3 mb-md-0">
+						<i class="bi bi-hospital text-primary fs-1 me-3"></i>
+
+						<div>
+							<h2 class="fw-bold text-primary mb-1">{{ hopital.etablissement }}</h2>
+							<p class="text-secondary m-0">
+								Commune :
+								<strong>{{ hopital.commune }}</strong>
+							</p>
+						</div>
+					</div>
+
+					<!-- Bouton Retour -->
+					<div class="col-12 col-md-5 d-flex justify-content-md-end">
+						<a href="{{ path('hopital_search_page') }}" class="btn btn-outline-secondary btn-lg rounded-pill px-4 shadow-sm d-flex align-items-center gap-2">
+							<i class="bi bi-arrow-left"></i>
+							Retour
+						</a>
+					</div>
+
+				</div>
+
+			</div>
+		</div>
+
+
+		<!-- ============================= -->
+		<!-- 🔹 FICHE DÉTAILLÉE HÔPITAL    -->
+		<!-- ============================= -->
+			<div class="card shadow-lg border-0 rounded-4"> <div class="card-body p-4">
+
+				<h4 class="fw-bold text-primary mb-4 d-flex align-items-center">
+					<i class="bi bi-info-circle-fill me-2"></i>
+					Informations détaillées
+				</h4>
+
+				<div
+					class="row g-4">
+
+					<!-- Région -->
+					<div class="col-md-6">
+						<div class="info-bloc p-3 border rounded-4 bg-light shadow-sm-sm">
+							<span class="text-secondary small d-flex align-items-center mb-1">
+								<i class="bi bi-map me-2"></i>
+								Région
+							</span>
+							<p class="fw-bold fs-5 m-0">{{ hopital.region }}</p>
+						</div>
+					</div>
+
+					<!-- Délégation -->
+					<div class="col-md-6">
+						<div class="info-bloc p-3 border rounded-4 shadow-sm-sm">
+							<span class="text-secondary small d-flex align-items-center mb-1">
+								<i class="bi bi-building me-2"></i>
+								Délégation
+							</span>
+							<p class="fw-semibold m-0">{{ hopital.delegation }}</p>
+						</div>
+					</div>
+
+					<!-- Commune -->
+					<div class="col-md-6">
+						<div class="info-bloc p-3 border rounded-4 bg-light shadow-sm-sm">
+							<span class="text-secondary small d-flex align-items-center mb-1">
+								<i class="bi bi-geo-alt me-2"></i>
+								Commune
+							</span>
+							<p class="fw-semibold m-0">{{ hopital.commune }}</p>
+						</div>
+					</div>
+
+					<!-- Type / Catégorie -->
+					<div class="col-md-6">
+						<div class="info-bloc p-3 border rounded-4 shadow-sm-sm">
+							<span class="text-secondary small d-flex align-items-center mb-1">
+								<i class="bi bi-hospital-fill me-2"></i>
+								Type d’établissement
+							</span>
+							<p class="m-0">
+								<span class="badge bg-info text-dark px-3 py-2 shadow-sm">
+									{{ hopital.categorie }}
+								</span>
+							</p>
+						</div>
+					</div>
+
+				</div>
+
+			</div>
+		</div>
+
+	</div>
+
+{% endblock %}
+

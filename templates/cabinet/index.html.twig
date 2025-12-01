@@ -1,0 +1,138 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Cabinet médical
+{% endblock %}
+
+{% block body %}
+
+	<div class="card shadow-lg border-0 rounded-4 my-5">
+		<div class="card-body p-4">
+
+			<h4 class="fw-bold text-primary mb-4 d-flex align-items-center">
+				<i class="bi bi-gear-fill me-2"></i>
+				Informations du cabinet
+			</h4>
+
+			<div id="alertBox"></div>
+
+			<div
+				class="row g-4">
+
+				<!-- NOM -->
+				<div class="col-md-6">
+					<div class="form-floating mb-3">
+						<input id="nom" type="text" class="form-control" value="{{ cabinet.nom }}" placeholder="Nom du cabinet" required>
+						<label for="nom">Nom du cabinet *</label>
+					</div>
+				</div>
+
+				<!-- TYPE -->
+				<div class="col-md-6">
+					<div class="form-floating mb-3">
+						<select id="type" class="form-select" required>
+							<option value="">-- Choisir --</option>
+							<option value="Cabinet Médical" {{ cabinet.type == 'Cabinet Médical' ? 'selected' : '' }}>Cabinet Médical</option>
+							<option value="Cabinet Dentaire" {{ cabinet.type == 'Cabinet Dentaire' ? 'selected' : '' }}>Cabinet Dentaire</option>
+							<option value="Clinique" {{ cabinet.type == 'Clinique' ? 'selected' : '' }}>Clinique</option>
+							<option value="Laboratoire d'Analyses" {{ cabinet.type == "Laboratoire d'Analyses" ? 'selected' : '' }}>Laboratoire d'Analyses</option>
+							<option value="Centre Médical" {{ cabinet.type == 'Centre Médical' ? 'selected' : '' }}>Centre Médical</option>
+							<option value="Radiologie" {{ cabinet.type == 'Radiologie' ? 'selected' : '' }}>Centre de Radiologie</option>
+							<option value="Autre" {{ cabinet.type == 'Autre' ? 'selected' : '' }}>Autre</option>
+						</select>
+						<label for="type">Type d'établissement *</label>
+					</div>
+				</div>
+
+				<!-- ADRESSE -->
+				<div class="col-md-12">
+					<div class="form-floating mb-3">
+						<input id="adresse" type="text" class="form-control" value="{{ cabinet.adresse }}" placeholder="Adresse" required>
+						<label for="adresse">Adresse *</label>
+					</div>
+				</div>
+
+				<!-- VILLE -->
+				<div class="col-md-6">
+					<div class="form-floating mb-3">
+						<input id="ville" type="text" class="form-control" value="{{ cabinet.ville }}" placeholder="Ville" required>
+						<label for="ville">Ville *</label>
+					</div>
+				</div>
+
+				<!-- TÉLÉPHONE -->
+				<div class="col-md-6">
+					<div class="form-floating mb-3">
+						<input id="telephone" type="text" class="form-control" value="{{ cabinet.telephone }}" placeholder="Téléphone" required>
+						<label for="telephone">Téléphone *</label>
+					</div>
+				</div>
+
+				<!-- EMAIL -->
+				<div class="col-md-12">
+					<div class="form-floating mb-3">
+						<input id="email" type="email" class="form-control" value="{{ cabinet.email }}" placeholder="Email" required>
+						<label for="email">Adresse email *</label>
+					</div>
+				</div>
+
+			</div>
+
+			<div class="text-end mt-4">
+				<button id="saveCabinet" class="btn btn-primary btn-lg rounded-pill px-5 shadow-sm">
+					<i class="bi bi-check-circle"></i>
+					Sauvegarder
+				</button>
+			</div>
+
+		</div>
+	</div>
+
+
+	 <script>
+	document.getElementById("saveCabinet").addEventListener("click", async () => {
+	
+		const alertBox = document.getElementById("alertBox");
+		alertBox.innerHTML = `<div class="alert alert-info">Enregistrement...</div>`;
+	
+		// Validation simple
+		const requiredFields = ["nom", "type", "adresse", "ville", "telephone", "email"];
+		for (let id of requiredFields) {
+			let el = document.getElementById(id);
+			if (!el.value.trim()) {
+				alertBox.innerHTML = `<div class="alert alert-danger">Veuillez remplir tous les champs obligatoires.</div>`;
+				el.classList.add("is-invalid");
+				return;
+			} else {
+				el.classList.remove("is-invalid");
+			}
+		}
+	
+		const payload = {
+			nom: nom.value,
+			type: type.value,
+			adresse: adresse.value,
+			ville: ville.value,
+			telephone: telephone.value,
+			email: email.value,
+		};
+	
+		const response = await fetch("{{ path('app_cabinet_save') }}", {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify(payload)
+		});
+	
+		const result = await response.json();
+	
+		if (result.success) {
+			alertBox.innerHTML = `<div class="alert alert-success">${result.message}</div>`;
+majLogo();
+
+		} else {
+			alertBox.innerHTML = `<div class="alert alert-danger">${result.error}</div>`;
+		}
+	});
+	</script>
+
+{% endblock %}
+

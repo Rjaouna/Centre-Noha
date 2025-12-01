@@ -1,37 +1,102 @@
 {% if app.user %}
 
-	<nav class="navbar navbar-expand-lg bg-primary navbar-dark">
+	<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
 		<div
 			class="container-fluid">
 
-			<!-- Logo -->
+			<!-- LOGO -->
 			<a class="navbar-brand fw-bold fs-3" href="{{ path('app_home') }}">
-<img src="{{ asset('assets/img/logo-transparent-png.png') }}" alt="Logo" width="200">
-
-
-
-
-
-
-
-
-
-
-
-
+				<span id="logoName"></span>
 			</a>
 
-			<!-- Burger -->
-			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
-				<span class="navbar-toggler-icon"></span>
-			</button>
+			<!-- RIGHT ICONS + BURGER (MOBILE FIRST) -->
+			<div
+				class="d-flex align-items-center">
 
-			<!-- Menu -->
+				<!-- NOTIFICATION ICON -->
+				<div class="nav-item dropdown me-2 d-lg-none">
+					<a class="nav-link position-relative" href="#" id="notifMobile" data-bs-toggle="dropdown">
+						<i class="bi bi-bell-fill fs-4 text-white"></i>
+
+						<span class="badge bg-danger position-absolute top-0 start-100 translate-middle p-1 rounded-pill">
+							3+
+						</span>
+					</a>
+
+					<ul class="dropdown-menu dropdown-menu-end shadow animated--grow-in">
+						<li class="dropdown-header fw-bold text-primary">Notifications</li>
+
+						<li>
+							<a class="dropdown-item d-flex align-items-center" href="#">
+								<div class="icon-circle bg-success text-white me-3">
+									<i class="bi bi-cash-coin"></i>
+								</div>
+								<div>
+									<div class="small text-muted">7 Décembre 2025</div>
+									290 DH crédités !
+								</div>
+							</a>
+						</li>
+
+						<li>
+							<a class="dropdown-item d-flex align-items-center" href="#">
+								<div class="icon-circle bg-warning text-white me-3">
+									<i class="bi bi-exclamation-triangle-fill"></i>
+								</div>
+								<div>
+									<div class="small text-muted">2 Décembre 2025</div>
+									Activité inhabituelle détectée.
+								</div>
+							</a>
+						</li>
+
+					</ul>
+				</div>
+
+				<!-- PROFILE ICON MOBILE -->
+				<div class="nav-item dropdown d-lg-none me-2">
+					<a class="nav-link" href="#" id="profileMobile" data-bs-toggle="dropdown">
+						<img src="https://ui-avatars.com/api/?name={{ app.user.nom ?? app.user.email }}&background=0D8ABC&color=fff" class="rounded-circle" width="40" height="40">
+					</a>
+
+					<ul class="dropdown-menu dropdown-menu-end shadow animated--grow-in">
+						<li>
+							<a class="dropdown-item" href="{{ path('app_user_profile') }}">
+								<i class="bi bi-person-circle me-2"></i>
+								Profil
+							</a>
+						</li>
+						<li>
+							<a class="dropdown-item" href="{{ path('app_cabinet_index') }}">
+								<i class="bi bi-gear me-2"></i>
+								Paramètres
+							</a>
+						</li>
+
+						<li><hr></li>
+
+						<li>
+							<a class="dropdown-item text-danger" href="{{ path('app_logout') }}">
+								<i class="bi bi-box-arrow-right me-2"></i>
+								Déconnexion
+							</a>
+						</li>
+					</ul>
+				</div>
+
+				<!-- BURGER -->
+				<button class="navbar-toggler ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+
+			</div>
+
+			<!-- MENU COLLAPSABLE -->
 			<div
 				class="collapse navbar-collapse" id="mainNavbar">
 
-				<!-- MENU GAUCHE -->
-				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+				<!-- LEFT MENU -->
+				<ul class="navbar-nav me-auto mt-3 mt-lg-0">
 
 					<li class="nav-item">
 						<a class="nav-link {{ app.request.attributes.get('_route') == 'app_home' ? 'active' : '' }}" href="{{ path('app_home') }}">
@@ -63,82 +128,150 @@
 
 				</ul>
 
+				<!-- DESKTOP RIGHT ICONS -->
+				<ul
+					class="navbar-nav ms-auto d-none d-lg-flex align-items-center gap-3">
 
-				<!-- MENU DROITE -->
-				<ul class="navbar-nav ms-auto me-2 gap-2">
-
-					<!-- Importer des Médicaments -->
-<a class="btn btn-secondary btn-sm my-1 rounded px-3 d-flex align-items-center gap-2" href=" {{path('medicine_import_form')}} ">
-
-<i class="bi bi-upload fs-3"></i>
-Import...</a>
-
-
-
-
-
-
-					<!-- Logout -->
-					<li class="nav-item">
-<a href="{{ path('app_logout') }}" class="btn btn-danger btn-sm my-1 rounded px-3 d-flex align-items-center gap-2">
-
-
-
-							<i class="bi bi-box-arrow-right fs-3 text-light"></i> Déconnexion
+					<!-- NOTIF DESKTOP -->
+					<li class="nav-item dropdown">
+						<a class="nav-link position-relative" href="#" id="notifDesktop" data-bs-toggle="dropdown">
+							<i class="bi bi-bell-fill fs-5"></i>
+							<span class="badge bg-danger position-absolute top-0 start-100 translate-middle p-1 rounded-pill">3+</span>
 						</a>
+
+						<ul class="dropdown-menu dropdown-menu-end shadow animated--grow-in" style="width:320px">
+							<li class="dropdown-header fw-bold text-primary">Centre d’alertes</li>
+
+							<li>
+								<a class="dropdown-item d-flex align-items-center" href="#">
+									<div class="icon-circle bg-success text-white me-3">
+										<i class="bi bi-cash-coin"></i>
+									</div>
+									<div>290 DH ajoutés !</div>
+								</a>
+							</li>
+
+							<li>
+								<a class="dropdown-item d-flex align-items-center" href="#">
+									<div class="icon-circle bg-warning text-white me-3">
+										<i class="bi bi-exclamation-triangle-fill"></i>
+									</div>
+									<div>Activité inhabituelle détectée.</div>
+								</a>
+							</li>
+						</ul>
+					</li>
+
+					<!-- PROFILE DESKTOP -->
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle d-flex align-items-center gap-2" id="userDropdown" data-bs-toggle="dropdown">
+
+							<span class="fw-semibold">{{ app.user.nom ?? app.user.email }}</span>
+
+							<img src="https://ui-avatars.com/api/?name={{ app.user.nom ?? app.user.email }}&background=0D8ABC&color=fff" class="rounded-circle" width="40" height="40">
+						</a>
+
+						<ul class="dropdown-menu dropdown-menu-end shadow animated--grow-in">
+
+							<li>
+								<a class="dropdown-item" href="{{ path('app_user_profile') }}">
+									<i class="bi bi-person-circle me-2"></i>
+									Profil
+								</a>
+							</li>
+
+							<li>
+								<a class="dropdown-item" href="{{ path('app_cabinet_index') }}">
+									<i class="bi bi-gear me-2"></i>
+									Paramètres
+								</a>
+							</li>
+
+							<li><hr></li>
+
+							<li>
+								<a class="dropdown-item text-danger" href="{{ path('app_logout') }}">
+									<i class="bi bi-box-arrow-right me-2"></i>
+									Déconnexion
+								</a>
+							</li>
+
+						</ul>
 					</li>
 
 				</ul>
 
 			</div>
+
 		</div>
 	</nav>
 
 {% endif %}
 
-
-<!-- --------------- CSS ANIMATION + RESPONSIVE ---------------- -->
 <style>
-
-	/* Taille des liens */
 	.navbar-nav .nav-link {
 		font-size: 1.1rem;
-		padding: 8px 12px !important;
+		font-weight: 600;
 	}
 
-	/* Animation pulse uniquement sur l’icône */
-	.pulse-icon {
-		animation: pulse 1.3s infinite ease-in-out;
-		transform-origin: center;
+	.icon-circle {
+		width: 38px;
+		height: 38px;
+		border-radius: 50%;
+		display: flex;
+		justify-content: center;
+		align-items: center;
 	}
 
-	@keyframes pulse {
-		0% {
-			transform: scale(1);
-		}
-		50% {
-			transform: scale(1.25);
-		}
-		100% {
-			transform: scale(1);
-		}
-	}
-
-	/* Version mobile : animation plus douce */
 	@media(max-width: 768px) {
-		.navbar-brand {
-			font-size: 1.4rem !important;
+		#logoName {
+			font-size: 1.4rem;
+			font-weight: 800;
 		}
-		.navbar-nav .nav-link i {
-			font-size: 1.2rem !important;
+.dropdown-menu.show {
+    display: inline-table;
+}
+.dropdown-menu-end[data-bs-popper] {
+    right: -40px;
+    left: auto;
+}
+		.navbar-nav .nav-link {
+			font-size: 1.2rem;
+			font-weight: 700;
+			padding: 12px;
 		}
-		.pulse-icon {
-			animation: pulse 1.8s infinite ease-in-out;
+
+		.dropdown-menu {
+			width: 90%;
+			margin-left: 5%;
+			border-radius: 15px;
+		}
+
+		.dropdown-item {
+			font-size: 1.1rem;
+			padding: 12px 18px;
 		}
 	}
 </style>
 
  <script>
-    window.ADMISSIONS_URL = "{{ path('app_api_plugins_get_new_admissions') }}";
+async function majLogo() {
+    const url = "{{ path('app_nom_cabinet') }}";
+    const urlConfig = "{{ path('app_cabinet_index') }}";
+
+    try {
+        const res = await fetch(url);
+        const data = await res.json();
+        const el = document.getElementById('logoName');
+
+        if (!data.nom || data.nom === "null") {
+            el.innerHTML = `Configurer <a href="${urlConfig}" class="btn btn-sm btn-warning ms-2">Ici</a>`;
+        } else {
+            el.textContent = data.nom;
+        }
+
+    } catch(e) { console.error(e); }
+}
+majLogo();
 </script>
 

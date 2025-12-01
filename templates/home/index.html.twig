@@ -63,14 +63,16 @@
 
 	<div class="container py-4">
 
-<h1 class="dashboard-title text-left mb-5">
+<h2 class="dashboard-title text-left mb-5">
 	<i class="bi bi-activity text-danger me-2"></i>
-	Tableau de Bord
-	<span>— Soin Board</span>
-</h1>
+Tableau de Bord —
+
+	<span id="nameCabinet"> </span>
+</h2>
 
 
-<div class="row g-4 justify-content-center row g-4 justify-content-center bg-primary py-3 bg-opacity-25 rounded-4">
+<div class="row g-4 justify-content-center row g-4 justify-content-center">
+
 
 
 
@@ -174,6 +176,60 @@ Patients
 			</div>
 
 		</div>
+
+<div class="mt-5">
+	<h4 class="fw-bold mb-3">
+		<i class="bi bi-ui-checks-grid text-primary me-2"></i>
+		Référentiels & Ressources
+	</h4>
+
+	<div class="row g-3">
+
+		<a href="{{ path('hopital_search_page') }}" class="col-md-4 text-decoration-none">
+			<div class="p-3 border rounded-4 shadow-sm d-flex align-items-center">
+				<i class="bi bi-hospital text-primary fs-3 me-3"></i>
+				<div>
+					<h6 class="fw-bold mb-0">Établissements Hospitaliers</h6>
+					<small class="text-muted">Recherche & consultation</small>
+				</div>
+			</div>
+		</a>
+
+
+		<div class="col-md-4">
+<a href="{{ path('hopital_search_page') }}" class="col-md-4 text-decoration-none">
+
+			<div class="p-3 border rounded-4 shadow-sm d-flex align-items-center">
+				<i class="bi bi-heart-pulse text-success fs-3 me-3"></i>
+				<div>
+					<h6 class="fw-bold mb-0">Dispositifs remboursables</h6>
+					<small class="text-muted">CNOPS – ANAM</small>
+				</div>
+			</div>
+			</a>
+		</div>
+
+<div class="col-md-4">
+<a href="{{ path('medicine_index') }}" class="col-md-4 text-decoration-none">
+
+
+	<div class="p-3 border rounded-4 shadow-sm d-flex align-items-center">
+<i class="bi bi-capsule-pill text-danger fs-3 me-3"></i>
+
+		<div>
+<h6 class="fw-bold mb-0">Liste des Médicaments</h6>
+
+			<small class="text-muted">CNOPS – ANAM</small>
+		</div>
+	</div>
+</a>
+
+
+</div>
+
+
+	</div>
+</div>
 <div class="separator my-3 text-center">
 	<i class="bi bi-heart-pulse-fill text-danger" style="font-size: 1.8rem;"></i>
 </div>
@@ -185,6 +241,9 @@ Patients
 		
 
 	</div>
+
+
+
 
 
 	<!-- MODAL AJOUT PATIENT -->
@@ -213,7 +272,51 @@ Patients
 		</div>
 
 
+<script>
+async function afficherNomCabinet() {
 
+    const url = "{{ path('app_nom_cabinet') }}";
+const urlConfig = "{{ path('app_cabinet_index') }}"; // 🔧 route vers la config du cabinet
+
+
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        console.log("Nom cabinet :", data.nom);
+
+        const element = document.getElementById('nameCabinet');
+        if (!element) return; // Sécurité
+
+        // Cas où le nom n'est pas défini
+        if (!data.nom || data.nom === "null") {
+
+            element.innerHTML = `
+                Veuillez configurer le nom du cabinet 
+                <a href="${urlConfig}" class="btn btn-sm btn-warning ms-2">
+                    Configurer
+                </a>
+            `;
+        } 
+        else {
+            // Cabinet trouvé → affichage normal
+            element.innerText = data.nom;
+        }
+
+    } catch (error) {
+        console.error("Erreur :", error);
+    }
+}
+
+// Exécution
+afficherNomCabinet();
+
+
+		
+
+
+
+</script>
 
 
 

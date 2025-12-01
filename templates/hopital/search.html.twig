@@ -1,0 +1,183 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Recherche des Établissements Hospitaliers
+{% endblock %}
+
+{% block body %}
+
+	<div
+		class="mt-4">
+
+		<!-- ⭐⭐ ENTÊTE ⭐⭐ -->
+		<div class="card shadow-lg border-0 rounded-4 mb-4">
+			<div class="card-body py-4 px-4">
+
+				<div class="row align-items-center">
+
+					<div class="col-12 col-md-7 d-flex align-items-center mb-3 mb-md-0">
+						<i class="bi bi-hospital text-primary fs-1 me-3"></i>
+
+						<div>
+							<h2 class="fw-bold text-primary mb-1">Recherche des Établissements Hospitaliers</h2>
+							<p class="text-secondary m-0">Tapez le nom d'une ville pour afficher les hôpitaux</p>
+						</div>
+					</div>
+
+					<div class="col-12 col-md-5 d-flex justify-content-md-end">
+						<a href="{{ path('app_home') }}" class="btn btn-outline-secondary btn-lg rounded-pill shadow-sm d-flex align-items-center gap-2">
+							<i class="bi bi-arrow-left"></i>
+							Retour
+						</a>
+					</div>
+
+				</div>
+
+			</div>
+		</div>
+
+	</div>
+
+	<!-- ⭐⭐ CHAMP DE RECHERCHE ⭐⭐ -->
+	<div class="position-relative my-4">
+		<i class="bi bi-search text-secondary position-absolute top-50 start-3 translate-middle-y"></i>
+
+		<input type="text" id="hopitalSearch" class="form-control-lg shadow-sm form-control rounded-pill ps-5" placeholder="Rechercher une ville (ex : Tanger, Rabat, Fès...)">
+	</div>
+
+	<style>
+		.start-3 {
+			left: 16px;
+		}
+	</style>
+
+	<!-- ⭐⭐ INTRO SI PAS DE RECHERCHE ⭐⭐ -->
+	<div id="staticIntro" class="mb-4">
+
+		<div class="row g-4">
+
+			<div class="col-md-4">
+				<div class="card med-info shadow-sm border-0 rounded-4 p-4 h-100">
+					<i class="bi bi-hospital text-primary fs-2 mb-3"></i>
+					<h5 class="fw-bold">Tous les hôpitaux du Maroc</h5>
+					<p class="text-secondary small">
+						Accédez rapidement aux établissements hospitaliers par région, province et commune.
+					</p>
+				</div>
+			</div>
+
+			<div class="col-md-4">
+				<div class="card med-info shadow-sm border-0 rounded-4 p-4 h-100">
+					<i class="bi bi-search text-primary fs-2 mb-3"></i>
+					<h5 class="fw-bold">Recherche intelligente</h5>
+					<p class="text-secondary small">
+						Tapez une ville (Tétouan, Mohammedia, Marrakech...) pour obtenir instantanément la liste
+						                    des hôpitaux associés.
+					</p>
+				</div>
+			</div>
+
+			<div class="col-md-4">
+				<div class="card med-info shadow-sm border-0 rounded-4 p-4 h-100">
+					<i class="bi bi-geo-alt text-primary fs-2 mb-3"></i>
+					<h5 class="fw-bold">Localisation facilitée</h5>
+					<p class="text-secondary small">
+						Identifiez facilement les hôpitaux par région, délégation et type d’établissement.
+					</p>
+				</div>
+			</div>
+
+		</div>
+
+	</div>
+
+	<!-- ⭐⭐ RÉSULTATS ⭐⭐ -->
+	<div id="results"></div>
+
+	<style>
+		.hop-card {
+			background: white;
+			border-radius: 20px;
+			padding: 22px;
+			margin-bottom: 18px;
+			border: 1px solid rgba(0, 0, 0, 0.08);
+			transition: 0.3s ease;
+			cursor: pointer;
+		}
+		.hop-card:hover {
+			transform: translateY(-6px);
+			box-shadow: 0 18px 35px rgba(0, 0, 0, 0.12);
+		}
+	</style>
+
+	 <script>
+	document.addEventListener("DOMContentLoaded", () => {
+	
+	    const input       = document.getElementById("hopitalSearch");
+	    const results     = document.getElementById("results");
+	    const staticIntro = document.getElementById("staticIntro");
+	    let timer = null;
+	
+	    function renderResults(data) {
+	        results.innerHTML = "";
+	
+	        data.forEach(h => {
+	            const card = `
+	                <div class="hop-card shadow-sm" onclick="window.location='/hopital/${h.id}'">
+	                    <div class="d-flex justify-content-between">
+	
+	                        <div>
+	                            <p class="fw-bold text-primary mb-1">${h.etablissement}</p>
+	
+	                            <p class="text-secondary small mb-1">
+	                                ${h.commune} • ${h.delegation} • ${h.region}
+	                            </p>
+	
+	                            <span class="badge bg-info text-dark px-3 py-2 mt-2">${h.categorie}</span>
+	                        </div>
+	
+	                    </div>
+	                </div>
+	            `;
+	            results.insertAdjacentHTML("beforeend", card);
+	        });
+	    }
+	
+	    input.addEventListener("keyup", () => {
+	
+	        clearTimeout(timer);
+	
+	        timer = setTimeout(() => {
+	
+	            const q = input.value.trim();
+	
+	            if (q.length < 2) {
+	                staticIntro.style.display = "block";
+	                results.innerHTML = "";
+	                return;
+	            }
+	
+	            staticIntro.style.display = "none";
+	
+	            fetch(`/hopital/search/api?city=${encodeURIComponent(q)}`)
+	                .then(res => res.json())
+	                .then(data => {
+	
+	                    if (data.length === 0) {
+	                        results.innerHTML = `
+	                            <div class="alert alert-warning text-center rounded-4 py-3">
+	                                Aucun établissement trouvé.
+	                            </div>`;
+	                        return;
+	                    }
+	
+	                    renderResults(data);
+	                });
+	
+	        }, 250);
+	    });
+	
+	});
+	</script>
+
+{% endblock %}
+
