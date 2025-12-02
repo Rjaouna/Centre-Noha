@@ -79,32 +79,11 @@ body {
     transition: color 0.4s, background-color 0.4s, border-color 0.4s, box-shadow 0.4s;
     font-weight: 900;
 }
-.bg-gradient-success {
-    background: linear-gradient(
-        135deg,
-        rgba(var(--bs-success-rgb), 0.8),
-        rgba(var(--bs-success-rgb), 0.1)
-    );
-}
 
-.bg-gradient-primary {
+.bg-gradient-bloc {
     background: linear-gradient(
         135deg,
-        rgba(var(--bs-primary-rgb), 0.8),
-        rgba(var(--bs-primary-rgb), 0.1)
-    );
-}
-.bg-gradient-danger {
-    background: linear-gradient(
-        135deg,
-        rgba(var(--bs-danger-rgb), 0.8),
-        rgba(var(--bs-danger-rgb), 0.1)
-    );
-}
-.bg-gradient-info {
-    background: linear-gradient(
-        135deg,
-        rgba(var(--bs-info-rgb), 0.8),
-        rgba(var(--bs-info-rgb), 0.1)
+        rgba(var(--bs-light-rgb), 0.8),
+        rgba(var(--bs-light-rgb), 0.1)
     );
 }
