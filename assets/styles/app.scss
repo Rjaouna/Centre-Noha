@@ -10,7 +10,7 @@
 
 /* 🎨 PALETTE MEDICALE DOUCE */
 $primary:       #329ef4;   // Vert médical principal
-$secondary:       #e9ecef;   // Vert santé
+$secondary:       #3F4C6B;   // Vert santé
 $success:       #68d391;   // Vert santé
 $danger:        #f56565;   // Rouge doux
 $info:          #a841ba;   // Bleu clair doux
@@ -61,17 +61,7 @@ body {
   background: white;
 }
 
-.btn-primary {
-  background-color: $primary;
-  border-color: $primary;
-  box-shadow: 0 4px 10px rgba(76, 201, 166, 0.3);
-  transition: 0.25s ease;
-}
 
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(76, 201, 166, 0.4);
-}
 
 .form-control {
   border-radius: .65rem;
@@ -88,4 +78,33 @@ body {
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
     transition: color 0.4s, background-color 0.4s, border-color 0.4s, box-shadow 0.4s;
     font-weight: 900;
+}
+.bg-gradient-success {
+    background: linear-gradient(
+        135deg,
+        rgba(var(--bs-success-rgb), 0.8),
+        rgba(var(--bs-success-rgb), 0.1)
+    );
+}
+
+.bg-gradient-primary {
+    background: linear-gradient(
+        135deg,
+        rgba(var(--bs-primary-rgb), 0.8),
+        rgba(var(--bs-primary-rgb), 0.1)
+    );
+}
+.bg-gradient-danger {
+    background: linear-gradient(
+        135deg,
+        rgba(var(--bs-danger-rgb), 0.8),
+        rgba(var(--bs-danger-rgb), 0.1)
+    );
+}
+.bg-gradient-info {
+    background: linear-gradient(
+        135deg,
+        rgba(var(--bs-info-rgb), 0.8),
+        rgba(var(--bs-info-rgb), 0.1)
+    );
 }

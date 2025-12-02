@@ -89,3 +89,58 @@ document.addEventListener("DOMContentLoaded", () => {
         buttonSoundClick(el.id);
     });
 });
+
+
+// 1️⃣ Fonction qui récupère les notifications
+function loadNotifications() {
+    fetch("/api/notifications/feeds")
+        .then((res) => res.json())
+        .then((data) => {
+
+            // --- Badge dynamique ---
+            const badge = document.querySelector("#notifDesktop .badge");
+            badge.textContent = data.total;
+
+            // --- Clients non consultés ---
+            let clientsHtml = "";
+            data.newClients.forEach((c) => {
+                clientsHtml += `
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>${c.nom} (${c.ville})</span>
+                        <small class="text-muted">${c.createdAt}</small>
+                    </li>`;
+            });
+
+            if (clientsHtml === "") {
+                clientsHtml = "<li class='list-group-item text-muted'>Aucun nouveau client</li>";
+            }
+
+            document.getElementById("notifClientsList").innerHTML = clientsHtml;
+
+            // --- RDV du jour ---
+            let rdvHtml = "";
+            data.rdvToday.forEach((r) => {
+                rdvHtml += `
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>${r.heure} - ${r.client}</span>
+                        <small class="text-muted">${r.motif ?? ""}</small>
+                    </li>`;
+            });
+
+            if (rdvHtml === "") {
+                rdvHtml = "<li class='list-group-item text-muted'>Aucun RDV aujourd’hui</li>";
+            }
+
+            document.getElementById("notifRdvList").innerHTML = rdvHtml;
+        })
+        .catch((err) => console.error(err));
+}
+
+// 2️⃣ Clic = ouvre le modal (Bootstrap s'en occupe)
+document.getElementById("notifDesktop").addEventListener("click", loadNotifications);
+
+// 3️⃣ Refresh auto toutes les 2 secondes
+setInterval(loadNotifications, 2000);
+
+// 4️⃣ Charger au démarrage
+loadNotifications();

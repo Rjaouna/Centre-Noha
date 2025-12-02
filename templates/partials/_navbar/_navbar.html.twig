@@ -6,65 +6,29 @@
 
 			<!-- LOGO -->
 			<a class="navbar-brand fw-bold fs-3" href="{{ path('app_home') }}">
-<span id="logoName">
-	<span id="globalLoader">
-		<div class="spinner"></div>
-	</span>
-
-</span>
-
+				<span id="logoName">
+					<span id="globalLoader">
+						<div class="spinner"></div>
+					</span>
+				</span>
 			</a>
 
 			<!-- RIGHT ICONS + BURGER (MOBILE FIRST) -->
 			<div
 				class="d-flex align-items-center">
 
-				<!-- NOTIFICATION ICON -->
-<div class="nav-item dropdown mx-2 d-lg-none">
-
-
-					<a class="nav-link position-relative" href="#" id="notifMobile" data-bs-toggle="dropdown">
+				<!-- NOTIFICATION ICON MOBILE (ouvre le MODAL) -->
+				<div class="nav-item mx-2 d-lg-none">
+					<a class="nav-link position-relative" href="#" id="notifMobile" data-bs-toggle="modal" data-bs-target="#notifModal">
 						<i class="bi bi-bell-fill fs-4 text-white"></i>
-
-						<span class="badge bg-danger position-absolute top-0 start-100 translate-middle p-1 rounded-pill">
-							3+
+						<span class="badge bg-danger position-absolute top-0 start-100 translate-middle  rounded-pill" id="notifMobileBadge">
+							0
 						</span>
 					</a>
-
-					<ul class="dropdown-menu dropdown-menu-end shadow animated--grow-in">
-						<li class="dropdown-header fw-bold text-primary">Notifications</li>
-
-						<li>
-							<a class="dropdown-item d-flex align-items-center" href="#">
-								<div class="icon-circle bg-success text-white me-3">
-									<i class="bi bi-cash-coin"></i>
-								</div>
-								<div>
-									<div class="small text-muted">7 Décembre 2025</div>
-									290 DH crédités !
-								</div>
-							</a>
-						</li>
-
-						<li>
-							<a class="dropdown-item d-flex align-items-center" href="#">
-								<div class="icon-circle bg-warning text-white me-3">
-									<i class="bi bi-exclamation-triangle-fill"></i>
-								</div>
-								<div>
-									<div class="small text-muted">2 Décembre 2025</div>
-									Activité inhabituelle détectée.
-								</div>
-							</a>
-						</li>
-
-					</ul>
 				</div>
 
 				<!-- PROFILE ICON MOBILE -->
-<div class="nav-item dropdown d-lg-none mx-2">
-
-
+				<div class="nav-item dropdown d-lg-none mx-2">
 					<a class="nav-link" href="#" id="profileMobile" data-bs-toggle="dropdown">
 						<img src="https://ui-avatars.com/api/?name={{ app.user.nom ?? app.user.email }}&background=0D8ABC&color=fff" class="rounded-circle" width="40" height="40">
 					</a>
@@ -95,9 +59,7 @@
 				</div>
 
 				<!-- BURGER -->
-<button class="navbar-toggler mx-2" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
-
-
+				<button class="navbar-toggler mx-2" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
 					<span class="navbar-toggler-icon"></span>
 				</button>
 
@@ -144,34 +106,14 @@
 				<ul
 					class="navbar-nav ms-auto d-none d-lg-flex align-items-center gap-3">
 
-					<!-- NOTIF DESKTOP -->
-					<li class="nav-item dropdown">
-						<a class="nav-link position-relative" href="#" id="notifDesktop" data-bs-toggle="dropdown">
+					<!-- NOTIF DESKTOP (ouvre aussi le MODAL) -->
+					<li class="nav-item">
+						<a class="nav-link position-relative" href="#" id="notifDesktop" data-bs-toggle="modal" data-bs-target="#notifModal">
 							<i class="bi bi-bell-fill fs-5"></i>
-							<span class="badge bg-danger position-absolute top-0 start-100 translate-middle p-1 rounded-pill">3+</span>
+							<span class="badge bg-danger position-absolute top-3 start-100 translate-middle  rounded-pill">
+								0
+							</span>
 						</a>
-
-						<ul class="dropdown-menu dropdown-menu-end shadow animated--grow-in" style="width:320px">
-							<li class="dropdown-header fw-bold text-primary">Centre d’alertes</li>
-
-							<li>
-								<a class="dropdown-item d-flex align-items-center" href="#">
-									<div class="icon-circle bg-success text-white me-3">
-										<i class="bi bi-cash-coin"></i>
-									</div>
-									<div>290 DH ajoutés !</div>
-								</a>
-							</li>
-
-							<li>
-								<a class="dropdown-item d-flex align-items-center" href="#">
-									<div class="icon-circle bg-warning text-white me-3">
-										<i class="bi bi-exclamation-triangle-fill"></i>
-									</div>
-									<div>Activité inhabituelle détectée.</div>
-								</a>
-							</li>
-						</ul>
 					</li>
 
 					<!-- PROFILE DESKTOP -->
@@ -218,55 +160,125 @@
 		</div>
 	</nav>
 
-{% endif %}
+	<!-- MODAL NOTIFICATIONS (mobile + desktop) -->
+	<div class="modal fade" id="notifModal" tabindex="-1" aria-hidden="true">
+		<div class="modal-dialog modal-lg modal-dialog-scrollable">
+			<div class="modal-content shadow-lg border-0">
 
+				<div class="modal-header bg-primary text-white">
+					<h5 class="modal-title">
+						<i class="bi bi-bell-fill me-2"></i>Centre des notifications
+					</h5>
+					<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+				</div>
+
+				<div
+					class="modal-body">
+
+					<!-- 📘 Nouveaux inscrits -->
+					<h6 class="fw-bold text-primary mb-3">
+						<i class="bi bi-person-plus-fill me-2"></i>
+						Nouveaux inscrits
+					</h6>
+					<div id="notifClientsList" class="vstack gap-3"></div>
+
+					<hr
+					class="my-4">
+
+					<!-- 📗 RDV du jour -->
+					<h6 class="fw-bold text-success mb-3">
+						<i class="bi bi-calendar-check-fill me-2"></i>
+						RDV du jour
+					</h6>
+					<div id="notifRdvList" class="vstack gap-3"></div>
+
+				</div>
+
+				<div class="modal-footer">
+					<button class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+				</div>
+
+			</div>
+		</div>
+	</div>
 <style>
-	.navbar-nav .nav-link {
-		font-size: 1.1rem;
-		font-weight: 600;
-	}
-
-	.icon-circle {
-		width: 38px;
-		height: 38px;
-		border-radius: 50%;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-	}
-
-	@media(max-width: 768px) {
-		#logoName {
-			font-size: 1.4rem;
-			font-weight: 800;
-		}
-.dropdown-menu.show {
-    display: inline-table;
+.notify-card {
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+    background: #fff;
+    padding: 14px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: .2s ease;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.04);
 }
-.dropdown-menu-end[data-bs-popper] {
-right: 0px;
 
-
-    left: auto;
+.notify-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 18px rgba(0,0,0,0.07);
+    background: #f9fbff;
 }
-		.navbar-nav .nav-link {
-			font-size: 1.2rem;
-			font-weight: 700;
-			padding: 12px;
-		}
 
-		.dropdown-menu {
-			width: 90%;
-			margin-left: 5%;
-			border-radius: 15px;
-		}
+.notify-left {
+    max-width: 75%;
+}
 
-		.dropdown-item {
-			font-size: 1.1rem;
-			padding: 12px 18px;
-		}
-	}
-	#globalLoader {
+.notify-title {
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.notify-sub {
+    font-size: 0.87rem;
+    color: #6c757d;
+}
+
+.badge-status {
+    font-size: .75rem;
+    padding: 4px 8px;
+}
+
+.navbar-nav .nav-link {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.icon-circle {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@media(max-width: 768px) {
+    #logoName {
+        font-size: 1.4rem;
+        font-weight: 800;
+    }
+
+    .navbar-nav .nav-link {
+        font-size: 1.2rem;
+        font-weight: 700;
+        padding: 12px;
+    }
+
+    .dropdown-menu {
+        width: 90%;
+        margin-left: 5%;
+        border-radius: 15px;
+    }
+
+    .dropdown-item {
+        font-size: 1.1rem;
+        padding: 12px 18px;
+    }
+}
+
+/* Loader global */
+#globalLoader {
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
@@ -282,7 +294,7 @@ right: 0px;
     width: 70px;
     height: 70px;
     border: 6px solid #ddd;
-    border-top-color: #d9534f; /* rouge SoinBoard */
+    border-top-color: #d9534f;
     border-radius: 50%;
     animation: spin 0.9s linear infinite;
 }
@@ -291,21 +303,19 @@ right: 0px;
     to { transform: rotate(360deg); }
 }
 </style>
-
- <script>
- function showLoader() {
+<script>
+function showLoader() {
     document.getElementById('globalLoader').style.display = 'flex';
 }
 
 function hideLoader() {
     document.getElementById('globalLoader').style.display = 'none';
 }
+
 async function majLogo() {
     const el = document.getElementById('logoName');
 
-    // 👀 Affichage immédiat
-el.innerHTML = `<span class="sr-only">Loading...</span>`;
-
+    el.innerHTML = `<span class="sr-only">Loading...</span>`;
 
     const url = "{{ path('app_nom_cabinet') }}";
     const urlConfig = "{{ path('app_cabinet_index') }}";
@@ -313,7 +323,6 @@ el.innerHTML = `<span class="sr-only">Loading...</span>`;
     try {
         const response = await fetch(url);
 
-        // ⚠️ Si la réponse n'est pas 200 → Erreur
         if (!response.ok) {
             el.textContent = "Erreur serveur";
             return;
@@ -321,15 +330,12 @@ el.innerHTML = `<span class="sr-only">Loading...</span>`;
 
         const data = await response.json();
 
-        // Cabinet pas configuré
         if (!data.nom || data.nom === "null") {
             el.innerHTML = `
                 <span class="text-warning fw-bold">Cabinet non configuré</span>
                 <a href="${urlConfig}" class="btn btn-sm btn-warning ms-2">Configurer</a>
             `;
-        } 
-        // Cabinet OK ✔️
-        else {
+        } else {
             el.textContent = data.nom;
         }
 
@@ -339,10 +345,84 @@ el.innerHTML = `<span class="sr-only">Loading...</span>`;
     }
 }
 
-// Exécution
-majLogo();
+// =============================
+// NOTIFICATIONS
+// =============================
+const NOTIF_URL = "{{ path('api_notifications_feeds') }}";
 
+function loadNotifications() {
+    fetch(NOTIF_URL)
+        .then(res => res.json())
+        .then(data => {
 
+            const desktopBadge = document.querySelector('#notifDesktop .badge');
+            const mobileBadge  = document.getElementById('notifMobileBadge');
+
+            if (desktopBadge) desktopBadge.textContent = data.total;
+            if (mobileBadge) mobileBadge.textContent = data.total;
+
+            // --- Clients ---
+            let cardClient = (c) => `
+                <div class="notify-card">
+                    <div class="notify-left">
+                        <div class="notify-title">
+                            <i class="bi bi-person-circle text-primary me-1"></i>
+                            ${c.nom} • ${c.ville}
+                        </div>
+                        <div class="notify-sub">
+                            📞 ${c.telephone}<br>
+                            🕒 ${c.createdAt}
+                        </div>
+                    </div>
+                    <a href="/client/${c.id}" class="btn btn-sm btn-outline-primary fw-bold">Voir</a>
+                </div>
+            `;
+
+            let clientsHtml = data.newClients && data.newClients.length
+                ? data.newClients.map(c => cardClient(c)).join('')
+                : "<div class='text-muted'>Aucun nouveau client</div>";
+
+            document.getElementById('notifClientsList').innerHTML = clientsHtml;
+
+            // --- RDV du jour ---
+            let cardRdv = (r) => `
+                <div class="notify-card">
+                    <div class="notify-left">
+                        <div class="notify-title">
+                            <i class="bi bi-clock-fill text-success me-1"></i>
+                            ${r.heure} — ${r.client}
+                        </div>
+                        <div class="notify-sub">
+                            📝 ${r.motif ?? "—"}<br>
+                            <span class="badge bg-info text-dark badge-status">
+                                ${r.statut ?? "En attente"}
+                            </span>
+                        </div>
+                    </div>
+                    <a href="/rendezvous/${r.id}" class="btn btn-sm btn-outline-success fw-bold">Ouvrir</a>
+                </div>
+            `;
+
+            let rdvHtml = data.rdvToday && data.rdvToday.length
+                ? data.rdvToday.map(r => cardRdv(r)).join('')
+                : "<div class='text-muted'>Aucun RDV aujourd’hui</div>";
+
+            document.getElementById('notifRdvList').innerHTML = rdvHtml;
+
+        })
+        .catch(err => console.error(err));
+}
+
+// Exécution au chargement
+document.addEventListener('DOMContentLoaded', () => {
+    majLogo();
+    loadNotifications();
+
+    // Refresh auto toutes les 30s
+    setInterval(loadNotifications, 30000);
+});
 </script>
 
+
+{% endif %}
 

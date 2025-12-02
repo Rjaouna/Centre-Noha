@@ -63,12 +63,18 @@
 
 	<div class="container py-4">
 
-<h2 class="dashboard-title text-left mb-5">
-	<i class="bi bi-activity text-danger me-2"></i>
+<h4 class="fw-bold  text-left mb-4 mt-3">
+
+
+	<i class="bi bi-activity text-primary me-2"></i>
+
+
 Tableau de Bord —
 
 	<span id="nameCabinet"> </span>
-</h2>
+</h4>
+
+
 
 
 <div class="row g-4 justify-content-center row g-4 justify-content-center">
@@ -80,17 +86,24 @@ Tableau de Bord —
 			<!-- 🔹 1 — Ajouter un client  -->
 			<!-- ========================== -->
 <div class="col-12 col-md-3 my-bg">
-	<div class="card dashboard-card shadow border-0 rounded-4 text-center p-3">
+<div class="card bg-gradient-success dashboard-card shadow border-0 rounded-4 text-center p-3">
 
 
 
-					<i class="bi bi-person-plus-fill text-success" style="font-size: 3.2rem;"></i>
 
-<h5 class="mt-3 fw-bold">Ajouter un patient</h5>
+
+<i class="bi bi-person-plus-fill text-success" style="font-size: 3.2rem;"></i>
+
+
+<h5 class="mt-3 fw-bold text-success">Ajouter un patient</h5>
+
+
 
 					<p class="text-muted small">Créer une nouvelle fiche patient</p>
 
-<button id="addClientHome" class="btn btn-outline-success btn-sm rounded-pill px-4 mt-2" data-bs-toggle="modal" data-bs-target="#modalAddClient">
+<button id="addClientHome" class="btn btn-success  btn-sm rounded-pill px-4 mt-2" data-bs-toggle="modal" data-bs-target="#modalAddClient">
+
+
 
 						<i class="bi bi-plus-lg"></i>
 						Ajouter
@@ -102,7 +115,10 @@ Tableau de Bord —
 			<!-- ========================== -->
 			<!-- 🔹 2 — Liste des clients  -->
 			<!-- ========================== -->
-				<div class="col-12 col-md-3"> <div class="card dashboard-card shadow border-0 rounded-4 text-center p-3 position-relative">
+<div class="col-12 col-md-3">
+	<div class="card bg-gradient-primary dashboard-card shadow border-0 rounded-4 text-center p-3 position-relative">
+
+
 
 					{% if totalClients is defined %}
 						<span class="badge bg-info text-white position-absolute top-0 start-100 translate-middle dashboard-badge shadow">
@@ -113,10 +129,14 @@ Tableau de Bord —
 
 					<i class="bi bi-people-fill text-primary" style="font-size: 3.2rem;"></i>
 
-					<h5 class="mt-3 fw-bold">Liste des clients</h5>
+<h5 class="mt-3 fw-bold text-primary">Liste des clients</h5>
+
+
 					<p class="text-muted small">Gérer et consulter les patients</p>
 
-<a id="listClientHome"  class="btn btn-outline-primary btn-sm rounded-pill px-4 mt-2" href="{{ path('app_fiche_client_index') }}">
+<a id="listClientHome" class="btn btn-primary btn-sm rounded-pill px-4 mt-2" href="{{ path('app_fiche_client_index') }}">
+
+
 
 
 						<i class="bi bi-search"></i>
@@ -131,14 +151,21 @@ Patients
 <!-- ========================== -->
 <!-- 🔹 3 — Médicaments -->
 <!-- ========================== -->
-	<div class="col-12 col-md-3"> <div class="card dashboard-card shadow border-0 rounded-4 text-center p-3">
+<div class="col-12 col-md-3">
+	<div class="card bg-gradient-danger dashboard-card shadow border-0 rounded-4 text-center p-3">
+
+
 
 		<i class="bi bi-capsule-pill text-danger" style="font-size: 3.2rem;"></i>
 
-		<h5 class="mt-3 fw-bold">Liste des Médicaments</h5>
+<h5 class="mt-3 fw-bold text-danger">Liste des Médicaments</h5>
+
+
 		<p class="text-muted small">Consultation & gestion des médicaments</p>
 
-		<a href="{{ path('medicine_index') }}" class="btn btn-outline-danger btn-sm rounded-pill px-4 mt-2">
+<a href="{{ path('medicine_index') }}" class="btn btn-danger btn-sm rounded-pill px-4 mt-2">
+
+
 			<i class="bi bi-prescription2"></i>
 			Liste
 		</a>
@@ -151,10 +178,15 @@ Patients
 			<!-- ========================== -->
 			<!-- 🔹 4 — Rendez-vous -->
 			<!-- ========================== -->
-				<div class="col-12 col-md-3"> <div class="card dashboard-card shadow border-0 rounded-4 text-center p-3 position-relative">
+<div class="col-12 col-md-3">
+	<div class="card bg-gradient-info  dashboard-card shadow border-0 rounded-4 text-center p-3 position-relative">
+
+
 
 					{% if totalRdv is defined %}
-						<span class="badge bg-info text-dark position-absolute top-0 start-100 translate-middle dashboard-badge shadow">
+<span class="badge bg-info text-light position-absolute top-0 start-100 translate-middle dashboard-badge shadow">
+
+
 							{{ totalRdv }}
 							
 						</span>
@@ -162,10 +194,14 @@ Patients
 
 					<i class="bi bi-calendar-week text-info" style="font-size: 3.2rem;"></i>
 
-					<h5 class="mt-3 fw-bold">Rendez-vous</h5>
+<h5 class="mt-3 fw-bold text-info">Rendez-vous</h5>
+
+
 					<p class="text-muted small">Consulter & gérer les RDV</p>
 
-<a id="rdvClientHome" class="btn btn-outline-info btn-sm rounded-pill px-4 mt-2" href="{{ path('app_rdv_index') }}">
+<a id="rdvClientHome" class="btn btn-info btn-sm rounded-pill px-4 mt-2 text-dark" href="{{ path('app_rdv_index') }}">
+
+
 
 
 						<i class="bi bi-calendar-check"></i>
