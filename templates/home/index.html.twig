@@ -93,7 +93,9 @@ Tableau de Bord —
 			<!-- 🔹 1 — Ajouter un client  -->
 			<!-- ========================== -->
 <div class="col-12 col-md-3 my-bg">
-<div class="card bg-gradient-bloc dashboard-card shadow border-0 rounded-4 text-center p-3">
+<div class="card bg-gradient-bloc dashboard-card shadow-sm border-0 rounded-4 text-center p-3">
+
+
 
 
 
@@ -125,14 +127,18 @@ Tableau de Bord —
 			<!-- 🔹 2 — Liste des clients  -->
 			<!-- ========================== -->
 <div class="col-12 col-md-3">
-<div class="card bg-gradient-bloc dashboard-card shadow border-0 rounded-4 text-center p-3 position-relative">
+<div class="card bg-gradient-bloc dashboard-card shadow-sm border-0 rounded-4 text-center p-3 position-relative">
+
+
 
 
 
 
 
 					{% if totalClients is defined %}
-						<span class="badge bg-info text-white position-absolute top-0 start-100 translate-middle dashboard-badge shadow">
+<span class="badge bg-info text-white position-absolute top-0 start-100 translate-middle dashboard-badge shadow-sm">
+
+
 							{{ totalClients }}
 							
 						</span>
@@ -163,7 +169,11 @@ Patients
 <!-- 🔹 3 — Médicaments -->
 <!-- ========================== -->
 <div class="col-12 col-md-3">
-<div class="card bg-gradient-bloc dashboard-card shadow border-0 rounded-4 text-center p-3">
+<div class="card bg-gradient-bloc dashboard-card shadow-sm border rounded-4 text-center p-3">
+
+
+
+
 
 
 
@@ -192,14 +202,22 @@ Patients
 			<!-- 🔹 4 — Rendez-vous -->
 			<!-- ========================== -->
 <div class="col-12 col-md-3">
-<div class="card bg-gradient-bloc  dashboard-card shadow border-0 rounded-4 text-center p-3 position-relative">
+<div class="card bg-gradient-bloc  dashboard-card shadow-sm border rounded-4 text-center p-3 position-relative">
+
+
+
+
 
 
 
 
 
 					{% if totalRdv is defined %}
-<span class="badge bg-info text-light position-absolute top-0 start-100 translate-middle dashboard-badge shadow">
+<span class="badge bg-info text-light  position-absolute top-0 start-100 translate-middle dashboard-badge shadow-sm">
+
+
+
+
 
 
 							{{ totalRdv }}
@@ -301,7 +319,11 @@ Patients
 	
 	<div class="modal fade" id="modalAddClient" tabindex="-1">
 			<div class="modal-dialog modal-xl">
-				<div class="modal-content rounded-4 shadow-lg">
+<div class="modal-content rounded-4 shadow-sm border">
+
+
+
+
 
 					<div class="modal-header bg-primary text-white rounded-top-4">
 						<h5 class="modal-title fw-bold d-flex align-items-center">
