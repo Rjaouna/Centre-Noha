@@ -133,7 +133,7 @@ function loadNotifications() {
                                         </div>
                                     </div>
 
-                                    <a href="/rdv" 
+                                    <a href="/fiche/client/${c.id}" 
                                         class="btn btn-outline-primary btn-sm">
                                         Voir
                                     </a>
@@ -178,7 +178,7 @@ function loadNotifications() {
                                         </div>
                                     </div>
 
-                                    <a href="/fiche/client/${r.id}" 
+                                    <a href="/rdv" 
                                         class="btn btn-outline-success btn-sm">
                                         Ouvrir
                                     </a>
