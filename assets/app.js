@@ -142,5 +142,4 @@ document.getElementById("notifDesktop").addEventListener("click", loadNotificati
 // 3️⃣ Refresh auto toutes les 2 secondes
 setInterval(loadNotifications, 2000);
 
-// 4️⃣ Charger au démarrage
 loadNotifications();
