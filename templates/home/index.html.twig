@@ -1,3 +1,4 @@
+
 {% extends 'base.html.twig' %}
 
 {% block title %}Accueil
@@ -6,25 +7,62 @@
 {% block body %}
 
 	<style>
-		/* Effet hover premium */
-		.dashboard-card {
+		/* =============================
+   NEW DASHBOARD BLOCK STYLE PRO
+   ============================= */
+
+		.dashboard-pro {
+			background: rgba(255, 255, 255, 0.65);
+			backdrop-filter: blur(12px);
+			border-radius: 18px;
+			border: 1px solid rgba(255, 255, 255, 0.35);
+			padding: 28px 20px;
+			text-align: center;
+			box-shadow: 0 8px 22px rgba(0, 0, 0, 0.06);
 			transition: all 0.25s ease-in-out;
 			cursor: pointer;
 		}
 
-		.dashboard-card:hover {
+		.dashboard-pro:hover {
 			transform: translateY(-6px);
-			box-shadow: 0 12px 22px rgba(0, 0, 0, 0.12) !important;
+			box-shadow: 0 14px 28px rgba(0, 0, 0, 0.12);
 		}
 
-		/* Badge visible et animé */
-		.dashboard-badge {
-			overflow: visible !important;
-			animation: pulse 2s infinite;
-			font-size: 0.70rem;
+		/* Icône principale */
+		.dashboard-pro-icon {
+			font-size: 3rem;
+			padding: 18px;
+			border-radius: 16px;
+			display: inline-block;
+			margin-bottom: 10px;
+		}
+
+		/* Titre */
+		.dashboard-pro h5 {
+			font-weight: 800;
+			margin-top: 10px;
+		}
+
+		/* Sous-texte */
+		.dashboard-pro p {
+			color: #6c757d;
+			font-size: 0.88rem;
+		}
+
+		/* Badge animé */
+		.dashboard-pro-badge {
+			position: absolute;
+			top: -6px;
+			right: -6px;
+			background: #0dcaf0;
+			color: white;
+			font-weight: 700;
 			padding: 6px 10px;
+			border-radius: 50%;
+			animation: pulse 2s infinite;
 		}
 
+		/* Animation du badge */
 		@keyframes pulse {
 			0% {
 				transform: scale(1);
@@ -36,86 +74,45 @@
 				transform: scale(1);
 			}
 		}
-		.separator {
-    position: relative;
-    padding: 10px 0;
-}
-
-.separator::before,
-.separator::after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    width: 40%;
-    height: 1px;
-    background: #d9d9d9;
-}
-
-.separator::before {
-    left: 0;
-}
-
-.separator::after {
-    right: 0;
-}
 
 	</style>
-<!-- 🔹 BLOC D’ACCUEIL SIMPLE & PRO -->
+	<div class="container py-4">
 <div class="container my-4">
 
 
-<h4 class="fw-bold  text-left mb-4 mt-3">
+	<h4 class="fw-bold  text-left mb-4 mt-3">
 
 
-	<i class="bi bi-activity text-primary me-2"></i>
+		<i class="bi bi-activity text-primary me-2"></i>
 
 
-Tableau de Bord —
+		Tableau de Bord —
 
 
-<span class="text-primary"  id="nameCabinet"></span>
+		<span class="text-primary" id="nameCabinet"></span>
 
 
-</h4>
+	</h4>
 
 
-</div><div class="container py-4">
+</div>
 
 
+		<div
+			class="row g-4 justify-content-center">
 
+			<!-- 🔹 1 — Ajouter un patient -->
+			<div class="col-12 col-md-3">
+				<div class="dashboard-pro position-relative">
 
-<div class="row g-4 justify-content-center row g-4 justify-content-center">
+					<div class="dashboard-pro-icon bg-success bg-opacity-10 text-success">
+						<i class="bi bi-person-plus-fill"></i>
+					</div>
 
+					<h5 class="text-success">Ajouter un patient</h5>
+					<p>Créer une nouvelle fiche patient</p>
 
-
-
-			<!-- ========================== -->
-			<!-- 🔹 1 — Ajouter un client  -->
-			<!-- ========================== -->
-<div class="col-12 col-md-3 my-bg">
-<div class="card bg-gradient-bloc dashboard-card shadow-sm border-0 rounded-4 text-center p-3">
-
-
-
-
-
-
-
-
-
-<i class="bi bi-person-plus-fill text-success" style="font-size: 3.2rem;"></i>
-
-
-<h5 class="mt-3 fw-bold text-success">Ajouter un patient</h5>
-
-
-
-					<p class="text-muted small">Créer une nouvelle fiche patient</p>
-
-<button id="addClientHome" class="btn btn-success  btn-sm rounded-pill px-4 mt-2" data-bs-toggle="modal" data-bs-target="#modalAddClient">
-
-
-
+					<button id="addClientHome" class="btn btn-success btn-sm rounded-pill px-4 mt-2" data-bs-toggle="modal" data-bs-target="#modalAddClient">
 						<i class="bi bi-plus-lg"></i>
 						Ajouter
 					</button>
@@ -123,120 +120,68 @@ Tableau de Bord —
 				</div>
 			</div>
 
-			<!-- ========================== -->
-			<!-- 🔹 2 — Liste des clients  -->
-			<!-- ========================== -->
-<div class="col-12 col-md-3">
-<div class="card bg-gradient-bloc dashboard-card shadow-sm border-0 rounded-4 text-center p-3 position-relative">
+			<!-- 🔹 2 — Liste des patients -->
+			<div class="col-12 col-md-3">
+				<div class="dashboard-pro position-relative">
 
-
-
-
-
-
-
-					{% if totalClients is defined %}
-<span class="badge bg-info text-white position-absolute top-0 start-100 translate-middle dashboard-badge shadow-sm">
-
-
+					{% if totalClients %}
+						<span class="dashboard-pro-badge shadow-sm">
 							{{ totalClients }}
-							
 						</span>
 					{% endif %}
 
-					<i class="bi bi-people-fill text-primary" style="font-size: 3.2rem;"></i>
+					<div class="dashboard-pro-icon bg-primary bg-opacity-10 text-primary">
+						<i class="bi bi-people-fill"></i>
+					</div>
 
-<h5 class="mt-3 fw-bold text-primary">Liste des clients</h5>
+					<h5 class="text-primary">Liste des patients</h5>
+					<p>Gérer et consulter tous les dossiers</p>
 
-
-					<p class="text-muted small">Gérer et consulter les patients</p>
-
-<a id="listClientHome" class="btn btn-primary btn-sm rounded-pill px-4 mt-2" href="{{ path('app_fiche_client_index') }}">
-
-
-
-
+					<a href="{{ path('app_fiche_client_index') }}" class="btn btn-primary btn-sm rounded-pill px-4 mt-2">
 						<i class="bi bi-search"></i>
-Patients
-
-
+						Patients
 					</a>
 
 				</div>
 			</div>
 
-<!-- ========================== -->
-<!-- 🔹 3 — Médicaments -->
-<!-- ========================== -->
-<div class="col-12 col-md-3">
-<div class="card bg-gradient-bloc dashboard-card shadow-sm border rounded-4 text-center p-3">
+			<!-- 🔹 3 — Médicaments -->
+			<div class="col-12 col-md-3">
+				<div class="dashboard-pro">
 
+					<div class="dashboard-pro-icon bg-danger bg-opacity-10 text-danger">
+						<i class="bi bi-capsule-pill"></i>
+					</div>
 
+					<h5 class="text-danger">Médicaments</h5>
+					<p>Consultation & gestion des médicaments</p>
 
+					<a href="{{ path('medicine_index') }}" class="btn btn-danger btn-sm rounded-pill px-4 mt-2">
+						<i class="bi bi-prescription2"></i>
+						Liste
+					</a>
 
+				</div>
+			</div>
 
-
-
-
-
-		<i class="bi bi-capsule-pill text-danger" style="font-size: 3.2rem;"></i>
-
-<h5 class="mt-3 fw-bold text-danger">Liste des Médicaments</h5>
-
-
-		<p class="text-muted small">Consultation & gestion des médicaments</p>
-
-<a href="{{ path('medicine_index') }}" class="btn btn-danger btn-sm rounded-pill px-4 mt-2">
-
-
-			<i class="bi bi-prescription2"></i>
-			Liste
-		</a>
-
-	</div>
-</div>
-
-
-
-			<!-- ========================== -->
 			<!-- 🔹 4 — Rendez-vous -->
-			<!-- ========================== -->
-<div class="col-12 col-md-3">
-<div class="card bg-gradient-bloc  dashboard-card shadow-sm border rounded-4 text-center p-3 position-relative">
+			<div class="col-12 col-md-3">
+				<div class="dashboard-pro position-relative">
 
-
-
-
-
-
-
-
-
-					{% if totalRdv is defined %}
-<span class="badge bg-info text-light  position-absolute top-0 start-100 translate-middle dashboard-badge shadow-sm">
-
-
-
-
-
-
+					{% if totalRdv %}
+						<span class="dashboard-pro-badge shadow-sm">
 							{{ totalRdv }}
-							
 						</span>
 					{% endif %}
 
-					<i class="bi bi-calendar-week text-info" style="font-size: 3.2rem;"></i>
+					<div class="dashboard-pro-icon bg-info bg-opacity-10 text-info">
+						<i class="bi bi-calendar-week"></i>
+					</div>
 
-<h5 class="mt-3 fw-bold text-info">Rendez-vous</h5>
+					<h5 class="text-info">Rendez-vous</h5>
+					<p>Planning & gestion des consultations</p>
 
-
-					<p class="text-muted small">Consulter & gérer les RDV</p>
-
-<a id="rdvClientHome" class="btn btn-info btn-sm rounded-pill px-4 mt-2 text-dark" href="{{ path('app_rdv_index') }}">
-
-
-
-
+					<a href="{{ path('app_rdv_index') }}" class="btn btn-info btn-sm rounded-pill px-4 mt-2">
 						<i class="bi bi-calendar-check"></i>
 						Ouvrir
 					</a>
@@ -246,106 +191,101 @@ Patients
 
 		</div>
 
-<div class="mt-5">
-	<h4 class="fw-bold mb-3">
-		<i class="bi bi-ui-checks-grid text-primary me-2"></i>
-		Référentiels & Ressources
-	</h4>
 
-	<div class="row g-3">
+		<div class="mt-5">
+			<h4 class="fw-bold mb-3">
+				<i class="bi bi-ui-checks-grid text-primary me-2"></i>
+				Référentiels & Ressources
+			</h4>
 
-		<a href="{{ path('hopital_search_page') }}" class="col-md-4 text-decoration-none">
-			<div class="p-3 border rounded-4 shadow-sm d-flex align-items-center">
-				<i class="bi bi-hospital text-primary fs-3 me-3"></i>
-				<div>
-					<h6 class="fw-bold mb-0">Établissements Hospitaliers</h6>
-					<small class="text-muted">Recherche & consultation</small>
+			<div class="row g-3">
+
+				<a href="{{ path('hopital_search_page') }}" class="col-md-4 text-decoration-none">
+					<div class="p-3 border rounded-4 shadow-sm d-flex align-items-center">
+						<i class="bi bi-hospital text-primary fs-3 me-3"></i>
+						<div>
+							<h6 class="fw-bold mb-0">Établissements Hospitaliers</h6>
+							<small class="text-muted">Recherche & consultation</small>
+						</div>
+					</div>
+				</a>
+
+
+				<div class="col-md-4">
+					<a href="{{ path('hopital_search_page') }}" class="col-md-4 text-decoration-none">
+
+						<div class="p-3 border rounded-4 shadow-sm d-flex align-items-center">
+							<i class="bi bi-heart-pulse text-success fs-3 me-3"></i>
+							<div>
+								<h6 class="fw-bold mb-0">Dispositifs remboursables</h6>
+								<small class="text-muted">CNOPS – ANAM</small>
+							</div>
+						</div>
+					</a>
 				</div>
-			</div>
-		</a>
+
+				<div class="col-md-4">
+					<a href="{{ path('medicine_index') }}" class="col-md-4 text-decoration-none">
 
 
-		<div class="col-md-4">
-<a href="{{ path('hopital_search_page') }}" class="col-md-4 text-decoration-none">
+						<div class="p-3 border rounded-4 shadow-sm d-flex align-items-center">
+							<i class="bi bi-capsule-pill text-danger fs-3 me-3"></i>
 
-			<div class="p-3 border rounded-4 shadow-sm d-flex align-items-center">
-				<i class="bi bi-heart-pulse text-success fs-3 me-3"></i>
-				<div>
-					<h6 class="fw-bold mb-0">Dispositifs remboursables</h6>
-					<small class="text-muted">CNOPS – ANAM</small>
+							<div>
+								<h6 class="fw-bold mb-0">Liste des Médicaments</h6>
+
+								<small class="text-muted">CNOPS – ANAM</small>
+							</div>
+						</div>
+					</a>
+
+
 				</div>
+
+
 			</div>
-			</a>
 		</div>
-
-<div class="col-md-4">
-<a href="{{ path('medicine_index') }}" class="col-md-4 text-decoration-none">
-
-
-	<div class="p-3 border rounded-4 shadow-sm d-flex align-items-center">
-<i class="bi bi-capsule-pill text-danger fs-3 me-3"></i>
-
-		<div>
-<h6 class="fw-bold mb-0">Liste des Médicaments</h6>
-
-			<small class="text-muted">CNOPS – ANAM</small>
+		<div class="separator my-3 text-center">
+			<i class="bi bi-heart-pulse-fill text-danger" style="font-size: 1.8rem;"></i>
 		</div>
-	</div>
-</a>
-
-
-</div>
-
-
-	</div>
-</div>
-<div class="separator my-3 text-center">
-	<i class="bi bi-heart-pulse-fill text-danger" style="font-size: 1.8rem;"></i>
-</div>
-
 
 
 		<!-- 📊 SECTION STATISTIQUES -->
 		{{ include('home/_stats/_stats.html.twig') }}
-		
+
 
 	</div>
 
+</div>
 
 
+<!-- MODAL AJOUT PATIENT -->
+
+<div class="modal fade" id="modalAddClient" tabindex="-1">
+	<div class="modal-dialog modal-xl">
+		<div class="modal-content rounded-4 shadow-sm border">
 
 
-	<!-- MODAL AJOUT PATIENT -->
-	
-	<div class="modal fade" id="modalAddClient" tabindex="-1">
-			<div class="modal-dialog modal-xl">
-<div class="modal-content rounded-4 shadow-sm border">
-
-
-
-
-
-					<div class="modal-header bg-primary text-white rounded-top-4">
-						<h5 class="modal-title fw-bold d-flex align-items-center">
-							<i class="bi bi-person-plus fs-4 me-2"></i>
-							Ajouter un patient
-						</h5>
-						<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-					</div>
-
-					<div class="modal-body p-4">
-{{ include('fiche_client/new.html.twig') }}
-
-
-
-					</div>
-
-				</div>
+			<div class="modal-header bg-primary text-white rounded-top-4">
+				<h5 class="modal-title fw-bold d-flex align-items-center">
+					<i class="bi bi-person-plus fs-4 me-2"></i>
+					Ajouter un patient
+				</h5>
+				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
 			</div>
+
+			<div class="modal-body p-4">
+				{{ include('fiche_client/new.html.twig') }}
+
+
+			</div>
+
 		</div>
+	</div>
+</div>
 
 
-<script>
+ <script>
 async function afficherNomCabinet() {
 
     const url = "{{ path('app_nom_cabinet') }}";
@@ -389,9 +329,5 @@ afficherNomCabinet();
 
 
 
-</script>
-
-
-
-{% endblock %}
+</script>{% endblock %}
 
