@@ -118,10 +118,13 @@ Ordonnance
 	</button>
 
 	<!-- Bouton Retour -->
-	<a href="{{ path('app_dossier_medical_index', { id: patient.id }) }}" class="btn btn-outline-secondary btn-lg rounded-pill px-4 shadow-sm w-100 w-md-auto">
-		<i class="bi bi-arrow-left"></i>
-		Retour
-	</a>
+<button type="button" onclick="history.back()" class="btn btn-outline-primary btn-lg rounded-pill px-4 shadow-sm d-flex align-items-center gap-2 w-100 w-md-auto">
+	<i class="bi bi-arrow-left"></i>
+	Retour
+
+</button>
+
+
 
 	</div>
 				</div>
