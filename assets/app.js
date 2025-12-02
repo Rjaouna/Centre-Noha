@@ -91,55 +91,115 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-// 1️⃣ Fonction qui récupère les notifications
 function loadNotifications() {
-    fetch("/api/notifications/feeds")
+    fetch("/api/notifications/feeds", { cache: "no-store" })
         .then((res) => res.json())
         .then((data) => {
+            // BADGES
+            const desktopBadge = document.querySelector("#notifDesktop .badge");
+            const mobileBadge = document.getElementById("notifMobileBadge");
 
-            // --- Badge dynamique ---
-            const badge = document.querySelector("#notifDesktop .badge");
-            badge.textContent = data.total;
+            if (desktopBadge) desktopBadge.textContent = data.total ?? 0;
+            if (mobileBadge) mobileBadge.textContent = data.total ?? 0;
 
-            // --- Clients non consultés ---
-            let clientsHtml = "";
-            data.newClients.forEach((c) => {
-                clientsHtml += `
-                    <li class="list-group-item d-flex justify-content-between">
-                        <span>${c.nom} (${c.ville})</span>
-                        <small class="text-muted">${c.createdAt}</small>
-                    </li>`;
-            });
+            // ------------------------------
+            // 📘 NOUVEAUX CLIENTS
+            // ------------------------------
+            const clientsList = document.getElementById("notifClientsList");
+            clientsList.innerHTML = "";
 
-            if (clientsHtml === "") {
-                clientsHtml = "<li class='list-group-item text-muted'>Aucun nouveau client</li>";
+            if (!data.newClients || data.newClients.length === 0) {
+                clientsList.innerHTML = `
+                    <div class="alert alert-secondary text-center py-2 mb-0">
+                        Aucun nouveau client
+                    </div>
+                `;
+            } else {
+                data.newClients.forEach((c) => {
+                    clientsList.innerHTML += `
+                        <div class="card border">
+                            <div class="card-body">
+
+                                <div class="d-flex justify-content-between align-items-start">
+
+                                    <div>
+                                        <h6 class="notify-title">
+                                            <i class="bi bi-person-circle me-1"></i>
+                                            ${c.nom} — ${c.ville}
+                                        </h6>
+                                        <div class="text-muted small">
+                                            📞 ${c.telephone ?? "—"}<br>
+                                            🕒 ${c.createdAt}
+                                        </div>
+                                    </div>
+
+                                    <a href="/fiche/client/${c.id}" 
+                                        class="btn btn-outline-primary btn-sm">
+                                        Voir
+                                    </a>
+                                </div>
+
+                            </div>
+                        </div>
+                    `;
+                });
             }
 
-            document.getElementById("notifClientsList").innerHTML = clientsHtml;
+            // ------------------------------
+            // 📗 RDV DU JOUR
+            // ------------------------------
+            const rdvList = document.getElementById("notifRdvList");
+            rdvList.innerHTML = "";
 
-            // --- RDV du jour ---
-            let rdvHtml = "";
-            data.rdvToday.forEach((r) => {
-                rdvHtml += `
-                    <li class="list-group-item d-flex justify-content-between">
-                        <span>${r.heure} - ${r.client}</span>
-                        <small class="text-muted">${r.motif ?? ""}</small>
-                    </li>`;
-            });
+            if (!data.rdvToday || data.rdvToday.length === 0) {
+                rdvList.innerHTML = `
+                    <div class="alert alert-secondary text-center py-2 mb-0">
+                        Aucun RDV aujourd’hui
+                    </div>
+                `;
+            } else {
+                data.rdvToday.forEach((r) => {
+                    rdvList.innerHTML += `
+                        <div class="card border">
+                            <div class="card-body">
 
-            if (rdvHtml === "") {
-                rdvHtml = "<li class='list-group-item text-muted'>Aucun RDV aujourd’hui</li>";
+                                <div class="d-flex justify-content-between align-items-start">
+
+                                    <div>
+                                        <h6 class="fw-bold">
+                                            <i class="bi bi-clock-fill me-1"></i>
+                                            ${r.heure} — ${r.client}
+                                        </h6>
+                                        <div class="text-muted small">
+                                            📝 ${r.motif ?? "—"}<br>
+                                            <span class="badge bg-info text-dark mt-1">
+                                                ${r.statut ?? "En attente"}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <a href="/fiche/client/${r.id}" 
+                                        class="btn btn-outline-success btn-sm">
+                                        Ouvrir
+                                    </a>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    `;
+                });
             }
-
-            document.getElementById("notifRdvList").innerHTML = rdvHtml;
         })
-        .catch((err) => console.error(err));
+        .catch((err) => console.error("Notif error:", err));
 }
 
 // 2️⃣ Clic = ouvre le modal (Bootstrap s'en occupe)
-document.getElementById("notifDesktop").addEventListener("click", loadNotifications);
+document
+    .getElementById("notifDesktop")
+    .addEventListener("click", loadNotifications);
 
 // 3️⃣ Refresh auto toutes les 2 secondes
-setInterval(loadNotifications, 2000);
+setInterval(loadNotifications, 15000);
 
 loadNotifications();
