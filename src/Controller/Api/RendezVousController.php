@@ -22,7 +22,7 @@ class RendezVousController extends AbstractController
 		$grouped = [];
 
 		foreach ($rdvs as $rdv) {
-			$day = $rdv->getDateRdvAt()->format('d/m/Y');
+			$day = $rdv->getDateRdvAt()->format('Y-m-d');
 			$grouped[$day][] = $rdv;
 		}
 
@@ -30,6 +30,37 @@ class RendezVousController extends AbstractController
 			'rdvsByDay' => $grouped,
 		]);
 	}
+	#[Route('/api/rdv/day/{day}', name: 'api_rdv_day')]
+	public function rdvByDay(string $day, RendezVousRepository $repo): JsonResponse
+	{
+		$rdvs = $repo->findAll();
+		$result = [];
+
+		foreach ($rdvs as $r) {
+			if ($r->getDateRdvAt()->format("D") === $day) {
+
+				$statut = $r->getStatut() ?? 'A venir';
+				$statutColor = [
+					'A venir' => 'success',
+					'Annulé' => 'warning',
+					'Passé' => 'danger',
+				][$statut] ?? 'secondary';
+
+				$result[] = [
+					'id' => $r->getClient()->getId(),
+					'client' => $r->getClient()->getNom(),
+					'heure' => $r->getDateRdvAt()->format("H:i"),
+					'motif' => $r->getMotif(),
+					'statut' => $statut,
+					'statutColor' => $statutColor,
+				];
+			}
+		}
+
+		return new JsonResponse($result);
+	}
+
+
 
 	#[Route('/api/rdv/validate/{id}', name: 'api_rdv_validate', methods: ['POST'])]
 	public function validateRdv(RendezVous $rdv, EntityManagerInterface $em): JsonResponse

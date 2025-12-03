@@ -1,133 +1,288 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Liste des rendez-vous{% endblock %}
+{% block title %}Liste des Patients
+{% endblock %}
+
+{# -------------------------------------------- #}
+{# CSS DATATABLES                               #}
+{# -------------------------------------------- #}
+	
 
 {% block body %}
 
 <div class="mt-4">
 
-    <!-- ========================================= -->
-    <!-- 🔵 HEADER IDENTIQUE (style Patients)      -->
-    <!-- ========================================= -->
-    <div class="card shadow-lg border-0 rounded-4 mb-4">
-        <div class="card-body py-4 px-4">
-
-            <div class="row align-items-center g-3">
-
-                <!-- ICONE + TITRE -->
-                <div class="col-md-7 d-flex align-items-center">
-
-                    <div class="icon-circle bg-primary bg-opacity-10 text-primary me-3 
-                        d-flex justify-content-center align-items-center"
-                        style="width:60px; height:60px; border-radius:16px;">
-                        <i class="bi bi-calendar-week fs-3"></i>
-                    </div>
-
-                    <div>
-                        <h2 class="fw-bold text-primary mb-1">Gestion des Rendez-vous</h2>
-                        <p class="text-muted mb-0">Planning complet des consultations</p>
-                    </div>
-
-                </div>
-
-                <!-- BOUTON RETOUR -->
-                <div class="col-md-5 d-flex justify-content-md-end">
-
-                    <button type="button" onclick="history.back()" 
-                        class="btn btn-outline-primary btn-lg rounded-pill px-4 shadow-sm 
-                        d-flex align-items-center gap-2">
-                        <i class="bi bi-arrow-left"></i>
-                        Retour
-                    </button>
-
-                </div>
-
-            </div>
-
-        </div>
-    </div>
-
-</div>
 
 
-<!-- ========================================= -->
-<!-- 🟦 GROUPEMENT PAR JOUR                    -->
-<!-- ========================================= -->
+	<div class="card shadow-lg border-0 rounded-4 mb-4">
+		<div class="card-body py-4 px-4">
 
-{% if rdvsByDay is empty %}
-    <div class="alert alert-info text-center rounded-pill shadow-sm">
-        Aucun rendez-vous trouvé.
-    </div>
-{% endif %}
+			<div
+				class="row align-items-center">
 
-<div class="row g-4">
+				<!-- TITRE -->
+				<div class="col-12 col-md-7 d-flex align-items-center mb-3 mb-md-0">
+					<i class="bi bi-people-fill text-primary fs-1 me-3"></i>
+					<div>
+<h2 class="fw-bold text-primary mb-1">Gestion des Patients</h2>
 
-    {% for day, items in rdvsByDay %}
+					</div>
+				</div>
 
-        <!-- TITRE JOUR -->
-        <h4 class="fw-bold text-primary mb-2 mt-3">
-            <i class="bi bi-calendar-day me-2"></i>
-            {{ day }}
-        </h4>
+				<!-- BOUTONS -->
+				<div class="col-12 col-md-5 d-flex flex-column flex-md-row gap-2">
 
-        {% for rdv in items %}
+					<button id="addClient" class="btn btn-outline-primary btn-lg rounded-pill clic px-4 shadow-sm d-flex align-items-center gap-2 w-100 w-md-auto" data-bs-toggle="modal" data-bs-target="#modalAddClient">
+						<i class="bi bi-person-plus fs-4"></i>
+						Nouveau patient
+					</button>
 
-            {% set statutColor = {
-                'A venir': 'success',
-                'Annulé': 'warning',
-                'Passé': 'danger'
-            }[rdv.statut|default('A venir')] ?? 'secondary' %}
+<button type="button" onclick="history.back()" class="btn btn-outline-primary btn-lg rounded-pill px-4 shadow-sm d-flex align-items-center gap-2 w-100 w-md-auto">
+	<i class="bi bi-arrow-left"></i>
+	Retour
 
-            <div class="col-md-4">
-                <div class="card shadow-sm border-0 rounded-4 h-100">
+</button>
 
-                    <div class="card-body p-4">
 
-                        <div class="d-flex justify-content-between align-items-start mb-3">
-                            <span class="badge bg-{{ statutColor }} px-3 py-2 rounded-pill">
-                                {{ rdv.statut|default('A venir') }}
-                            </span>
 
-                            <i class="bi bi-calendar-event fs-3 text-primary"></i>
-                        </div>
+				</div>
 
-                        <h5 class="fw-bold">
-                            <i class="bi bi-person-fill me-2"></i>
-                            {{ rdv.client.nom }}
-                        </h5>
+			</div>
 
-                        <p class="text-muted mb-1">
-                            <i class="bi bi-clock me-1"></i>
-                            <strong>Heure :</strong> {{ rdv.dateRdvAt|date('H:i') }}
-                        </p>
-
-                        <p class="mb-1">
-                            <strong>Motif :</strong> {{ rdv.motif ?: '—' }}
-                        </p>
-
-                        {% if rdv.commentaire %}
-                        <p class="small text-secondary">
-                            {{ rdv.commentaire }}
-                        </p>
-                        {% endif %}
-
-                        <a href="{{ path('app_fiche_client_show', {id: rdv.client.id}) }}"
-                           class="btn btn-outline-primary mt-3 rounded-pill w-100 shadow-sm">
-                            <i class="bi bi-eye"></i>
-                            Voir le patient
-                        </a>
-
-                    </div>
-
-                </div>
-            </div>
-
-        {% endfor %}
-
-        <hr class="my-4">
-
-    {% endfor %}
+		</div>
+	</div>
 
 </div>
+
+
+
+
+
+
+
+
+		<!-- Tableau patients -->
+		<table id="patientsTable" class="table table-striped table-hover align-middle rounded-4" style="width:100%">
+			<thead class="table-primary text-dark">
+				<tr>
+					<th>#</th>
+					<th>
+						<i class="bi bi-person-fill"></i>
+						Nom</th>
+					<th>
+						<i class="bi bi-geo-alt"></i>
+						Ville</th>
+					<th>
+						<i class="bi bi-telephone"></i>
+						Téléphone</th>
+					<th>
+						<i class="bi bi-heart-pulse"></i>
+						Type maladie</th>
+					
+					<th>
+<i class="bi bi-folder"></i>
+
+						Gestion des dossiers</th>
+					<th class="text-center">
+						<i class="bi bi-gear"></i>
+						Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for fiche_client in fiche_clients %}
+{% set isConsulted = fiche_client.isConsulted ? '' : 'text-success' %}
+
+
+					<tr class=" {{ isConsulted }}">
+						<td class="fw-bold">{{ fiche_client.id }}</td>
+						<td class="fw-semibold"><a class="text-decoration-none text-secondary" href="{{ path('app_fiche_client_show', {'id': fiche_client.id}) }}">{{ fiche_client.nom }}</a></td>
+
+
+						<td><a class="text-decoration-none text-secondary" href="{{ path('app_fiche_client_show', {'id': fiche_client.id}) }}">{{ fiche_client.ville }}</a></td>
+						<td><a class="text-decoration-none text-secondary" href="{{ path('app_fiche_client_show', {'id': fiche_client.id}) }}">{{ fiche_client.telephone }}</a></td>
+						<td>
+							<span class="badge bg-info  px-3 py-2 rounded-pill shadow-sm">
+								{{ fiche_client.typeMaladie }}
+							</span>
+						</td>
+					
+						<td>
+<a href="{{ path('app_dossier_medical_index', { id: fiche_client.id }) }}" class="btn btn-link-{{ isConsulted ? 'success' : 'info' }} btn-sm px-3 rounded-pill shadow-sm detailsButton">
+
+
+
+
+	<i class="bi bi-folder"></i>
+	{% if fiche_client.dossierMedicals|length > 0 %}
+
+		Voir les dossiers de suivi
+		<span class="text-warning">({{fiche_client.dossierMedicals|length}})</span>
+
+	{% else %}
+		Ajouter un dossier de suivi
+	{% endif %}
+
+
+</a>
+
+						</td>
+						<td class="text-center">
+
+
+
+<a href="{{ path('app_fiche_client_show', {'id': fiche_client.id}) }}" class="btn btn-outline-{{ isConsulted ? 'success' : 'info' }} btn-sm px-3 rounded-pill shadow-sm detailsButton">
+
+								<i class="bi bi-eye"></i>
+								Voir
+							</a>
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+
+		<!-- Modal ajout patient -->
+		<div class="modal fade" id="modalAddClient" tabindex="-1">
+			<div class="modal-dialog modal-xl">
+				<div class="modal-content rounded-4 shadow-lg">
+
+					<div class="modal-header bg-primary text-white rounded-top-4">
+						<h5 class="modal-title fw-bold d-flex align-items-center">
+							<i class="bi bi-person-plus fs-4 me-2"></i>
+							Ajouter un patient
+						</h5>
+						<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+					</div>
+
+					<div class="modal-body p-4">
+						{{ include('fiche_client/_form.html.twig') }}
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+	</div>
 
 {% endblock %}
+
+
+{# -------------------------------------------- #}
+{# JAVASCRIPT : DATATABLES + TON JS             #}
+{# -------------------------------------------- #}
+	{% block javascripts %}
+{{ parent() }}
+
+
+	
+ <script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    // Son au clic
+    buttonSoundClick("buttonSave", "disabled");
+
+    const form  = document.getElementById("ficheForm");
+    const pop   = document.getElementById("popupSuccess");
+    const modal = new bootstrap.Modal(document.getElementById('modalAddClient'));
+const routeShowPatient = "{{ path('app_fiche_client_show', {'id': 0}) }}".replace('/0', '');
+
+
+
+
+    form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(form);
+        let data = {};
+
+        formData.forEach((value, key) => {
+            const cleanKey = key.replace('fiche_client[', '').replace(']', '');
+            data[cleanKey] = value;
+        });
+
+        try {
+            const response = await fetch("{{ path('app_fiche_client_new') }}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-Requested-With": "XMLHttpRequest"
+                },
+                body: JSON.stringify(data)
+            });
+
+            const text = await response.text();
+
+            if (!response.ok) {
+                moveElement("modalAddClient");
+                showFlashError("Erreur lors de l’enregistrement !");
+                buttonSoundError('buttonSave');
+                return;
+            }
+
+            // Essayer JSON
+            let result;
+            try {
+                result = JSON.parse(text);
+            } catch {
+                moveElement("modalAddClient");
+                showFlashError("Erreur lors de l’enregistrement !");
+                buttonSoundError('buttonSave');
+                return;
+            }
+
+            // Succès
+            buttonSoundSuccess('buttonSave');
+             // Reset + fermeture modal + animation carte
+            form.reset();
+            pop.style.display = "block";               // ← remplace display:none
+
+modal.hide();
+moveElement("blocListClient")
+
+
+
+
+            // 🔥 AFFICHER LE POPUP IMMÉDIATEMENT ICI
+           
+            pop.innerHTML = `
+<div class="d-flex align-items-start">
+	<i class="bi bi-check-circle-fill fs-1 text-white bg-success p-2 rounded-circle me-3"></i>
+
+	<div>
+		<h5 class="fw-bold mb-1">Patient ajouté avec succès ! 🎉</h5>
+
+		<p class="mb-1">
+			Le nouveau patient a été bien enregistré dans le système.
+		</p>
+
+		<ul class="mb-1 ps-3" style="font-size: 0.9rem;">
+			<li><strong>Nom :</strong> ${result.nom}</li>
+			<li><strong>Ville :</strong> ${result.ville}</li>
+			<li><strong>Téléphone :</strong> ${result.telephone}</li>
+		</ul>
+
+<a href="${routeShowPatient}/${result.id}" class="btn btn-outline-light btn-sm px-3 rounded-pill shadow-sm mt-2">
+	<i class="bi bi-eye"></i>
+	Voir le patient
+</a>
+
+	</div>
+
+	<button type="button" class="btn-close" onclick="document.getElementById('popupSuccess').style.display='none';"></button>
+</div>
+            `;
+
+           
+
+        } catch (error) {
+            console.error("Erreur JS :", error);
+            buttonSoundError('buttonSave');
+            moveElement("modalAddClient");
+            showFlashError("Erreur lors de l’enregistrement !");
+        }
+    });
+});
+</script>
+
+{% endblock %}
+

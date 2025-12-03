@@ -1,119 +1,199 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Liste des rendez-vous
+{% block title %}Calendrier RDV
 {% endblock %}
 
 {% block body %}
 
 	<div
-		class="mt-4">
+		class="container-fluid mt-4">
 
-		<!-- HEADER -->
+		{# ============================================
+		       🔵 HEADER (STYLE IDENTIQUE À TES AUTRES PAGES)
+		       ============================================ #}
 		<div class="card shadow-lg border-0 rounded-4 mb-4">
-			<div class="card-body py-4 px-4">
+			<div class="card-body py-4 px-4 d-flex justify-content-between align-items-center">
 
-				<div class="row align-items-center g-3">
-
-					<div class="col-md-7 d-flex align-items-center">
-
-						<div class="icon-circle bg-primary bg-opacity-10 text-primary me-3
-							                        d-flex justify-content-center align-items-center" style="width:60px; height:60px; border-radius:16px;">
-							<i class="bi bi-calendar-week fs-3"></i>
-						</div>
-
-						<div>
-							<h2 class="fw-bold text-primary mb-1">Gestion des Rendez-vous</h2>
-							<p class="text-muted mb-0">Planning complet des consultations</p>
-						</div>
-
+				<div class="d-flex align-items-center">
+					<div class="icon-circle bg-primary bg-opacity-10 text-primary me-3
+						                            d-flex justify-content-center align-items-center" style="width:60px; height:60px; border-radius:16px;">
+						<i class="bi bi-calendar-week fs-3"></i>
 					</div>
 
-					<div class="col-md-5 d-flex justify-content-md-end">
-						<button type="button" onclick="history.back()" class="btn btn-outline-primary btn-lg rounded-pill px-4 shadow-sm d-flex align-items-center gap-2">
-							<i class="bi bi-arrow-left"></i>
-							Retour
-						</button>
+					<div>
+						<h2 class="fw-bold text-primary mb-1">Calendrier des rendez-vous</h2>
+						<p class="text-muted mb-0">Vue hebdomadaire des consultations</p>
 					</div>
-
 				</div>
+
+				<button onclick="history.back()" class="btn btn-outline-primary btn-lg rounded-pill shadow-sm d-flex align-items-center gap-2">
+					<i class="bi bi-arrow-left"></i>
+					Retour
+				</button>
 
 			</div>
 		</div>
 
-	</div>
 
+		{# ============================================
+		       🟦 JOURS DE LA SEMAINE (AVEC NOMBRE DE RDV)
+		       ============================================ #}
 
-	{% if rdvsByDay is empty %}
-		<div class="alert alert-info text-center rounded-pill shadow-sm">
-			Aucun rendez-vous trouvé.
-		</div>
-	{% endif %}
+		<div class="row g-3">
 
-	<div class="row g-3">
+			{% set weekDays = {
+            'Mon': 'Lundi',
+            'Tue': 'Mardi',
+            'Wed': 'Mercredi',
+            'Thu': 'Jeudi',
+            'Fri': 'Vendredi',
+            'Sat': 'Samedi',
+            'Sun': 'Dimanche'
+        } %}
 
-		{% for day, items in rdvsByDay %}
+			{% for short, long in weekDays %}
 
-			<!-- TITRE DU JOUR -->
-			<h5 class="fw-bold text-primary mt-3 mb-2">
-				<i class="bi bi-calendar-day me-2"></i>
-				{{ day }}
-			</h5>
+				{# Check si aujourd’hui #}
+				{% set today = "now"|date("D") == short %}
 
-			{% for rdv in items %}
+				{# Compter les RDV du jour #}
+				{% set count = 0 %}
+				{% for day, list in rdvsByDay %}
+					{% if day|date("D") == short %}
+						{% set count = list|length %}
+					{% endif %}
+				{% endfor %}
 
-				{% set statutColor = {
-                'A venir': 'success',
-                'Annulé': 'warning',
-                'Passé': 'danger'
-            }[rdv.statut|default('A venir')] ?? 'secondary' %}
+				<div class="col-6 col-md-3">
+					<div class="card shadow-sm border-0 rounded-4 text-center p-3 day-card" data-day="{{ short }}" style="cursor:pointer; transition:0.2s">
 
-				<div class="col-md-3 col-sm-6">
-					<div class="card shadow-sm border-0 rounded-4" style="min-height: 165px;">
-
-						<div class="card-body p-3">
-
-							<div class="d-flex justify-content-between mb-2">
-								<span class="badge bg-{{ statutColor }} px-2 py-1 rounded-pill">
-									{{ rdv.statut|default('A venir') }}
-								</span>
-
-								<i class="bi bi-calendar-event fs-5 text-primary"></i>
-							</div>
-
-							<h6 class="fw-bold mb-1">
-								<i class="bi bi-person-fill me-1"></i>
-								{{ rdv.client.nom }}
-							</h6>
-
-							<p class="text-muted small mb-1">
-								<i class="bi bi-clock me-1"></i>
-								{{ rdv.dateRdvAt|date('H:i') }}
-							</p>
-
-							{% if rdv.motif %}
-								<p class="small mb-1">
-									<strong>Motif :</strong>
-									{{ rdv.motif }}
-								</p>
-							{% endif %}
-
-							<a href="{{ path('app_fiche_client_show', {id: rdv.client.id}) }}" class="btn btn-outline-primary btn-sm rounded-pill w-100 mt-2 shadow-sm">
-								<i class="bi bi-eye"></i>
-								Voir
-							</a>
-
+						<div class="icon-circle mx-auto mb-2
+							                         {% if today %}bg-primary text-white{% else %}bg-light text-primary{% endif %}" style="width:60px; height:60px; border-radius:16px; display:flex; align-items:center; justify-content:center;">
+							<i class="bi bi-calendar-event fs-3"></i>
 						</div>
+
+						<h5 class="fw-bold {% if today %}text-primary{% endif %}">
+							{{ long }}
+						</h5>
+
+						<p class="text-muted m-0">{{ count }}
+							rendez-vous</p>
 
 					</div>
 				</div>
 
 			{% endfor %}
 
-			<hr class="my-4">
-
-		{% endfor %}
+		</div>
 
 	</div>
+
+
+	{# ============================================
+	   🔵 MODAL LISTE DES RDV (PETITES CARTES)
+	   ============================================ #}
+	<div class="modal fade" id="modalRdvList" tabindex="-1">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content rounded-4 shadow-lg">
+
+				<div class="modal-header bg-primary text-white rounded-top-4">
+					<h5 class="modal-title fw-bold">
+						<i class="bi bi-calendar2-week me-2"></i>
+						Rendez-vous du jour
+					</h5>
+					<button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+				</div>
+
+				<div
+					class="modal-body p-4" id="modalRdvContent"><!-- Liste générée en JS -->
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+{% endblock %}
+
+
+{% block javascripts %}
+	{{ parent() }}
+
+	 <script>
+	// Clic sur un jour → ouvrir modal avec la liste
+	document.querySelectorAll(".day-card").forEach(card => {
+	    card.addEventListener("click", async () => {
+	
+	        const dayShort = card.dataset.day;
+	
+	        const content = document.getElementById("modalRdvContent");
+	        content.innerHTML = `
+	            <div class="text-center py-4">
+	                <div class="spinner-border text-primary"></div>
+	            </div>
+	        `;
+	
+	        // Appel AJAX
+	        const response = await fetch("/api/rdv/day/" + dayShort);
+	        const data = await response.json();
+	
+	        let html = '<div class="row g-3">';
+	
+	        if (data.length === 0) {
+	            html = `
+	                <div class="alert alert-info text-center rounded-pill">
+	                    Aucun rendez-vous.
+	                </div>
+	            `;
+	        } else {
+	            data.forEach(r => {
+	                html += `
+	<div class="col-md-4 col-sm-6">
+	    <div class="card shadow-sm border-0 rounded-4 h-100">
+	
+	        <div class="card-body p-3">
+	
+	            <div class="d-flex justify-content-between mb-2">
+	                <span class="badge bg-${r.statutColor} px-2 py-1 rounded-pill">
+	                    ${r.statut}
+	                </span>
+	
+	                <i class="bi bi-calendar-event fs-5 text-primary"></i>
+	            </div>
+	
+	            <h6 class="fw-bold mb-1">
+	                <i class="bi bi-person-fill me-1"></i>
+	                ${r.client}
+	            </h6>
+	
+	            <p class="text-muted small mb-1">
+	                <i class="bi bi-clock me-1"></i>
+	                ${r.heure}
+	            </p>
+	
+	            <p class="small mb-1">
+	                <strong>Motif :</strong> ${r.motif ?? '—'}
+	            </p>
+	
+	            <a href="/fiche/client/${r.id}" class="btn btn-outline-primary btn-sm rounded-pill w-100 mt-2 shadow-sm">
+	                <i class="bi bi-eye"></i>
+	                Voir
+	            </a>
+	
+	        </div>
+	
+	    </div>
+	</div>`;
+	            });
+	
+	            html += "</div>";
+	        }
+	
+	        content.innerHTML = html;
+	
+	        new bootstrap.Modal(document.getElementById("modalRdvList")).show();
+	    });
+	});
+	</script>
 
 {% endblock %}
 
