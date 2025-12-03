@@ -100,7 +100,7 @@ class RdvApiController extends AbstractController
 	#[Route('/day/{day}', name: 'day', methods: ['GET'])]
 	public function rdvByDay(string $day, RendezVousRepository $repo): JsonResponse
 	{
-		$rdvs = $repo->findAll();
+		$rdvs = $repo->findBy(['statut' => 'A venir'], ['dateRdvAt' => 'ASC']);
 		$result = [];
 
 		foreach ($rdvs as $r) {

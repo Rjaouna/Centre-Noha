@@ -52,23 +52,14 @@
         } %}
 
 			{% for short, long in weekDays %}
-
-				{# Check si aujourd’hui #}
+				{# Aujourd’hui ? #}
 				{% set today = "now"|date("D") == short %}
-
-				{# Compter les RDV du jour #}
-				{% set count = 0 %}
-				{% for day, list in rdvsByDay %}
-					{% if day|date("D") == short %}
-						{% set count = list|length %}
-					{% endif %}
-				{% endfor %}
 
 				<div class="col-6 col-md-3">
 					<div class="card shadow-sm border-0 rounded-4 text-center p-3 day-card" data-day="{{ short }}" style="cursor:pointer; transition:0.2s">
 
 						<div class="icon-circle mx-auto mb-2
-							                         {% if today %}bg-primary text-white{% else %}bg-light text-primary{% endif %}" style="width:60px; height:60px; border-radius:16px; display:flex; align-items:center; justify-content:center;">
+							                                {% if today %}bg-primary text-white{% else %}bg-light text-primary{% endif %}" style="width:60px; height:60px; border-radius:16px; display:flex; align-items:center; justify-content:center;">
 							<i class="bi bi-calendar-event fs-3"></i>
 						</div>
 
@@ -76,8 +67,10 @@
 							{{ long }}
 						</h5>
 
-						<p class="text-muted m-0">{{ count }}
-							rendez-vous</p>
+						<p class="text-muted m-0">
+							{{ rdvCounts[short] ?? 0 }}
+							rendez-vous
+						</p>
 
 					</div>
 				</div>
@@ -105,7 +98,7 @@
 				</div>
 
 				<div
-					class="modal-body p-4" id="modalRdvContent"><!-- Liste générée en JS -->
+					class="modal-body p-4" id="modalRdvContent">{# Liste générée en JS #}
 				</div>
 
 			</div>
@@ -114,49 +107,46 @@
 
 {% endblock %}
 
-
 {% block javascripts %}
 	{{ parent() }}
 
 	 <script>
-	// Clic sur un jour → ouvrir modal avec la liste
-	document.querySelectorAll(".day-card").forEach(card => {
-	    card.addEventListener("click", async () => {
+	        // Clic sur un jour → ouvrir modal avec la liste
+	        document.querySelectorAll(".day-card").forEach(card => {
+	            card.addEventListener("click", async () => {
 	
-	        const dayShort = card.dataset.day;
+	                const dayShort = card.dataset.day;
 	
-	        const content = document.getElementById("modalRdvContent");
-	        content.innerHTML = `
-	            <div class="text-center py-4">
-	                <div class="spinner-border text-primary"></div>
-	            </div>
-	        `;
+	                const content = document.getElementById("modalRdvContent");
+	                content.innerHTML = `
+	                    <div class="text-center py-4">
+	                        <div class="spinner-border text-primary"></div>
+	                    </div>
+	                `;
 	
-	        // Appel AJAX
-	        const response = await fetch("/api/rdv/day/" + dayShort);
-	        const data = await response.json();
+	                // Appel AJAX
+	                const response = await fetch("/api/rdv/day/" + dayShort);
+	                const data = await response.json();
 	
-	        let html = '<div class="row g-3">';
+	                let html = '<div class="row g-3">';
 	
-	        if (data.length === 0) {
-	            html = `
-	                <div class="alert alert-info text-center rounded-pill">
-	                    Aucun rendez-vous.
-	                </div>
-	            `;
-	        } else {
-	            data.forEach(r => {
-	                html += `
+	                if (data.length === 0) {
+	                    html = `
+	                        <div class="alert alert-info text-center rounded-pill">
+	                            Aucun rendez-vous.
+	                        </div>
+	                    `;
+	                } else {
+	                    data.forEach(r => {
+	                        html += `
 	<div class="col-md-4 col-sm-6">
 	    <div class="card shadow-sm border-0 rounded-4 h-100">
-	
 	        <div class="card-body p-3">
 	
 	            <div class="d-flex justify-content-between mb-2">
 	                <span class="badge bg-${r.statutColor} px-2 py-1 rounded-pill">
 	                    ${r.statut}
 	                </span>
-	
 	                <i class="bi bi-calendar-event fs-5 text-primary"></i>
 	            </div>
 	
@@ -174,26 +164,25 @@
 	                <strong>Motif :</strong> ${r.motif ?? '—'}
 	            </p>
 	
-	            <a href="/fiche/client/${r.id}" class="btn btn-outline-primary btn-sm rounded-pill w-100 mt-2 shadow-sm">
+	            <a href="/fiche/client/${r.clientId}" class="btn btn-outline-primary btn-sm rounded-pill w-100 mt-2 shadow-sm">
 	                <i class="bi bi-eye"></i>
 	                Voir
 	            </a>
 	
 	        </div>
-	
 	    </div>
 	</div>`;
+	                    });
+	
+	                    html += "</div>";
+	                }
+	
+	                content.innerHTML = html;
+	
+	                new bootstrap.Modal(document.getElementById("modalRdvList")).show();
 	            });
-	
-	            html += "</div>";
-	        }
-	
-	        content.innerHTML = html;
-	
-	        new bootstrap.Modal(document.getElementById("modalRdvList")).show();
-	    });
-	});
-	</script>
+	        });
+	    </script>
 
 {% endblock %}
 

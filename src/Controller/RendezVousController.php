@@ -15,19 +15,56 @@ use Symfony\Component\Routing\Annotation\Route;
 class RendezVousController extends AbstractController
 {
 	#[Route('/', name: 'index', methods: ['GET'])]
-	public function index(RendezVousRepository $repo): Response
+	public function calendar(RendezVousRepository $repo): Response
 	{
 		$rdvs = $repo->findBy([], ['dateRdvAt' => 'ASC']);
 
-		$grouped = [];
+		// Grouper par date (Y-m-d) si tu en as besoin ailleurs
+		$rdvsByDay = [];
 		foreach ($rdvs as $rdv) {
-			if (!$rdv->getDateRdvAt()) continue;
-			$day = $rdv->getDateRdvAt()->format('Y-m-d');
-			$grouped[$day][] = $rdv;
+			if (!$rdv->getDateRdvAt()) {
+				continue;
+			}
+			$dayKey = $rdv->getDateRdvAt()->format('Y-m-d');
+			$rdvsByDay[$dayKey][] = $rdv;
+		}
+
+		// 🧮 Compteurs par jour de semaine pour la semaine en cours
+		$countsByWeekday = [
+			'Mon' => 0,
+			'Tue' => 0,
+			'Wed' => 0,
+			'Thu' => 0,
+			'Fri' => 0,
+			'Sat' => 0,
+			'Sun' => 0,
+		];
+
+		$startOfWeek = (new \DateTimeImmutable('monday this week'))->setTime(0, 0);
+		$endOfWeek   = $startOfWeek->modify('+7 days');
+
+		foreach ($rdvs as $rdv) {
+			$date = $rdv->getDateRdvAt();
+			if (!$date) {
+				continue;
+			}
+
+			// Ne compter que la semaine en cours
+			if ($date < $startOfWeek || $date >= $endOfWeek) {
+				continue;
+			}
+
+			$weekday = $date->format('D'); // Mon, Tue, ...
+			if (isset($countsByWeekday[$weekday])) {
+				$countsByWeekday[$weekday]++;
+			}
 		}
 
 		return $this->render('rdv/index.html.twig', [
-			'rdvsByDay' => $grouped,
+			'rdvsByDay'      => $rdvsByDay,
+			'rdvCounts'      => $countsByWeekday,
+			'startOfWeek'    => $startOfWeek,
+			'endOfWeek'      => $endOfWeek,
 		]);
 	}
 
