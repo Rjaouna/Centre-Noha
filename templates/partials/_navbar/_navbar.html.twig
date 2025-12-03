@@ -379,13 +379,17 @@ function loadNotifications() {
                             🕒 ${c.createdAt}
                         </div>
                     </div>
-                    <a href="/client/${c.id}" class="btn btn-sm btn-outline-primary fw-bold">Voir</a>
+<a href="/fiche/client/${c.id}" class="btn btn-sm btn-outline-primary fw-bold">Voir</a>
+
+
                 </div>
             `;
 
             let clientsHtml = data.newClients && data.newClients.length
                 ? data.newClients.map(c => cardClient(c)).join('')
-                : "<div class='text-muted'>Aucun nouveau client</div>";
+: "<div class='alert alert-light text-center py-2 mb-0'>Aucun nouveau patient</div>";
+
+
 
             document.getElementById('notifClientsList').innerHTML = clientsHtml;
 
@@ -404,13 +408,17 @@ function loadNotifications() {
                             </span>
                         </div>
                     </div>
-                    <a href="/rendezvous/${r.id}" class="btn btn-sm btn-outline-success fw-bold">Ouvrir</a>
+<a href="/rdv" class="btn btn-sm btn-outline-success fw-bold">Ouvrir</a>
+
+
                 </div>
             `;
 
             let rdvHtml = data.rdvToday && data.rdvToday.length
                 ? data.rdvToday.map(r => cardRdv(r)).join('')
-                : "<div class='text-muted'>Aucun RDV aujourd’hui</div>";
+: "<div class='alert alert-light text-center py-2 mb-0'>Aucun RDV aujourd’hui</div>";
+
+
 
             document.getElementById('notifRdvList').innerHTML = rdvHtml;
 

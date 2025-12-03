@@ -14,15 +14,23 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class RendezVousController extends AbstractController
 {
-	#[Route('/rdv', name: 'app_rdv_index', methods: ['GET'])]
-	public function index(RendezVousRepository $repository): Response
+	#[Route('/rdv', name: 'app_rdv_index')]
+	public function index(RendezVousRepository $repo): Response
 	{
-		$rdvs = $repository->findBy(['statut' => 'A venir'], ['dateRdvAt' => 'ASC']);
+		$rdvs = $repo->findBy([], ['dateRdvAt' => 'ASC']);
+
+		$grouped = [];
+
+		foreach ($rdvs as $rdv) {
+			$day = $rdv->getDateRdvAt()->format('d/m/Y');
+			$grouped[$day][] = $rdv;
+		}
 
 		return $this->render('rdv/index.html.twig', [
-			'rdvs' => $rdvs,
+			'rdvsByDay' => $grouped,
 		]);
 	}
+
 	#[Route('/api/rdv/validate/{id}', name: 'api_rdv_validate', methods: ['POST'])]
 	public function validateRdv(RendezVous $rdv, EntityManagerInterface $em): JsonResponse
 	{

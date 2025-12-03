@@ -110,8 +110,8 @@ function loadNotifications() {
 
             if (!data.newClients || data.newClients.length === 0) {
                 clientsList.innerHTML = `
-                    <div class="alert alert-secondary text-center py-2 mb-0">
-                        Aucun nouveau client
+                    <div class="alert alert-light text-center py-2 mb-0">
+                        Aucun nouveau patient
                     </div>
                 `;
             } else {
@@ -153,7 +153,7 @@ function loadNotifications() {
 
             if (!data.rdvToday || data.rdvToday.length === 0) {
                 rdvList.innerHTML = `
-                    <div class="alert alert-secondary text-center py-2 mb-0">
+                    <div class="alert alert-light text-center py-2 mb-0">
                         Aucun RDV aujourd’hui
                     </div>
                 `;
