@@ -388,7 +388,9 @@ async function loadRDV() {
     }
 
     // Afficher max 6 RDV
-rdvs.slice(0, 8).forEach(rdv => {
+rdvs.slice(0, 5).forEach(rdv => {
+
+
     row.insertAdjacentHTML("beforeend", `
         <div class="col-6 col-md-4 col-lg-6">
             <div class="rdv-mini">
