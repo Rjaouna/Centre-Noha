@@ -244,7 +244,9 @@ background: linear-gradient(135deg, #257cfd, #0dcaf0);
 	<!-- ===== GRAPHIQUES ===== -->
 	<div class="row g-4 mt-2">
 
-		<div class="col-lg-4">
+<div class="col-lg-3">
+
+
 			<div class="chart-box">
 				<h6 class="chart-title">
 					<i class="bi bi-cash-coin"></i>
@@ -254,7 +256,8 @@ background: linear-gradient(135deg, #257cfd, #0dcaf0);
 			</div>
 		</div>
 
-		<div class="col-lg-4">
+<div class="col-lg-3">
+
 			<div class="chart-box">
 				<h6 class="chart-title">
 					<i class="bi bi-heart-pulse"></i>
@@ -264,7 +267,8 @@ background: linear-gradient(135deg, #257cfd, #0dcaf0);
 			</div>
 		</div>
 
-		<div class="col-lg-4">
+<div class="col-lg-3">
+
 			<div class="chart-box">
 				<h6 class="chart-title">
 					<i class="bi bi-thermometer"></i>
@@ -274,14 +278,18 @@ background: linear-gradient(135deg, #257cfd, #0dcaf0);
 			</div>
 		</div>
 
-		<div class="col-12">
-			<div class="chart-box">
-				<h6 class="chart-title">
-					<i class="bi bi-graph-up"></i>
-					Clients par jour</h6>
-				<canvas id="chartClientsPerDay"></canvas>
-			</div>
-		</div>
+<div class="col-3">
+	<div class="chart-box">
+		<h6 class="chart-title">
+			<i class="bi bi-pie-chart-fill"></i>
+			Clients par jour
+		</h6>
+		<canvas id="chartClientsPerDay"></canvas>
+		<div id="legendClientsPerDay" class="legend-dots mt-2"></div>
+	</div>
+</div>
+
+
 
 	</div>
 </div>
@@ -369,12 +377,35 @@ async function loadClientsPerDayChart() {
     const res = await fetch("/api/statistics/clients-per-day");
     const stats = await res.json();
 
+    const colors = [
+        "rgba(13,110,253,0.8)",
+        "rgba(25,135,84,0.8)",
+        "rgba(255,193,7,0.8)",
+        "rgba(220,53,69,0.8)",
+        "rgba(108,117,125,0.8)",
+        "rgba(111,66,193,0.8)" 
+    ];
+
     new Chart(document.getElementById("chartClientsPerDay"), {
-        type: "bar",
-        data: { labels: stats.labels, datasets: [{ data: stats.values, backgroundColor: "rgba(13,110,253,0.7)" }] },
-        options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+        type: "pie",
+        data: {
+            labels: stats.labels,
+            datasets: [{
+                data: stats.values,
+                backgroundColor: colors.slice(0, stats.values.length)
+            }]
+        },
+        options: {
+            plugins: {
+                legend: { display: false },
+                tooltip: { callbacks: { label: ctx => ctx.label + " : " + ctx.raw } }
+            }
+        }
     });
+
+    generateLegend("legendClientsPerDay", stats.labels, colors);
 }
+
 
 /* ----- RDV ----- */
 async function loadRDV() {
