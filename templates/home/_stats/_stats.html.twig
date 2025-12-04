@@ -175,7 +175,9 @@ background: linear-gradient(135deg, #257cfd, #0dcaf0);
 		class="row g-3">
 <!-- 🖼️ PHOTO sur 3 colonnes -->
 <div class="col-lg-4">
-	<img src="{{asset('/assets/img/3943280.jpg')}}" alt="Illustration Dashboard" class="" style="width: 100%; height: 100%; object-fit: cover;">
+<img src="{{asset('/assets/img/3943280.jpg')}}" alt="Illustration Dashboard" class="" style="width: 100%;  object-fit: cover;">
+
+
 
 
 </div>
@@ -388,7 +390,9 @@ async function loadRDV() {
     }
 
     // Afficher max 6 RDV
-rdvs.slice(0, 5).forEach(rdv => {
+rdvs.slice(0, 4).forEach(rdv => {
+
+
 
 
     row.insertAdjacentHTML("beforeend", `
