@@ -68,12 +68,26 @@
 						{% set dayNum = dateObj|date("d") %}
 						{% set month = dateObj|date("M") %}
 
+{% set daysFR = {
+    'Mon': 'Lundi',
+    'Tue': 'Mardi',
+    'Wed': 'Mercredi',
+    'Thu': 'Jeudi',
+    'Fri': 'Vendredi',
+    'Sat': 'Samedi',
+    'Sun': 'Dimanche'
+} %}
+
+
 						<div class="col-4 col-md-2">
 							<div class="day-card shadow-sm rounded-4 p-2 text-center border" style="cursor:pointer;" data-date="{{ fullDate }}">
 
 								<div class="fw-bold fs-5">{{ dayNum }}</div>
 								<div class="text-primary">{{ month }}</div>
-								<small class="text-muted">{{ dayName }}</small>
+<small class="text-muted">
+	{{ daysFR[dayName] ?? dayName }}</small>
+
+
 							</div>
 						</div>
 					{% endfor %}

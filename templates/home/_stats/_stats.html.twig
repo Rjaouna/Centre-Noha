@@ -1,151 +1,221 @@
 <!-- ============================= -->
-<!-- 🔥 SECTION ANALYTIQUE -->
+<!-- 🌟 STYLE GLOBAL DU DASHBOARD -->
 <!-- ============================= -->
-
 	<style>
-/* ===== CHARTS ===== */
-.chart-container {
 
+/* ---------- HEADER ---------- */
+.dashboard-hero {
+background: linear-gradient(135deg, #329ef4, #0dcaf0);
+
+
+	border-radius: 22px;
+	padding: 40px;
+	color: white;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	flex-wrap: wrap;
+	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.dashboard-hero img {
+	width: 180px;
+	object-fit: cover;
+	border-radius: 20px;
+	border: 4px solid rgba(255, 255, 255, 0.5);
+	box-shadow: 0 8px 15px rgba(0, 0, 0, 0.25);
+}
+
+
+
+/* ---------- CARDS ---------- */
+.dashboard-card {
+	background: white;
+	border-radius: 18px;
+	padding: 25px;
+	box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+	border: 1px solid #ececec;
+}
+
+/* ---------- GRAPHIQUES ---------- */
+.chart-container {
+	height: 200px;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 }
-canvas {
-	max-height: 160px !important;
-}
 
-/* TITRES */
-.block-title {
-	font-size: 1.1rem;
-	font-weight: bold;
-	color: var(--bs-primary);
-	text-align: center;
-	margin-bottom: 10px;
-}
-
-/* LÉGENDES EN POINTS */
 .legend-dots {
 	display: flex;
-	flex-wrap: wrap;
 	justify-content: center;
 	gap: 8px;
-	margin-top: 8px;
+	flex-wrap: wrap;
 }
-.legend-item {
-	display: flex;
-	align-items: center;
-	gap: 6px;
-	font-size: 0.8rem;
-	color: #555;
-}
+
 .legend-color {
 	width: 12px;
 	height: 12px;
 	border-radius: 50%;
-	display: inline-block;
+}
+
+/* ---------- RDV DESIGN ---------- */
+.rdv-item {
+	background: #f8faff;
+	border-radius: 14px;
+	padding: 15px 18px;
+	border: 1px solid #e2e6f0;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	transition: 0.3s ease;
+}
+
+.rdv-item:hover {
+	background: #eef3ff;
+	transform: translateY(-2px);
+}
+
+.btn-rdv-valid {
+	background: #28a745;
+	border: none;
+	padding: 7px 12px;
+	border-radius: 40px;
+	color: white;
+	transition: 0.3s ease;
+}
+
+.btn-rdv-valid:hover {
+	background: #218838;
+}
+
+.btn-rdv-valid:disabled {
+	background: #adb5bd !important;
+}
+
+.validated-animation {
+	animation: pulseCheck 0.4s ease;
+}
+
+@keyframes pulseCheck {
+	0% {
+		transform: scale(1);
+	}
+	50% {
+		transform: scale(1.15);
+	}
+	100% {
+		transform: scale(1);
+	}
 }
 </style>
 
-	<div class="container mt-3 px-0"> <div class="row g-4">
 
-		<!-- ============================= -->
-		<!-- 🟦 STATS GRAPHIQUES -->
-		<!-- ============================= -->
-<div class="col-lg-9">
-	<div class="card shadow border-0 rounded-4 p-4">
+<!-- ============================= -->
+<!-- 🌟 HEADER AVEC ILLUSTRATION -->
+<!-- ============================= -->
+<div class=" my-4 ">
+	<div class="dashboard-hero">
+
+		<div
+			class="row align-items-center w-100">
+
+			<!-- 📝 TEXTE (8 colonnes) -->
+			<div class="col-md-8">
+				<h2 class="fw-bold mb-3">
+					<i class="bi bi-speedometer2"></i>
+					Tableau de bord analytique
+				</h2>
+
+				<p style="opacity: .9;">
+					Analysez vos données en un coup d’œil grâce à une interface moderne, claire et intuitive.
+					                    Visualisez vos statistiques, suivez l’évolution de votre activité et gérez efficacement vos rendez-vous.
+				</p>
+
+				<div class="mt-3">
+					<span class="badge bg-light text-dark mb-1 me-2 px-3 py-2 rounded-pill">
+						📊 Statistiques intelligentes
+					</span>
+					<span class="badge bg-light text-dark mb-1 me-2 px-3 py-2 rounded-pill">
+						🔔 Suivi en temps réel
+					</span>
+					<span class="badge bg-light text-dark mb-1 px-3 py-2 rounded-pill">
+						🔒 Données sécurisées
+					</span>
+				</div>
+			</div>
+
+			<!-- 🖼️ IMAGE (4 colonnes) -->
+			<div class="col-md-4 text-center mt-4 mt-md-0">
+				<img src="/assets/img/3736765.jpg" alt="Illustration du dashboard" class="img-fluid rounded-4" style="height: 220px; width: 100%; object-fit: cover; border: 4px solid rgba(255,255,255,0.4);">
+			</div>
+
+		</div>
+
+	</div>
+</div>
 
 
-<h4 class="fw-bold text-secondary mb-3 d-flex align-items-center">
 
+<!-- ============================= -->
+<!-- 🔥 SECTION ANALYTIQUE -->
+<!-- ============================= -->
 
-	<i class="bi bi-bar-chart-fill me-2 text-primary"></i>
+	<div class=""> <div
+		class="row g-4">
 
+		<!-- 🎯 STATISTIQUES -->
+		<div class="col-lg-9">
+			<div class="dashboard-card">
 
-					Statistiques graphiques
+				<h4 class="fw-bold text-primary mb-3">
+					<i class="bi bi-bar-chart"></i>
+					Statistiques de l'activité
 				</h4>
+				<hr>
+
+				<!-- 3 CAMEMBERTS -->
+				<div class="row text-center">
+
+					<div class="col-md-4 mb-4">
+						<h6 class="fw-bold text-primary">Paiements</h6>
+						<canvas id="chartPaiements"></canvas>
+						<div id="legendPaiements" class="legend-dots mt-2"></div>
+					</div>
+
+					<div class="col-md-4 mb-4">
+						<h6 class="fw-bold text-primary">Maladies</h6>
+						<canvas id="chartPieMaladies"></canvas>
+						<div id="legendMaladies" class="legend-dots mt-2"></div>
+					</div>
+
+					<div class="col-md-4 mb-4">
+						<h6 class="fw-bold text-primary">Symptômes</h6>
+						<canvas id="chartSymptomes"></canvas>
+						<div id="legendSymptomes" class="legend-dots mt-2"></div>
+					</div>
+				</div>
 
 				<hr>
 
-				<!-- 🔥 3 CAMEMBERTS SUR UNE LIGNE -->
-				<div
-					class="row text-center mb-4">
-
-					<!-- Paiements -->
-					<div class="col-md-4 mb-4">
-						<h6 class="block-title">Répartition des paiements</h6>
-						<div class="chart-container">
-							<canvas id="chartPaiements"></canvas>
-						</div>
-						<div id="legendPaiements" class="legend-dots"></div>
-					</div>
-
-					<!-- Types de maladies -->
-					<div class="col-md-4 mb-4">
-						<h6 class="block-title">Types de maladies</h6>
-						<div class="chart-container">
-							<canvas id="chartPieMaladies"></canvas>
-						</div>
-						<div id="legendMaladies" class="legend-dots"></div>
-					</div>
-
-					<!-- Symptômes -->
-					<div class="col-md-4 mb-4">
-						<h6 class="block-title">Symptômes généraux</h6>
-						<div class="chart-container">
-							<canvas id="chartSymptomes"></canvas>
-						</div>
-						<div id="legendSymptomes" class="legend-dots"></div>
-					</div>
-
-				</div>
-
-				<hr
-				class="my-4">
-
-				<!-- 📊 Clients par jour -->
-				<h6 class="block-title">Clients passés par jour</h6>
-<div>
-
-					<canvas id="chartClientsPerDay"></canvas>
-				</div>
+				<h6 class="fw-bold text-primary mb-3">Clients par jour</h6>
+				<canvas id="chartClientsPerDay"></canvas>
 
 			</div>
 		</div>
 
-		<!-- ============================= -->
-		<!-- 🟩 RDV D’AUJOURD’HUI (5 derniers) -->
-		<!-- ============================= -->
-			<div class="col-lg-3"> <div class="card  border-0 rounded-4 p-4 h-100">
 
-<h4 class="fw-bold text-secondary mb-3 d-flex align-items-center">
+		<!-- 📅 RDV DU JOUR -->
+		<div class="col-lg-3">
+			<div class="dashboard-card h-100">
 
+<h4 class="fw-bold text-primary mb-3">
 
-	<i class="bi bi-clock-history me-2 text-primary"></i>
-
-
-					RDV d’aujourd’hui
+					<i class="bi bi-calendar-check"></i>
+					Rendez-vous du jour
 				</h4>
-
 				<hr>
 
-				<div class="d-flex flex-column gap-3">
-
-
-
-
-					
-
-<div id="rdvList" class=" border-0  rounded-3  rdv-card">
-
-
-
-							
-
-						</div>
-
-			
-
-				</div>
+				<div id="rdvList"></div>
 
 			</div>
 		</div>
@@ -153,163 +223,101 @@ canvas {
 	</div>
 </div>
 
+
 <!-- ============================= -->
-<!-- 📊 CHART JS -->
+<!-- 📊 CHART JS SCRIPTS -->
 <!-- ============================= -->
  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
  <script>
 
-/* Tooltip */
+/* ----- TOOLTIP ----- */
 const tooltipLabel = ctx => ctx.label + " : " + ctx.raw;
 
-/* Génération légendes */
+/* ----- GÉNÉRATION DES LÉGENDES ----- */
 function generateLegend(containerId, labels, colors) {
-	const container = document.getElementById(containerId);
-	container.innerHTML = labels.map((label, i) =>
-		`<div class='legend-item'>
-			<span class='legend-color' style='background:${colors[i]}'></span>
-			${label}
-		</div>`
-	).join("");
+    const container = document.getElementById(containerId);
+    container.innerHTML = labels.map((label, i) =>
+        `<div class='d-flex align-items-center gap-1'>
+            <span class='legend-color' style='background:${colors[i]}'></span>${label}
+        </div>`
+    ).join("");
 }
 
-/* ============================= */
-/* Paiements */
+/* ----- CHARTS ----- */
 async function loadPaiementsChart() {
-	const res = await fetch("/api/statistics/paiements");
-	const stats = await res.json();
+    const res = await fetch("/api/statistics/paiements");
+    const stats = await res.json();
 
-	const colors = [
-		"rgba(13,110,253,0.8)",
-		"rgba(25,135,84,0.8)",
-		"rgba(255,193,7,0.8)",
-		"rgba(220,53,69,0.8)",
-		"rgba(108,117,125,0.8)"
-	];
+    const colors = [
+        "rgba(13,110,253,0.8)",
+        "rgba(25,135,84,0.8)",
+        "rgba(255,193,7,0.8)",
+        "rgba(220,53,69,0.8)",
+        "rgba(108,117,125,0.8)"
+    ];
 
-	new Chart(document.getElementById("chartPaiements"), {
-		type: "pie",
-		data: { labels: stats.labels, datasets: [{ data: stats.values, backgroundColor: colors }] },
-		options: {
-			plugins: { legend: { display: false }, tooltip: { callbacks: { label: tooltipLabel } } }
-		}
-	});
+    new Chart(document.getElementById("chartPaiements"), {
+        type: "pie",
+        data: { labels: stats.labels, datasets: [{ data: stats.values, backgroundColor: colors }] },
+        options: { plugins: { legend: { display: false }, tooltip: { callbacks: { label: tooltipLabel } } } }
+    });
 
-	generateLegend("legendPaiements", stats.labels, colors);
+    generateLegend("legendPaiements", stats.labels, colors);
 }
 
-/* ============================= */
-/* Types de maladies */
 async function loadMaladiesChart() {
-	const res = await fetch("{{ path('api_statistics_maladies') }}");
-	const stats = await res.json();
+    const res = await fetch("{{ path('api_statistics_maladies') }}");
+    const stats = await res.json();
 
-	const colors = [
-		'rgba(255,99,132,0.8)','rgba(54,162,235,0.8)','rgba(255,206,86,0.8)',
-		'rgba(75,192,192,0.8)','rgba(153,102,255,0.8)','rgba(255,159,64,0.8)',
-		'rgba(11, 136, 214, 0.8)','rgba(178, 156, 221, 0.8)','rgba(137, 38, 106, 0.8)',
-		'rgba(208, 217, 223, 0.8)','rgba(109, 77, 173, 0.8)','rgba(64, 255, 115, 0.8)'
-	];
+    const colors = [
+        'rgba(255,99,132,0.8)','rgba(54,162,235,0.8)','rgba(255,206,86,0.8)',
+        'rgba(75,192,192,0.8)','rgba(153,102,255,0.8)','rgba(255,159,64,0.8)'
+    ];
 
-	new Chart(document.getElementById("chartPieMaladies"), {
-		type: "pie",
-		data: { labels: stats.labels, datasets: [{ data: stats.values, backgroundColor: colors }] },
-		options: {
-			plugins: { legend: { display: false }, tooltip: { callbacks: { label: tooltipLabel } } }
-		}
-	});
+    new Chart(document.getElementById("chartPieMaladies"), {
+        type: "pie",
+        data: { labels: stats.labels, datasets: [{ data: stats.values, backgroundColor: colors }] },
+        options: { plugins: { legend: { display: false }, tooltip: { callbacks: { label: tooltipLabel } } } }
+    });
 
-	generateLegend("legendMaladies", stats.labels, colors);
+    generateLegend("legendMaladies", stats.labels, colors);
 }
 
-/* ============================= */
-/* Symptômes */
 async function loadSymptomesChart() {
-	const res = await fetch("{{ path('api_statistics_symptomes') }}");
-	const stats = await res.json();
+    const res = await fetch("{{ path('api_statistics_symptomes') }}");
+    const stats = await res.json();
 
-	const colors = [
-		'rgba(255,99,132,0.8)','rgba(54,162,235,0.8)',
-		'rgba(255,206,86,0.8)','rgba(75,192,192,0.8)',
-		'rgba(153,102,255,0.8)'
-	];
+    const colors = [
+        'rgba(255,99,132,0.8)','rgba(54,162,235,0.8)','rgba(255,206,86,0.8)'
+    ];
 
-	new Chart(document.getElementById("chartSymptomes"), {
-		type: "pie",
-		data: { labels: stats.labels, datasets: [{ data: stats.values, backgroundColor: colors }] },
-		options: {
-			plugins: { legend: { display: false }, tooltip: { callbacks: { label: tooltipLabel } } }
-		}
-	});
+    new Chart(document.getElementById("chartSymptomes"), {
+        type: "pie",
+        data: { labels: stats.labels, datasets: [{ data: stats.values, backgroundColor: colors }] },
+        options: { plugins: { legend: { display: false }, tooltip: { callbacks: { label: tooltipLabel } } } }
+    });
 
-	generateLegend("legendSymptomes", stats.labels, colors);
+    generateLegend("legendSymptomes", stats.labels, colors);
 }
 
-/* ============================= */
-/* Clients par jour */
 async function loadClientsPerDayChart() {
-	const res = await fetch("/api/statistics/clients-per-day");
-	const stats = await res.json();
+    const res = await fetch("/api/statistics/clients-per-day");
+    const stats = await res.json();
 
-	new Chart(document.getElementById("chartClientsPerDay"), {
-		type: "bar",
-		data: {
-			labels: stats.labels,
-			datasets: [{
-				data: stats.values,
-				backgroundColor: "rgba(13,110,253,0.7)",
-				borderColor: "rgba(13,110,253,1)",
-				borderWidth: 1
-			}]
-		},
-		options: {
-			scales: { y: { beginAtZero: true }},
-			plugins: { legend: { display: false } }
-		}
-	});
+    new Chart(document.getElementById("chartClientsPerDay"), {
+        type: "bar",
+        data: { labels: stats.labels, datasets: [{ data: stats.values, backgroundColor: "rgba(13,110,253,0.7)" }] },
+        options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+    });
 }
 
-/* ============================= */
-/* Validation RDV (fixé) */
-/* ============================= */
-document.addEventListener("DOMContentLoaded", () => {
-
-	loadPaiementsChart();
-	loadMaladiesChart();
-	loadSymptomesChart();
-	loadClientsPerDayChart();
-
-	document.querySelectorAll(".btn-validate-rdv").forEach(btn => {
-		btn.addEventListener("click", async e => {
-			e.preventDefault();
-
-			const id = btn.dataset.id;
-
-			const res = await fetch(`/api/rdv/validate/${id}`, { method: "POST" });
-			const data = await res.json();
-
-			if (data.success) {
-				btn.innerHTML = "<i class='bi bi-check-circle-fill'></i>";
-				btn.classList.replace("btn-success", "btn-secondary");
-				btn.disabled = true;
-			}
-
-
-		});
-
-
-
-	});
-
-});
-
-	async function loadRDV() {
-
+/* ----- RDV ----- */
+async function loadRDV() {
     const res = await fetch("/api/rdv/today");
     const rdvs = await res.json();
-
     const list = document.getElementById("rdvList");
+
     list.innerHTML = "";
 
     if (rdvs.length === 0) {
@@ -319,65 +327,58 @@ document.addEventListener("DOMContentLoaded", () => {
 
     rdvs.forEach(rdv => {
         list.insertAdjacentHTML("beforeend", `
-            <div class="card border-0  rounded-3 p-2 mb-3">
+            <div class="rdv-item mb-3">
+                <div>
+                    <strong><i class="bi bi-person-circle"></i> ${rdv.nom}</strong><br>
+                    <small class="text-muted"><i class="bi bi-chat-left-text"></i> ${rdv.motif ?? "Sans motif"}</small>
 
-                <div class="d-flex justify-content-between align-items-start">
-
-                    <div>
-                        <h6 class="fw-bold mb-1">
-                            <i class="bi bi-person-circle text-primary"></i>
-                            ${rdv.nom}
-                        </h6>
-
-                        <p class="text-muted small mb-1">
-                            <i class="bi bi-chat-left-dots"></i>
-                            ${rdv.motif ?? "Sans motif"}
-                        </p>
-
-                        <span class="badge bg-success px-2 py-1">
-                            ${rdv.statut}
-                        </span>
+                    <div class="mt-1">
+                        <span class="badge bg-success">${rdv.statut}</span>
                     </div>
 
-                    <a href="#" class="btn btn-success btn-sm rounded-pill px-2 py-1 btn-validate-rdv"
-                       data-id="${rdv.id}">
-                        <i class="bi bi-check-circle"></i>
-                    </a>
-
+                    <div class="text-muted small mt-1">
+                        <i class="bi bi-clock"></i> ${rdv.date}
+                    </div>
                 </div>
 
-                <div class="text-muted small mt-2">
-                    <i class="bi bi-clock"></i> ${rdv.date}
-                </div>
+                <button class="btn-rdv-valid btn-validate-rdv" data-id="${rdv.id}">
+                    <i class="bi bi-check-circle"></i>
+                </button>
 
             </div>
         `);
     });
 
-    attachValidationEvents(); // Re-bind des events car on a modifié le DOM
+    attachValidationEvents();
 }
+
 function attachValidationEvents() {
     document.querySelectorAll(".btn-validate-rdv").forEach(btn => {
         btn.addEventListener("click", async e => {
             e.preventDefault();
-
             const id = btn.dataset.id;
 
             const res = await fetch(`/api/rdv/validate/${id}`, { method: "POST" });
             const data = await res.json();
 
             if (data.success) {
-                // 🔥 Recharge toute la liste
-                loadRDV();
+                btn.classList.add("validated-animation");
+                btn.innerHTML = `<i class="bi bi-check-circle-fill"></i>`;
+                btn.disabled = true;
+
+                setTimeout(() => loadRDV(), 300);
             }
         });
     });
 }
+
 document.addEventListener("DOMContentLoaded", () => {
+    loadPaiementsChart();
+    loadMaladiesChart();
+    loadSymptomesChart();
+    loadClientsPerDayChart();
     loadRDV();
 });
-
-
 
 </script>
 
