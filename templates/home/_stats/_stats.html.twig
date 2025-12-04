@@ -2,7 +2,47 @@
 <!-- 🌟 STYLE GLOBAL DU DASHBOARD -->
 <!-- ============================= -->
 	<style>
+/* Card RDV compacte */
+.rdv-mini {
+    background: #ffffff;
+    border-left: 4px solid #0d6efd;
+    border-radius: 12px;
+    padding: 12px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+    transition:.25s;
+    height: 100%;
+}
 
+.rdv-mini:hover {
+    background: #f5f8ff;
+    transform: translateY(-4px);
+}
+
+/* Nom */
+.rdv-mini strong {
+    font-size: .95rem;
+    color:#0d6efd;
+}
+
+/* Badge état */
+.rdv-mini .badge {
+    font-size:.70rem;
+}
+
+/* Graph Box Style */
+.chart-box {
+    background: #fff;
+    border-radius: 18px;
+    padding: 20px;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+    border: 1px solid #ececec;
+}
+
+.chart-title {
+    font-weight: 700;
+    color: #0d6efd;
+    margin-bottom: 12px;
+}
 /* ---------- HEADER ---------- */
 .dashboard-hero {
 background: linear-gradient(135deg, #257cfd, #0dcaf0);
@@ -112,13 +152,52 @@ background: linear-gradient(135deg, #257cfd, #0dcaf0);
 </style>
 
 
+
+
+
+<!-- ============================= -->
+<!-- 🔥 SECTION ANALYTIQUE -->
+<!-- ============================= -->
+<!-- ============================= -->
+<!-- 🔥 SECTION ANALYTIQUE — NEW CLEAN VERSION -->
+<!-- ============================= -->
+<div
+	class="container mt-4">
+
+
+	<!-- 🎯 TITRE -->
+	<h4 class="fw-bold text-primary mb-3">
+		<i class="bi bi-calendar-event"></i>
+		Derniers rendez-vous
+	</h4>
+
+	<div
+		class="row g-3">
+<!-- 🖼️ PHOTO sur 3 colonnes -->
+<div class="col-lg-4">
+	<img src="{{asset('/assets/img/3943280.jpg')}}" alt="Illustration Dashboard" class="" style="width: 100%; height: 100%; object-fit: cover;">
+
+
+</div>
+
+		<!-- 🟦 RDV sur 9 colonnes -->
+		<div class="col-lg-8">
+			<div
+				class="row g-3" id="rdvRow"><!-- Les RDV insérés dynamiquement ici -->
+			</div>
+		</div>
+</div>
+
+
+
+</div>
+
+
+
 <!-- ============================= -->
 <!-- 🌟 HEADER AVEC ILLUSTRATION -->
 <!-- ============================= -->
-<div class=" my-5 ">
-
-
-	<div class="dashboard-hero">
+	<div class=" my-5 "> <div class="dashboard-hero">
 
 		<div
 			class="row align-items-center w-100">
@@ -132,7 +211,7 @@ background: linear-gradient(135deg, #257cfd, #0dcaf0);
 
 				<p style="opacity: .9;">
 					Analysez vos données en un coup d’œil grâce à une interface moderne, claire et intuitive.
-					                    Visualisez vos statistiques, suivez l’évolution de votre activité et gérez efficacement vos rendez-vous.
+										                    Visualisez vos statistiques, suivez l’évolution de votre activité et gérez efficacement vos rendez-vous.
 				</p>
 
 				<div class="mt-3">
@@ -160,72 +239,51 @@ background: linear-gradient(135deg, #257cfd, #0dcaf0);
 
 
 
-<!-- ============================= -->
-<!-- 🔥 SECTION ANALYTIQUE -->
-<!-- ============================= -->
+	<!-- ===== GRAPHIQUES ===== -->
+	<div class="row g-4 mt-2">
 
-	<div class=""> <div
-		class="row g-4">
-
-		<!-- 🎯 STATISTIQUES -->
-		<div class="col-lg-9">
-			<div class="dashboard-card">
-
-				<h4 class="fw-bold text-primary mb-3">
-					<i class="bi bi-bar-chart"></i>
-					Statistiques de l'activité
-				</h4>
-				<hr>
-
-				<!-- 3 CAMEMBERTS -->
-				<div class="row text-center">
-
-					<div class="col-md-4 mb-4">
-						<h6 class="fw-bold text-primary">Paiements</h6>
-						<canvas id="chartPaiements"></canvas>
-						<div id="legendPaiements" class="legend-dots mt-2"></div>
-					</div>
-
-					<div class="col-md-4 mb-4">
-						<h6 class="fw-bold text-primary">Maladies</h6>
-						<canvas id="chartPieMaladies"></canvas>
-						<div id="legendMaladies" class="legend-dots mt-2"></div>
-					</div>
-
-					<div class="col-md-4 mb-4">
-						<h6 class="fw-bold text-primary">Symptômes</h6>
-						<canvas id="chartSymptomes"></canvas>
-						<div id="legendSymptomes" class="legend-dots mt-2"></div>
-					</div>
-				</div>
-
-				<hr>
-
-				<h6 class="fw-bold text-primary mb-3">Clients par jour</h6>
-				<canvas id="chartClientsPerDay"></canvas>
-
+		<div class="col-lg-4">
+			<div class="chart-box">
+				<h6 class="chart-title">
+					<i class="bi bi-cash-coin"></i>
+					Répartition des paiements</h6>
+				<canvas id="chartPaiements"></canvas>
+				<div id="legendPaiements" class="legend-dots mt-2"></div>
 			</div>
 		</div>
 
+		<div class="col-lg-4">
+			<div class="chart-box">
+				<h6 class="chart-title">
+					<i class="bi bi-heart-pulse"></i>
+					Types de maladies</h6>
+				<canvas id="chartPieMaladies"></canvas>
+				<div id="legendMaladies" class="legend-dots mt-2"></div>
+			</div>
+		</div>
 
-		<!-- 📅 RDV DU JOUR -->
-		<div class="col-lg-3">
-			<div class="dashboard-card h-100">
+		<div class="col-lg-4">
+			<div class="chart-box">
+				<h6 class="chart-title">
+					<i class="bi bi-thermometer"></i>
+					Symptômes généraux</h6>
+				<canvas id="chartSymptomes"></canvas>
+				<div id="legendSymptomes" class="legend-dots mt-2"></div>
+			</div>
+		</div>
 
-<h4 class="fw-bold text-primary mb-3">
-
-					<i class="bi bi-calendar-check"></i>
-					Rendez-vous du jour
-				</h4>
-				<hr>
-
-				<div id="rdvList"></div>
-
+		<div class="col-12">
+			<div class="chart-box">
+				<h6 class="chart-title">
+					<i class="bi bi-graph-up"></i>
+					Clients par jour</h6>
+				<canvas id="chartClientsPerDay"></canvas>
 			</div>
 		</div>
 
 	</div>
 </div>
+
 
 
 <!-- ============================= -->
@@ -320,41 +378,43 @@ async function loadClientsPerDayChart() {
 async function loadRDV() {
     const res = await fetch("/api/rdv/today");
     const rdvs = await res.json();
-    const list = document.getElementById("rdvList");
+    const row = document.getElementById("rdvRow");
 
-    list.innerHTML = "";
+    row.innerHTML = "";
 
     if (rdvs.length === 0) {
-        list.innerHTML = `<p class="text-muted text-center">Aucun rendez-vous aujourd’hui</p>`;
+        row.innerHTML = `<p class="text-muted text-center">Aucun rendez-vous aujourd’hui</p>`;
         return;
     }
 
-    rdvs.forEach(rdv => {
-        list.insertAdjacentHTML("beforeend", `
-            <div class="rdv-item mb-3">
-                <div>
-                    <strong><i class="bi bi-person-circle"></i> ${rdv.nom}</strong><br>
-                    <small class="text-muted"><i class="bi bi-chat-left-text"></i> ${rdv.motif ?? "Sans motif"}</small>
-
-                    <div class="mt-1">
-                        <span class="badge bg-success">${rdv.statut}</span>
-                    </div>
-
-                    <div class="text-muted small mt-1">
-                        <i class="bi bi-clock"></i> ${rdv.date}
-                    </div>
+    // Afficher max 6 RDV
+rdvs.slice(0, 8).forEach(rdv => {
+    row.insertAdjacentHTML("beforeend", `
+        <div class="col-6 col-md-4 col-lg-6">
+            <div class="rdv-mini">
+                <strong><i class="bi bi-person-circle"></i> ${rdv.nom}</strong><br>
+                <small class="text-muted">
+                    <i class="bi bi-chat-left-text"></i>
+                    ${rdv.motif ?? "Sans motif"}
+                </small>
+                <div class="mt-1">
+                    <span class="badge bg-success">${rdv.statut}</span>
                 </div>
-
-                <button class="btn-rdv-valid btn-validate-rdv" data-id="${rdv.id}">
+                <small class="text-muted d-block mt-1">
+                    <i class="bi bi-clock"></i> ${rdv.date}
+                </small>
+                <button class="btn btn-sm btn-success rounded-pill mt-2 btn-validate-rdv"
+                    data-id="${rdv.id}">
                     <i class="bi bi-check-circle"></i>
                 </button>
-
             </div>
-        `);
-    });
+        </div>
+    `);
+});
+attachValidationEvents();
 
-    attachValidationEvents();
 }
+
 
 function attachValidationEvents() {
     document.querySelectorAll(".btn-validate-rdv").forEach(btn => {

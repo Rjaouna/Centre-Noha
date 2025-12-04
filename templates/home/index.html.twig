@@ -1,316 +1,340 @@
-
 {% extends 'base.html.twig' %}
 
-{% block title %}Accueil
-{% endblock %}
+{% block title %}Accueil{% endblock %}
 
 {% block body %}
 
-	<style>
-		/* =============================
-   NEW DASHBOARD BLOCK STYLE PRO
-   ============================= */
-
-	.dashboard-pro {
-    padding: 24px;
-    border-radius: 18px;
-    position: relative;
-    overflow: hidden;
-    color: #fff !important;
-    text-align: left !important;
-    cursor: pointer;
-    transition: 0.25s ease-in-out;
-    min-height: 160px;
-}
-
-/* Rendu premium */
-.dashboard-pro:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 12px 24px rgba(0,0,0,0.18);
-}
-
-/* Grande icône décorative */
-.dashboard-pro-bigicon {
-    position: absolute;
-    right: -10px;
-    bottom: -10px;
-    font-size: 6rem;
-    opacity: 0.18;
-    pointer-events: none;
-}
-
-/* Badge interne */
-.dashboard-pro-badge-inside {
-    position: absolute;
-    bottom: 12px;
-    left: 15px;
-    background: rgba(255,255,255,0.25);
-    padding: 6px 12px;
-    border-radius: 12px;
-    font-weight: 700;
-    font-size: 0.85rem;
-    backdrop-filter: blur(4px);
-    color: #fff;
-}
-
-/* Titre & texte */
-.dashboard-pro h5 {
-    font-size: 1.2rem;
-    font-weight: 800;
-    margin-bottom: 6px;
-    color: #fff !important;
-}
-
-.dashboard-pro p {
-    color: rgba(255,255,255,0.85) !important;
-    margin-bottom: 0;
-}
-
-		/* Badge animé */
-		.dashboard-pro-badge {
-			position: absolute;
-			top: -6px;
-			right: -6px;
-			background: #0dcaf0;
-			color: white;
-			font-weight: 700;
-			padding: 6px 10px;
-			border-radius: 50%;
-			animation: pulse 2s infinite;
-		}
-
-		/* Animation du badge */
-		@keyframes pulse {
-			0% {
-				transform: scale(1);
-			}
-			50% {
-				transform: scale(1.12);
-			}
-			100% {
-				transform: scale(1);
-			}
-		}
-
-	</style>
-	<div class="container py-4">
-<div class="container my-4">
-
-
-	<h4 class="fw-bold  text-left mb-4 mt-3">
-
-
-		<i class="bi bi-activity text-primary me-2"></i>
-
-
-		Tableau de Bord —
-
-
-		<span class="text-primary" id="nameCabinet"></span>
-
-
-	</h4>
-
-
-</div>
-
-
-<div
-	class="row g-4 justify-content-center">
-
-	<!-- 🔹 1 — Ajouter un patient -->
-	<div class="col-12 col-md-3 ">
-<a data-bs-toggle="modal" data-bs-target="#modalAddClient" class="text-decoration-none">
-
-<div class="dashboard-pro  shadow" style="background: rgba(25,135,84,0.9);">
-
-
-				<h5>Ajouter un patient</h5>
-				<p>Créer une nouvelle fiche patient</p>
-
-				<i class="bi bi-person-plus-fill dashboard-pro-bigicon"></i>
-
-			</div>
-		</a>
-	</div>
-
-	<!-- 🔹 2 — Liste des patients -->
-	<div class="col-12 col-md-3">
-		<a href="{{ path('app_fiche_client_index') }}" class="text-decoration-none">
-<div class="dashboard-pro position-relative shadow" style="background: rgba(13,110,253,0.9);">
-
-
-				<h5>Liste des patients</h5>
-				<p>Gérer et consulter tous les dossiers</p>
-
-				{% if totalClients %}
-					<span class="dashboard-pro-badge-inside">{{ totalClients }}</span>
-				{% endif %}
-
-				<i class="bi bi-people-fill dashboard-pro-bigicon"></i>
-
-			</div>
-		</a>
-	</div>
-
-	<!-- 🔹 3 — Médicaments -->
-	<div class="col-12 col-md-3">
-		<a href="{{ path('medicine_index') }}" class="text-decoration-none">
-<div class="dashboard-pro shadow" style="background: rgba(220,53,69,0.9);">
-
-
-				<h5>Médicaments</h5>
-				<p>Consultation & gestion des médicaments</p>
-
-				<i class="bi bi-capsule-pill dashboard-pro-bigicon"></i>
-
-			</div>
-		</a>
-	</div>
-
-	<!-- 🔹 4 — Rendez-vous -->
-	<div class="col-12 col-md-3">
-		<a href="{{ path('app_rdv_index') }}" class="text-decoration-none">
-<div class="dashboard-pro shadow position-relative" style="background: rgba(13,202,240,0.9);">
-
-
-				<h5>Rendez-vous</h5>
-				<p>Planning & gestion des consultations</p>
-
-				{% if totalRdv %}
-					<span class="dashboard-pro-badge-inside">{{ totalRdv }}</span>
-				{% endif %}
-
-				<i class="bi bi-calendar-week dashboard-pro-bigicon"></i>
-
-			</div>
-		</a>
-	</div>
-
-</div>
-
-
-
-
-		<div class="mt-5">
-			<h4 class="fw-bold mb-3">
-				<i class="bi bi-ui-checks-grid text-primary me-2"></i>
-				Référentiels & Ressources
-			</h4>
-
-			<div class="row g-3">
-
-				<a href="{{ path('hopital_search_page') }}" class="col-md-4 text-decoration-none">
-					<div class="p-3 border rounded-4 shadow-sm d-flex align-items-center">
-						<i class="bi bi-hospital text-primary fs-3 me-3"></i>
-						<div>
-							<h6 class="fw-bold mb-0">Établissements Hospitaliers</h6>
-							<small class="text-muted">Recherche & consultation</small>
-						</div>
-					</div>
-				</a>
-
-
-				<div class="col-md-4">
-					<a href="{{ path('hopital_search_page') }}" class="col-md-4 text-decoration-none">
-
-						<div class="p-3 border rounded-4 shadow-sm d-flex align-items-center">
-							<i class="bi bi-heart-pulse text-success fs-3 me-3"></i>
-							<div>
-								<h6 class="fw-bold mb-0">Dispositifs remboursables</h6>
-								<small class="text-muted">CNOPS – ANAM</small>
-							</div>
-						</div>
-					</a>
-				</div>
-
-				<div class="col-md-4">
-					<a href="{{ path('medicine_index') }}" class="col-md-4 text-decoration-none">
-
-
-						<div class="p-3 border rounded-4 shadow-sm d-flex align-items-center">
-							<i class="bi bi-capsule-pill text-danger fs-3 me-3"></i>
-
-							<div>
-								<h6 class="fw-bold mb-0">Liste des Médicaments</h6>
-
-								<small class="text-muted">CNOPS – ANAM</small>
-							</div>
-						</div>
-					</a>
-
-
-				</div>
-
-
-			</div>
-		</div>
-		
-
-
-		<!-- 📊 SECTION STATISTIQUES -->
-		{{ include('home/_stats/_stats.html.twig') }}
-
-
-	</div>
-
-</div>
-
-
-<!-- MODAL AJOUT PATIENT -->
+<style>
+    /* =============================
+       DASHBOARD PRO STYLE PREMIUM
+       ============================= */
+
+    .dashboard-pro {
+        padding: 24px;
+        border-radius: 18px;
+        position: relative;
+        overflow: hidden;
+        color: #fff !important;
+        text-align: left !important;
+        cursor: pointer;
+        transition: 0.25s ease-in-out;
+        min-height: 160px;
+    }
+
+    .dashboard-pro:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.18);
+    }
+
+    .dashboard-pro-bigicon {
+        position: absolute;
+        right: -10px;
+        bottom: -10px;
+        font-size: 6rem;
+        opacity: 0.18;
+        pointer-events: none;
+    }
+
+    .dashboard-pro-badge-inside {
+        position: absolute;
+        bottom: 12px;
+        left: 15px;
+        background: rgba(255, 255, 255, 0.25);
+        padding: 6px 12px;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 0.85rem;
+        backdrop-filter: blur(4px);
+        color: #fff;
+    }
+
+    .dashboard-pro h5 {
+        font-size: 1.2rem;
+        font-weight: 800;
+        margin-bottom: 6px;
+        color: #fff !important;
+    }
+
+    .dashboard-pro p {
+        color: rgba(255, 255, 255, 0.85) !important;
+        margin-bottom: 0;
+    }
+
+    /* Badge animé */
+    .dashboard-pro-badge {
+        position: absolute;
+        top: -6px;
+        right: -6px;
+        background: #0dcaf0;
+        color: white;
+        font-weight: 700;
+        padding: 6px 10px;
+        border-radius: 50%;
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.12); }
+        100% { transform: scale(1); }
+    }
+
+    /* =============================
+       RESSOURCES BLOCKS
+       ============================= */
+    .resource-card {
+        position: relative;
+        background: #ffffff;
+        border-radius: 18px;
+        padding: 22px;
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+        border: 1px solid #e7e7e7;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+        transition: .25s ease-in-out;
+        cursor: pointer;
+        height: 120px;
+    }
+
+    .resource-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 22px rgba(0, 0, 0, 0.12);
+    }
+
+    .resource-icon {
+        font-size: 2rem;
+        margin-right: 14px;
+        z-index: 2;
+    }
+
+    .resource-bg-icon {
+        position: absolute;
+        right: -5px;
+        bottom: -5px;
+        font-size: 5rem;
+        opacity: .09;
+        pointer-events: none;
+    }
+
+    .resource-card h6 {
+        font-weight: 800;
+        margin-bottom: 3px;
+    }
+
+    .resource-card small {
+        color: #6c757d;
+    }
+
+    .resource-link {
+        text-decoration: none !important;
+        color: inherit !important;
+    }
+</style>
+
+
+
+<div class="container py-4">
+
+    <!-- ======================= -->
+    <!-- 🔹 TITRE DU DASHBOARD -->
+    <!-- ======================= -->
+
+    <div class="container my-4">
+        <h4 class="fw-bold mb-4 mt-3">
+            <i class="bi bi-activity text-primary me-2"></i>
+            Tableau de Bord — 
+            <span class="text-primary" id="nameCabinet"></span>
+        </h4>
+    </div>
+
+
+
+    <!-- ======================= -->
+    <!-- 🔹 BLOC DASHBOARD PRO -->
+    <!-- ======================= -->
+
+    <div class="row g-4 justify-content-center">
+
+        <!-- Ajouter un patient -->
+        <div class="col-12 col-md-3">
+            <a data-bs-toggle="modal" data-bs-target="#modalAddClient" class="text-decoration-none">
+                <div class="dashboard-pro shadow" style="background: rgba(25,135,84,0.9);">
+                    <h5>Ajouter un patient</h5>
+                    <p>Créer une nouvelle fiche patient</p>
+                    <i class="bi bi-person-plus-fill dashboard-pro-bigicon"></i>
+                </div>
+            </a>
+        </div>
+
+        <!-- Liste des patients -->
+        <div class="col-12 col-md-3">
+            <a href="{{ path('app_fiche_client_index') }}" class="text-decoration-none">
+                <div class="dashboard-pro shadow position-relative" style="background: rgba(13,110,253,0.9);">
+                    <h5>Liste des patients</h5>
+                    <p>Gérer et consulter tous les dossiers</p>
+
+                    {% if totalClients %}
+                        <span class="dashboard-pro-badge-inside">{{ totalClients }}</span>
+                    {% endif %}
+
+                    <i class="bi bi-people-fill dashboard-pro-bigicon"></i>
+                </div>
+            </a>
+        </div>
+
+        <!-- Médicaments -->
+        <div class="col-12 col-md-3">
+            <a href="{{ path('medicine_index') }}" class="text-decoration-none">
+                <div class="dashboard-pro shadow" style="background: rgba(220,53,69,0.9);">
+                    <h5>Médicaments</h5>
+                    <p>Consultation & gestion des médicaments</p>
+                    <i class="bi bi-capsule-pill dashboard-pro-bigicon"></i>
+                </div>
+            </a>
+        </div>
+
+        <!-- Rendez-vous -->
+        <div class="col-12 col-md-3">
+            <a href="{{ path('app_rdv_index') }}" class="text-decoration-none">
+                <div class="dashboard-pro shadow position-relative" style="background: rgba(13,202,240,0.9);">
+                    <h5>Rendez-vous</h5>
+                    <p>Planning & gestion des consultations</p>
+
+                    {% if totalRdv %}
+                        <span class="dashboard-pro-badge-inside">{{ totalRdv }}</span>
+                    {% endif %}
+
+                    <i class="bi bi-calendar-week dashboard-pro-bigicon"></i>
+                </div>
+            </a>
+        </div>
+
+    </div>
+
+
+
+    <!-- ======================= -->
+    <!-- 🔹 RESSOURCES -->
+    <!-- ======================= -->
+
+    <div class="mt-5">
+        <h4 class="fw-bold mb-3">
+            <i class="bi bi-ui-checks-grid text-primary me-2"></i>
+            Référentiels & Ressources
+        </h4>
+
+        <div class="row g-3">
+
+            <!-- Établissements Hospitaliers -->
+            <div class="col-md-4">
+                <a href="{{ path('hopital_search_page') }}" class="resource-link">
+                    <div class="resource-card">
+                        <i class="bi bi-hospital text-primary resource-icon"></i>
+                        <div>
+                            <h6>Établissements Hospitaliers</h6>
+                            <small>Recherche & consultation</small>
+                        </div>
+                        <i class="bi bi-hospital resource-bg-icon text-primary"></i>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Dispositifs remboursables -->
+            <div class="col-md-4">
+                <a href="{{ path('hopital_search_page') }}" class="resource-link">
+                    <div class="resource-card">
+                        <i class="bi bi-heart-pulse text-success resource-icon"></i>
+                        <div>
+                            <h6>Dispositifs Remboursables</h6>
+                            <small>CNOPS – ANAM</small>
+                        </div>
+                        <i class="bi bi-heart-pulse resource-bg-icon text-success"></i>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Médicaments -->
+            <div class="col-md-4">
+                <a href="{{ path('medicine_index') }}" class="resource-link">
+                    <div class="resource-card">
+                        <i class="bi bi-capsule-pill text-danger resource-icon"></i>
+                        <div>
+                            <h6>Liste des Médicaments</h6>
+                            <small>CNOPS – ANAM</small>
+                        </div>
+                        <i class="bi bi-capsule-pill resource-bg-icon text-danger"></i>
+                    </div>
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+
+
+    <!-- ======================= -->
+    <!-- 🔹 SECTION STATISTIQUES -->
+    <!-- ======================= -->
+    {{ include('home/_stats/_stats.html.twig') }}
+
+
+
+</div> <!-- /container -->
+
+
+
+<!-- ======================= -->
+<!-- 🔹 MODAL AJOUT PATIENT -->
+<!-- ======================= -->
 
 <div class="modal fade" id="modalAddClient" tabindex="-1">
-	<div class="modal-dialog modal-xl">
-		<div class="modal-content rounded-4 shadow-sm border">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content rounded-4 shadow-sm border">
 
+            <div class="modal-header bg-primary text-white rounded-top-4">
+                <h5 class="modal-title fw-bold d-flex align-items-center">
+                    <i class="bi bi-person-plus fs-4 me-2"></i>
+                    Ajouter un patient
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
 
-			<div class="modal-header bg-primary text-white rounded-top-4">
-				<h5 class="modal-title fw-bold d-flex align-items-center">
-					<i class="bi bi-person-plus fs-4 me-2"></i>
-					Ajouter un patient
-				</h5>
-				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-			</div>
+            <div class="modal-body p-4">
+                {{ include('fiche_client/new.html.twig') }}
+            </div>
 
-			<div class="modal-body p-4">
-				{{ include('fiche_client/new.html.twig') }}
-
-
-			</div>
-
-		</div>
-	</div>
+        </div>
+    </div>
 </div>
 
 
- <script>
+
+<!-- ======================= -->
+<!-- 🔹 SCRIPT NOM CABINET -->
+<!-- ======================= -->
+
+<script>
 async function afficherNomCabinet() {
 
     const url = "{{ path('app_nom_cabinet') }}";
-const urlConfig = "{{ path('app_cabinet_index') }}"; // 🔧 route vers la config du cabinet
-
+    const urlConfig = "{{ path('app_cabinet_index') }}";
 
     try {
         const response = await fetch(url);
         const data = await response.json();
 
-        console.log("Nom cabinet :", data.nom);
-
         const element = document.getElementById('nameCabinet');
-        if (!element) return; // Sécurité
+        if (!element) return;
 
-        // Cas où le nom n'est pas défini
         if (!data.nom || data.nom === "null") {
-
             element.innerHTML = `
                 Veuillez configurer le nom du cabinet 
                 <a href="${urlConfig}" class="btn btn-sm btn-warning ms-2">
                     Configurer
-                </a>
-            `;
+                </a>`;
         } 
         else {
-            // Cabinet trouvé → affichage normal
             element.innerText = data.nom;
         }
 
@@ -319,13 +343,7 @@ const urlConfig = "{{ path('app_cabinet_index') }}"; // 🔧 route vers la confi
     }
 }
 
-// Exécution
 afficherNomCabinet();
+</script>
 
-
-		
-
-
-
-</script>{% endblock %}
-
+{% endblock %}
