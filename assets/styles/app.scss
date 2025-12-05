@@ -55,6 +55,7 @@ body {
 }
 header {
     background-color: var(--bs-primary) !important;
+    padding-top: env(safe-area-inset-top);
 }
 
 
