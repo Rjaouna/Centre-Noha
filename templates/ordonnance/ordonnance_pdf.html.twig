@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="UTF-8">
+		<style>
+			body {
+				font-family: DejaVu Sans, sans-serif;
+				font-size: 13px;
+			}
+
+			.header {
+				text-align: center;
+				margin-bottom: 15px;
+			}
+			.cabinet-name {
+				font-size: 22px;
+				font-weight: bold;
+				color: #0d6efd;
+			}
+			.section-title {
+				font-weight: bold;
+				margin-top: 20px;
+				font-size: 17px;
+				color: #0d6efd;
+			}
+
+			table.meds {
+				width: 100%;
+				border-collapse: collapse;
+				margin-top: 10px;
+			}
+
+			table.meds th,
+			table.meds td {
+				border: 1px solid #ccc;
+				padding: 6px;
+			}
+
+			.footer {
+				margin-top: 40px;
+				font-size: 12px;
+				text-align: center;
+				color: #666;
+			}
+		</style>
+	</head>
+	<body>
+
+		<div class="header">
+			<div class="cabinet-name">{{ cabinet.nom }}</div>
+			<div>{{ cabinet.type }}</div>
+			<div>{{ cabinet.adresse }},
+				{{ cabinet.ville }}</div>
+			<div>Tél :
+				{{ cabinet.telephone }}
+				— Email :
+				{{ cabinet.email }}</div>
+		</div>
+
+		<hr>
+
+		<h3 class="section-title">Informations du patient</h3>
+
+		<p>
+			<strong>Nom :</strong>
+			{{ patient.nom }}<br>
+			<strong>Ville :</strong>
+			{{ patient.ville }}<br>
+			<strong>Diagnostic :</strong>
+			{{ suivi.diagnostic }}
+		</p>
+
+		<h3 class="section-title">Médicaments prescrits</h3>
+
+		{% if medicaments|length == 0 %}
+			<p>Aucun médicament prescrit.</p>
+		{% else %}
+			<table class="meds">
+				<thead>
+					<tr>
+						<th>Nom</th>
+						<th>DCI</th>
+						<th>Dosage</th>
+						<th>Forme</th>
+						<th>Présentation</th>
+					</tr>
+				</thead>
+
+				<tbody>
+					{% for med in medicaments %}
+						<tr>
+							<td>{{ med.name }}</td>
+							<td>{{ med.dci ?: '-' }}</td>
+							<td>{{ med.dosage }}
+								{{ med.uniteDosage }}</td>
+							<td>{{ med.forme ?: '-' }}</td>
+							<td>{{ med.presentation ?: '-' }}</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		{% endif %}
+
+		<div class="footer">
+			Ordonnance générée automatiquement —
+			{{ "now"|date("d/m/Y H:i") }}
+		</div>
+
+	</body>
+</html>
+

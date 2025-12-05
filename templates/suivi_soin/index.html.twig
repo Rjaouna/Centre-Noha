@@ -233,6 +233,13 @@ Médicaments prescrits
 		<i class="bi bi-printer"></i>
 	</a>
 
+<button class="btn btn-primary" onclick="downloadOrdonnance(${suivi.id})">
+
+	<i class="bi bi-file-pdf"></i>
+
+</button>
+
+
 </div>
 
 
@@ -248,6 +255,24 @@ Médicaments prescrits
 });
 
 </script>
+ <script>
+function downloadOrdonnance(id) {
+    fetch(`/api/ordonnance/${id}/pdf`)
+        .then(res => res.blob())
+        .then(blob => {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `ordonnance-${id}.pdf`;
+            a.click();
+            URL.revokeObjectURL(url);
+        })
+        .catch(err => alert("Erreur lors de la génération du PDF."));
+}
+
+</script>
+
+
 
  <script>
 document.addEventListener("click", function (e) {
@@ -435,6 +460,11 @@ Médicaments prescrits
 
 		<i class="bi bi-printer"></i>
 	</a>
+<button class="btn btn-primary btn-sm rounded-pill" onclick="downloadOrdonnance(${suivi.id})">
+	<i class="bi bi-file-earmark-pdf"></i>
+</button>
+
+
 
 </div>
 
