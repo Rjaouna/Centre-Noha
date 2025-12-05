@@ -233,11 +233,12 @@ Médicaments prescrits
 		<i class="bi bi-printer"></i>
 	</a>
 
-<button class="btn btn-primary" onclick="downloadOrdonnance(${suivi.id})">
-
+<a href="/suivi/${suivi.id}/ordonnance" class="btn btn-primary">
 	<i class="bi bi-file-pdf"></i>
+	Voir / Générer l’ordonnance
+</a>
 
-</button>
+
 
 
 </div>
@@ -257,7 +258,11 @@ Médicaments prescrits
 </script>
  <script>
 function downloadOrdonnance(id) {
-    fetch(`/api/ordonnance/${id}/pdf`)
+const url = `{{ path('api_ordonnance_pdf', {id : 'replace_id'}) }}`.replace("replace_id", id);
+							
+					fetch(url)
+
+
         .then(res => res.blob())
         .then(blob => {
             const url = URL.createObjectURL(blob);
@@ -460,9 +465,12 @@ Médicaments prescrits
 
 		<i class="bi bi-printer"></i>
 	</a>
-<button class="btn btn-primary btn-sm rounded-pill" onclick="downloadOrdonnance(${suivi.id})">
-	<i class="bi bi-file-earmark-pdf"></i>
-</button>
+<a href="/suivi/${suivi.id}/ordonnance" class="btn btn-primary">
+	<i class="bi bi-file-pdf"></i>
+	Voir / Générer l’ordonnance
+</a>
+
+
 
 
 

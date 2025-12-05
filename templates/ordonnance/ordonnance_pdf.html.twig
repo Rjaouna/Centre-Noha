@@ -4,106 +4,149 @@
 		<meta charset="UTF-8">
 		<style>
 			body {
-				font-family: DejaVu Sans, sans-serif;
-				font-size: 13px;
+				font-family: DejaVu Sans, Helvetica, Arial, sans-serif;
+				font-size: 14px;
+				line-height: 1.5;
+				margin: 20;
+				padding: 20;
 			}
 
-			.header {
-				text-align: center;
-				margin-bottom: 15px;
+			.pdf-container {
+				width: 100%;
+				max-width: 700px;
+				margin: 10px auto auto;
+				border-radius: 12px;
+				background: white;
+				box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
 			}
-			.cabinet-name {
+
+			.ord-title {
 				font-size: 22px;
 				font-weight: bold;
-				color: #0d6efd;
+				text-align: center;
+				text-decoration: underline;
+				margin-bottom: 25px;
 			}
-			.section-title {
+
+			.med-item {
+				border: 1px solid #bbb;
+				padding: 10px 15px;
+				border-radius: 8px;
+				margin-bottom: 15px;
+			}
+
+			.med-name {
 				font-weight: bold;
-				margin-top: 20px;
-				font-size: 17px;
-				color: #0d6efd;
+				font-size: 15px;
 			}
 
-			table.meds {
-				width: 100%;
-				border-collapse: collapse;
-				margin-top: 10px;
+			.med-dose,
+			.med-form {
+				margin-top: 5px;
 			}
 
-			table.meds th,
-			table.meds td {
-				border: 1px solid #ccc;
-				padding: 6px;
+			hr {
+				margin: 20px 0;
+				border: none;
+				border-top: 1px solid #ccc;
 			}
 
 			.footer {
 				margin-top: 40px;
 				font-size: 12px;
 				text-align: center;
-				color: #666;
+				color: #555;
+				border-top: 1px solid #ccc;
+				padding-top: 10px;
+			}
+
+			.text-end {
+				text-align: right;
 			}
 		</style>
 	</head>
+
 	<body>
 
-		<div class="header">
-			<div class="cabinet-name">{{ cabinet.nom }}</div>
-			<div>{{ cabinet.type }}</div>
-			<div>{{ cabinet.adresse }},
-				{{ cabinet.ville }}</div>
-			<div>Tél :
+		<div class="pdf-container">
+
+			<div class="text-end">
+				<strong>{{ "now"|date("d/m/Y") }}</strong>
+			</div>
+
+			<div class="ord-title">ORDONNANCE MÉDICALE</div>
+
+			<!-- Infos Cabinet -->
+			<p>
+{{ cabinet.type }} <strong>{{ cabinet.nom }}</strong><br>
+
+		
+				{{ cabinet.adresse }}
+				–
+				{{ cabinet.ville }}<br>
+				Tél :
 				{{ cabinet.telephone }}
-				— Email :
-				{{ cabinet.email }}</div>
+				– Email :
+				{{ cabinet.email }}
+			</p>
+
+			<hr>
+
+			<!-- Infos Patient -->
+			<p>
+				<strong>Patient :</strong>
+				{{ patient.nom }}<br>
+				Téléphone :
+				{{ patient.telephone }}<br>
+			</p>
+
+			<hr>
+
+			<h4 style="color:#0d6efd; margin-top:25px;">Médicaments prescrits :</h4>
+
+{% for med in medicaments %}
+	<div class="med-item">
+		<div class="med-line">
+			{{ med.name|upper }}
+			—
+			{{ med.dosage }}
+			{{ med.uniteDosage }}
+			—
+			{{ med.forme }}
+			—
+			{{ med.presentation }}
 		</div>
+	</div>
+{% else %}
+	<p class="text-muted">Aucun médicament ajouté.</p>
+{% endfor %}
 
-		<hr>
 
-		<h3 class="section-title">Informations du patient</h3>
 
-		<p>
-			<strong>Nom :</strong>
-			{{ patient.nom }}<br>
-			<strong>Ville :</strong>
-			{{ patient.ville }}<br>
-			<strong>Diagnostic :</strong>
-			{{ suivi.diagnostic }}
-		</p>
+			<hr>
 
-		<h3 class="section-title">Médicaments prescrits</h3>
+			<p>
+				Fait le :
+				<strong>{{ "now"|date("d/m/Y") }}</strong>
+			</p>
 
-		{% if medicaments|length == 0 %}
-			<p>Aucun médicament prescrit.</p>
-		{% else %}
-			<table class="meds">
-				<thead>
-					<tr>
-						<th>Nom</th>
-						<th>DCI</th>
-						<th>Dosage</th>
-						<th>Forme</th>
-						<th>Présentation</th>
-					</tr>
-				</thead>
+			<p>
+				Signature / Cachet :<br><br><br>
+			</p>
 
-				<tbody>
-					{% for med in medicaments %}
-						<tr>
-							<td>{{ med.name }}</td>
-							<td>{{ med.dci ?: '-' }}</td>
-							<td>{{ med.dosage }}
-								{{ med.uniteDosage }}</td>
-							<td>{{ med.forme ?: '-' }}</td>
-							<td>{{ med.presentation ?: '-' }}</td>
-						</tr>
-					{% endfor %}
-				</tbody>
-			</table>
-		{% endif %}
+			<div class="footer">
+				{{ cabinet.nom }}
+				–
+				{{ cabinet.type }}<br>
+				{{ cabinet.adresse }}
+				–
+				{{ cabinet.ville }}<br>
+				Tél :
+				{{ cabinet.telephone }}
+				| Email :
+				{{ cabinet.email }}
+			</div>
 
-		<div class="footer">
-			Ordonnance générée automatiquement —
-			{{ "now"|date("d/m/Y H:i") }}
 		</div>
 
 	</body>

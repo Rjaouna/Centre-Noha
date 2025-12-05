@@ -1,0 +1,160 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ordonnance —
+	{{ patient.nom }}
+{% endblock %}
+
+{% block body %}
+
+	<style>
+		.pdf-wrapper {
+			display: flex;
+			justify-content: center;
+			margin-top: 30px;
+			margin-bottom: 50px;
+		}
+
+		.pdf-container {
+			width: 100%;
+			max-width: 700px;
+			background: white;
+			padding: 40px 50px;
+			border-radius: 12px;
+			box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+			font-family: Helvetica, Arial, sans-serif;
+			font-size: 14px;
+			line-height: 1.5;
+		}
+
+		.ord-title {
+			font-size: 22px;
+			font-weight: bold;
+			text-align: center;
+			text-decoration: underline;
+			margin-bottom: 25px;
+		}
+
+		.med-item {
+			border: 1px solid #bbb;
+			padding: 10px 15px;
+			border-radius: 8px;
+			margin-bottom: 15px;
+		}
+
+		.footer {
+			margin-top: 40px;
+			font-size: 12px;
+			text-align: center;
+			color: #555;
+			border-top: 1px solid #ccc;
+			padding-top: 10px;
+		}
+	</style>
+
+	<div class="mt-4">
+		<div class="card shadow-lg border-0 rounded-4 mb-4">
+			<div class="card-body py-4 px-4 d-flex justify-content-between">
+
+				<h2 class="fw-bold text-primary mb-0">
+					Ordonnance —
+					{{ patient.nom }}
+				</h2>
+
+				<button onclick="generatePdf()" class="btn btn-outline-danger rounded-pill">
+					<i class="bi bi-filetype-pdf"></i>
+					Générer le PDF
+				</button>
+			</div>
+		</div>
+	</div>
+
+	<div class="pdf-wrapper">
+		<div class="pdf-container">
+
+			<div class="text-end">
+				<strong>{{ "now"|date("d/m/Y") }}</strong>
+			</div>
+
+			<div class="ord-title">ORDONNANCE MÉDICALE</div>
+
+			<!-- Infos Cabinet -->
+			<p>
+				<strong>{{ cabinet.nom }}</strong><br>
+				{{ cabinet.type }}<br>
+				{{ cabinet.adresse }}
+				–
+				{{ cabinet.ville }}<br>
+				Tél :
+				{{ cabinet.telephone }}
+				– Email :
+				{{ cabinet.email }}
+			</p>
+
+			<hr>
+
+			<!-- Infos Patient -->
+			<p>
+				<strong>Patient :</strong>
+				{{ patient.nom }}
+				<br>
+				Téléphone :
+				{{ patient.telephone }}<br>
+				Maladie :
+				{{ patient.typeMaladie }}
+			</p>
+
+			<hr>
+
+<h5 class="fw-bold text-primary mt-4">Médicaments prescrits :</h5>
+
+{% for med in medicaments %}
+	<div class="med-item">
+		<div class="med-name">{{ med.name|upper }}</div>
+		<div class="med-dose">{{ med.dosage }}
+			{{ med.uniteDosage }}</div>
+		<div class="med-form">{{ med.forme }}
+			–
+			{{ med.presentation }}</div>
+	</div>
+{% else %}
+	<p class="text-muted">Aucun médicament ajouté.</p>
+{% endfor %}
+
+
+
+			<hr>
+
+			<p>
+				Fait le :
+				<strong>{{ "now"|date("d/m/Y") }}</strong>
+			</p>
+
+			<p>
+				Signature / Cachet :
+				<br><br><br>
+			</p>
+
+			<div class="footer">
+				{{ cabinet.nom }}
+				–
+				{{ cabinet.type }}<br>
+				{{ cabinet.adresse }}
+				–
+				{{ cabinet.ville }}<br>
+				Tél :
+				{{ cabinet.telephone }}
+				| Email :
+				{{ cabinet.email }}
+			</div>
+
+		</div>
+	</div>
+
+	 <script>
+	    function generatePdf() {
+	        window.open("/api/ordonnance/{{ suivi.id }}/pdf", "_blank");
+	    }
+	</script>
+
+{% endblock %}
+

@@ -2,20 +2,36 @@
 
 namespace App\Controller\Api;
 
-use App\Entity\SuiviSoin;
-use App\Entity\Cabinet;
 use Dompdf\Dompdf;
 use Dompdf\Options;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Entity\Cabinet;
+use App\Entity\SuiviSoin;
+use App\Repository\CabinetRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class OrdonnanceController extends AbstractController
 {
-	#[Route('/api/ordonnance/{id}/pdf', name: 'api_ordonnance_pdf')]
-	public function generate(SuiviSoin $suivi): Response
+	#[Route('/suivi/{id}/ordonnance', name: 'app_ordonnance_preview')]
+	public function preview(SuiviSoin $suivi, CabinetRepository $cabRepo)
 	{
-		$cabinet = $this->getDoctrine()->getRepository(Cabinet::class)->findOneBy([]);
+		$cabinet = $cabRepo->findOneBy([]);
+		$patient = $suivi->getPatient();
+		$medicaments = $suivi->getMedicine();
+
+		return $this->render('ordonnance/preview.html.twig', [
+			'cabinet' => $cabinet,
+			'suivi' => $suivi,
+			'patient' => $patient,
+			'medicaments' => $medicaments
+		]);
+	}
+
+	#[Route('/api/ordonnance/{id}/pdf', name: 'api_ordonnance_pdf')]
+	public function generate(SuiviSoin $suivi, CabinetRepository $cabRepo): Response
+	{
+		$cabinet = $cabRepo->findOneBy([]); // ✔️ fonctionne !
 
 		if (!$cabinet) {
 			return new Response('Cabinet introuvable', 404);
