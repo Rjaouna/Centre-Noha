@@ -53,6 +53,11 @@ body {
   color: $body-color;
   font-family: "Inter", "Source Sans Pro", sans-serif;
 }
+header {
+    background-color: var(--bs-primary) !important;
+}
+
+
 
 .card {
   border-radius: .85rem;
