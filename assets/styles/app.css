@@ -1,7 +1,13 @@
-
 .home-bg {
-
+    background: linear-gradient(
+        to bottom,
+        var(--bs-primary) 0,
+        var(--bs-primary) 30px,
+        white 30px,
+        white 100%
+    );
 }
+
 
 
 
