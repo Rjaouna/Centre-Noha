@@ -1,124 +1,188 @@
+<style>
+	/* --- CARD FORM PRO --- */
+	.form-section {
+		background: #ffffff;
+		border-radius: 18px;
+		padding: 25px;
+		border: 1px solid #e6e6e6;
+		box-shadow: 0 6px 14px rgba(0, 0, 0, 0.05);
+	}
 
+	/* Titre section */
+	.section-title {
+		font-weight: 800;
+		display: flex;
+		align-items: center;
+		margin-bottom: 20px;
+		font-size: 1.25rem;
+	}
 
-		{{ form_start(form, { attr: { id: 'ficheForm', 'data-turbo': 'false' } }) }}
+	.section-title i {
+		font-size: 1.4rem;
+		margin-right: 10px;
+	}
 
-		<!-- 🔵 SECTION 1 — Informations personnelles -->
-<div class="p-3 mb-4 border rounded bg-light">
+	/* Ligne colorée */
+	.section-title::after {
+		content: "";
+		flex-grow: 1;
+		height: 3px;
+		background: linear-gradient(90deg, #0d6efd, transparent);
+		margin-left: 15px;
+		border-radius: 2px;
+	}
 
+	.section-title.text-success::after {
+		background: linear-gradient(90deg, #198754, transparent);
+	}
 
+	.section-title.text-warning::after {
+		background: linear-gradient(90deg, #ffc107, transparent);
+	}
 
-			<h4 class="text-primary mb-3">
-				<i class="bi bi-person-lines-fill"></i>
-				Informations personnelles
-			</h4>
+	/* Inputs flottants améliorés */
+	.form-floating > .form-control {
+		border-radius: 12px;
+	}
 
-			<div class="row g-3">
-				<div class="col-md-6 form-floating">
-					{{ form_widget(form.nom, { attr: { class: 'form-control', placeholder: 'Nom' } }) }}
-					{{ form_label(form.nom) }}
-				</div>
+	.input-group-text {
+		border-radius: 12px 0 0 12px;
+	}
 
-				<div class="col-md-6 form-floating">
-					{{ form_widget(form.ville, { attr: { class: 'form-control', placeholder: 'Ville' } }) }}
-					{{ form_label(form.ville) }}
-				</div>
+	.form-floating > label {
+		padding-left: 1rem;
+	}
 
-				<div class="col-md-4 form-floating">
-					{{ form_widget(form.age, { attr: { class: 'form-control', placeholder: 'Âge' } }) }}
-					{{ form_label(form.age) }}
-				</div>
+	/* Bouton submit */
+	.btn-save-pro {
+		padding: 12px 32px;
+		font-size: 1.1rem;
+		font-weight: 600;
+		border-radius: 50px;
+		box-shadow: 0 4px 10px rgba(25, 135, 84, 0.35);
+		transition: 0.2s ease-in-out;
+	}
 
-				<div class="col-md-4 form-floating">
-					{{ form_widget(form.poids, { attr: { class: 'form-control', placeholder: 'Poids' } }) }}
-					{{ form_label(form.poids) }}
-				</div>
+	.btn-save-pro:hover {
+		transform: translateY(-3px);
+		box-shadow: 0 6px 16px rgba(25, 135, 84, 0.45);
+	}
+	/* Correction pro des flèches select dans form-floating */
+.form-floating select.form-select {
+    padding-right: 2.5rem !important; /* espace intérieur pour éviter que la flèche colle */
+    background-position: right 1rem center !important; /* repositionne la flèche */
+    background-size: 16px !important;
+    border-radius: 12px !important;
+}
 
-<div class="col-md-4">
-	<div class="input-group">
-		<span class="input-group-text">+212</span>
+/* Optionnel : amélioration du style lors du focus */
+.form-floating select.form-select:focus {
+    box-shadow: 0 0 0 0.25rem rgba(13,110,253,0.25);
+}
 
-		<div class="form-floating flex-grow-1">
-			{{ form_widget(form.telephone, {
-                attr: { class: 'form-control', placeholder: 'Téléphone' }
-            }) }}
-			{{ form_label(form.telephone) }}
+</style>
+
+{{ form_start(form, { attr: { id: 'ficheForm', 'data-turbo': 'false' } }) }}
+
+<!-- 🔵 SECTION 1 — Informations personnelles -->
+<div class="form-section mb-4">
+
+	<h4 class="section-title text-primary">
+		<i class="bi bi-person-lines-fill"></i>
+		Informations personnelles
+	</h4>
+
+	<div class="row g-3">
+
+		<div class="col-md-6 form-floating">
+			{{ form_widget(form.nom, { attr: { class: 'form-control', placeholder: 'Nom' } }) }}
+			{{ form_label(form.nom) }}
 		</div>
+
+		<div class="col-md-6 form-floating">
+			{{ form_widget(form.ville, { attr: { class: 'form-control', placeholder: 'Ville' } }) }}
+			{{ form_label(form.ville) }}
+		</div>
+
+		<div class="col-md-4 form-floating">
+			{{ form_widget(form.age, { attr: { class: 'form-control', placeholder: 'Âge' } }) }}
+			{{ form_label(form.age) }}
+		</div>
+
+		<div class="col-md-4 form-floating">
+			{{ form_widget(form.poids, { attr: { class: 'form-control', placeholder: 'Poids' } }) }}
+			{{ form_label(form.poids) }}
+		</div>
+
+		<div class="col-md-4">
+			<div class="input-group">
+				<span class="input-group-text">+212</span>
+
+				<div class="form-floating flex-grow-1">
+					{{ form_widget(form.telephone, {
+                        attr: { class: 'form-control', placeholder: 'Téléphone' }
+                    }) }}
+					{{ form_label(form.telephone) }}
+				</div>
+			</div>
+		</div>
+
 	</div>
-
 </div>
 
+<!-- 🟢 SECTION 2 — Informations médicales -->
+<div class="form-section mb-4">
 
+	<h4 class="section-title text-success">
+		<i class="bi bi-heart-pulse-fill"></i>
+		Informations médicales
+	</h4>
 
-		<!-- 🟢 SECTION 2 — Informations médicales -->
-		<div class="p-3 mb-4 border rounded bg-light">
-			<h4 class="text-success mb-3">
-				<i class="bi bi-heart-pulse-fill"></i>
-				Informations médicales
-			</h4>
+	<div class="row g-3">
 
-			<div class="row g-3">
+		<div class="col-md-6 form-floating">
+			{{ form_widget(form.dureeMaladie, { attr: { class: 'form-control', placeholder: 'Durée maladie' } }) }}
+			{{ form_label(form.dureeMaladie) }}
+		</div>
 
+		<div class="col-md-6 form-floating">
+			{{ form_widget(form.typeMaladie, { attr: { class: 'form-control', placeholder: 'Type de maladie' } }) }}
+			{{ form_label(form.typeMaladie) }}
+		</div>
 
-<div class="col-md-6 form-floating">
-	{{ form_widget(form.dureeMaladie, { attr: { class: 'form-control', placeholder: 'Durée maladie' } }) }}
-	{{ form_label(form.dureeMaladie) }}
+	</div>
 </div>
-
-
-
-<div class="col-md-6 form-floating">
-	{{ form_widget(form.typeMaladie, { attr: { class: 'form-control', placeholder: 'Type de maladie' } }) }}
-	{{ form_label(form.typeMaladie) }}
-</div>
-
-
-
-</div></div>
-
-
 
 <!-- 🔶 SECTION 3 — Traitement -->
-<div class="p-3 border rounded bg-light">
+<div class="form-section mb-3">
 
-	<h4 class="text-warning mb-3">
+	<h4 class="section-title text-warning">
 		<i class="bi bi-journal-medical"></i>
 		Traitements & Observations
 	</h4>
 
+	<div class="row g-3">
 
-
-<div class="row g-3">
-
-
-<div class="col-12 form-floating">
-	{{ form_widget(form.traitement, { attr: { class: 'form-control', style: 'height: 60px;', placeholder: 'Traitement' } }) }}
-	{{ form_label(form.traitement) }}
-</div>
-
-
-
-<div class="col-12 form-floating">
-	{{ form_widget(form.observation, { attr: { class: 'form-control', style: 'height: 120px;', placeholder: 'Observation' } }) }}
-	{{ form_label(form.observation) }}
-
-</div></div></div><!-- Submit -->
-
-
-
-<div class="text-end">
-<button type="submit" class="btn btn-success rounded-pill px-4 btn-lg clic" id="buttonSave">
-
-
-
-
-
-
-
-				<i class="bi bi-check-circle"></i>
-				Enregistrer
-			</button>
+		<div class="col-12 form-floating">
+			{{ form_widget(form.traitement, { attr: { class: 'form-control', style: 'height: 70px;', placeholder: 'Traitement' } }) }}
+			{{ form_label(form.traitement) }}
 		</div>
 
-		{{ form_end(form) }}
+		<div class="col-12 form-floating">
+			{{ form_widget(form.observation, { attr: { class: 'form-control', style: 'height: 140px;', placeholder: 'Observation' } }) }}
+			{{ form_label(form.observation) }}
+		</div>
 
+	</div>
+</div>
+
+<!-- BTN SAVE -->
+<div class="text-end">
+	<button type="submit" class="btn btn-success btn-save-pro" id="buttonSave">
+		<i class="bi bi-check-circle"></i>
+		Enregistrer
+	</button>
+</div>
+
+{{ form_end(form) }}
 
