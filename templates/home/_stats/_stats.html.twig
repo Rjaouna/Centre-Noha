@@ -253,7 +253,7 @@ class=" mt-4">
 			<div class="chart-box">
 				<h5 class="chart-title">
 					<i class="bi bi-cash-coin"></i>
-					Type aiements</h5>
+					Type paiements</h5>
 <canvas id="chartPaiements"></canvas>
 
 			</div>
@@ -308,15 +308,6 @@ class=" mt-4">
 /* ----- TOOLTIP ----- */
 const tooltipLabel = ctx => ctx.label + " : " + ctx.raw;
 
-/* ----- GÉNÉRATION DES LÉGENDES ----- */
-function generateLegend(containerId, labels, colors) {
-    const container = document.getElementById(containerId);
-    container.innerHTML = labels.map((label, i) =>
-        `<div class='d-flex align-items-center gap-1'>
-            <span class='legend-color' style='background:${colors[i]}'></span>${label}
-        </div>`
-    ).join("");
-}
 
 /* ----- CHARTS ----- */
 async function loadPaiementsChart() {
@@ -337,7 +328,6 @@ async function loadPaiementsChart() {
         options: { plugins: { legend: { display: false }, tooltip: { callbacks: { label: tooltipLabel } } } }
     });
 
-    generateLegend("legendPaiements", stats.labels, colors);
 }
 
 async function loadMaladiesChart() {
@@ -355,7 +345,6 @@ async function loadMaladiesChart() {
         options: { plugins: { legend: { display: false }, tooltip: { callbacks: { label: tooltipLabel } } } }
     });
 
-    generateLegend("legendMaladies", stats.labels, colors);
 }
 
 async function loadSymptomesChart() {
@@ -372,7 +361,6 @@ async function loadSymptomesChart() {
         options: { plugins: { legend: { display: false }, tooltip: { callbacks: { label: tooltipLabel } } } }
     });
 
-    generateLegend("legendSymptomes", stats.labels, colors);
 }
 
 async function loadClientsPerDayChart() {
@@ -405,7 +393,6 @@ async function loadClientsPerDayChart() {
         }
     });
 
-    generateLegend("legendClientsPerDay", stats.labels, colors);
 }
 
 
