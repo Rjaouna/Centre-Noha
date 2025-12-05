@@ -7,6 +7,8 @@
 				font-family: Helvetica, Arial, sans-serif;
 				line-height: 1.6;
 				font-size: 13px;
+				margin: 0;
+				padding: 0;
 			}
 
 			.pdf-container {
@@ -31,16 +33,30 @@
 			.bloc {
 				margin-bottom: 20px;
 			}
+
+			/* Footer */
+			.footer {
+				width: 100%;
+				margin-top: 40px;
+				padding-top: 10px;
+				border-top: 1px solid #ccc;
+				font-size: 12px;
+				text-align: center;
+				color: #555;
+			}
 		</style>
 	</head>
 	<body>
 
-		<div class="pdf-container">
+		<div
+			class="pdf-container">
 
+			<!-- HEADER DATE -->
 			<div class="header">
 				<strong>{{ "now"|date("d/m/Y") }}</strong>
 			</div>
 
+			<!-- TITRE -->
 			<div class="title">Lettre de Recommandation</div>
 
 			<p>
@@ -50,17 +66,45 @@
 				        recommande vivement mon patient :
 			</p>
 
-			<p class="bloc">
+			<!-- PATIENT -->
+			<div class="bloc">
 				<strong>{{ patient.nom }}</strong><br>
+
+				<!-- Date de naissance -->
 				Né(e) le :
-				<strong>{{ patient.dateNaissance ? patient.dateNaissance|date("d/m/Y") : "—" }}</strong><br>
+<strong>{{ patient.age ? patient.age|date("d/m/Y") : "—" }}</strong><br>
+
+
+
+				<!-- Âge -->
+{% if patient.age %}
+
+{% set diff = date().diff(patient.age) %}
+
+					Âge :
+					<strong>
+						{% if diff.y >= 1 %}
+							{{ diff.y }}
+							ans
+						{% elseif diff.m >= 1 %}
+							{{ diff.m }}
+							mois
+						{% else %}
+							{{ diff.d }}
+							jours
+						{% endif %}
+					</strong><br>
+				{% endif %}
+
+				<!-- Téléphone -->
 				Téléphone :
 				{{ patient.telephone ?? '-' }}
-			</p>
+			</div>
 
+			<!-- HOPITAL -->
 			<p>Pour une prise en charge au sein de l’établissement :</p>
 
-			<p class="bloc">
+			<div class="bloc">
 				<strong>{{ hopital.etablissement }}</strong><br>
 				Commune :
 				{{ hopital.commune }}<br>
@@ -68,16 +112,17 @@
 				{{ hopital.delegation }}<br>
 				Région :
 				{{ hopital.region }}
-			</p>
-<p class="mt-3">
-	<strong>Motif de recommandation :</strong><br>
-	{{ motif|nl2br }}
-</p>
+			</div>
 
+			<!-- MOTIF -->
+			<div class="bloc">
+				<strong>Motif de recommandation :</strong><br>
+				{{ motif|nl2br }}
+			</div>
 
+			<br>
 
-			<br><br>
-
+			<!-- SIGNATURE -->
 			<p>
 				Fait le :
 				<strong>{{ "now"|date("d/m/Y") }}</strong>
@@ -93,8 +138,47 @@
 				<strong>{{ cabinet.nom }}</strong>
 			</p>
 
+			<!-- FOOTER CABINET -->
+			<div class="footer">
+				{{ cabinet.nom }}
+				—
+				{{ cabinet.type }}<br>
+				Adresse :
+{{ cabinet.adresse ?? '—' }}
+{{ cabinet.ville ?? '—' }}<br>
+
+				Téléphone :
+				{{ cabinet.telephone ?? '—' }}
+				|
+				        Email :
+				{{ cabinet.email ?? '—' }}
+			</div>
+
 		</div>
 
 	</body>
+	<script>
+function generatePdf(button) {
+    const patientId = "{{ patient.id }}";
+    const hopitalId = "{{ hopital.id }}";
+    const motif = `{{ motif|e('js') }}`;
+    const encodedMotif = encodeURIComponent(motif);
+
+    const pdfUrl = `/recommendation/pdf/${patientId}/${hopitalId}?motif=${encodedMotif}`;
+
+    // Iframe caché
+    const iframe = document.createElement("iframe");
+    iframe.style.display = "none";
+    iframe.src = pdfUrl;
+    document.body.appendChild(iframe);
+
+    // Redirection après un court délai
+    setTimeout(() => {
+        window.location.href = "{{ path('app_home') }}";
+    }, 800);
+}
+
+
+	</script>
 </html>
 

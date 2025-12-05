@@ -84,8 +84,15 @@ class RecommendationController extends AbstractController
 		$dompdf->setPaper('A4', 'portrait');
 		$dompdf->render();
 
+		$pdfOutput = $dompdf->output();
+
 		return new Response(
-			$dompdf->stream("lettre_recommandation.pdf", ["Attachment" => true])
+			$pdfOutput,
+			200,
+			[
+				'Content-Type' => 'application/pdf',
+				'Content-Disposition' => 'attachment; filename="lettre_recommandation.pdf"',
+			]
 		);
 	}
 }

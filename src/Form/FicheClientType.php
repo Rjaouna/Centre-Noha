@@ -8,6 +8,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 
 class FicheClientType extends AbstractType
 {
@@ -105,23 +106,14 @@ class FicheClientType extends AbstractType
                 ]
             ])
 
-            ->add('age', ChoiceType::class, [
-                'label' => 'Âge',
-            'placeholder' => 'Sélectionnez une tranche d’âge',
-            'choices' => [
-                'Enfant (0 - 12 ans)' => '0-12',
-                'Adolescent (13 - 17 ans)' => '13-17',
-                'Jeune adulte (18 - 25 ans)' => '18-25',
-                'Adulte (26 - 40 ans)' => '26-40',
-                'Adulte (41 - 60 ans)' => '41-60',
-                'Senior (61 - 75 ans)' => '61-75',
-                'Âgé (76 ans et +)' => '76+',
-            ],
-                'constraints' => [
-                new Assert\NotBlank([
-                    'message' => 'Veuillez sélectionner une tranche d’âge.'
-                    ])
-                ]
+            ->add('age', DateType::class, [
+                'widget' => 'single_text',  // évite les selects jour/mois/année
+                'html5' => true,
+                'label' => 'Date de naissance',
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-control',
+                ],
             ])
 
             ->add('poids', ChoiceType::class, [

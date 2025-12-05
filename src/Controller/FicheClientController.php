@@ -48,7 +48,18 @@ final class FicheClientController extends AbstractController
             // ---- STRINGS (jamais null)
             $fiche->setNom($data['nom'] ?? null);
             $fiche->setVille($data['ville'] ?? null);
-            $fiche->setAge(isset($data['age']) ? (string)$data['age'] : null);
+            if (!empty($data['age'])) {
+                try {
+                    $fiche->setAge(new \DateTime($data['age']));
+                } catch (\Exception $e) {
+                    return $this->json([
+                        'error' => 'Format de date invalide'
+                    ], 400);
+                }
+            } else {
+                $fiche->setAge(null);
+            }
+
             $fiche->setPoids(isset($data['poids']) ? (string)$data['poids'] : null);
             $fiche->setTelephone($data['telephone'] ?? null);
             $fiche->setDureeMaladie(isset($data['dureeMaladie']) ? (string)$data['dureeMaladie'] : null);
@@ -59,12 +70,7 @@ final class FicheClientController extends AbstractController
             $fiche->setIsConsulted(false);
 
 
-            // ---- INT (converti ou null)
-            $fiche->setAge(
-                isset($data['age']) && $data['age'] !== ""
-                    ? (string)$data['age']
-                    : null
-            );
+
 
             // ---- FLOAT (converti ou null)
             $fiche->setPoids(

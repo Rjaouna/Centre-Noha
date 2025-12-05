@@ -42,7 +42,8 @@ class AppFixtures extends Fixture
             $client = new FicheClient();
             $client->setNom($faker->firstName . ' ' . $faker->lastName);
             $client->setVille($faker->randomElement($villes));
-            $client->setAge($faker->numberBetween(18, 80));
+            $client->setAge($faker->dateTimeBetween('-80 years', '-18 years'));
+
             $client->setPoids($faker->numberBetween(55, 110));
             $client->setTelephone('06' . $faker->numberBetween(10000000, 99999999));
             $client->setDureeMaladie($faker->numberBetween(1, 24));

@@ -104,10 +104,12 @@
 			{{ form_label(form.ville) }}
 		</div>
 
-		<div class="col-md-4 form-floating">
-			{{ form_widget(form.age, { attr: { class: 'form-control', placeholder: 'Âge' } }) }}
-			{{ form_label(form.age) }}
-		</div>
+<div class="col-md-4 form-floating">
+	{{ form_widget(form.age, { attr: { class: 'form-control' } }) }}
+	{{ form_label(form.age) }}
+</div>
+
+
 
 		<div class="col-md-4 form-floating">
 			{{ form_widget(form.poids, { attr: { class: 'form-control', placeholder: 'Poids' } }) }}

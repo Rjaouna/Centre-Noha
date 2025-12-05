@@ -30,9 +30,9 @@ class FicheClient
     #[Groups(['suivi_read', 'admission_read', 'rdv:read'])]
     private ?string $ville = null;
 
-    #[ORM\Column(type: Types::STRING, nullable: true)]
     #[Groups(['suivi_read', 'admission_read'])]
-    private ?string $age = null;
+    #[ORM\Column(type: 'date', nullable: true)]
+    private ?\DateTimeInterface $age = null;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]
     #[Groups(['suivi_read'])]
@@ -215,17 +215,17 @@ class FicheClient
         return $this;
     }
 
-    // INTEGERS
-    public function getAge(): ?string
+    public function getAge(): ?\DateTimeInterface
     {
         return $this->age;
     }
 
-    public function setAge(?string $age): self
+    public function setAge(?\DateTimeInterface $age): static
     {
         $this->age = $age;
         return $this;
     }
+
 
     public function getPoids(): ?string
     {

@@ -308,7 +308,27 @@ class="btn btn-outline-primary btn-lg rounded-pill px-4 shadow-sm d-flex align-i
 							<div class="col-md-6">
 								<div class="border-start border-3 border-warning ps-3">
 									<p class="text-secondary mb-1 fw-semibold">Âge</p>
-									<p class="fs-5 fw-bold">{{ fiche_client.age }}</p>
+{% if fiche_client.age %}
+	{% set birth = fiche_client.age is not same as(null) ? fiche_client.age : null %}
+	{% if birth %}
+		{% set diff = date().diff(birth) %}
+
+		{% if diff.y >= 1 %}
+			<p class="fs-5 fw-bold">{{ diff.y }}
+				ans</p>
+
+		{% elseif diff.m >= 1 %}
+			<p class="fs-5 fw-bold">{{ diff.m }}
+				mois</p>
+
+		{% else %}
+			<p class="fs-5 fw-bold">{{ diff.d }}
+				jours</p>
+		{% endif %}
+	{% endif %}
+{% endif %}
+
+
 								</div>
 							</div>
 
