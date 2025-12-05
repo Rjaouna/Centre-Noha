@@ -2,6 +2,7 @@
 <html lang="fr">
 	<head>
 		<meta charset="UTF-8">
+		
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
 
@@ -30,20 +31,18 @@
 			{% block stylesheets %}
 		{{ encore_entry_link_tags('app') }}
 	{% endblock %}
-
-
-
 	</head>
 
-
 		<body
-{{ include('partials/_navbar/_navbar.html.twig') }}
 
 
 
 		data-turbo="false" class="{% if app.request.attributes.get('_route') in ['app_home', 'app_login'] %}home-bg{% endif %}"> {# NAVBAR #}
+{{ include('partials/_navbar/_navbar.html.twig') }}
+
 		{{ include('home/_notifications/_notifications.html.twig') }}
 
+		{{ include('partials/_navbar/_navbar.html.twig') }}
 
 		{# Flash Symfony #}
 		{% for label, messages in app.flashes %}
