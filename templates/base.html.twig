@@ -35,11 +35,12 @@
 
 <body
 	data-turbo="false" class="{% if app.request.attributes.get('_route') in ['app_home', 'app_login'] %}home-bg{% endif %}">{# NAVBAR #}
-</body>
-
 <header class="app-header">
 	{{ include('partials/_navbar/_navbar.html.twig') }}
 </header>
+
+
+
 
 
 
