@@ -33,12 +33,15 @@
 	{% endblock %}
 	</head>
 
-		<body
+<body
+	data-turbo="false" class="{% if app.request.attributes.get('_route') in ['app_home', 'app_login'] %}home-bg{% endif %}">{# NAVBAR #}
+</body>
+
+<header class="app-header">
+	{{ include('partials/_navbar/_navbar.html.twig') }}
+</header>
 
 
-
-		data-turbo="false" class="{% if app.request.attributes.get('_route') in ['app_home', 'app_login'] %}home-bg{% endif %}"> {# NAVBAR #}
-{{ include('partials/_navbar/_navbar.html.twig') }}
 
 		{{ include('home/_notifications/_notifications.html.twig') }}
 

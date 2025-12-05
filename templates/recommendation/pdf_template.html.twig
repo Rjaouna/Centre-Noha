@@ -157,28 +157,6 @@
 		</div>
 
 	</body>
-	<script>
-function generatePdf(button) {
-    const patientId = "{{ patient.id }}";
-    const hopitalId = "{{ hopital.id }}";
-    const motif = `{{ motif|e('js') }}`;
-    const encodedMotif = encodeURIComponent(motif);
-
-    const pdfUrl = `/recommendation/pdf/${patientId}/${hopitalId}?motif=${encodedMotif}`;
-
-    // Iframe caché
-    const iframe = document.createElement("iframe");
-    iframe.style.display = "none";
-    iframe.src = pdfUrl;
-    document.body.appendChild(iframe);
-
-    // Redirection après un court délai
-    setTimeout(() => {
-        window.location.href = "{{ path('app_home') }}";
-    }, 800);
-}
-
-
-	</script>
+	
 </html>
 
