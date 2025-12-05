@@ -30,6 +30,9 @@
 			{% block stylesheets %}
 		{{ encore_entry_link_tags('app') }}
 	{% endblock %}
+{{ include('partials/_navbar/_navbar.html.twig') }}
+
+
 	</head>
 
 		<body
@@ -39,7 +42,6 @@
 		data-turbo="false" class="{% if app.request.attributes.get('_route') in ['app_home', 'app_login'] %}home-bg{% endif %}"> {# NAVBAR #}
 		{{ include('home/_notifications/_notifications.html.twig') }}
 
-		{{ include('partials/_navbar/_navbar.html.twig') }}
 
 		{# Flash Symfony #}
 		{% for label, messages in app.flashes %}
