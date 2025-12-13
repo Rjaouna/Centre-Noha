@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Cabinet médical
+{% endblock %}
+
+{% block body %}
+
+{# templates/admin/import_dispositifs.html.twig #}
+
+<h3>Import dispositifs médicaux (Excel)</h3>
+
+<form method="post" enctype="multipart/form-data">
+	<input type="file" name="excel" accept=".xlsx,.xls" required>
+	<button class="btn btn-primary mt-2">Importer</button>
+</form>
+
+
+
+{% endblock %}
+

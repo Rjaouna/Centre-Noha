@@ -1,0 +1,202 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Recherche par nom de dispositif
+{% endblock %}
+
+{% block body %}
+
+	<div
+		class="mt-4">
+
+		<!-- ⭐⭐ ENTÊTE ⭐⭐ -->
+		<div class="card shadow-lg border-0 rounded-4 mb-4">
+			<div class="card-body py-4 px-4">
+
+				<div class="row align-items-center">
+
+					<div class="col-12 col-md-7 d-flex align-items-center mb-3 mb-md-0">
+						<i class="bi bi-card-text text-primary fs-1 me-3"></i>
+						<div>
+<h2 class="fw-bold text-primary mb-1">Recherche par nom de dispositif</h2>
+
+							<p class="text-secondary m-0">
+								Recherchez un dispositif ou un acte par son libellé
+							</p>
+						</div>
+					</div>
+
+					<div class="col-12 col-md-5 d-flex justify-content-md-end">
+						<button onclick="history.back()" class="btn btn-outline-primary btn-lg rounded-pill px-4 shadow-sm d-flex align-items-center gap-2 w-100 w-md-auto">
+							<i class="bi bi-arrow-left"></i>
+							Retour
+						</button>
+					</div>
+
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+	<!-- 🔍 CHAMP DE RECHERCHE -->
+	<div class="position-relative my-4">
+		<i class="bi bi-search text-secondary position-absolute top-50 start-3 translate-middle-y"></i>
+		<input type="text" id="libelleSearch" class="form-control-lg shadow-sm form-control rounded-pill ps-5" placeholder="Rechercher par libellé...">
+	</div>
+
+	<style>
+		.start-3 {
+			left: 16px;
+		}
+
+		.libelle-card {
+			background: white;
+			border-radius: 20px;
+			padding: 22px;
+			margin-bottom: 18px;
+			border: 1px solid rgba(0, 0, 0, .08);
+			transition: 0.3s ease;
+			cursor: pointer;
+		}
+		.libelle-card:hover {
+			transform: translateY(-6px);
+			box-shadow: 0 18px 40px rgba(0, 0, 0, .12);
+		}
+	</style>
+
+	<!-- ⭐⭐ INTRO STATIQUE -->
+	<div id="staticIntro" class="mb-4">
+		<div class="row g-4">
+
+			<div class="col-md-4">
+				<div class="card shadow-sm border-0 rounded-4 p-4 h-100">
+					<i class="bi bi-info-circle text-primary fs-2 mb-3"></i>
+					<h5 class="fw-bold">Recherche rapide</h5>
+					<p class="text-secondary small">
+						Accédez rapidement aux libellés officiels enregistrés dans votre base.
+					</p>
+				</div>
+			</div>
+
+			<div class="col-md-4">
+				<div class="card shadow-sm border-0 rounded-4 p-4 h-100">
+					<i class="bi bi-funnel text-primary fs-2 mb-3"></i>
+					<h5 class="fw-bold">Filtrage intelligent</h5>
+					<p class="text-secondary small">
+						Tapez quelques mots pour filtrer instantanément les résultats.
+					</p>
+				</div>
+			</div>
+
+			<div class="col-md-4">
+				<div class="card shadow-sm border-0 rounded-4 p-4 h-100">
+					<i class="bi bi-shield-check text-primary fs-2 mb-3"></i>
+					<h5 class="fw-bold">Données fiables</h5>
+					<p class="text-secondary small">
+						Les données sont issues de votre référentiel officiel.
+					</p>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+	<!-- 📦 RÉSULTATS -->
+	<div id="results"></div>
+
+	 <script>
+	document.addEventListener("DOMContentLoaded", () => {
+	
+	    const input       = document.getElementById("libelleSearch");
+	    const results     = document.getElementById("results");
+	    const staticIntro = document.getElementById("staticIntro");
+	    let timer         = null;
+	
+	    function renderResults(data) {
+	        results.innerHTML = "";
+	
+	        data.forEach(item => {
+	            const card = `
+<div class="libelle-card shadow-sm">
+	<div class="d-flex justify-content-between align-items-center">
+
+		<div>
+			<p class="fw-bold mb-1 text-primary">
+				${item.libelle}
+			</p>
+
+			<p class="text-secondary small mb-1">
+				Code CNOPS :
+				<strong>${item.codeCnops}</strong>
+				&nbsp;|&nbsp;
+				                Code ANAM :
+				<strong>${item.codeAnam}</strong>
+			</p>
+		</div>
+
+		<div class="text-end">
+			<span class="badge bg-info px-3 py-2 mb-1 d-inline-block">
+				💰 ${item.tarif} DH
+			</span>
+			  
+
+			${
+			                item.ap === 'AP'
+			                ? `<span class="badge bg-warning text-dark px-3 py-2">
+				⚠️ Accord préalable requis
+			</span>`
+			                : `<span class="badge bg-success px-3 py-2">
+				✅ Pas d’accord préalable
+			</span>`
+			            }
+		</div>
+
+	</div>
+</div>
+
+
+	            `;
+	            results.insertAdjacentHTML("beforeend", card);
+	        });
+	    }
+	
+	    input.addEventListener("keyup", () => {
+	
+	        clearTimeout(timer);
+	
+	        timer = setTimeout(() => {
+	
+	            const q = input.value.trim();
+	
+	            if (q.length < 2) {
+	                staticIntro.style.display = "block";
+	                results.innerHTML = "";
+	                return;
+	            }
+	
+	            staticIntro.style.display = "none";
+	
+fetch(`/dispositif/search/api?search=${encodeURIComponent(q)}`)
+
+	                .then(res => res.json())
+	                .then(data => {
+	
+	                    if (data.length === 0) {
+	                        results.innerHTML = `
+	                            <div class="alert alert-warning text-center rounded-4 py-3">
+	                                Aucun résultat trouvé.
+	                            </div>`;
+	                        return;
+	                    }
+	
+	                    renderResults(data);
+	                });
+	
+	        }, 250);
+	    });
+	
+	});
+	</script>
+
+{% endblock %}
+
