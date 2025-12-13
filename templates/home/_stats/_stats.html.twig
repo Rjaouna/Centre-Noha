@@ -429,14 +429,18 @@ rdvs.slice(0, 4).forEach(rdv => {
                 <small class="text-muted d-block mt-1">
                     <i class="bi bi-clock"></i> ${rdv.date}
                 </small>
-                <button class="btn btn-sm btn-success rounded-pill mt-2 btn-validate-rdv"
-                    data-id="${rdv.id}">
+<button class="clicSound btn btn-sm btn-success rounded-pill mt-2 btn-validate-rdv" data-id="${rdv.id}" id="btn-rdv-${rdv.id}">
+
+
                     <i class="bi bi-check-circle"></i>
                 </button>
             </div>
         </div>
     `);
+	   // 🔊 ACTIVER LE SON ICI
+    buttonSoundClick(`btn-rdv-${rdv.id}`, "disabled");
 });
+
 attachValidationEvents();
 
 }

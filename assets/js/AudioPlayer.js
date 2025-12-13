@@ -29,7 +29,7 @@ export function buttonSoundClick(id, disabled = "") {
     if (!tag) return;
 
     // ✅ On ne met le son que sur les éléments qui ont la classe "clic"
-    if (!tag.classList.contains("btn")) {
+    if (!tag.classList.contains("clicSound")) {
         return;
     }
 

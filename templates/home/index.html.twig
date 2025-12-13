@@ -164,7 +164,9 @@
 
         <!-- Ajouter un patient -->
         <div class="col-12 col-md-3">
-            <a data-bs-toggle="modal" data-bs-target="#modalAddClient" class="text-decoration-none">
+<a data-bs-toggle="modal" data-bs-target="#modalAddClient" class="text-decoration-none clicSound" id="blocAddPatient">
+
+
                 <div class="dashboard-pro shadow" style="background: rgba(25,135,84,0.9);">
                     <h5>Ajouter un patient</h5>
                     <p>Créer une nouvelle fiche patient</p>
@@ -175,7 +177,9 @@
 
         <!-- Liste des patients -->
         <div class="col-12 col-md-3">
-            <a href="{{ path('app_fiche_client_index') }}" class="text-decoration-none">
+<a href="{{ path('app_fiche_client_index') }}" class="text-decoration-none clicSound" id="blocListePationts">
+
+
                 <div class="dashboard-pro shadow position-relative" style="background: rgba(13,110,253,0.9);">
                     <h5>Liste des patients</h5>
                     <p>Gérer et consulter tous les dossiers</p>
@@ -191,7 +195,9 @@
 
         <!-- Médicaments -->
         <div class="col-12 col-md-3">
-            <a href="{{ path('medicine_index') }}" class="text-decoration-none">
+<a href="{{ path('medicine_index') }}" class="text-decoration-none clicSound" id="blocListeMedicine">
+
+
                 <div class="dashboard-pro shadow" style="background: rgba(220,53,69,0.9);">
                     <h5>Médicaments</h5>
                     <p>Consultation & gestion des médicaments</p>
@@ -202,7 +208,9 @@
 
         <!-- Rendez-vous -->
         <div class="col-12 col-md-3">
-            <a href="{{ path('app_rdv_index') }}" class="text-decoration-none">
+<a href="{{ path('app_rdv_index') }}" class="text-decoration-none clicSound" id="blocRendezVous">
+
+
                 <div class="dashboard-pro shadow position-relative" style="background: rgba(13,202,240,0.9);">
                     <h5>Rendez-vous</h5>
                     <p>Planning & gestion des consultations</p>
@@ -234,7 +242,9 @@
         <div class="row g-3">
 
             <!-- Établissements Hospitaliers -->
-            <div class="col-md-4">
+<div class="col-md-4 clicSound" id="blocEtablissementsHospitaliers">
+
+
                 <a href="{{ path('hopital_search_page') }}" class="resource-link">
                     <div class="resource-card">
                         <i class="bi bi-hospital text-primary resource-icon"></i>
@@ -248,7 +258,9 @@
             </div>
 
             <!-- Dispositifs remboursables -->
-            <div class="col-md-4">
+<div class="col-md-4 clicSound" id="blocDispositifRemboursables">
+
+
                 <a href="{{ path('hopital_search_page') }}" class="resource-link">
                     <div class="resource-card">
                         <i class="bi bi-heart-pulse text-success resource-icon"></i>
@@ -262,7 +274,8 @@
             </div>
 
             <!-- Médicaments -->
-            <div class="col-md-4">
+<div class="col-md-4 clicSound" id="listMedicaments">
+
                 <a href="{{ path('medicine_index') }}" class="resource-link">
                     <div class="resource-card">
                         <i class="bi bi-capsule-pill text-danger resource-icon"></i>

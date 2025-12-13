@@ -56,7 +56,8 @@
 				{% set today = "now"|date("D") == short %}
 
 				<div class="col-6 col-md-3">
-					<div class="card shadow-sm border-0 rounded-4 text-center p-3 day-card" data-day="{{ short }}" style="cursor:pointer; transition:0.2s">
+<div id="day-{{ short }}" class="card shadow-sm border-0 rounded-4 text-center p-3 day-card clicSound" data-day="{{ short }}" style="cursor:pointer; transition:0.2s">
+
 
 						<div class="icon-circle mx-auto mb-2
 							                                {% if today %}bg-primary text-white{% else %}bg-light text-primary{% endif %}" style="width:60px; height:60px; border-radius:16px; display:flex; align-items:center; justify-content:center;">
