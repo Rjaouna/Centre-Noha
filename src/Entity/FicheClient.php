@@ -491,4 +491,14 @@ class FicheClient
 
         return $this;
     }
+
+    public function getAgePatient(): ?int
+    {
+        if (!$this->age) {
+            return null;
+        }
+
+        $today = new \DateTimeImmutable();
+        return $today->diff($this->age)->y;
+    }
 }

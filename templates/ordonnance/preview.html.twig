@@ -59,11 +59,26 @@
 					Ordonnance —
 					{{ patient.nom }}
 				</h2>
+<div class="col-12 col-md-4 d-flex flex-column flex-md-row justify-content-md-end justify-content-center gap-2">
 
-				<button onclick="generatePdf()" class="btn btn-outline-danger rounded-pill">
-					<i class="bi bi-filetype-pdf"></i>
-					Générer le PDF
-				</button>
+
+
+
+<button onclick="generatePdf()" class="btn btn-outline-danger btn-lg rounded-pill px-4 shadow-sm d-flex align-items-center gap-2 w-100 w-md-auto">
+
+		<i class="bi bi-filetype-pdf"></i>
+		Générer le PDF
+	</button>
+<!-- Bouton Retour -->
+<button type="button" onclick="history.back()" class="btn btn-outline-primary btn-lg rounded-pill px-4 shadow-sm d-flex align-items-center gap-2 w-100 w-md-auto">
+	<i class="bi bi-arrow-left"></i>
+	Retour
+
+</button>
+
+</div>
+
+
 			</div>
 		</div>
 	</div>
@@ -77,25 +92,23 @@
 
 			<div class="ord-title">ORDONNANCE MÉDICALE</div>
 
-			<!-- Infos Cabinet -->
-			<p>
-				<strong>{{ cabinet.nom }}</strong><br>
-				{{ cabinet.type }}<br>
-				{{ cabinet.adresse }}
-				–
-				{{ cabinet.ville }}<br>
-				Tél :
-				{{ cabinet.telephone }}
-				– Email :
-				{{ cabinet.email }}
-			</p>
-
-			<hr>
 
 			<!-- Infos Patient -->
 			<p>
 				<strong>Patient :</strong>
 				{{ patient.nom }}
+				{% if patient.agePatient %}
+
+					({{ patient.agePatient }}
+
+					ans , 
+{{ patient.poids }}
+
+Kg)
+
+				{% endif %}
+
+
 				<br>
 				Téléphone :
 				{{ patient.telephone }}<br>
@@ -105,56 +118,56 @@
 
 			<hr>
 
-<h5 class="fw-bold text-primary mt-4">Médicaments prescrits :</h5>
+			<h5 class="fw-bold text-primary mt-4">Médicaments prescrits :</h5>
 
-{% for med in medicaments %}
-	<div class="med-item">
-		<div class="med-name">{{ med.name|upper }}</div>
-		<div class="med-dose">{{ med.dosage }}
-			{{ med.uniteDosage }}</div>
-		<div class="med-form">{{ med.forme }}
+			<ol class="med-list">
+
+
+				{% for med in medicaments %}
+					<li>
+						<strong>{{ med.name|upper }}</strong>
+						—
+						<strong>{{ med.dosage }}
+							{{ med.uniteDosage }}</strong>
+						{{ med.forme }}
+					</li>
+
+
+					–
+					{{ med.presentation }}</li>
+			{% else %}
+				<li>Aucun médicament trouvé</li>
+			{% endfor %}
+		</ol>
+
+
+
+		
+
+		<p>
+			Signature / Cachet :
+			<br><br><br>
+		</p>
+
+		<div class="footer">
+			{{ cabinet.nom }}
 			–
-			{{ med.presentation }}</div>
-	</div>
-{% else %}
-	<p class="text-muted">Aucun médicament ajouté.</p>
-{% endfor %}
-
-
-
-			<hr>
-
-			<p>
-				Fait le :
-				<strong>{{ "now"|date("d/m/Y") }}</strong>
-			</p>
-
-			<p>
-				Signature / Cachet :
-				<br><br><br>
-			</p>
-
-			<div class="footer">
-				{{ cabinet.nom }}
-				–
-				{{ cabinet.type }}<br>
-				{{ cabinet.adresse }}
-				–
-				{{ cabinet.ville }}<br>
-				Tél :
-				{{ cabinet.telephone }}
-				| Email :
-				{{ cabinet.email }}
-			</div>
-
+			{{ cabinet.type }}<br>
+			{{ cabinet.adresse }}
+			–
+			{{ cabinet.ville }}<br>
+			Tél :
+			{{ cabinet.telephone }}
+			| Email :
+			{{ cabinet.email }}
 		</div>
-	</div>
 
-	 <script>
+	</div>
+</div>
+
+ <script>
 	    function generatePdf() {
 	        window.open("/api/ordonnance/{{ suivi.id }}/pdf", "_blank");
 	    }
-	</script>
-
-{% endblock %}
+	</script>{% endblock %}
 

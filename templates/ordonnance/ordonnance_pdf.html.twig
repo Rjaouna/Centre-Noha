@@ -70,65 +70,69 @@
 
 		<div class="pdf-container">
 
-			<div class="text-end">
-				<strong>{{ "now"|date("d/m/Y") }}</strong>
-			</div>
+<div class="text-end">
+	<strong>{{ "now"|date("d/m/Y") }}</strong>
+</div>
+
 
 			<div class="ord-title">ORDONNANCE MÉDICALE</div>
 
-			<!-- Infos Cabinet -->
-			<p>
-{{ cabinet.type }} <strong>{{ cabinet.nom }}</strong><br>
 
-		
-				{{ cabinet.adresse }}
-				–
-				{{ cabinet.ville }}<br>
-				Tél :
-				{{ cabinet.telephone }}
-				– Email :
-				{{ cabinet.email }}
-			</p>
 
-			<hr>
+<!-- Infos Patient -->
+<p>
+	<strong>Patient :</strong>
+	{{ patient.nom }}
+	{% if patient.agePatient %}
 
-			<!-- Infos Patient -->
-			<p>
-				<strong>Patient :</strong>
-				{{ patient.nom }}<br>
-				Téléphone :
-				{{ patient.telephone }}<br>
-			</p>
+({{ patient.agePatient }}
 
-			<hr>
+ans ,
+{{ patient.poids }}
+
+Kg)
+
+
+	{% endif %}
+
+
+	<br>
+	Téléphone :
+	{{ patient.telephone }}<br>
+	Maladie :
+	{{ patient.typeMaladie }}
+</p>
+
+<hr>
+
 
 			<h4 style="color:#0d6efd; margin-top:25px;">Médicaments prescrits :</h4>
 
+<ol class="med-list">
+
+
 {% for med in medicaments %}
-	<div class="med-item">
-		<div class="med-line">
-			{{ med.name|upper }}
-			—
-			{{ med.dosage }}
-			{{ med.uniteDosage }}
-			—
-			{{ med.forme }}
-			—
-			{{ med.presentation }}
-		</div>
-	</div>
+<li>
+	<strong>{{ med.name|upper }}</strong>
+	—
+	<strong>{{ med.dosage }}
+		{{ med.uniteDosage }}</strong>
+	{{ med.forme }}
+</li>
+
+–
+{{ med.presentation }}</li>
+
+
 {% else %}
-	<p class="text-muted">Aucun médicament ajouté.</p>
-{% endfor %}
+<li>Aucun médicament trouvé</li>{% endfor %}</ol>
 
 
 
-			<hr>
 
-			<p>
-				Fait le :
-				<strong>{{ "now"|date("d/m/Y") }}</strong>
-			</p>
+
+
+		
 
 			<p>
 				Signature / Cachet :<br><br><br>
