@@ -1,0 +1,90 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des utilisateurs
+{% endblock %}
+
+{% block body %}
+	<div class="container mt-5">
+		<h2 class="mb-4">Liste des utilisateurs</h2>
+
+		<table class="table table-hover align-middle">
+			<thead class="table-light">
+				<tr>
+					<th>Nom</th>
+					<th>Email</th>
+					<th class="text-center">Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for user in users %}
+					<tr>
+						<td>{{ user.nom }}</td>
+						<td>{{ user.email }}</td>
+						<td class="text-center">
+<button type="button" class="btn btn-sm btn-outline-primary send-access-btn" data-user-id="{{ user.id }}">
+	<i class="bi bi-envelope"></i>
+	Envoyer les accès
+</button>
+
+
+						</td>
+					</tr>
+				{% else %}
+					<tr>
+						<td colspan="3" class="text-center text-muted">
+							Aucun utilisateur trouvé
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+<meta
+name="csrf-token" content="{{ csrf_token('send_access') }}">
+
+ <script>
+const urlTemplate = "{{ path('admin_user_send_access', {'id': '__ID__'}) }}";
+
+document.querySelectorAll('.send-access-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+
+        if (btn.classList.contains('btn-success')) return;
+
+        const userId = btn.dataset.userId;
+
+        if (!confirm('Envoyer les accès à cet utilisateur ?')) return;
+
+        btn.disabled = true;
+        btn.innerHTML = 'Envoi...';
+
+        try {
+            const url = urlTemplate.replace('__ID__', userId);
+
+            const res = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.message);
+
+            btn.classList.replace('btn-outline-primary', 'btn-success');
+            btn.innerHTML = 'Accès envoyés';
+
+        } catch (e) {
+            alert(e.message);
+            btn.disabled = false;
+            btn.innerHTML = 'Envoyer les accès';
+        }
+    });
+});
+</script>
+
+
+
+
+{% endblock %}
+
