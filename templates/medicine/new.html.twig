@@ -1,0 +1,101 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter un médicament
+{% endblock %}
+
+{% block body %}
+
+	<div class="container mt-5">
+		<div class="card shadow-lg border-0 rounded-4">
+
+			<div class="card-header bg-danger text-white rounded-top-4">
+				<h4 class="mb-0">
+					<i class="bi bi-capsule"></i>
+					Ajouter un médicament
+				</h4>
+			</div>
+
+			<div class="card-body">
+
+				<div id="alertBox"></div>
+
+				<form id="medicineForm">
+
+					<div class="row g-3">
+
+						<div class="col-md-6">
+							<label class="form-label">Code</label>
+							<input type="text" class="form-control" id="code" placeholder="3400931234567" required>
+						</div>
+
+						<div class="col-md-6">
+							<label class="form-label">Nom</label>
+							<input type="text" class="form-control" id="name" placeholder="Doliprane" required>
+						</div>
+
+						<div class="col-md-6">
+							<label class="form-label">DCI</label>
+							<input type="text" class="form-control" id="dci" placeholder="Paracétamol">
+						</div>
+
+						<div class="col-md-3">
+							<label class="form-label">Dosage</label>
+							<input type="text" class="form-control" id="dosage" placeholder="500">
+						</div>
+
+						<div class="col-md-3">
+							<label class="form-label">Unité dosage</label>
+							<input type="text" class="form-control" id="uniteDosage" placeholder="mg" required>
+						</div>
+
+						<div class="col-md-6">
+							<label class="form-label">Forme</label>
+							<input type="text" class="form-control" id="forme" placeholder="Comprimé">
+						</div>
+
+						<div class="col-md-6">
+							<label class="form-label">Présentation</label>
+							<input type="text" class="form-control" id="presentation" placeholder="Boîte de 16 comprimés">
+						</div>
+
+						<div class="col-md-4">
+							<label class="form-label">PPV</label>
+							<input type="number" step="0.01" class="form-control" id="ppv" placeholder="2.18" required>
+						</div>
+
+						<div class="col-md-4">
+							<label class="form-label">PH</label>
+							<input type="number" step="0.01" class="form-control" id="ph" placeholder="1.50">
+						</div>
+
+						<div class="col-md-4">
+							<label class="form-label">Taux remboursement (%)</label>
+							<input type="number" class="form-control" id="tauxRembourssement" placeholder="65">
+						</div>
+
+						<div class="col-md-12 form-check mt-2">
+							<input class="form-check-input" type="checkbox" id="isGeneric">
+							<label class="form-check-label">
+								Médicament générique
+							</label>
+						</div>
+
+					</div>
+
+					<div class="text-end mt-4">
+						<button type="submit" class="btn btn-danger px-5">
+							<i class="bi bi-plus-circle"></i>
+							Ajouter
+						</button>
+					</div>
+
+				</form>
+
+			</div>
+		</div>
+	</div>
+
+	 <script src="{{ asset('js/medicine.js') }}"></script>
+
+{% endblock %}
+
