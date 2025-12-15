@@ -80,6 +80,6 @@ class UserProfileController extends AbstractController
 
 		$this->addFlash('success', 'Mot de passe mis à jour avec succès.');
 
-		return $this->redirectToRoute('app_user_profile');
+		return $this->redirectToRoute('app_logout');
 	}
 }
