@@ -102,7 +102,90 @@
 
 		</form>
 
-	</div>
+<hr class="my-4">
+
+<div class="d-flex justify-content-end">
+	<a href="#" class="text-danger fw-bold d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+		<i class="bi bi-shield-lock"></i>
+		Changer mon mot de passe
+	</a>
+</div></div><div class="modal fade" id="changePasswordModal" tabindex="-1">
+<div class="modal-dialog modal-dialog-centered">
+	<div class="modal-content rounded-4">
+
+
+		<form method="post" action="{{ path('app_change_password') }}">
+			<div class="modal-header">
+				<h5 class="modal-title text-danger">
+					<i class="bi bi-key"></i>
+					Changer le mot de passe
+				</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+
+			</div>
+
+
+			<div
+				class="modal-body">
+
+				<!-- Mot de passe actuel -->
+				<div class="mb-3">
+					<label class="form-label">Mot de passe actuel</label>
+					<input type="password" name="current_password" class="form-control" required>
+
+
+				</div>
+
+				<!-- Nouveau mot de passe -->
+				<div class="mb-3">
+					<label class="form-label">Nouveau mot de passe</label>
+					<input type="password" id="newPassword" name="new_password" class="form-control" required>
+					<small id="passwordHelp" class="text-muted">
+						Minimum 8 caractères, lettres et chiffres
+					</small>
+
+
+</div>
+
+
+<!-- Confirmation (cachée par défaut) -->
+<div class="mb-3 d-none" id="confirmPasswordBlock">
+	<label class="form-label">Confirmer le nouveau mot de passe</label>
+	<input type="password" name="confirm_password" class="form-control" required>
+</div></div><div class="modal-footer">
+<button type="submit" class="btn btn-danger" disabled id="submitPasswordBtn">
+	Mettre à jour
+</button></div></form></div></div></div> <script>
+		document.addEventListener('DOMContentLoaded', function () {
+		
+			const newPasswordInput = document.getElementById('newPassword');
+			const confirmBlock = document.getElementById('confirmPasswordBlock');
+			const submitBtn = document.getElementById('submitPasswordBtn');
+			const confirmInput = confirmBlock.querySelector('input');
+		
+			const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+		
+			function checkPasswords() {
+				const newPasswordValid = passwordRegex.test(newPasswordInput.value);
+				const confirmMatch = confirmInput.value === newPasswordInput.value;
+		
+				if (newPasswordValid) {
+					confirmBlock.classList.remove('d-none');
+				} else {
+					confirmBlock.classList.add('d-none');
+					submitBtn.disabled = true;
+					return;
+				}
+		
+				submitBtn.disabled = !confirmMatch;
+			}
+		
+			newPasswordInput.addEventListener('input', checkPasswords);
+			confirmInput.addEventListener('input', checkPasswords);
+		
+		});
+		</script>
+
 
 {% endblock %}
 
