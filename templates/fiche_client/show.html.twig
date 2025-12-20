@@ -347,12 +347,18 @@ class="btn btn-outline-primary btn-lg rounded-pill px-4 shadow-sm d-flex align-i
 								</div>
 							</div>
 
-							<div class="col-md-6">
+{# <div class="col-md-6">
+
+
 								<div class="border-start border-3 border-secondary ps-3">
 									<p class="text-secondary mb-1 fw-semibold">Mis à jour le</p>
 									<p class="fs-5 fw-bold">{{ fiche_client.updatedAt|date('d/m/Y H:i') }}</p>
 								</div>
-							</div>
+</div>
+
+#}
+
+
 {{ include('fiche_client/_composants/_galerie/_galerie.html.twig') }}
 {{ include('fiche_client/_composants/_modal_image/_modal_image.html.twig') }}
 
@@ -424,7 +430,10 @@ class="btn btn-outline-primary btn-lg rounded-pill px-4 shadow-sm d-flex align-i
 							<div class="col-md-12">
 								<div class="border-start border-3 border-success ps-3">
 									<p class="text-secondary mb-1 fw-semibold">Durée de la maladie</p>
-									<p class="fs-5 fw-bold">{{ fiche_client.dureeMaladie }}</p>
+<p class="fs-5 fw-bold">{{ fiche_client.dureeMaladie }}
+	Jours</p>
+
+
 								</div>
 							</div>
 

@@ -17,7 +17,7 @@ class RendezVousController extends AbstractController
 	#[Route('/', name: 'index', methods: ['GET'])]
 	public function calendar(RendezVousRepository $repo): Response
 	{
-		$rdvs = $repo->findBy([], ['dateRdvAt' => 'ASC']);
+		$rdvs = $repo->findBy(['statut' => 'A venir'], ['dateRdvAt' => 'ASC']);
 
 		// Grouper par date (Y-m-d) si tu en as besoin ailleurs
 		$rdvsByDay = [];

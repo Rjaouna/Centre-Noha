@@ -65,47 +65,81 @@
 </div>
 
 
-{# 🟩 MODAL VISUALISATION #}
+<!-- 🟩 MODAL — VISUALISATION (DYNAMIQUE) -->
+
 <div class="modal fade" id="modalMaladiesChroniques" tabindex="-1" aria-hidden="true">
 	<div class="modal-dialog modal-lg">
-		<div class="modal-content rounded-4 shadow-lg">
+<div class="modal-content rounded-4 shadow-lg">
+
+
+<!-- HEADER -->
 
 			<div class="modal-header bg-danger text-white rounded-top-4">
 				<h3 class="modal-title">
 					<i class="bi bi-activity me-2"></i>
-					Maladies chroniques</h3>
+Maladies chroniques</h3>
+
 				<button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
 			</div>
 
-			<div class="modal-body py-4 px-4">
+<!-- BODY -->
+<div class="modal-body py-4 px-4">
 
-				{% set m = fiche_client.maladiesChroniques %}
 
-				{% if m %}
-					<div class="row g-4">
+<!-- CONTENU DYNAMIQUE -->
+<div id="maladiesContent">
 
-						{% macro view(label, value, color) %}
-							<div class="col-md-4">
-								<div class="p-3 rounded-4 border-start border-4 bg-light shadow-sm h-100 border-{{ color }}">
-									<p class="text-secondary fw-semibold mb-1">{{ label }}</p>
-									<p class="fs-5 fw-bold">{{ value ?? "-" }}</p>
-								</div>
-							</div>
-						{% endmacro %}
 
-						{{ _self.view("Diabète", m.diabetique, "danger") }}
-						{{ _self.view("Hypertension", m.hypertendu, "warning") }}
-						{{ _self.view("Cholestérol", m.cholesterol, "primary") }}
-						{{ _self.view("Allergies nasales", m.allergieNasale, "info") }}
+<div class="row g-4">
+
+
+<!-- Diabète -->
+<div class="col-md-4">
+
+<div class="p-3 rounded-4 border-start border-4 border-danger bg-light shadow-sm h-100">
+	<p class="text-secondary fw-semibold mb-1">Diabète</p>
+	<p class="fs-5 fw-bold" id="view-diabetique">-</p>
+</div></div>
+
+
+<!-- Hypertension -->
+<div class="col-md-4">
+	<div class="p-3 rounded-4 border-start border-4 border-warning bg-light shadow-sm h-100">
+		<p class="text-secondary fw-semibold mb-1">Hypertension</p>
+		<p class="fs-5 fw-bold" id="view-hypertendu">-</p>
+	</div>
+</div>
+
+
+<!-- Cholestérol -->
+<div class="col-md-4">
+	<div class="p-3 rounded-4 border-start border-4 border-primary bg-light shadow-sm h-100">
+		<p class="text-secondary fw-semibold mb-1">Cholestérol</p>
+		<p class="fs-5 fw-bold" id="view-cholesterol">-</p>
+	</div>
+</div>
+
+<!-- Allergies nasales -->
+<div class="col-md-4">
+	<div class="p-3 rounded-4 border-start border-4 border-info bg-light shadow-sm h-100">
+		<p class="text-secondary fw-semibold mb-1">Allergies nasales</p>
+		<p class="fs-5 fw-bold" id="view-allergieNasale">-</p>
+	</div>
+</div>
+
+<!-- Autre maladie -->
 
 						<div class="col-12">
 							<div class="p-3 rounded-4 border-start border-4 border-secondary bg-light shadow-sm">
 								<p class="text-secondary fw-semibold mb-1">Autre maladie</p>
-								<p class="fs-5 fw-bold">{{ m.autreMaladie ?: '-' }}</p>
+<p class="fs-5 fw-bold" id="view-autreMaladie">-</p>
+
 							</div>
 						</div>
 
 					</div>
+
+<!-- BOUTON MODIFIER -->
 
 					<div class="text-end mt-4">
 						<button class="btn btn-danger btn-lg px-4" id="btnEditMaladies" data-bs-target="#modalAddMaladiesChroniques" data-bs-toggle="modal" data-bs-dismiss="modal">
@@ -114,15 +148,64 @@
 						</button>
 					</div>
 
-				{% else %}
-					<p class="text-center text-muted">Aucune maladie chronique enregistrée.</p>
-				{% endif %}
+</div>
+
+<!-- FALLBACK SI AUCUNE DONNÉE -->
+<div id="maladiesEmpty" class="text-center text-muted d-none">
+	Aucune maladie chronique enregistrée.
+</div>
+
 
 			</div>
 
 		</div>
 	</div>
 </div>
+
+<!-- 🚀 JS — FETCH À L’OUVERTURE -->
+ <script>
+document.getElementById('modalMaladiesChroniques')
+    .addEventListener('show.bs.modal', async () => {
+
+    const content = document.getElementById('maladiesContent');
+    const empty   = document.getElementById('maladiesEmpty');
+
+    try {
+        const response = await fetch("{{ path('api_maladies_show', {idClient: fiche_client.id}) }}");
+        const result   = await response.json();
+
+        if (!result.exists || !result.data) {
+            content.classList.add('d-none');
+            empty.classList.remove('d-none');
+            return;
+        }
+
+        content.classList.remove('d-none');
+        empty.classList.add('d-none');
+
+        const m = result.data;
+
+        const fields = [
+            'diabetique',
+            'hypertendu',
+            'cholesterol',
+            'allergieNasale',
+            'autreMaladie'
+        ];
+
+        fields.forEach(field => {
+            const el = document.getElementById(`view-${field}`);
+            if (el) {
+                el.textContent = m[field] ?? '-';
+            }
+        });
+
+    } catch (e) {
+        console.error('Erreur chargement maladies chroniques', e);
+    }
+});
+</script>
+
 
 
 {# JS : Pré-remplissage en édition #}
