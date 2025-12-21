@@ -49,7 +49,7 @@ $focus-ring-color: rgba(76, 201, 166, 0.35);
 // ==========================
 
 body {
-  background-color: #ffffff;
+  background: linear-gradient(to bottom, #257cfd 1%, #ffffff 0%);
   color: $body-color;
   font-family: "Inter", "Source Sans Pro", sans-serif;
 }
