@@ -1,375 +1,217 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Accueil{% endblock %}
+{% block title %}Accueil
+{% endblock %}
+
+{% block stylesheets %}
+	{{ parent() }}
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+{% endblock %}
+
 
 {% block body %}
 
-<style>
-    /* =============================
-       DASHBOARD PRO STYLE PREMIUM
-       ============================= */
-
-    .dashboard-pro {
-        padding: 24px;
-        border-radius: 18px;
-        position: relative;
-        overflow: hidden;
-        color: #fff !important;
-        text-align: left !important;
-        cursor: pointer;
-        transition: 0.25s ease-in-out;
-        min-height: 160px;
-    }
-
-    .dashboard-pro:hover {
-        transform: translateY(-6px);
-        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.18);
-    }
-
-    .dashboard-pro-bigicon {
-        position: absolute;
-        right: -10px;
-        bottom: -10px;
-        font-size: 6rem;
-        opacity: 0.18;
-        pointer-events: none;
-    }
-
-    .dashboard-pro-badge-inside {
-        position: absolute;
-        bottom: 12px;
-        left: 15px;
-        background: rgba(255, 255, 255, 0.25);
-        padding: 6px 12px;
-        border-radius: 12px;
-        font-weight: 700;
-        font-size: 0.85rem;
-        backdrop-filter: blur(4px);
-        color: #fff;
-    }
-
-    .dashboard-pro h5 {
-        font-size: 1.2rem;
-        font-weight: 800;
-        margin-bottom: 6px;
-        color: #fff !important;
-    }
-
-    .dashboard-pro p {
-        color: rgba(255, 255, 255, 0.85) !important;
-        margin-bottom: 0;
-    }
-
-    /* Badge animé */
-    .dashboard-pro-badge {
-        position: absolute;
-        top: -6px;
-        right: -6px;
-        background: #0dcaf0;
-        color: white;
-        font-weight: 700;
-        padding: 6px 10px;
-        border-radius: 50%;
-        animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.12); }
-        100% { transform: scale(1); }
-    }
-
-    /* =============================
-       RESSOURCES BLOCKS
-       ============================= */
-    .resource-card {
-        position: relative;
-        background: #ffffff;
-        border-radius: 18px;
-        padding: 22px;
-        display: flex;
-        align-items: center;
-        overflow: hidden;
-        border: 1px solid #e7e7e7;
-        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
-        transition: .25s ease-in-out;
-        cursor: pointer;
-        height: 120px;
-    }
-
-    .resource-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 12px 22px rgba(0, 0, 0, 0.12);
-    }
-
-    .resource-icon {
-        font-size: 2rem;
-        margin-right: 14px;
-        z-index: 2;
-    }
-
-    .resource-bg-icon {
-        position: absolute;
-        right: -5px;
-        bottom: -5px;
-        font-size: 5rem;
-        opacity: .09;
-        pointer-events: none;
-    }
-
-    .resource-card h6 {
-        font-weight: 800;
-        margin-bottom: 3px;
-    }
-
-    .resource-card small {
-        color: #6c757d;
-    }
-
-    .resource-link {
-        text-decoration: none !important;
-        color: inherit !important;
-    }
-</style>
-
-
-
-<div class="container py-4">
-
-    <!-- ======================= -->
-    <!-- 🔹 TITRE DU DASHBOARD -->
-    <!-- ======================= -->
-
-<div class=" mb-4">
-	<h2 class="fw-bold mb-4 mt-3">
-
-		<i class="bi bi-clipboard-pulse text-primary me-2"></i>
-
-
-            Tableau de Bord — 
-            <span class="text-primary" id="nameCabinet"></span>
-</h2>
-
-
-    </div>
-
-
-
-    <!-- ======================= -->
-    <!-- 🔹 BLOC DASHBOARD PRO -->
-    <!-- ======================= -->
-
-<div class="row g-3 justify-content-center">
-
-
-        <!-- Ajouter un patient -->
-<div class="col-6 col-md-3">
-
-<a data-bs-toggle="modal" data-bs-target="#modalAddClient" class="text-decoration-none clicSound" id="blocAddPatient">
-
-
-                <div class="dashboard-pro shadow" style="background: rgba(25,135,84,0.9);">
-                    <h5>Ajouter un patient</h5>
-                    <p>Créer une nouvelle fiche patient</p>
-                    <i class="bi bi-person-plus-fill dashboard-pro-bigicon"></i>
-                </div>
-            </a>
-        </div>
-
-        <!-- Liste des patients -->
-<div class="col-6 col-md-3">
-
-<a href="{{ path('app_fiche_client_index') }}" class="text-decoration-none clicSound" id="blocListePationts">
-
-
-                <div class="dashboard-pro shadow position-relative" style="background: rgba(13,110,253,0.9);">
-                    <h5>Liste des patients</h5>
-                    <p>Gérer et consulter tous les dossiers</p>
-
-                    {% if totalClients %}
-                        <span class="dashboard-pro-badge-inside">{{ totalClients }}</span>
-                    {% endif %}
-
-                    <i class="bi bi-people-fill dashboard-pro-bigicon"></i>
-                </div>
-            </a>
-        </div>
-
-        <!-- Médicaments -->
-<div class="col-6 col-md-3">
-
-<a href="{{ path('medicine_index') }}" class="text-decoration-none clicSound" id="blocListeMedicine">
-
-
-                <div class="dashboard-pro shadow" style="background: rgba(220,53,69,0.9);">
-                    <h5>Médicaments</h5>
-                    <p>Consultation & gestion des médicaments</p>
-                    <i class="bi bi-capsule-pill dashboard-pro-bigicon"></i>
-                </div>
-            </a>
-        </div>
-
-        <!-- Rendez-vous -->
-<div class="col-6 col-md-3">
-
-<a href="{{ path('app_rdv_index') }}" class="text-decoration-none clicSound" id="blocRendezVous">
-
-
-                <div class="dashboard-pro shadow position-relative" style="background: rgba(13,202,240,0.9);">
-                    <h5>Rendez-vous</h5>
-                    <p>Planning & gestion des consultations</p>
-
-                    {% if totalRdv %}
-                        <span class="dashboard-pro-badge-inside">{{ totalRdv }}</span>
-                    {% endif %}
-
-                    <i class="bi bi-calendar-week dashboard-pro-bigicon"></i>
-                </div>
-            </a>
-        </div>
-
-    </div>
-
-
-
-    <!-- ======================= -->
-    <!-- 🔹 RESSOURCES -->
-    <!-- ======================= -->
-
-    <div class="mt-5">
-<h4 class="fw-bold mb-4">
-
-            <i class="bi bi-ui-checks-grid text-primary me-2"></i>
-            Référentiels & Ressources
-        </h4>
-
-        <div class="row g-3">
-
-            <!-- Établissements Hospitaliers -->
-<div class="col-md-4 clicSound" id="blocEtablissementsHospitaliers">
-
-
-                <a href="{{ path('hopital_search_page') }}" class="resource-link">
-                    <div class="resource-card">
-                        <i class="bi bi-hospital text-primary resource-icon"></i>
-                        <div>
-                            <h6>Établissements Hospitaliers</h6>
-                            <small>Recherche & consultation</small>
-                        </div>
-                        <i class="bi bi-hospital resource-bg-icon text-primary"></i>
-                    </div>
-                </a>
-            </div>
-
-            <!-- Dispositifs remboursables -->
-<div class="col-md-4 clicSound" id="blocDispositifRemboursables">
-
-
-<a href="{{ path('dispositif_search') }}" class="resource-link">
-
-
-                    <div class="resource-card">
-                        <i class="bi bi-heart-pulse text-success resource-icon"></i>
-                        <div>
-                            <h6>Dispositifs Remboursables</h6>
-                            <small>CNOPS – ANAM</small>
-                        </div>
-                        <i class="bi bi-heart-pulse resource-bg-icon text-success"></i>
-                    </div>
-                </a>
-            </div>
-
-            <!-- Médicaments -->
-<div class="col-md-4 clicSound" id="listMedicaments">
-
-                <a href="{{ path('medicine_index') }}" class="resource-link">
-                    <div class="resource-card">
-                        <i class="bi bi-capsule-pill text-danger resource-icon"></i>
-                        <div>
-                            <h6>Liste des Médicaments</h6>
-                            <small>CNOPS – ANAM</small>
-                        </div>
-                        <i class="bi bi-capsule-pill resource-bg-icon text-danger"></i>
-                    </div>
-                </a>
-            </div>
-
-        </div>
-    </div>
-
-
-
-    <!-- ======================= -->
-    <!-- 🔹 SECTION STATISTIQUES -->
-    <!-- ======================= -->
-    {{ include('home/_stats/_stats.html.twig') }}
-
-
-
-</div> <!-- /container -->
-
-
-
-<!-- ======================= -->
-<!-- 🔹 MODAL AJOUT PATIENT -->
-<!-- ======================= -->
-
-<div class="modal fade" id="modalAddClient" tabindex="-1">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content rounded-4 shadow-sm border">
-
-            <div class="modal-header bg-primary text-white rounded-top-4">
-                <h5 class="modal-title fw-bold d-flex align-items-center">
-                    <i class="bi bi-person-plus fs-4 me-2"></i>
-                    Ajouter un patient
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-
-            <div class="modal-body p-4">
-                {{ include('fiche_client/new.html.twig') }}
-            </div>
-
-        </div>
-    </div>
-</div>
-
-
-
-<!-- ======================= -->
-<!-- 🔹 SCRIPT NOM CABINET -->
-<!-- ======================= -->
-
-<script>
-async function afficherNomCabinet() {
-
-    const url = "{{ path('app_nom_cabinet') }}";
-    const urlConfig = "{{ path('app_cabinet_index') }}";
-
-    try {
-        const response = await fetch(url);
-        const data = await response.json();
-
-        const element = document.getElementById('nameCabinet');
-        if (!element) return;
-
-        if (!data.nom || data.nom === "null") {
-            element.innerHTML = `
-                Veuillez configurer le nom du cabinet 
-                <a href="${urlConfig}" class="btn btn-sm btn-warning ms-2">
-                    Configurer
-                </a>`;
-        } 
-        else {
-            element.innerText = data.nom;
-        }
-
-    } catch (error) {
-        console.error("Erreur :", error);
-    }
-}
-
-afficherNomCabinet();
-</script>
+	<div class="container py-4">
+
+		{# ======================= #}
+		{# 🔹 HEADER DASHBOARD #}
+		{# ======================= #}
+			<div class="card border-0 shadow-sm rounded-4 mb-4"> <div class="card-body py-4 px-4 d-flex justify-content-between align-items-center">
+
+				<div class="d-flex align-items-center">
+					<div class="icon-circle bg-primary bg-opacity-10 text-primary
+						                            d-flex align-items-center justify-content-center me-3" style="width:60px;height:60px;border-radius:16px;">
+						<i class="bi bi-clipboard-pulse fs-3"></i>
+					</div>
+
+					<div>
+						<h4 class="fw-bold mb-1">Tableau de bord</h4>
+						<p class="text-muted mb-0">
+							Cabinet
+							<span class="fw-semibold text-primary" id="nameCabinet"></span>
+						</p>
+					</div>
+				</div>
+
+				<div class="d-none d-md-flex align-items-center text-muted">
+					<i class="bi bi-calendar-event me-2"></i>
+					{{ "now"|date("d F Y") }}
+				</div>
+
+			</div>
+		</div>
+
+		{# ======================= #}
+		{# 🔹 DASHBOARD MOBILE #}
+		{# ======================= #}
+			<div class="swiper dashboardCoverflow d-md-none"> <div class="swiper-wrapper">
+
+				{% include 'home/_dashboard/_card_mobile.html.twig' with {
+                icon: 'bi-person-plus-fill',
+                title: 'Ajouter un patient',
+                subtitle: 'Nouvelle fiche médicale',
+                bg: 'bg-add',
+                modal: '#modalAddClient'
+            } %}
+
+				{% include 'home/_dashboard/_card_mobile.html.twig' with {
+                icon: 'bi-people-fill',
+                title: 'Patients',
+                subtitle: 'Dossiers & historique',
+                bg: 'bg-patients',
+                link: path('app_fiche_client_index'),
+                badge: totalClients ?? null
+            } %}
+
+				{% include 'home/_dashboard/_card_mobile.html.twig' with {
+                icon: 'bi-capsule-pill',
+                title: 'Médicaments',
+                subtitle: 'Prescriptions',
+                bg: 'bg-medicines',
+                link: path('medicine_index')
+            } %}
+                {% include 'home/_dashboard/_card_mobile.html.twig' with {
+                icon: 'bi-calendar-week',
+                title: 'Rendez-vous',
+                subtitle: 'Planning & agenda',
+                bg: 'bg-rdv',
+                link: path('app_rdv_index'),
+                badge: totalRdv ?? null
+            } %}
+
+			</div>
+		</div>
+
+		{# ======================= #}
+		{# 🔹 DASHBOARD DESKTOP #}
+		{# ======================= #}
+			<div class="row g-3 d-none d-md-flex"> {% include 'home/_dashboard/_card_desktop.html.twig' with {
+            title: 'Ajouter un patient',
+            desc: 'Créer une nouvelle fiche',
+            icon: 'bi-person-plus-fill',
+            bg: 'bg-add',
+            modal: '#modalAddClient'
+        } %}
+
+			{% include 'home/_dashboard/_card_desktop.html.twig' with {
+            title: 'Patients',
+            desc: 'Gérer les dossiers',
+            icon: 'bi-people-fill',
+            bg: 'bg-patients',
+            link: path('app_fiche_client_index'),
+            badge: totalClients ?? null
+        } %}
+
+			{% include 'home/_dashboard/_card_desktop.html.twig' with {
+            title: 'Médicaments',
+            desc: 'Référentiel',
+            icon: 'bi-capsule-pill',
+            bg: 'bg-medicines',
+            link: path('medicine_index')
+        } %}
+
+			{% include 'home/_dashboard/_card_desktop.html.twig' with {
+            title: 'Rendez-vous',
+            desc: 'Planning',
+            icon: 'bi-calendar-week',
+            bg: 'bg-rdv',
+            link: path('app_rdv_index'),
+            badge: totalRdv ?? null
+        } %}
+
+		</div>
+
+		{# ======================= #}
+		{# 🔹 RESSOURCES #}
+		{# ======================= #}
+			<div class="mt-5"> <h4 class="fw-bold mb-4">
+				<i class="bi bi-ui-checks-grid text-primary me-2"></i>
+				Référentiels & Ressources
+			</h4>
+
+			<div class="row g-3">
+				{% include 'home/_resources/_resource_card.html.twig' with {
+                icon: 'bi-activity',
+                color: 'text-warning',
+                title: 'Symptômes',
+                subtitle: 'Référentiel clinique',
+                link: path('symptome_index')
+            } %}
+
+				{% include 'home/_resources/_resource_card.html.twig' with {
+                icon: 'bi-hospital',
+                color: 'text-primary',
+                title: 'Établissements hospitaliers',
+                subtitle: 'Recherche & consultation',
+                link: path('hopital_search_page')
+            } %}
+
+				{% include 'home/_resources/_resource_card.html.twig' with {
+                icon: 'bi-capsule-pill',
+                color: 'text-danger',
+                title: 'Médicaments',
+                subtitle: 'CNOPS – ANAM',
+                link: path('medicine_index')
+            } %}
+            {% include 'home/_resources/_resource_card.html.twig' with {
+                icon: 'bi-heart-pulse',
+                color: 'text-success',
+                title: 'Dispositifs Remboursables',
+                subtitle: 'CNOPS – ANAM',
+                link: path('dispositif_search')
+            } %}
+
+
+
+			</div>
+		</div>
+
+		{{ include('home/_stats/_stats.html.twig') }}
+
+	</div>
+
+	{% include 'home/_modals/_add_patient.html.twig' %}
 
 {% endblock %}
+
+
+
+{% block javascripts %}
+	{{ parent() }}
+ <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+	 <script>
+	        document.addEventListener('DOMContentLoaded', () => {
+	            const el = document.querySelector('.dashboardCoverflow');
+	
+	            // si on est sur desktop, le slider n'existe pas (d-none d-md-none), donc on skip
+	            if (!el || typeof Swiper === "undefined") return;
+	
+	            new Swiper(el, {
+	                effect: 'coverflow',
+	                grabCursor: true,
+	                centeredSlides: true,
+	                slidesPerView: 'auto',
+	                spaceBetween: -20,
+	                coverflowEffect: {
+	                    rotate: 0,
+	                    stretch: 0,
+	                    depth: 120,
+	                    modifier: 1.4,
+	                    slideShadows: false,
+	                },
+	            });
+	        });
+	    </script>
+
+	 <script>
+	        async function afficherNomCabinet() {
+	            const res = await fetch("{{ path('app_nom_cabinet') }}");
+	            const data = await res.json();
+	            const el = document.getElementById('nameCabinet');
+	            if (el) el.innerText = data.nom ?? '';
+	        }
+	        afficherNomCabinet();
+	    </script>
+{% endblock %}
+

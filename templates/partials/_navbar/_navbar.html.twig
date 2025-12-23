@@ -63,9 +63,11 @@
 				</div>
 
 				<!-- BURGER -->
-				<button class="navbar-toggler mx-2" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
-					<span class="navbar-toggler-icon"></span>
-				</button>
+<button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileDrawer">
+	<i class="bi bi-list fs-1 text-white"></i>
+</button>
+
+
 
 			</div>
 
@@ -91,9 +93,13 @@
 					</li>
 
 					<li class="nav-item">
-						<a class="nav-link disabled">
-							<i class="bi bi-credit-card"></i>
-							Paiements
+<a href="{{ path('symptome_index') }}" class="nav-link">
+
+	<i class="bi bi-activity"></i>
+
+	Gestion des symptômes
+
+
 						</a>
 					</li>
 
@@ -208,7 +214,134 @@
 			</div>
 		</div>
 	</div>
+
+	<div class="offcanvas offcanvas-end mobile-drawer" tabindex="-1" id="mobileDrawer">
+
+    <!-- HEADER USER -->
+    <div class="drawer-header">
+        <div class="d-flex align-items-center gap-3">
+            <img src="https://ui-avatars.com/api/?name={{ app.user.nom ?? app.user.email }}&background=0D8ABC&color=fff"
+                 class="rounded-circle" width="56" height="56">
+
+            <div>
+                <div class="fw-bold text-white">
+                    {{ app.user.nom ?? app.user.email }}
+                </div>
+                <small class="text-white-50">Compte médical</small>
+            </div>
+        </div>
+
+        <button class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+    </div>
+
+    <!-- BODY -->
+    <div class="drawer-body">
+
+        <a href="{{ path('app_home') }}" class="drawer-link">
+            <i class="bi bi-house-door"></i>
+            Accueil
+        </a>
+
+        <a href="{{ path('app_fiche_client_index') }}" class="drawer-link">
+            <i class="bi bi-people"></i>
+            Patients
+        </a>
+
+        <a href="{{ path('symptome_index') }}" class="drawer-link">
+            <i class="bi bi-activity text-warning"></i>
+            Symptômes
+        </a>
+
+        <a href="{{ path('app_rdv_index') }}" class="drawer-link">
+            <i class="bi bi-calendar-week text-info"></i>
+            Rendez-vous
+        </a>
+
+        <hr>
+
+        <a href="{{ path('app_user_profile') }}" class="drawer-link secondary">
+            <i class="bi bi-person-circle"></i>
+            Profil
+        </a>
+
+        <a href="{{ path('app_cabinet_index') }}" class="drawer-link secondary">
+            <i class="bi bi-gear"></i>
+            Paramètres
+        </a>
+
+    </div>
+
+    <!-- FOOTER -->
+    <div class="drawer-footer">
+        <a href="{{ path('app_logout') }}" class="btn btn-danger w-100 rounded-pill">
+            <i class="bi bi-box-arrow-right me-2"></i>
+            Déconnexion
+        </a>
+    </div>
+
+</div>
+
 <style>
+.mobile-drawer {
+    width: 100vw !important;      /* 👈 clé du fix */
+    max-width: 90vw;
+    height: 100vh;
+    background: linear-gradient(180deg, #0d6efd, #0dcaf0);
+    color: white;
+    border-top-left-radius: 24px;
+    border-bottom-left-radius: 24px;
+}
+
+
+.drawer-header {
+    padding: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.drawer-body {
+    padding: 20px;
+    background: #f8f9fa;
+    color: #212529;
+    height: 100%;
+}
+
+.drawer-link {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px;
+    border-radius: 16px;
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    background: white;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    color: #212529;
+    text-decoration: none;
+    transition: .25s;
+}
+
+.drawer-link:hover {
+    transform: translateX(4px);
+    background: #eef4ff;
+}
+
+.drawer-link i {
+    font-size: 1.4rem;
+    color: #0d6efd;
+}
+
+.drawer-link.secondary {
+    background: #f1f3f5;
+}
+
+.drawer-footer {
+    padding: 20px;
+    background: #f8f9fa;
+}
+
 .notify-card {
     border: 1px solid rgba(0, 0, 0, 0.08);
     border-radius: 12px;

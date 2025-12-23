@@ -1,0 +1,23 @@
+<div class="swiper-slide">
+	{% if link is defined %}
+		<a href="{{ link }}" class="text-decoration-none">
+		{% else %}
+			<a data-bs-toggle="modal" data-bs-target="{{ modal }}" class="text-decoration-none">
+			{% endif %}
+
+			<div class="dashboard-medical {{ bg }}">
+				<div class="icon-box">
+					<i class="bi {{ icon }}"></i>
+				</div>
+
+				<h5>{{ title }}</h5>
+				<p>{{ subtitle }}</p>
+
+				{% if badge is defined and badge %}
+					<span class="badge-floating">{{ badge }}</span>
+				{% endif %}
+			</div>
+
+		</a>
+	</div>
+

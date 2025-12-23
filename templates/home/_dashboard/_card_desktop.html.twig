@@ -1,0 +1,21 @@
+<div class="col-6 col-md-3">
+	{% if link is defined %}
+		<a href="{{ link }}" class="text-decoration-none clicSound">
+		{% else %}
+			<a data-bs-toggle="modal" data-bs-target="{{ modal }}" class="text-decoration-none clicSound">
+			{% endif %}
+
+			<div class="dashboard-pro shadow {{ bg }}">
+				<h5>{{ title }}</h5>
+				<p>{{ desc }}</p>
+
+				{% if badge is defined and badge %}
+					<span class="dashboard-pro-badge-inside">{{ badge }}</span>
+				{% endif %}
+
+				<i class="bi {{ icon }} dashboard-pro-bigicon"></i>
+			</div>
+
+		</a>
+	</div>
+

@@ -1,0 +1,169 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des symptômes
+{% endblock %}
+
+{% block body %}
+
+	<div
+		class="mt-4">
+
+		<!-- ⭐⭐ ENTÊTE STYLE UNIFIÉ ⭐⭐ -->
+		<div class="card shadow-lg border-0 rounded-4 mb-4">
+			<div class="card-body py-4 px-4">
+
+				<div
+					class="row align-items-center">
+
+					<!-- Icône + titre -->
+					<div class="col-12 col-md-7 d-flex align-items-center mb-3 mb-md-0">
+						<i class="bi bi-activity text-primary fs-1 me-3"></i>
+						<div>
+							<h2 class="fw-bold text-primary mb-1">Gestion des symptômes</h2>
+							<p class="text-secondary m-0">
+								Ajoutez, modifiez et gérez les symptômes médicaux
+							</p>
+						</div>
+					</div>
+
+					<!-- Boutons actions -->
+					<div class="col-12 col-md-5 d-flex justify-content-md-end">
+						<div class="d-flex gap-2 w-100 w-md-auto">
+
+							<button type="button" onclick="history.back()" class="btn btn-outline-primary btn-lg rounded-pill px-4 shadow-sm d-flex align-items-center gap-2 w-100 w-md-auto">
+								<i class="bi bi-arrow-left"></i>
+								Retour
+							</button>
+
+							<button class="btn btn-primary btn-lg rounded-pill px-4 shadow-sm d-flex align-items-center gap-2 w-100 w-md-auto" data-bs-toggle="modal" data-bs-target="#modalSymptome">
+								<i class="bi bi-plus-circle"></i>
+								Ajouter
+							</button>
+
+						</div>
+					</div>
+
+				</div>
+
+			</div>
+		</div>
+
+		<!-- ⭐⭐ TABLE DES SYMPTÔMES ⭐⭐ -->
+		<div class="card shadow-sm border-0 rounded-4">
+			<div class="card-body">
+
+				<table class="table table-hover align-middle mb-0">
+					<thead class="table-light">
+						<tr>
+							<th>Nom</th>
+							<th>Catégorie</th>
+							<th>Description</th>
+							<th class="text-end">Actions</th>
+						</tr>
+					</thead>
+					<tbody id="symptomeTable"></tbody>
+				</table>
+
+			</div>
+		</div>
+
+	</div>
+
+	{% include 'symptome/_modal.html.twig' %}
+
+{% endblock %}
+
+{% block javascripts %}
+	 <script>
+	document.addEventListener("DOMContentLoaded", () => {
+	
+	    const table = document.getElementById("symptomeTable");
+	    const modalEl = document.getElementById("modalSymptome");
+	    const modal = new bootstrap.Modal(modalEl);
+	    const form = document.getElementById("symptomeForm");
+	
+	    let editId = null;
+	
+	    loadSymptomes();
+	
+	    async function loadSymptomes() {
+	        const res = await fetch('/api/symptomes');
+	        const data = await res.json();
+	        table.innerHTML = "";
+	
+	        data.forEach(s => {
+	            table.innerHTML += `
+	                <tr>
+	                    <td class="fw-semibold">${s.name}</td>
+	                    <td>
+	                        <span class="badge bg-success rounded-pill px-3">
+	                            ${s.category}
+	                        </span>
+	                    </td>
+	                    <td class="text-muted">
+	                        ${s.description ?? ''}
+	                    </td>
+	                    <td class="text-end">
+	                        <button class="btn btn-sm btn-outline-primary rounded-pill me-1"
+	                                onclick="editSymptome(${s.id})">
+	                            <i class="bi bi-pencil"></i>
+	                        </button>
+	                        <button class="btn btn-sm btn-outline-danger rounded-pill"
+	                                onclick="deleteSymptome(${s.id})">
+	                            <i class="bi bi-trash"></i>
+	                        </button>
+	                    </td>
+	                </tr>
+	            `;
+	        });
+	    }
+	
+	    window.editSymptome = async (id) => {
+	        const res = await fetch(`/api/symptomes/${id}`);
+	        const s = await res.json();
+	
+	        editId = id;
+	        form.name.value = s.name;
+	        form.category.value = s.category;
+	        form.description.value = s.description ?? '';
+	
+	        modal.show();
+	    };
+	
+	    window.deleteSymptome = async (id) => {
+	        if (!confirm("Supprimer ce symptôme ?")) return;
+	        await fetch(`/api/symptomes/${id}`, { method: 'DELETE' });
+	        loadSymptomes();
+	    };
+	
+	    form.addEventListener("submit", async (e) => {
+	        e.preventDefault();
+	
+	        const payload = {
+	            name: form.name.value,
+	            category: form.category.value,
+	            description: form.description.value
+	        };
+	
+	        const url = editId
+	            ? `/api/symptomes/${editId}`
+	            : `/api/symptomes`;
+	
+	        const method = editId ? 'PUT' : 'POST';
+	
+	        await fetch(url, {
+	            method,
+	            headers: { 'Content-Type': 'application/json' },
+	            body: JSON.stringify(payload)
+	        });
+	
+	        editId = null;
+	        form.reset();
+	        modal.hide();
+	        loadSymptomes();
+	    });
+	
+	});
+	</script>
+{% endblock %}
+

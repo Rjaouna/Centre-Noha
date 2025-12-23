@@ -1,0 +1,22 @@
+<!-- ======================= -->
+<!-- 🔹 MODAL AJOUT PATIENT -->
+<!-- ======================= -->
+
+	<div class="modal fade" id="modalAddClient" tabindex="-1"> <div class="modal-dialog modal-xl">
+		<div class="modal-content rounded-4 shadow-sm border">
+
+			<div class="modal-header bg-primary text-white rounded-top-4">
+				<h5 class="modal-title fw-bold d-flex align-items-center">
+					<i class="bi bi-person-plus fs-4 me-2"></i>
+					Ajouter un patient
+				</h5>
+				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+			</div>
+
+			<div class="modal-body p-4">
+				{{ include('fiche_client/new.html.twig') }}
+			</div>
+
+		</div>
+	</div>
+</div>

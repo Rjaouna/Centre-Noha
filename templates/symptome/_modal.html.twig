@@ -1,0 +1,65 @@
+<div class="modal fade" id="modalSymptome" tabindex="-1">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content rounded-4 shadow">
+
+			<form id="symptomeForm">
+
+				<div class="modal-header bg-primary text-white">
+					<h5 class="modal-title fw-bold">
+						<i class="bi bi-activity me-2"></i>
+						Symptôme
+					</h5>
+					<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+				</div>
+
+				<div class="modal-body">
+
+					<div class="mb-3">
+						<label class="form-label">Nom</label>
+						<input name="name" class="form-control" required>
+					</div>
+
+<div class="mb-3">
+	<label class="form-label">Catégorie</label>
+	<select name="category" class="form-select" required>
+		<option value="" disabled selected>— Choisir une catégorie —</option>
+
+		<option value="Abdomen & système digestif">Abdomen & système digestif</option>
+		<option value="Appareil génito-urinaire">Appareil génito-urinaire</option>
+		<option value="Articulations & muscles">Articulations & muscles</option>
+		<option value="Cerveau & système nerveux">Cerveau & système nerveux</option>
+		<option value="Thorax & système respiratoire">Thorax & système respiratoire</option>
+		<option value="ORL">ORL</option>
+		<option value="Œil">Œil</option>
+		<option value="Peau & cheveux">Peau & cheveux</option>
+		<option value="Saignements">Saignements</option>
+		<option value="Symptômes généraux">Symptômes généraux</option>
+		<option value="Gynécologie & obstétrique">Gynécologie & obstétrique</option>
+		<option value="Symptômes chez l’enfant">Symptômes chez l’enfant</option>
+	</select>
+</div>
+
+
+
+					<div class="mb-3">
+						<label class="form-label">Description</label>
+						<textarea name="description" class="form-control" rows="3"></textarea>
+					</div>
+
+				</div>
+
+				<div class="modal-footer">
+					<button class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">
+						Annuler
+					</button>
+					<button class="btn btn-primary rounded-pill">
+						Enregistrer
+					</button>
+				</div>
+
+			</form>
+
+		</div>
+	</div>
+</div>
+
