@@ -287,16 +287,14 @@
             <i class="bi bi-gear"></i>
             Paramètres
         </a>
+<a href="{{ path('app_logout') }}" class="btn btn-danger w-100 rounded-pill">
+	<i class="bi bi-box-arrow-right me-2"></i>
+	Déconnexion
+</a>
 
     </div>
 
-    <!-- FOOTER -->
-    <div class="drawer-footer">
-        <a href="{{ path('app_logout') }}" class="btn btn-danger w-100 rounded-pill">
-            <i class="bi bi-box-arrow-right me-2"></i>
-            Déconnexion
-        </a>
-    </div>
+
 
 </div>
  <script>
@@ -377,10 +375,7 @@ document.addEventListener('DOMContentLoaded', () => {
     background: #f1f3f5;
 }
 
-.drawer-footer {
-    padding: 20px;
-    background: #f8f9fa;
-}
+
 
 .notify-card {
     border: 1px solid rgba(0, 0, 0, 0.08);
