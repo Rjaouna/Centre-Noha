@@ -269,3 +269,67 @@ body {
 .clicSound:active {
     transform: scale(.97);
 }
+/* =============================
+   USER POPUP DESKTOP
+   ============================= */
+
+.user-popup {
+    position: absolute;
+    top: 58px;
+    right: 0;
+    width: 260px;
+    background: white;
+    border-radius: 18px;
+    overflow: hidden;
+    display: none;
+    z-index: 1000;
+    animation: fadeUp .2s ease;
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.popup-header {
+    background: linear-gradient(135deg, #0d6efd, #0dcaf0);
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+.popup-body {
+    padding: 14px;
+}
+
+.popup-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 12px;
+    font-weight: 600;
+    color: #212529;
+    text-decoration: none;
+    transition: .2s;
+}
+
+.popup-link:hover {
+    background: #f1f5ff;
+    transform: translateX(4px);
+}
+
+.popup-link i {
+    font-size: 1.2rem;
+    color: #0d6efd;
+}
+
+.popup-link.text-danger i {
+    color: #dc3545;
+}
