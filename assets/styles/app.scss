@@ -49,10 +49,17 @@ $focus-ring-color: rgba(76, 201, 166, 0.35);
 // ==========================
 
 body {
-  background-color: #ffffff;
-  color: $body-color;
+  min-height: 100vh;
+  background: linear-gradient(
+    135deg,
+    #f5f7ff 0%,
+    #eef2ff 30%,
+    #e6edff 60%,
+    #dde6ff 100%
+  );
   font-family: "Inter", "Source Sans Pro", sans-serif;
 }
+
 .app-header {
     background-color: var(--bs-primary) !important;
     padding-top: env(safe-area-inset-top);
