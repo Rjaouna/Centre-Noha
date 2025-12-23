@@ -41,46 +41,53 @@
 			</div>
 		</div>
 
-		{# ======================= #}
-		{# 🔹 DASHBOARD MOBILE #}
-		{# ======================= #}
-			<div class="swiper dashboardCoverflow d-md-none"> <div class="swiper-wrapper">
-
-				{% include 'home/_dashboard/_card_mobile.html.twig' with {
-                icon: 'bi-person-plus-fill',
-                title: 'Ajouter un patient',
-                subtitle: 'Nouvelle fiche médicale',
-                bg: 'bg-add',
-                modal: '#modalAddClient'
-            } %}
-
-				{% include 'home/_dashboard/_card_mobile.html.twig' with {
-                icon: 'bi-people-fill',
-                title: 'Patients',
-                subtitle: 'Dossiers & historique',
-                bg: 'bg-patients',
-                link: path('app_fiche_client_index'),
-                badge: totalClients ?? null
-            } %}
-
-				{% include 'home/_dashboard/_card_mobile.html.twig' with {
-                icon: 'bi-capsule-pill',
-                title: 'Médicaments',
-                subtitle: 'Prescriptions',
-                bg: 'bg-medicines',
-                link: path('medicine_index')
-            } %}
-                {% include 'home/_dashboard/_card_mobile.html.twig' with {
-                icon: 'bi-calendar-week',
-                title: 'Rendez-vous',
-                subtitle: 'Planning & agenda',
-                bg: 'bg-rdv',
-                link: path('app_rdv_index'),
-                badge: totalRdv ?? null
-            } %}
-
+{# ======================= #}
+{# 🔹 DASHBOARD MOBILE PRO #}
+{# ======================= #}
+	<div
+	class="d-md-none"> {# ACTION PRINCIPALE #}
+	<div class="mb-4">
+		<a data-bs-toggle="modal" data-bs-target="#modalAddClient" class="text-decoration-none">
+			<div class="mobile-primary-action">
+				<div class="icon">
+					<i class="bi bi-person-plus-fill"></i>
+				</div>
+				<div>
+					<h5>Ajouter un patient</h5>
+					<p>Créer une nouvelle fiche médicale</p>
+				</div>
 			</div>
+		</a>
+	</div>
+
+	{# STATS RAPIDES #}
+	<div class="row g-3 mb-4">
+		<div class="col-6">
+			<a href="{{ path('app_fiche_client_index') }}" class="text-decoration-none">
+				<div class="mobile-stat-card bg-primary">
+					<i class="bi bi-people-fill"></i>
+					<div class="value">{{ totalClients ?? 0 }}</div>
+					<span>Patients</span>
+				</div>
+			</a>
 		</div>
+
+		<div class="col-6">
+			<a href="{{ path('app_rdv_index') }}" class="text-decoration-none">
+				<div class="mobile-stat-card bg-info">
+					<i class="bi bi-calendar-week"></i>
+					<div class="value">{{ totalRdv ?? 0 }}</div>
+					<span>RDV</span>
+				</div>
+			</a>
+		</div>
+	</div>
+
+	
+
+</div>
+
+
 
 		{# ======================= #}
 		{# 🔹 DASHBOARD DESKTOP #}
@@ -171,7 +178,77 @@
 	</div>
 
 	{% include 'home/_modals/_add_patient.html.twig' %}
+<style>
+/* ===== MOBILE DASHBOARD ===== */
 
+.mobile-primary-action {
+    display: flex;
+    gap: 16px;
+    padding: 18px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #0d6efd, #4dabf7);
+    color: white;
+    box-shadow: 0 10px 28px rgba(13,110,253,.35);
+}
+
+.mobile-primary-action .icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    background: rgba(255,255,255,.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+}
+
+.mobile-primary-action h5 {
+    margin: 0;
+    font-weight: 800;
+}
+
+.mobile-primary-action p {
+    margin: 0;
+    opacity: .85;
+    font-size: .9rem;
+}
+
+/* STATS */
+.mobile-stat-card {
+    border-radius: 20px;
+    padding: 16px;
+    color: white;
+    text-align: center;
+    box-shadow: 0 8px 22px rgba(0,0,0,.15);
+}
+
+.mobile-stat-card i {
+    font-size: 1.6rem;
+    opacity: .9;
+}
+
+.mobile-stat-card .value {
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin: 6px 0;
+}
+
+/* SHORTCUTS */
+.mobile-shortcut {
+    background: white;
+    border-radius: 18px;
+    padding: 16px;
+    text-align: center;
+    box-shadow: 0 6px 18px rgba(0,0,0,.08);
+    font-weight: 600;
+}
+
+.mobile-shortcut i {
+    font-size: 1.6rem;
+    display: block;
+    margin-bottom: 6px;
+}
+</style>
 {% endblock %}
 
 
