@@ -16,33 +16,43 @@
 		{# ======================= #}
 		{# 🔹 HEADER DASHBOARD #}
 		{# ======================= #}
-<div class="card border-0 shadow rounded-4 mb-4">
-	<div class="card-body py-4 px-4 d-flex justify-content-between align-items-center">
+<div class="card border-0 shadow-sm rounded-4 mb-4 dashboard-header">
+	<div class="card-body py-4">
 
+		<div
+			class="d-flex justify-content-between align-items-center flex-wrap gap-3">
 
+			<!-- LEFT -->
+			<div class="d-flex align-items-center gap-3">
 
-				<div class="d-flex align-items-center">
-					<div class="icon-circle bg-primary bg-opacity-10 text-primary
-						                            d-flex align-items-center justify-content-center me-3" style="width:60px;height:60px;border-radius:16px;">
-						<i class="bi bi-clipboard-pulse fs-3"></i>
-					</div>
-
-					<div>
-						<h4 class="fw-bold mb-1">Tableau de bord</h4>
-						<p class="text-muted mb-0">
-							Cabinet
-							<span class="fw-semibold text-primary" id="nameCabinet"></span>
-						</p>
-					</div>
+				<div class="dashboard-icon">
+					<i class="bi bi-clipboard-pulse"></i>
 				</div>
 
-				<div class="d-none d-md-flex align-items-center text-muted">
-					<i class="bi bi-calendar-event me-2"></i>
-					{{ "now"|date("d F Y") }}
-				</div>
+				<div>
+					<h3 class="fw-bold mb-0">
+						Tableau de bord
+					</h3>
 
+					<small class="text-muted">
+						Cabinet
+						<span class="fw-semibold text-primary" id="nameCabinet"></span>
+					</small>
+				</div>
 			</div>
+
+			<!-- RIGHT -->
+			<div class="d-none d-md-flex align-items-center text-muted small">
+				<i class="bi bi-calendar-event me-2"></i>
+				{{ "now"|date("l d F Y") }}
+			</div>
+
 		</div>
+
+	</div>
+</div>
+
+
 
 {# ======================= #}
 {# 🔹 DASHBOARD MOBILE PRO #}
@@ -183,6 +193,27 @@
 	{% include 'home/_modals/_add_patient.html.twig' %}
 <style>
 /* ===== MOBILE DASHBOARD ===== */
+.dashboard-header {
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,0.95),
+    rgba(248,250,255,0.95)
+  );
+  backdrop-filter: blur(6px);
+}
+
+.dashboard-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #0d6efd, #4dabf7);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.9rem;
+  box-shadow: 0 10px 25px rgba(13,110,253,0.25);
+}
 
 .mobile-primary-action {
     display: flex;
