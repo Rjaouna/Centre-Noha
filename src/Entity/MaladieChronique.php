@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\SymptomeRepository;
+use App\Repository\MaladieChroniqueRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: SymptomeRepository::class)]
-class Symptome
+#[ORM\Entity(repositoryClass: MaladieChroniqueRepository::class)]
+class MaladieChronique
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -16,10 +16,7 @@ class Symptome
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
-    private ?string $name = null;
-
-    #[ORM\Column(length: 50)]
-    private ?string $category = null;
+    private ?string $nom = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $description = null;
@@ -27,7 +24,7 @@ class Symptome
     /**
      * @var Collection<int, Traitement>
      */
-    #[ORM\ManyToMany(targetEntity: Traitement::class, mappedBy: 'symptome')]
+    #[ORM\ManyToMany(targetEntity: Traitement::class, mappedBy: 'contreIndications')]
     private Collection $traitements;
 
     public function __construct()
@@ -40,26 +37,14 @@ class Symptome
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getNom(): ?string
     {
-        return $this->name;
+        return $this->nom;
     }
 
-    public function setName(string $name): static
+    public function setNom(string $nom): static
     {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    public function getCategory(): ?string
-    {
-        return $this->category;
-    }
-
-    public function setCategory(string $category): static
-    {
-        $this->category = $category;
+        $this->nom = $nom;
 
         return $this;
     }
@@ -88,7 +73,7 @@ class Symptome
     {
         if (!$this->traitements->contains($traitement)) {
             $this->traitements->add($traitement);
-            $traitement->addSymptome($this);
+            $traitement->addContreIndication($this);
         }
 
         return $this;
@@ -97,7 +82,7 @@ class Symptome
     public function removeTraitement(Traitement $traitement): static
     {
         if ($this->traitements->removeElement($traitement)) {
-            $traitement->removeSymptome($this);
+            $traitement->removeContreIndication($this);
         }
 
         return $this;

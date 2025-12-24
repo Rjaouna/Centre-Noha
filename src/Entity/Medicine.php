@@ -55,9 +55,16 @@ class Medicine
     #[ORM\ManyToMany(targetEntity: SuiviSoin::class, mappedBy: 'medicine')]
     private Collection $suiviSoins;
 
+    /**
+     * @var Collection<int, Traitement>
+     */
+    #[ORM\OneToMany(targetEntity: Traitement::class, mappedBy: 'medicine')]
+    private Collection $traitements;
+
     public function __construct()
     {
         $this->suiviSoins = new ArrayCollection();
+        $this->traitements = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -219,6 +226,36 @@ class Medicine
     {
         if ($this->suiviSoins->removeElement($suiviSoin)) {
             $suiviSoin->removeMedicine($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Traitement>
+     */
+    public function getTraitements(): Collection
+    {
+        return $this->traitements;
+    }
+
+    public function addTraitement(Traitement $traitement): static
+    {
+        if (!$this->traitements->contains($traitement)) {
+            $this->traitements->add($traitement);
+            $traitement->setMedicine($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTraitement(Traitement $traitement): static
+    {
+        if ($this->traitements->removeElement($traitement)) {
+            // set the owning side to null (unless already changed)
+            if ($traitement->getMedicine() === $this) {
+                $traitement->setMedicine(null);
+            }
         }
 
         return $this;

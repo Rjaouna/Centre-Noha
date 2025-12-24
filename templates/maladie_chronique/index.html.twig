@@ -1,11 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Gestion des symptômes
+{% block title %}Gestion des maladies chroniques
 {% endblock %}
 
 {% block body %}
 
-	{# ================= DATATABLES CSS ================= #}
+	{# ================= DATATABLES CSS (LOCAL À CETTE PAGE) ================= #}
 	<link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css">
 
 	<div
@@ -17,22 +17,22 @@
 				<div class="row align-items-center">
 
 					<div class="col-md-7 d-flex align-items-center">
-						<i class="bi bi-activity text-primary fs-1 me-3"></i>
+						<i class="bi bi-heart-pulse text-danger fs-1 me-3"></i>
 						<div>
-							<h2 class="fw-bold text-primary mb-1">Gestion des symptômes</h2>
+							<h2 class="fw-bold text-danger mb-1">Maladies chroniques</h2>
 							<p class="text-secondary m-0">
-								Ajoutez, modifiez et gérez les symptômes médicaux
+								Ajoutez, modifiez et gérez les maladies chroniques
 							</p>
 						</div>
 					</div>
 
 					<div class="col-md-5 d-flex justify-content-md-end gap-2">
-						<button onclick="history.back()" class="btn btn-outline-primary btn-lg rounded-pill px-4 shadow-sm">
+						<button onclick="history.back()" class="btn btn-outline-danger btn-lg rounded-pill px-4 shadow-sm">
 							<i class="bi bi-arrow-left"></i>
 							Retour
 						</button>
 
-						<button class="btn btn-primary btn-lg rounded-pill px-4 shadow-sm" data-bs-toggle="modal" data-bs-target="#modalSymptome">
+						<button class="btn btn-danger btn-lg rounded-pill px-4 shadow-sm" data-bs-toggle="modal" data-bs-target="#modalMaladieChronique">
 							<i class="bi bi-plus-circle"></i>
 							Ajouter
 						</button>
@@ -43,11 +43,10 @@
 		</div>
 
 		<!-- ⭐ TABLE DATATABLE ⭐ -->
-		<table id="symptomesTable" class="table table-striped table-hover align-middle rounded-4" style="width:100%">
-			<thead class="table-primary">
+		<table id="maladiesChroniquesTable" class="table table-striped table-hover align-middle rounded-4" style="width:100%">
+			<thead class="table-danger">
 				<tr>
 					<th>Nom</th>
-					<th>Catégorie</th>
 					<th>Description</th>
 					<th class="text-center">Actions</th>
 				</tr>
@@ -58,16 +57,16 @@
 	</div>
 
 	<!-- ================= MODAL ================= -->
-	<div class="modal fade" id="modalSymptome" tabindex="-1">
+	<div class="modal fade" id="modalMaladieChronique" tabindex="-1">
 		<div class="modal-dialog modal-lg">
 			<div class="modal-content rounded-4 shadow">
 
-				<form id="symptomeForm">
+				<form id="maladieChroniqueForm">
 
-					<div class="modal-header bg-primary text-white">
+					<div class="modal-header bg-danger text-white">
 						<h5 class="modal-title fw-bold">
-							<i class="bi bi-activity me-2"></i>
-							Symptôme
+							<i class="bi bi-heart-pulse me-2"></i>
+							Maladie chronique
 						</h5>
 						<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
 					</div>
@@ -76,26 +75,7 @@
 
 						<div class="mb-3">
 							<label class="form-label">Nom</label>
-							<input name="name" class="form-control" required>
-						</div>
-
-						<div class="mb-3">
-							<label class="form-label">Catégorie</label>
-							<select name="category" class="form-select" required>
-								<option value="" disabled selected>— Choisir —</option>
-								<option>Abdomen & système digestif</option>
-								<option>Appareil génito-urinaire</option>
-								<option>Articulations & muscles</option>
-								<option>Cerveau & système nerveux</option>
-								<option>Thorax & système respiratoire</option>
-								<option>ORL</option>
-								<option>Œil</option>
-								<option>Peau & cheveux</option>
-								<option>Saignements</option>
-								<option>Symptômes généraux</option>
-								<option>Gynécologie & obstétrique</option>
-								<option>Symptômes chez l’enfant</option>
-							</select>
+							<input name="nom" class="form-control" required>
 						</div>
 
 						<div class="mb-3">
@@ -109,7 +89,7 @@
 						<button class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">
 							Annuler
 						</button>
-						<button class="btn btn-primary rounded-pill">
+						<button class="btn btn-danger rounded-pill">
 							Enregistrer
 						</button>
 					</div>
@@ -124,7 +104,7 @@
 
 {% block javascripts %}
 
-	{# ================= DATATABLES JS ================= #}
+	{# ================= DATATABLES JS (LOCAL À CETTE PAGE) ================= #}
 	 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 	 <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
 	 <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
@@ -134,22 +114,20 @@
 	 <script>
 	$(document).ready(function () {
 	
-	    const modal = new bootstrap.Modal(document.getElementById("modalSymptome"));
-	    const form  = document.getElementById("symptomeForm");
+	    const modal = new bootstrap.Modal(document.getElementById("modalMaladieChronique"));
+	    const form  = document.getElementById("maladieChroniqueForm");
 	    let editId  = null;
 	
 	    // ✅ DATATABLE
-	    const table = $('#symptomesTable').DataTable({
+	    const table = $('#maladiesChroniquesTable').DataTable({
 	        ajax: {
-	            url: '/api/symptomes',
+	            url: '/api/maladies-chroniques',
 	            dataSrc: ''
 	        },
 	        columns: [
-	            { data: 'name', className: 'fw-semibold' },
 	            {
-	                data: 'category',
-	                render: d =>
-	                    `<span class="badge bg-success rounded-pill px-3">${d}</span>`
+	                data: 'nom',
+	                className: 'fw-semibold'
 	            },
 	            {
 	                data: 'description',
@@ -161,11 +139,11 @@
 	                className: 'text-center',
 	                render: id => `
 	                    <button class="btn btn-sm btn-outline-primary rounded-pill me-1"
-	                            onclick="editSymptome(${id})">
+	                            onclick="editMaladie(${id})">
 	                        <i class="bi bi-pencil"></i>
 	                    </button>
 	                    <button class="btn btn-sm btn-outline-danger rounded-pill"
-	                            onclick="deleteSymptome(${id})">
+	                            onclick="deleteMaladie(${id})">
 	                        <i class="bi bi-trash"></i>
 	                    </button>
 	                `
@@ -179,19 +157,18 @@
 	    });
 	
 	    // ✏️ EDIT
-	    window.editSymptome = async (id) => {
-	        const s = await fetch(`/api/symptomes/${id}`).then(r => r.json());
+	    window.editMaladie = async (id) => {
+	        const m = await fetch(`/api/maladies-chroniques/${id}`).then(r => r.json());
 	        editId = id;
-	        form.name.value        = s.name;
-	        form.category.value    = s.category;
-	        form.description.value = s.description ?? '';
+	        form.nom.value = m.nom;
+	        form.description.value = m.description ?? '';
 	        modal.show();
 	    };
 	
 	    // 🗑 DELETE
-	    window.deleteSymptome = async (id) => {
-	        if (!confirm("Supprimer ce symptôme ?")) return;
-	        await fetch(`/api/symptomes/${id}`, { method: 'DELETE' });
+	    window.deleteMaladie = async (id) => {
+	        if (!confirm("Supprimer cette maladie chronique ?")) return;
+	        await fetch(`/api/maladies-chroniques/${id}`, { method: 'DELETE' });
 	        table.ajax.reload(null, false);
 	    };
 	
@@ -200,12 +177,11 @@
 	        e.preventDefault();
 	
 	        const payload = {
-	            name: form.name.value,
-	            category: form.category.value,
+	            nom: form.nom.value,
 	            description: form.description.value
 	        };
 	
-	        const url    = editId ? `/api/symptomes/${editId}` : `/api/symptomes`;
+	        const url    = editId ? `/api/maladies-chroniques/${editId}` : `/api/maladies-chroniques`;
 	        const method = editId ? 'PUT' : 'POST';
 	
 	        await fetch(url, {

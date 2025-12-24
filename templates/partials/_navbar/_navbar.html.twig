@@ -99,16 +99,37 @@
 						</a>
 					</li>
 
-					<li class="nav-item">
-<a href="{{ path('symptome_index') }}" class="nav-link">
-
-	<i class="bi bi-activity"></i>
-
-	Gestion des symptômes
+<li class="nav-item dropdown">
+	<a class="nav-link dropdown-toggle" href="#" id="santeDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 
 
-						</a>
-					</li>
+<i class="bi bi-heart-pulse"></i>
+Santé
+
+
+</a>
+
+<ul class="dropdown-menu shadow rounded-4" aria-labelledby="santeDropdown">
+
+	<li>
+		<a class="dropdown-item d-flex align-items-center gap-2" href="{{ path('symptome_index') }}">
+			<i class="bi bi-activity text-primary"></i>
+
+Gestion des symptômes
+
+</a></li>
+
+
+<li>
+	<a class="dropdown-item d-flex align-items-center gap-2" href="{{ path('maladie_chronique_index') }}">
+		<i class="bi bi-heart-pulse text-danger"></i>
+		Maladies chroniques
+
+</a></li>
+
+
+</ul></li>
+
 
 					<li class="nav-item">
 						<a class="nav-link {{ app.request.attributes.get('_route') starts with 'app_rdv' ? 'active' : '' }}" href="{{ path('app_rdv_index') }}">
@@ -258,46 +279,70 @@
         <button class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
     </div>
 
-    <!-- BODY -->
-    <div class="drawer-body">
+<!-- BODY -->
+<div class="drawer-body">
 
-        <a href="{{ path('app_home') }}" class="drawer-link">
-            <i class="bi bi-house-door"></i>
-            Accueil
-        </a>
+	<a href="{{ path('app_home') }}" class="drawer-link">
+		<i class="bi bi-house-door"></i>
+		Accueil
+	</a>
 
-        <a href="{{ path('app_fiche_client_index') }}" class="drawer-link">
-            <i class="bi bi-people"></i>
-            Patients
-        </a>
+	<a href="{{ path('app_fiche_client_index') }}" class="drawer-link">
+		<i class="bi bi-people"></i>
+		Patients
+	</a>
 
-        <a href="{{ path('symptome_index') }}" class="drawer-link">
-            <i class="bi bi-activity text-warning"></i>
-            Symptômes
-        </a>
+	{# ===== SECTION SANTÉ ===== #}
+	<a class="drawer-link d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#santeCollapse" role="button" aria-expanded="false" aria-controls="santeCollapse">
 
-        <a href="{{ path('app_rdv_index') }}" class="drawer-link">
-            <i class="bi bi-calendar-week text-info"></i>
-            Rendez-vous
-        </a>
+		<span>
+			<i class="bi bi-heart-pulse text-danger"></i>
+			Santé
+		</span>
 
-        <hr>
+		<i class="bi bi-chevron-down small"></i>
+	</a>
 
-        <a href="{{ path('app_user_profile') }}" class="drawer-link secondary">
-            <i class="bi bi-person-circle"></i>
-            Profil
-        </a>
+	<div class="collapse ps-3" id="santeCollapse">
 
-        <a href="{{ path('app_cabinet_index') }}" class="drawer-link secondary">
-            <i class="bi bi-gear"></i>
-            Paramètres
-        </a>
-<a href="{{ path('app_logout') }}" class="btn btn-danger w-100 rounded-pill">
-	<i class="bi bi-box-arrow-right me-2"></i>
-	Déconnexion
-</a>
+		<a href="{{ path('symptome_index') }}" class="drawer-link">
+			<i class="bi bi-activity text-warning"></i>
+			Symptômes
+		</a>
 
-    </div>
+		<a href="{{ path('maladie_chronique_index') }}" class="drawer-link">
+			<i class="bi bi-heart-pulse text-danger"></i>
+			Maladies chroniques
+		</a>
+
+	</div>
+	{# ========================== #}
+
+	<a href="{{ path('app_rdv_index') }}" class="drawer-link">
+		<i class="bi bi-calendar-week text-info"></i>
+		Rendez-vous
+	</a>
+
+	<hr>
+
+	<a href="{{ path('app_user_profile') }}" class="drawer-link secondary">
+		<i class="bi bi-person-circle"></i>
+		Profil
+	</a>
+
+	<a href="{{ path('app_cabinet_index') }}" class="drawer-link secondary">
+		<i class="bi bi-gear"></i>
+		Paramètres
+	</a>
+
+	<a href="{{ path('app_logout') }}" class="btn btn-danger w-100 rounded-pill">
+		<i class="bi bi-box-arrow-right me-2"></i>
+		Déconnexion
+	</a>
+
+</div>
+
+
 
 
 
