@@ -13,6 +13,7 @@ use Doctrine\ORM\EntityManagerInterface;
 #[Route('/api/symptomes', name: 'api_symptomes_')]
 class SymptomeController extends AbstractController
 {
+
 	#[Route('/search', name: 'search', methods: ['GET'])]
 	public function search(Request $request, SymptomeRepository $repo): JsonResponse
 	{
