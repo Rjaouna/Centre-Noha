@@ -2,22 +2,22 @@
 
 namespace App\Repository;
 
-use App\Entity\MaladieChroniques;
+use App\Entity\MaladiesChroniques;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<MaladieChroniques>
+ * @extends ServiceEntityRepository<MaladiesChroniques>
  */
-class MaladieChroniquesRepository extends ServiceEntityRepository
+class MaladiesChroniquesRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, MaladieChroniques::class);
+        parent::__construct($registry, MaladiesChroniques::class);
     }
 
     //    /**
-    //     * @return MaladieChroniques[] Returns an array of MaladieChroniques objects
+    //     * @return MaladiesChroniques[] Returns an array of MaladiesChroniques objects
     //     */
     //    public function findByExampleField($value): array
     //    {
@@ -31,7 +31,7 @@ class MaladieChroniquesRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?MaladieChroniques
+    //    public function findOneBySomeField($value): ?MaladiesChroniques
     //    {
     //        return $this->createQueryBuilder('m')
     //            ->andWhere('m.exampleField = :val')
