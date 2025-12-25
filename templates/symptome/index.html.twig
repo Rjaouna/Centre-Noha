@@ -49,6 +49,8 @@
 					<th>Nom</th>
 					<th>Catégorie</th>
 					<th>Description</th>
+<th class="text-center">Traitement</th>
+
 					<th class="text-center">Actions</th>
 				</tr>
 			</thead>
@@ -155,6 +157,26 @@
 	                data: 'description',
 	                render: d => d ?? '<span class="text-muted">—</span>'
 	            },
+				{
+    data: 'hasTraitement',
+    className: 'text-center',
+    render: (has, type, row) => {
+        if (has) {
+            return `
+                <span class="badge bg-success rounded-pill px-3">
+                    ✔ ${row.traitementCount}
+                </span>
+            `;
+        }
+        return `
+            <span class="badge bg-warning rounded-pill px-3">
+<a href="{{path('traitement_index')}}">Ajouter un traitement</a>
+
+            </span>
+        `;
+    }
+},
+
 	            {
 	                data: 'id',
 	                orderable: false,

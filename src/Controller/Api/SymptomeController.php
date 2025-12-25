@@ -48,6 +48,10 @@ class SymptomeController extends AbstractController
 			'name' => $s->getName(),
 			'category' => $s->getCategory(),
 			'description' => $s->getDescription(),
+
+			// ⭐ NOUVEAU
+			'hasTraitement' => !$s->getTraitements()->isEmpty(),
+			'traitementCount' => $s->getTraitements()->count(),
 		], $symptomes));
 	}
 
