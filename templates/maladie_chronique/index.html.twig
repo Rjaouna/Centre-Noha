@@ -4,83 +4,71 @@
 {% endblock %}
 
 {% block body %}
-
-	{# ================= DATATABLES CSS (LOCAL À CETTE PAGE) ================= #}
-	<link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css">
-
 	<div
-		class="mt-4">
+		class="container-fluid mt-4">
 
-		<!-- ⭐ ENTÊTE ⭐ -->
-		<div class="card shadow-lg border-0 rounded-4 mb-4">
-			<div class="card-body py-4 px-4">
-				<div class="row align-items-center">
-
-					<div class="col-md-7 d-flex align-items-center">
-						<i class="bi bi-heart-pulse text-danger fs-1 me-3"></i>
-						<div>
-							<h2 class="fw-bold text-danger mb-1">Maladies chroniques</h2>
-							<p class="text-secondary m-0">
-								Ajoutez, modifiez et gérez les maladies chroniques
-							</p>
-						</div>
-					</div>
-
-					<div class="col-md-5 d-flex justify-content-md-end gap-2">
-						<button onclick="history.back()" class="btn btn-outline-danger btn-lg rounded-pill px-4 shadow-sm">
-							<i class="bi bi-arrow-left"></i>
-							Retour
-						</button>
-
-						<button class="btn btn-danger btn-lg rounded-pill px-4 shadow-sm" data-bs-toggle="modal" data-bs-target="#modalMaladieChronique">
-							<i class="bi bi-plus-circle"></i>
-							Ajouter
-						</button>
-					</div>
-
+		<!-- ================= ENTÊTE ================= -->
+		<div class="card shadow-sm border-0 rounded-4 mb-4">
+			<div class="card-body d-flex justify-content-between align-items-center">
+				<div>
+					<h3 class="fw-bold mb-0">
+						<i class="bi bi-heart-pulse text-danger me-2"></i>
+						Gestion des maladies chroniques
+					</h3>
+					<small class="text-muted">
+						Référentiel des maladies chroniques utilisées comme contre-indications
+					</small>
 				</div>
+
+				<button class="btn btn-danger rounded-pill px-4" id="btnAdd">
+					<i class="bi bi-plus-circle me-1"></i>
+					Nouvelle maladie
+				</button>
 			</div>
 		</div>
 
-		<!-- ⭐ TABLE DATATABLE ⭐ -->
-		<table id="maladiesChroniquesTable" class="table table-striped table-hover align-middle rounded-4" style="width:100%">
-			<thead class="table-danger">
-				<tr>
-					<th>Nom</th>
-					<th>Description</th>
-					<th class="text-center">Actions</th>
-				</tr>
-			</thead>
-			<tbody></tbody>
-		</table>
+		<!-- ================= TABLE ================= -->
+		<div class="card shadow-sm border-0 rounded-4">
+			<div class="card-body">
+				<table id="tableMaladies" class="table table-hover align-middle w-100">
+					<thead class="table-light">
+						<tr>
+							<th>Nom</th>
+							<th>Description</th>
+							<th class="text-end">Actions</th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+		</div>
 
 	</div>
 
 	<!-- ================= MODAL ================= -->
-	<div class="modal fade" id="modalMaladieChronique" tabindex="-1">
-		<div class="modal-dialog modal-lg">
+	<div class="modal fade" id="modalMaladie" tabindex="-1">
+		<div class="modal-dialog modal-lg modal-dialog-centered">
 			<div class="modal-content rounded-4 shadow">
 
-				<form id="maladieChroniqueForm">
+				<form id="formMaladie">
 
 					<div class="modal-header bg-danger text-white">
 						<h5 class="modal-title fw-bold">
 							<i class="bi bi-heart-pulse me-2"></i>
 							Maladie chronique
 						</h5>
-						<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+						<button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
 					</div>
 
 					<div class="modal-body">
 
 						<div class="mb-3">
-							<label class="form-label">Nom</label>
+							<label class="form-label fw-semibold">Nom</label>
 							<input name="nom" class="form-control" required>
 						</div>
 
 						<div class="mb-3">
-							<label class="form-label">Description</label>
-							<textarea name="description" class="form-control" rows="3"></textarea>
+							<label class="form-label fw-semibold">Description</label>
+							<textarea name="description" class="form-control" rows="3" placeholder="Informations complémentaires (optionnel)"></textarea>
 						</div>
 
 					</div>
@@ -99,105 +87,91 @@
 			</div>
 		</div>
 	</div>
-
 {% endblock %}
 
-{% block javascripts %}
 
-	{# ================= DATATABLES JS (LOCAL À CETTE PAGE) ================= #}
-	 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+{% block javascripts %}
+	{{ parent() }}
+ <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 	 <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
 	 <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
 
-{{ parent() }}
-
 	 <script>
-	$(document).ready(function () {
+	let editId = null;
+	const modal = new bootstrap.Modal(document.getElementById('modalMaladie'));
+	const form = document.getElementById('formMaladie');
 	
-	    const modal = new bootstrap.Modal(document.getElementById("modalMaladieChronique"));
-	    const form  = document.getElementById("maladieChroniqueForm");
-	    let editId  = null;
+	const table = $('#tableMaladies').DataTable({
+	    ajax: {
+	        url: '/api/referentiel/maladies-chroniques',
+	        dataSrc: ''
+	    },
+	    columns: [
+	        { data: 'nom', className: 'fw-semibold' },
+	        { data: 'description', render: d => d ?? '<span class="text-muted">—</span>' },
+	        {
+	            data: 'id',
+	            orderable: false,
+	            className: 'text-center',
+	            render: id => `
+	                <button class="btn btn-sm btn-outline-primary me-1" onclick="editMaladie(${id})">
+	                    <i class="bi bi-pencil"></i>
+	                </button>
+	                <button class="btn btn-sm btn-outline-danger" onclick="deleteMaladie(${id})">
+	                    <i class="bi bi-trash"></i>
+	                </button>
+	            `
+	        }
+	    ],
+	    language: { url: '//cdn.datatables.net/plug-ins/1.13.8/i18n/fr-FR.json' }
+	});
 	
-	    // ✅ DATATABLE
-	    const table = $('#maladiesChroniquesTable').DataTable({
-	        ajax: {
-	            url: '/api/maladies-chroniques',
-	            dataSrc: ''
-	        },
-	        columns: [
-	            {
-	                data: 'nom',
-	                className: 'fw-semibold'
-	            },
-	            {
-	                data: 'description',
-	                render: d => d ?? '<span class="text-muted">—</span>'
-	            },
-	            {
-	                data: 'id',
-	                orderable: false,
-	                className: 'text-center',
-	                render: id => `
-	                    <button class="btn btn-sm btn-outline-primary rounded-pill me-1"
-	                            onclick="editMaladie(${id})">
-	                        <i class="bi bi-pencil"></i>
-	                    </button>
-	                    <button class="btn btn-sm btn-outline-danger rounded-pill"
-	                            onclick="deleteMaladie(${id})">
-	                        <i class="bi bi-trash"></i>
-	                    </button>
-	                `
-	            }
-	        ],
-	        language: {
-	            url: '//cdn.datatables.net/plug-ins/1.13.8/i18n/fr-FR.json'
-	        },
-	        pageLength: 10,
-	        responsive: true
-	    });
+	document.getElementById('btnAdd').onclick = () => {
+	    editId = null;
+	    form.reset();
+	    modal.show();
+	};
 	
-	    // ✏️ EDIT
-	    window.editMaladie = async (id) => {
-	        const m = await fetch(`/api/maladies-chroniques/${id}`).then(r => r.json());
-	        editId = id;
-	        form.nom.value = m.nom;
-	        form.description.value = m.description ?? '';
-	        modal.show();
+	window.editMaladie = async (id) => {
+	    const res = await fetch(`/api/referentiel/maladies-chroniques/${id}`);
+	    const m = await res.json();
+	
+	    editId = id;
+	    form.nom.value = m.nom;
+	    form.description.value = m.description ?? '';
+	    modal.show();
+	};
+	
+	window.deleteMaladie = async (id) => {
+	    if (!confirm('Supprimer ?')) return;
+	    await fetch(`/api/referentiel/maladies-chroniques/${id}`, { method: 'DELETE' });
+	    table.ajax.reload(null, false);
+	};
+	
+	form.addEventListener('submit', async e => {
+	    e.preventDefault();
+	
+	    const payload = {
+	        nom: form.nom.value,
+	        description: form.description.value
 	    };
 	
-	    // 🗑 DELETE
-	    window.deleteMaladie = async (id) => {
-	        if (!confirm("Supprimer cette maladie chronique ?")) return;
-	        await fetch(`/api/maladies-chroniques/${id}`, { method: 'DELETE' });
-	        table.ajax.reload(null, false);
-	    };
+	    const url = editId
+	        ? `/api/referentiel/maladies-chroniques/${editId}`
+	        : `/api/referentiel/maladies-chroniques`;
 	
-	    // 💾 SUBMIT
-	    form.addEventListener("submit", async (e) => {
-	        e.preventDefault();
-	
-	        const payload = {
-	            nom: form.nom.value,
-	            description: form.description.value
-	        };
-	
-	        const url    = editId ? `/api/maladies-chroniques/${editId}` : `/api/maladies-chroniques`;
-	        const method = editId ? 'PUT' : 'POST';
-	
-	        await fetch(url, {
-	            method,
-	            headers: { 'Content-Type': 'application/json' },
-	            body: JSON.stringify(payload)
-	        });
-	
-	        editId = null;
-	        form.reset();
-	        modal.hide();
-	        table.ajax.reload(null, false);
+	    await fetch(url, {
+	        method: editId ? 'PUT' : 'POST',
+	        headers: { 'Content-Type': 'application/json' },
+	        body: JSON.stringify(payload)
 	    });
 	
+	    modal.hide();
+	    form.reset();
+	    editId = null;
+	    table.ajax.reload(null, false);
 	});
 	</script>
-
 {% endblock %}
 
