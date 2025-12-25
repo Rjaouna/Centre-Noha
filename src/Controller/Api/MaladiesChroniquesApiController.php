@@ -81,6 +81,13 @@ class MaladiesChroniquesApiController extends AbstractController
 
 		$data = json_decode($request->getContent(), true);
 
+		if (!is_array($data)) {
+			return new JsonResponse([
+				'success' => false,
+				'message' => 'JSON invalide'
+			], 400);
+		}
+
 		$maladies->setDiabetique($data['diabetique'] ?? null);
 		$maladies->setHypertendu($data['hypertendu'] ?? null);
 		$maladies->setCholesterol($data['cholesterol'] ?? null);
