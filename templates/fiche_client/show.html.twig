@@ -180,34 +180,11 @@
 
 
 
-<a href="{{ path('app_dossier_medical_index', { id: fiche_client.id }) }}" class="btn btn-outline-primary btn-lg rounded-pill px-4 shadow-sm d-flex align-items-center gap-2">
-
-
-<i class="bi bi-folder"></i>
-{% if fiche_client.dossierMedicals|length > 0 %}
-
-
-Dossiers de suivi
-<span class="text-warning">({{fiche_client.dossierMedicals|length}})</span>
-
-
-{% else %}
-
-+ dossier suivi{% endif %}
 
 
 
-	
-</a>
 
-
-
-                <a href="#" 
-                   class="btn btn-outline-primary btn-lg rounded-pill px-4 shadow-sm d-flex align-items-center gap-2"
-                   data-bs-toggle="modal" data-bs-target="#modalEditFiche">
-                    <i class="bi bi-pencil-square"></i>
-                    Modifier
-                </a>
+           
 <div class="btn-group">
 
 
@@ -359,14 +336,10 @@ class="btn btn-outline-primary btn-lg rounded-pill px-4 shadow-sm d-flex align-i
 #}
 
 
-{{ include('fiche_client/_composants/_galerie/_galerie.html.twig') }}
-{{ include('fiche_client/_composants/_modal_image/_modal_image.html.twig') }}
 
 
-<button class="btn btn-primary rounded-pill mt-3" data-bs-toggle="modal" data-bs-target="#modalUploadImage">
-	<i class="bi bi-image"></i>
-	Ajouter une image
-</button>
+
+
 
 
 
@@ -427,7 +400,8 @@ class="btn btn-outline-primary btn-lg rounded-pill px-4 shadow-sm d-flex align-i
 
 						<div class="row g-3">
 
-							<div class="col-md-12">
+<div class="col-md-6">
+
 								<div class="border-start border-3 border-success ps-3">
 									<p class="text-secondary mb-1 fw-semibold">Durée de la maladie</p>
 <p class="fs-5 fw-bold">{{ fiche_client.dureeMaladie }}
@@ -437,17 +411,38 @@ class="btn btn-outline-primary btn-lg rounded-pill px-4 shadow-sm d-flex align-i
 								</div>
 							</div>
 
-							<div class="col-md-12">
+<div class="col-md-6">
+
 								<div class="border-start border-3 border-info ps-3">
 									<p class="text-secondary mb-1 fw-semibold">Type de maladie</p>
 									<p class="fs-5 fw-bold">{{ fiche_client.typeMaladie }}</p>
 								</div>
+								
 							</div>
+
 
 						</div>
 
 						{# Composants médicaux #}
 						<div class="mt-4">
+<a href="{{ path('app_dossier_medical_index', { id: fiche_client.id }) }}" class="btn btn-link btn-lg rounded-pill mb-2 shadow-sm d-flex align-items-center gap-2">
+
+
+	<i class="bi bi-folder"></i>
+	{% if fiche_client.dossierMedicals|length > 0 %}
+
+
+		Dossiers de suivi
+		<span class="text-warning">({{fiche_client.dossierMedicals|length}})</span>
+
+
+	{% else %}
+
+		+ dossier suivi
+	{% endif %}
+
+</a>
+
 							{{ include('fiche_client/_composants/_trouble_digestifs.html.twig') }}
 							{{ include('fiche_client/_composants/_symptomes_generaux.html.twig') }}
 							{{ include('fiche_client/_composants/_maladies_chroniques.html.twig') }}
@@ -458,6 +453,12 @@ class="btn btn-outline-primary btn-lg rounded-pill px-4 shadow-sm d-flex align-i
 
 
 						</div>
+{{ include('fiche_client/_composants/_galerie/_galerie.html.twig') }}
+{{ include('fiche_client/_composants/_modal_image/_modal_image.html.twig') }}
+<button class="btn btn-primary rounded-pill mt-3" data-bs-toggle="modal" data-bs-target="#modalUploadImage">
+	<i class="bi bi-image"></i>
+	Ajouter une image
+</button>
 
 					</div>
 				</div>
