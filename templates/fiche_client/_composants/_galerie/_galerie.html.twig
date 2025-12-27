@@ -8,7 +8,7 @@
     box-shadow: 0 4px 12px rgba(0,0,0,0.25);
 }
 </style>
-<h5 class="mb-3 fw-bold text-primary">Galerie photo du suivi médical</h5>
+
 
 <div class="row d-flex" id="gallery">
 
@@ -20,8 +20,7 @@
 				<img src="{{ asset('uploads/clients/' ~ img.fileName) }}" alt="Image du patient" class="img-fluid rounded shadow-sm gallery-thumb" data-bs-toggle="modal" data-bs-target="#modalGalleryView" data-image="{{ img.fileName }}">
 			</div>
 		{% endfor %}
-	{% else %}
-		<p class="text-muted">Aucune image disponible.</p>
+	
 	{% endif %}
 </div>
 
