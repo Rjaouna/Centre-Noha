@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="UTF-8">
+		<title>{{ certificat.titre }}</title>
+
+		<style>
+			body {
+				font-family: Helvetica, Arial, sans-serif;
+				line-height: 1.6;
+				font-size: 13px;
+				margin: 0;
+				padding: 0;
+			}
+
+			.pdf-container {
+				width: 100%;
+				padding: 25px 35px;
+			}
+
+			.header {
+				text-align: right;
+				font-size: 12px;
+				margin-bottom: 20px;
+			}
+
+			.title {
+				text-align: center;
+				font-size: 22px;
+				font-weight: bold;
+				text-decoration: underline;
+				margin-bottom: 25px;
+			}
+
+			.bloc {
+				margin-bottom: 20px;
+			}
+
+			.footer {
+				width: 100%;
+				margin-top: 40px;
+				padding-top: 10px;
+				border-top: 1px solid #ccc;
+				font-size: 12px;
+				text-align: center;
+				color: #555;
+			}
+		</style>
+	</head>
+
+	<body onload="window.print(); window.close();">
+
+		<div
+			class="pdf-container">
+
+			<!-- HEADER DATE -->
+			<div class="header">
+				<strong>{{ "now"|date("d/m/Y") }}</strong>
+			</div>
+
+			<!-- TITRE -->
+			<div class="title">
+				{{ certificat.titre }}
+			</div>
+
+			<!-- TEXTE D’INTRODUCTION -->
+			<p>
+				Je soussigné(e),
+				<strong>{{ medecin.prenom }}
+					{{ medecin.nom }}</strong>,
+				{{ cabinet.type }},
+				        exerçant au sein du cabinet
+				<strong>{{ cabinet.nom }}</strong>,
+					        certifie avoir examiné le patient :
+			</p>
+
+			<!-- PATIENT -->
+			<div class="bloc">
+				<strong>{{ patient.nom }}</strong><br>
+
+				Né(e) le :
+				<strong>{{ patient.age ? patient.age|date("d/m/Y") : "—" }}</strong><br>
+
+				{% if patient.age %}
+					{% set diff = date().diff(patient.age) %}
+					Âge :
+					<strong>
+						{% if diff.y >= 1 %}
+							{{ diff.y }}
+							ans
+						{% elseif diff.m >= 1 %}
+							{{ diff.m }}
+							mois
+						{% else %}
+							{{ diff.d }}
+							jours
+						{% endif %}
+					</strong><br>
+				{% endif %}
+
+				Téléphone :
+				{{ patient.telephone ?? '-' }}
+			</div>
+
+			<!-- CONTENU DU CERTIFICAT -->
+			<div class="bloc">
+				{{ certificat.contenu|raw }}
+			</div>
+
+			<!-- SIGNATURE -->
+			<p>
+				Fait le :
+				<strong>{{ "now"|date("d/m/Y") }}</strong>
+			</p>
+
+			<br>
+
+			<p>
+				Signature et cachet<br>
+				<strong>{{ medecin.prenom }}
+					{{ medecin.nom }}</strong><br>
+				{{ cabinet.type }}<br>
+				<strong>{{ cabinet.nom }}</strong>
+			</p>
+
+			<!-- FOOTER CABINET -->
+			<div class="footer">
+				{{ cabinet.nom }}
+				—
+				{{ cabinet.type }}<br>
+				Adresse :
+				{{ cabinet.adresse ?? '—' }}
+				{{ cabinet.ville ?? '—' }}<br>
+				Téléphone :
+				{{ cabinet.telephone ?? '—' }}
+				&nbsp;|&nbsp;
+				        Email :
+				{{ cabinet.email ?? '—' }}
+			</div>
+
+		</div>
+
+	</body>
+</html>
+

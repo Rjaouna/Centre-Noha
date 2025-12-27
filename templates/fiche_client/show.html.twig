@@ -176,6 +176,14 @@
             <div class="d-flex flex-column flex-lg-row gap-2">
 
 {# Bouton dans le header #}
+<button class="btn btn-primary rounded-pill px-4 shadow-sm" onclick="openCertificatModal({{ fiche_client.id }})">
+
+
+	<i class="bi bi-file-medical"></i>
+	Imprimer un certificat
+</button>
+
+
 <button class="btn btn-primary rounded-pill px-4 shadow-sm" data-bs-toggle="modal" data-bs-target="#modalRdv">
 	<i class="bi bi-calendar-plus me-1"></i>
 	Réserver un RDV
@@ -201,6 +209,7 @@
 
 
 </button>
+
 
 
 <ul class="dropdown-menu" style="">
@@ -234,6 +243,9 @@ Historique paiment</a></li>
 </div>
 
 
+
+
+
                
 
                 <a href="{{ path('app_fiche_client_index') }}"
@@ -249,6 +261,7 @@ class="btn btn-outline-primary btn-lg rounded-pill px-4 shadow-sm d-flex align-i
     </div>
 
 </div>
+
 
 
 {# ===================================================== #}
@@ -472,6 +485,7 @@ Ajouter Photos, ordonnances, traitements...
 				<div class="mt-3">
 					{{ include('fiche_client/_composants/_modal_rdv/_modal_rdv.html.twig') }}
 					{{ include('fiche_client/_composants/_modal_paiment/_modal_paiment.html.twig') }}
+					{{ include('fiche_client/_composants/_certficat.html.twig') }}
 				</div>
 
 			</div>

@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	Certificats médicaux
+{% endblock %}
+
+{% block body %}
+
+	<div
+		class="mt-4">
+
+		<!-- ⭐⭐ ENTÊTE ⭐⭐ -->
+		<div class="card shadow-lg border-0 rounded-4 mb-4">
+			<div class="card-body py-4 px-4">
+
+				<div class="row align-items-center">
+
+					<div class="col-12 col-md-7 d-flex align-items-center mb-3 mb-md-0">
+						<i class="bi bi-file-medical text-primary fs-1 me-3"></i>
+
+						<div>
+							<h2 class="fw-bold text-primary mb-1">
+								Certificats médicaux
+							</h2>
+
+							<p class="text-secondary m-0">
+								Créez, modifiez et gérez vos modèles de certificats médicaux
+							</p>
+						</div>
+					</div>
+
+					<div class="col-12 col-md-5 d-flex justify-content-md-end gap-2">
+
+						<button class="btn btn-primary btn-lg rounded-pill px-4 shadow-sm d-flex align-items-center gap-2 w-100 w-md-auto" onclick="openCreateCertificat()">
+							<i class="bi bi-plus-circle"></i>
+							Ajouter
+						</button>
+
+						<button onclick="history.back()" class="btn btn-outline-primary btn-lg rounded-pill px-4 shadow-sm d-flex align-items-center gap-2 w-100 w-md-auto">
+							<i class="bi bi-arrow-left"></i>
+							Retour
+						</button>
+
+					</div>
+
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+	<!-- 📋 LISTE DES CERTIFICATS -->
+	<div id="certificat-list">
+		{% include 'certificats/_list.html.twig' %}
+	</div>
+
+	{% include 'certificats/_modal_form.html.twig' %}
+
+{% endblock %}
+

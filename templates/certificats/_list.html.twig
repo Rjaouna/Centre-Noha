@@ -1,0 +1,33 @@
+<table class="table table-striped">
+	<thead>
+		<tr>
+<th>Titre</th>
+<th>Contenu</th>
+
+			<th width="150">Actions</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for cert in certificats %}
+			<tr>
+<td>{{ cert.titre }}</td>
+<td>{{ cert.contenu }}</td>
+
+				<td>
+					<button class="btn btn-sm btn-warning" onclick="openEditCertificat({{ cert.id }})">
+						✏️
+					</button>
+
+					<button class="btn btn-sm btn-danger" onclick="deleteCertificat({{ cert.id }})">
+						🗑️
+					</button>
+				</td>
+			</tr>
+		{% else %}
+			<tr>
+				<td colspan="2" class="text-center">Aucun certificat</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>
+

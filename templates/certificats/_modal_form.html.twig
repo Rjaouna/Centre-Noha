@@ -1,0 +1,131 @@
+<div class="modal fade" id="certificatModal" tabindex="-1">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+
+			<form id="certificat-form">
+				<div class="modal-header">
+					<h5 class="modal-title">Certificat médical</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+				</div>
+
+				<div class="modal-body">
+					<input type="hidden" id="certificat_id">
+
+					<div class="mb-3">
+						<label class="form-label">Titre</label>
+						<input type="text" class="form-control" id="titre" required>
+					</div>
+
+					<div class="mb-3">
+						<label class="form-label">Contenu</label>
+						<textarea class="form-control" id="contenu" rows="8" required></textarea>
+					</div>
+				</div>
+
+				<div class="modal-footer">
+					<button type="submit" class="btn btn-success">Enregistrer</button>
+				</div>
+			</form>
+
+		</div>
+	</div>
+</div>
+
+ <script>
+let certificatModal;
+let certificatForm;
+
+document.addEventListener('DOMContentLoaded', () => {
+    certificatModal = new bootstrap.Modal(document.getElementById('certificatModal'));
+    certificatForm = document.getElementById('certificat-form');
+
+    certificatForm.addEventListener('submit', saveCertificat);
+});
+
+/**
+ * ➕ Ouvrir modal création
+ */
+function openCreateCertificat() {
+    document.getElementById('certificat_id').value = '';
+    document.getElementById('titre').value = '';
+    document.getElementById('contenu').value = '';
+
+    document.querySelector('#certificatModal .modal-title').innerText =
+        'Ajouter un certificat médical';
+
+    certificatModal.show();
+}
+
+/**
+ * ✏️ Ouvrir modal édition
+ */
+function openEditCertificat(id) {
+    fetch(`/certificats/api/${id}`)
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('certificat_id').value = data.id;
+            document.getElementById('titre').value = data.titre;
+            document.getElementById('contenu').value = data.contenu;
+
+            document.querySelector('#certificatModal .modal-title').innerText =
+                'Modifier le certificat médical';
+
+            certificatModal.show();
+        })
+        .catch(() => alert('Erreur lors du chargement'));
+}
+
+/**
+ * 💾 Enregistrer (CREATE / UPDATE)
+ */
+function saveCertificat(e) {
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append('id', document.getElementById('certificat_id').value);
+    formData.append('titre', document.getElementById('titre').value);
+    formData.append('contenu', document.getElementById('contenu').value);
+
+    fetch('/certificats/save', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(() => {
+        certificatModal.hide();
+        reloadCertificatList();
+    })
+    .catch(() => alert('Erreur lors de l’enregistrement'));
+}
+
+/**
+ * 🗑️ Supprimer
+ */
+function deleteCertificat(id) {
+    if (!confirm('Supprimer ce certificat médical ?')) return;
+
+    fetch(`/certificats/delete/${id}`, {
+        method: 'DELETE'
+    })
+    .then(response => response.json())
+    .then(() => reloadCertificatList())
+    .catch(() => alert('Erreur lors de la suppression'));
+}
+
+/**
+ * 🔄 Recharger la liste (AJAX)
+ */
+function reloadCertificatList() {
+    fetch('/certificats/')
+        .then(response => response.text())
+        .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const newList = doc.querySelector('#certificat-list');
+
+            document.querySelector('#certificat-list').innerHTML =
+                newList.innerHTML;
+        });
+}
+</script>
+

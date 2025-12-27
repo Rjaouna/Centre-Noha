@@ -129,6 +129,11 @@ Gestion des symptômes
 
 </a></li>
 <li>
+	<a class="dropdown-item d-flex align-items-center gap-2" href="{{ path('certificats_index') }}">
+		<i class="bi bi-capsule text-success"></i>
+		Gestion des certificats
+	</a>
+<li>
 	<a class="dropdown-item d-flex align-items-center gap-2" href="{{ path('traitement_index') }}">
 		<i class="bi bi-capsule text-success"></i>
 		Traitements
@@ -327,7 +332,13 @@ Référentiel médical
 			<i class="bi bi-heart-pulse text-danger"></i>
 			Maladies chroniques
 		</a>
+<a href="{{ path('certificats_index') }}" class="drawer-link">
+
+	<i class="bi bi-capsule text-success"></i>
+	Gestion de certificats</a>
 <a href="{{ path('traitement_index') }}" class="drawer-link">
+
+
 
 
 	<i class="bi bi-capsule text-success"></i>
