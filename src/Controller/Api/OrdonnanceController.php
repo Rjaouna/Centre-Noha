@@ -7,6 +7,7 @@ use Dompdf\Options;
 use App\Entity\Cabinet;
 use App\Entity\SuiviSoin;
 use App\Repository\CabinetRepository;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,12 +15,26 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class OrdonnanceController extends AbstractController
 {
 	#[Route('/suivi/{id}/ordonnance', name: 'app_ordonnance_preview')]
-	public function preview(SuiviSoin $suivi, CabinetRepository $cabRepo)
-	{
+	public function preview(
+		Request $request,
+		SuiviSoin $suivi,
+		CabinetRepository $cabRepo
+	): Response {
 		$cabinet = $cabRepo->findOneBy([]);
 		$patient = $suivi->getPatient();
 		$medicaments = $suivi->getMedicine();
 
+		// 🔹 mode impression ?
+		if ($request->query->get('print')) {
+			return $this->render('ordonnance/print.html.twig', [
+				'cabinet' => $cabinet,
+				'suivi' => $suivi,
+				'patient' => $patient,
+				'medicaments' => $medicaments
+			]);
+		}
+
+		// 🔹 preview normal
 		return $this->render('ordonnance/preview.html.twig', [
 			'cabinet' => $cabinet,
 			'suivi' => $suivi,

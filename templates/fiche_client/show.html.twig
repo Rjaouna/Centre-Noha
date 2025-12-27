@@ -40,6 +40,9 @@
             </div>
 
 
+
+
+
 <!-- MODAL RDV -->
 <div class="modal fade" id="modalRdv" tabindex="-1">
 	<div class="modal-dialog modal-lg">
@@ -178,6 +181,10 @@
 	Réserver un RDV
 </button>
 
+<button class="btn btn-outline-primary rounded-pill px-4 shadow-sm" data-bs-toggle="modal" data-bs-target="#modalEditFiche">
+	<i class="bi bi-pencil-square me-1"></i>
+	Modifier la fiche
+</button>
 
 
 
@@ -283,23 +290,31 @@ class="btn btn-outline-primary btn-lg rounded-pill px-4 shadow-sm d-flex align-i
 					<div class="col-6 col-md-4">
 						<div class="border-start border-3 border-dark ps-2 h-100">
 							<div class="text-muted small">Âge</div>
-							<div class="fw-semibold">
-								{% if fiche_client.age %}
-									{% set diff = date().diff(fiche_client.age) %}
-									{% if diff.y >= 1 %}
-										{{ diff.y }}
-										ans
-									{% elseif diff.m >= 1 %}
-										{{ diff.m }}
-										mois
-									{% else %}
-										{{ diff.d }}
-										jours
-									{% endif %}
-								{% else %}
-									—
-								{% endif %}
-							</div>
+<div class="fw-semibold">
+	{% if fiche_client.dateNaissance %}
+		{% set diff = fiche_client.dateNaissance.diff(date()) %}
+
+		{% if diff.y >= 1 %}
+			{{ diff.y }}
+			an{{ diff.y > 1 ? 's' : '' }}
+		{% elseif diff.m >= 1 %}
+			{{ diff.m }}
+			mois
+		{% elseif diff.d >= 7 %}
+			{{ (diff.d / 7)|round(0, 'floor') }}
+			semaine{{ (diff.d / 7)|round(0, 'floor') > 1 ? 's' : '' }}
+		{% elseif diff.d > 0 %}
+			{{ diff.d }}
+			jour{{ diff.d > 1 ? 's' : '' }}
+		{% else %}
+			moins d’un jour
+		{% endif %}
+	{% else %}
+		—
+	{% endif %}
+</div>
+
+
 						</div>
 					</div>
 

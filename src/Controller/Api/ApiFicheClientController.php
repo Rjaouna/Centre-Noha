@@ -4,16 +4,16 @@ namespace App\Controller\Api;
 
 use App\Entity\FicheClient;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/api/fiche')]
 class ApiFicheClientController extends AbstractController
 {
 	#[Route('/edit/{id}', name: 'api_fiche_edit', methods: ['POST'])]
-	public function editFiche(
+	public function edit(
 		FicheClient $client,
 		Request $request,
 		EntityManagerInterface $em
@@ -22,26 +22,57 @@ class ApiFicheClientController extends AbstractController
 		$data = json_decode($request->getContent(), true);
 
 		if (!$data) {
-			return new JsonResponse([
+			return $this->json([
 				'success' => false,
 				'message' => 'Aucune donnée reçue'
 			], 400);
 		}
 
-		// 🔵 Mise à jour des champs de la fiche
-		$client->setNom($data['nom'] ?? $client->getNom());
-		$client->setVille($data['ville'] ?? $client->getVille());
-		$client->setTelephone($data['telephone'] ?? $client->getTelephone());
-		$client->setAge($data['age'] ?? $client->getAge());
-		$client->setPoids($data['poids'] ?? $client->getPoids());
-		$client->setDureeMaladie($data['dureeMaladie'] ?? $client->getDureeMaladie());
-		$client->setTypeMaladie($data['typeMaladie'] ?? $client->getTypeMaladie());
-		$client->setTraitement($data['traitement'] ?? $client->getTraitement());
-		$client->setObservation($data['observation'] ?? $client->getObservation());
+		// 🔐 Champs autorisés
+		$fields = [
+			'nom'          => 'setNom',
+			'ville'        => 'setVille',
+			'telephone'    => 'setTelephone',
+			'poids'        => 'setPoids',
+			'typeMaladie'  => 'setTypeMaladie',
+			'traitement'   => 'setTraitement',
+			'observation'  => 'setObservation',
+			'isOpen'       => 'setIsOpen',
+			'isConsulted'  => 'setIsConsulted',
+		];
+
+		foreach ($fields as $key => $setter) {
+			if (array_key_exists($key, $data)) {
+				$client->$setter($data[$key] ?: null);
+			}
+		}
+
+		// 📅 DATE DE NAISSANCE → ÂGE AUTO
+		if (array_key_exists('dateNaissance', $data)) {
+
+			if ($data['dateNaissance']) {
+
+				$dateNaissance = new \DateTimeImmutable($data['dateNaissance']);
+				$client->setDateNaissance($dateNaissance);
+
+				// 🧮 Calcul âge
+				$today = new \DateTimeImmutable();
+				$diff = $today->diff($dateNaissance);
+
+				// On stocke une date représentant l'âge
+				$client->setAge(
+					$today->sub(new \DateInterval('P' . $diff->y . 'Y'))
+				);
+			} else {
+				// Suppression date
+				$client->setDateNaissance(null);
+				$client->setAge(null);
+			}
+		}
 
 		$em->flush();
 
-		return new JsonResponse([
+		return $this->json([
 			'success' => true,
 			'message' => 'Fiche patient mise à jour'
 		]);

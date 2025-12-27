@@ -217,33 +217,34 @@ Médicaments prescrits
 	class="mt-3 text-end d-flex justify-content-end gap-2">
 
 	<!-- SUPPRIMER -->
-	<a href="#" onclick="deleteSuivi(${suivi.id}, this.closest('.timeline-item'))" class="btn btn-outline-danger btn-sm rounded-pill">
+<a href="#" onclick="deleteSuivi(${suivi.id}, this.closest('.timeline-item'))" class="btn btn-outline-danger btn-sm">
+
+
 		<i class="bi bi-trash"></i>
 	</a>
 
 	<!-- AJOUTER MÉDICAMENT -->
-	<a href="#" class="btn btn-outline-primary btn-sm rounded-pill openMedicModal" data-suivi-id="${suivi.id}" data-bs-toggle="modal" data-bs-target="#modalMedicSearch">
+<a href="#" class="btn btn-outline-primary btn-sm openMedicModal" data-suivi-id="${suivi.id}" data-bs-toggle="modal" data-bs-target="#modalMedicSearch">
+
+
 		<i class="bi bi-capsule-pill"></i>
 	</a>
 
 	<!-- IMPRIMER LE SUIVI -->
-<a href="#" target="_blank" class="btn btn-outline-secondary btn-sm rounded-pill">
-
-
-		<i class="bi bi-printer"></i>
-	</a>
-
-<a href="/suivi/${suivi.id}/ordonnance" class="btn btn-primary">
-	<i class="bi bi-file-pdf"></i>
-	Voir / Générer l’ordonnance
+<a href="/suivi/${suivi.id}/ordonnance?print=1" target="_blank" class="btn btn-outline-secondary btn-sm text-secondary">
+	<i class="bi bi-printer"></i>
 </a>
 
 
 
+<a href="/suivi/${suivi.id}/ordonnance" class="btn btn-danger text-white btn-sm">
+
+
+<i class="bi bi-file-pdf"></i>
+
+</a>
 
 </div>
-
-
 
     </div>
 </div>`;

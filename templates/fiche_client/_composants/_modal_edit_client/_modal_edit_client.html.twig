@@ -1,44 +1,43 @@
 <div class="modal fade" id="modalEditFiche" tabindex="-1" aria-hidden="true">
-	<div class="modal-dialog">
+	<div class="modal-dialog modal-lg">
 		<div
-			class="modal-content">
+			class="modal-content rounded-4 shadow">
 
 			<!-- HEADER -->
 			<div class="modal-header bg-primary text-white">
-				<h5 class="modal-title">Modifier la fiche patient</h5>
+				<h5 class="modal-title fw-bold">
+					<i class="bi bi-pencil-square me-2"></i>
+					Modifier la fiche patient
+				</h5>
 				<button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
 			</div>
 
 			<!-- BODY -->
 			<div class="modal-body">
+				<form id="formEditFiche">
+					<div
+						class="row g-3">
 
-				<form
-					id="formEditFiche">
+						<!-- NOM -->
+						<div class="col-md-6 form-floating">
+							<input type="text" class="form-control" name="nom" value="{{ fiche_client.nom }}">
+							<label>Nom</label>
+						</div>
 
-					<!-- Nom -->
-					<div class="form-floating mb-3">
-						<input type="text" class="form-control" id="inputNomEdit" name="nom" placeholder="Nom" value="{{ fiche_client.nom }}">
-						<label for="inputNomEdit">Nom du patient</label>
-					</div>
+						<!-- VILLE -->
+						<div class="col-md-6 form-floating">
+							<input type="text" class="form-control" name="ville" value="{{ fiche_client.ville }}">
+							<label>Ville</label>
+						</div>
 
-					<!-- Ville -->
-					<div class="form-floating mb-3">
-						<input type="text" class="form-control" id="inputVilleEdit" name="ville" placeholder="Ville" value="{{ fiche_client.ville }}">
-						<label for="inputVilleEdit">Ville</label>
-					</div>
+						<!-- TELEPHONE -->
+						<div class="col-md-6 form-floating">
+							<input type="text" class="form-control" name="telephone" value="{{ fiche_client.telephone }}">
+							<label>Téléphone</label>
+						</div>
 
-					<!-- Téléphone -->
-					<div class="form-floating mb-3">
-						<input type="text" class="form-control" id="inputTelephoneEdit" name="telephone" placeholder="Téléphone" value="{{ fiche_client.telephone }}">
-						<label for="inputTelephoneEdit">Téléphone</label>
-					</div>
-
-					<!-- Poids (liste déroulante) -->
-					<div class="form-floating mb-3">
-						<select class="form-select" id="inputPoidsEdit" name="poids">
-
-							<option value="" disabled>Choisir...</option>
-
+						<!-- POIDS -->
+						<div class="col-md-6 form-floating">
 							{% set poidsOptions = {
                                 '6 - 9 kg': '6-9',
                                 '10 - 19 kg': '10-19',
@@ -58,25 +57,52 @@
                                 '150 kg et +': '150+'
                             } %}
 
-							{% for label, value in poidsOptions %}
-								<option value="{{ value }}" {% if fiche_client.poids == value %} selected {% endif %}>
-									{{ label }}
-								</option>
-							{% endfor %}
-						</select>
+							<select class="form-select" name="poids">
+								<option value="">—</option>
+								{% for label, value in poidsOptions %}
+									<option value="{{ value }}" {% if fiche_client.poids == value %} selected {% endif %}>
+										{{ label }}
+									</option>
+								{% endfor %}
+							</select>
+							<label>Poids</label>
+						</div>
 
-						<label for="inputPoidsEdit">Poids du patient</label>
+						<!-- DATE NAISSANCE -->
+						<div class="col-md-6 form-floating">
+							<input type="date" class="form-control" name="dateNaissance" value="{{ fiche_client.dateNaissance ? fiche_client.dateNaissance|date('Y-m-d') : '' }}">
+							<label>Date de naissance</label>
+						</div>
+
+						<!-- TYPE MALADIE -->
+						<div class="col-12 form-floating">
+							<input type="text" class="form-control" name="typeMaladie" value="{{ fiche_client.typeMaladie }}">
+							<label>Type de maladie</label>
+						</div>
+
+						<!-- TRAITEMENT -->
+						<div class="col-12 form-floating">
+							<textarea class="form-control" name="traitement" style="height:90px">{{ fiche_client.traitement }}</textarea>
+							<label>Traitement</label>
+						</div>
+
+						<!-- OBSERVATIONS -->
+						<div class="col-12 form-floating">
+							<textarea class="form-control" name="observation" style="height:90px">{{ fiche_client.observation }}</textarea>
+							<label>Observations</label>
+						</div>
+
 					</div>
-
 				</form>
-
 			</div>
 
 			<!-- FOOTER -->
 			<div class="modal-footer">
-				<button class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-
-				<button class="btn btn-primary" id="btnSaveFiche">
+				<button class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">
+					Annuler
+				</button>
+				<button class="btn btn-primary rounded-pill" id="btnSaveFiche">
+					<i class="bi bi-check-lg"></i>
 					Enregistrer
 				</button>
 			</div>
@@ -85,76 +111,48 @@
 	</div>
 </div>
 
-
-
  <script>
 document.addEventListener("DOMContentLoaded", () => {
 
-    const btn = document.getElementById("btnSaveFiche");
+    const btnSave = document.getElementById("btnSaveFiche");
     const form = document.getElementById("formEditFiche");
-    const pop  = document.getElementById("popupSuccess");
-    const modal = new bootstrap.Modal(document.getElementById("modalEditFiche"));
 
-    btn.addEventListener("click", async () => {
+    btnSave.addEventListener("click", async () => {
 
-        buttonSoundClick("btnSaveFiche"); // 🔊 Son clic
+        btnSave.disabled = true;
+        btnSave.innerHTML = "Enregistrement...";
 
         const data = Object.fromEntries(new FormData(form));
 
-        const url = "{{ path('api_fiche_edit', {id: fiche_client.id}) }}";
+        try {
+            const response = await fetch(
+                "{{ path('api_fiche_edit', { id: fiche_client.id }) }}",
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(data)
+                }
+            );
 
-        const response = await fetch(url, {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify(data)
-        });
+            const result = await response.json();
 
-        const result = await response.json();
+            if (!result.success) {
+                alert(result.message || "Erreur lors de la mise à jour");
+                btnSave.disabled = false;
+                btnSave.innerHTML = "Enregistrer";
+                return;
+            }
 
-        if (!result.success) {
-            buttonSoundError("btnSaveFiche");
-            showFlashError("Erreur lors de la mise à jour !");
-            return;
+            // ✅ Reload complet (logique simple et fiable)
+            window.location.reload();
+
+        } catch (e) {
+            alert("Erreur réseau");
+            btnSave.disabled = false;
+            btnSave.innerHTML = "Enregistrer";
         }
-
-        // 🔊 Succès
-        buttonSoundSuccess("btnSaveFiche");
-
-        // 🔒 Fermer la modal
-        modal.hide();
-
-        // Animation sur la carte patient
-        moveElement("blocListClient");
-
-        // 🔥 Construire la route show
-        const routeShow = "{{ path('app_fiche_client_show', {'id': fiche_client.id}) }}";
-
-        // 💬 Afficher popup succès
-        pop.style.display = "block";
-        pop.innerHTML = `
-<div class="d-flex align-items-start">
-	<i class="bi bi-check-circle-fill fs-1 text-white bg-success p-2 rounded-circle me-3"></i>
-
-	<div>
-		<h5 class="fw-bold mb-1 text-light">
-			🎉 Mise à jour effectuée avec succès !
-		</h5>
-
-		
-
-	
-	</div>
-
-	<button type="button" class="btn-close" onclick="document.getElementById('popupSuccess').style.display='none';"></button>
-</div>
-
-
-        `;
-
     });
 
 });
 </script>
-
-
 
