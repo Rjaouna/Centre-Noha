@@ -258,7 +258,9 @@
 	   MALADIES CHRONIQUES
 	============================ */
 	function loadMaladiesChroniques(selected = []) {
-	    fetch('/api/maladies-chroniques')
+fetch('/api/referentiel/maladies-chroniques')
+
+
 	        .then(r => r.json())
 	        .then(data => {
 	            ciList.innerHTML = '';

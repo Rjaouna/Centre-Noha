@@ -133,6 +133,12 @@ class FicheClient
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
     private ?\DateTimeImmutable $dateNaissance = null;
 
+    /**
+     * @var Collection<int, ArretMaladie>
+     */
+    #[ORM\OneToMany(targetEntity: ArretMaladie::class, mappedBy: 'patient')]
+    private Collection $arretMaladies;
+
     public function __construct()
     {
         $this->paiements = new ArrayCollection();
@@ -141,6 +147,7 @@ class FicheClient
         $this->suiviSoins = new ArrayCollection();
         $this->dossierMedicals = new ArrayCollection();
         $this->recommendationLetters = new ArrayCollection();
+        $this->arretMaladies = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -500,5 +507,35 @@ class FicheClient
 
         $today = new \DateTimeImmutable();
         return $today->diff($this->age)->y;
+    }
+
+    /**
+     * @return Collection<int, ArretMaladie>
+     */
+    public function getArretMaladies(): Collection
+    {
+        return $this->arretMaladies;
+    }
+
+    public function addArretMalady(ArretMaladie $arretMalady): static
+    {
+        if (!$this->arretMaladies->contains($arretMalady)) {
+            $this->arretMaladies->add($arretMalady);
+            $arretMalady->setPatient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeArretMalady(ArretMaladie $arretMalady): static
+    {
+        if ($this->arretMaladies->removeElement($arretMalady)) {
+            // set the owning side to null (unless already changed)
+            if ($arretMalady->getPatient() === $this) {
+                $arretMalady->setPatient(null);
+            }
+        }
+
+        return $this;
     }
 }

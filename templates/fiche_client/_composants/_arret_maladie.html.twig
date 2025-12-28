@@ -1,0 +1,181 @@
+
+<!-- MODAL -->
+<div class="modal fade" id="arretMaladieModal" tabindex="-1">
+	<div class="modal-dialog modal-md modal-dialog-centered">
+		<div class="modal-content rounded-4 shadow-lg">
+
+			<div class="modal-header bg-danger text-white rounded-top-4">
+				<h5 class="modal-title fw-bold">
+					<i class="bi bi-file-earmark-medical me-2"></i>
+					Générer un arrêt maladie
+				</h5>
+				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+			</div>
+
+			<div
+				class="modal-body p-4">
+
+				<!-- ETAPE 1 : MOTIF -->
+				<div id="step-motif">
+					<h6 class="fw-semibold mb-3">Motif de l’arrêt</h6>
+
+					<select id="motif" class="form-select mb-4">
+						<option value="">-- Sélectionner un motif --</option>
+						<option>Fatigue / besoin de repos</option>
+						<option>Maladie virale</option>
+						<option>Douleur musculo-squelettique</option>
+						<option>Trouble ORL</option>
+						<option>Suivi médical</option>
+						<option>Autre</option>
+					</select>
+
+					<div class="d-flex justify-content-end">
+						<button class="btn btn-danger" onclick="goToDateStep()">
+							Suivant →
+						</button>
+					</div>
+				</div>
+
+				<!-- ETAPE 2 : DATE FIN -->
+				<div id="step-date" class="d-none">
+					<h6 class="fw-semibold mb-3">Date de fin de l’arrêt</h6>
+
+					<div class="mb-4">
+						<label class="form-label">Date de début</label>
+						<input type="text" class="form-control" id="dateDebut" disabled>
+					</div>
+
+					<div class="mb-4">
+						<label class="form-label">Date de fin</label>
+						<input type="date" class="form-control" id="dateFin">
+					</div>
+
+					<div class="d-flex justify-content-between">
+						<button class="btn btn-outline-secondary" onclick="backToMotif()">
+							← Retour
+						</button>
+
+						<button class="btn btn-success" onclick="generateArret()">
+							Générer l’arrêt
+						</button>
+					</div>
+				</div>
+
+			</div>
+
+		</div>
+	</div>
+</div>
+ <script>
+let arretModal = null;
+let currentPatientId = null;
+
+document.addEventListener("DOMContentLoaded", () => {
+  const modalEl = document.getElementById("arretMaladieModal");
+
+  if (!modalEl) {
+    console.error("Modal arrêt maladie introuvable");
+    return;
+  }
+
+  arretModal = new bootstrap.Modal(modalEl);
+});
+
+/**
+ * Ouvrir le modal
+ */
+function openArretModal(patientId) {
+  currentPatientId = patientId;
+  resetArretForm();
+  arretModal.show();
+}
+
+/**
+ * Étape 1 → Étape 2
+ */
+function goToDateStep() {
+  const motifEl = document.getElementById("motif");
+  if (!motifEl) return;
+
+  const motif = motifEl.value;
+
+  if (!motif) {
+    alert("Veuillez sélectionner un motif");
+    return;
+  }
+
+  document.getElementById("step-motif").classList.add("d-none");
+  document.getElementById("step-date").classList.remove("d-none");
+
+  // Date début = aujourd’hui
+  const today = new Date().toISOString().split("T")[0];
+  document.getElementById("dateDebut").value = today;
+}
+
+/**
+ * Retour étape 1
+ */
+function backToMotif() {
+  document.getElementById("step-date").classList.add("d-none");
+  document.getElementById("step-motif").classList.remove("d-none");
+}
+
+/**
+ * Générer l’arrêt maladie (AJAX)
+ */
+function generateArret() {
+  const motif = document.getElementById("motif").value;
+  const debutAt = document.getElementById("dateDebut").value;
+  const finAt = document.getElementById("dateFin").value;
+
+  if (!finAt) {
+    alert("Veuillez sélectionner la date de fin");
+    return;
+  }
+
+  if (!currentPatientId) {
+    alert("Patient non défini");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("motif", motif);
+  formData.append("debutAt", debutAt);
+  formData.append("finAt", finAt);
+
+  fetch(`/arret-maladie/save/${currentPatientId}`, {
+    method: "POST",
+    body: formData,
+    headers: {
+      "X-Requested-With": "XMLHttpRequest"
+    }
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (!data.success) {
+      alert("Erreur lors de la génération");
+      return;
+    }
+
+    arretModal.hide();
+
+    // 🖨️ Impression automatique
+    window.open(`/arret-maladie/print/${data.id}`, "_blank");
+  })
+  .catch(err => {
+    console.error(err);
+    alert("Erreur serveur");
+  });
+}
+
+/**
+ * Reset formulaire
+ */
+function resetArretForm() {
+  document.getElementById("motif").value = "";
+  document.getElementById("dateFin").value = "";
+  document.getElementById("step-date").classList.add("d-none");
+  document.getElementById("step-motif").classList.remove("d-none");
+}
+</script>
+
