@@ -1,0 +1,42 @@
+<div class="modal fade" id="documentsModal" tabindex="-1">
+
+	<div class="modal-dialog modal-dialog-centered">
+		<div
+			class="modal-content rounded-4 shadow-lg">
+
+			<!-- HEADER -->
+			<div class="modal-header bg-primary text-white rounded-top-4">
+				<h5 class="modal-title fw-bold">
+					<i class="bi bi-folder2-open me-2"></i>
+					Documents médicaux
+				</h5>
+				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+			</div>
+
+			<!-- BODY -->
+			<div class="modal-body p-4">
+
+				<div
+					class="d-grid gap-3">
+
+					<!-- CERTIFICAT -->
+					<button class="btn btn-outline-primary btn-lg rounded-pill d-flex align-items-center justify-content-center gap-2" onclick="openCertificatModal({{ fiche_client.id }})">
+						<i class="bi bi-file-medical fs-4"></i>
+						Imprimer un certificat médical
+					</button>
+
+<button class="btn btn-outline-danger btn-lg rounded-pill d-flex align-items-center gap-2" onclick="openArretModal({{ fiche_client.id }})">
+	<i class="bi bi-file-earmark-medical fs-4"></i>
+	Générer un arrêt maladie
+</button>
+
+
+
+				</div>
+
+			</div>
+
+		</div>
+	</div>
+</div>
+

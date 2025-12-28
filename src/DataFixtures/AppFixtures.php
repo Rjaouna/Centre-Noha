@@ -42,7 +42,6 @@ class AppFixtures extends Fixture
             $client = new FicheClient();
             $client->setNom($faker->firstName . ' ' . $faker->lastName);
             $client->setVille($faker->randomElement($villes));
-            $client->setAge($faker->dateTimeBetween('-80 years', '-18 years'));
 
             $client->setPoids($faker->numberBetween(55, 110));
             $client->setTelephone('06' . $faker->numberBetween(10000000, 99999999));
@@ -51,6 +50,12 @@ class AppFixtures extends Fixture
             $client->setTraitement($faker->randomElement(['Doliprane', 'Ibuprofène', 'Tisane', 'Repos', null]));
             $client->setObservation($faker->sentence(10));
             $date = (\DateTimeImmutable::createFromMutable($faker->dateTimeBetween('-7 days', 'now')));
+            $client->setDateNaissance(
+                \DateTimeImmutable::createFromMutable(
+                    $faker->dateTimeBetween('-80 years', '-18 years')
+                )
+            );
+
             $client->setCreatedAt($date);
             $client->setUpdatedAt($date);
 

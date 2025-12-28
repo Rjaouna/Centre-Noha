@@ -175,18 +175,12 @@
             <!-- BOUTONS -->
             <div class="d-flex flex-column flex-lg-row gap-2">
 
-{# Bouton dans le header #}
-<button class="btn btn-primary rounded-pill px-4 shadow-sm" onclick="openCertificatModal({{ fiche_client.id }})">
+<button class="btn btn-outline-primary rounded-pill px-4 shadow-sm" data-bs-toggle="modal" data-bs-target="#documentsModal">
+	<i class="bi bi-folder2-open me-2"></i>
+	Documents médicaux
+</button>
 
 
-	<i class="bi bi-file-medical"></i>
-	Imprimer un certificat
-</button>
-<!-- Bouton Arrêt Maladie -->
-<button class="btn btn-outline-danger rounded-pill px-3" onclick="openArretModal({{ fiche_client.id }})">
-	<i class="bi bi-file-earmark-medical"></i>
-	Arrêt maladie
-</button>
 
 
 
@@ -454,6 +448,9 @@ class="btn btn-outline-primary btn-lg rounded-pill px-4 shadow-sm d-flex align-i
 
 
 {{ include('fiche_client/_composants/_arret_maladie.html.twig') }}
+{{ include('fiche_client/_composants/_ducument_medicaux.html.twig') }}
+
+
 
 
 				<button class="btn btn-info rounded-pill mt-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#modalUploadImage">
