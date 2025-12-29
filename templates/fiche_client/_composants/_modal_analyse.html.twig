@@ -1,0 +1,160 @@
+<div class="modal fade" id="modalAnalysePrescription" tabindex="-1">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content rounded-4">
+
+			<div class="modal-header bg-success text-white">
+				<h5 class="modal-title fw-bold">
+					<i class="bi bi-clipboard-pulse me-2"></i>
+					Prescription d’analyses
+				</h5>
+				<button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+			</div>
+
+			<div class="modal-body p-4">
+
+				<label class="fw-bold mb-2">Rechercher une analyse</label>
+				<input type="text" id="analyseSearch" class="form-control rounded-pill" placeholder="Ex: NFS, CRP, Glycémie...">
+
+				<div id="analyseResults" class="list-group mt-2"></div>
+
+				<h6 class="fw-bold mt-4 text-primary">Analyses sélectionnées</h6>
+				<ul id="selectedAnalyses" class="list-group"></ul>
+
+				<div class="mt-3">
+					<label class="fw-bold">Commentaire</label>
+					<textarea id="analyseComment" class="form-control"></textarea>
+				</div>
+
+				<div class="alert alert-danger mt-3 d-none" id="analyseError"></div>
+
+			</div>
+
+			<div class="modal-footer">
+				<button id="saveAnalysePrescription" class="btn btn-success rounded-pill px-4">
+					<i class="bi bi-check-lg"></i>
+					Enregistrer
+				</button>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+ <script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    let selectedAnalyses = [];
+    const input = document.getElementById('analyseSearch');
+    const results = document.getElementById('analyseResults');
+    const selectedUl = document.getElementById('selectedAnalyses');
+    const errorBox = document.getElementById('analyseError');
+
+    function showError(msg) {
+        errorBox.textContent = msg;
+        errorBox.classList.remove('d-none');
+    }
+    function hideError() {
+        errorBox.classList.add('d-none');
+        errorBox.textContent = '';
+    }
+
+    input.addEventListener('keyup', async (e) => {
+        hideError();
+        const q = e.target.value.trim();
+
+        if (q.length < 2) {
+            results.innerHTML = '';
+            return;
+        }
+
+        try {
+            const res = await fetch(`/api/analyse/search?q=${encodeURIComponent(q)}`);
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+
+            const data = await res.json();
+            results.innerHTML = '';
+
+            data.forEach(a => {
+                const item = document.createElement('button');
+                item.type = 'button';
+                item.className = 'list-group-item list-group-item-action';
+                item.textContent = a.name;
+
+                item.onclick = () => addAnalyse(a);
+                results.appendChild(item);
+            });
+        } catch (err) {
+            showError("Erreur recherche analyses : " + err.message);
+        }
+    });
+
+    function addAnalyse(analyse) {
+        if (selectedAnalyses.find(x => x.id === analyse.id)) return;
+
+        selectedAnalyses.push({ id: analyse.id, name: analyse.name });
+        renderSelectedAnalyses();
+        results.innerHTML = '';
+        input.value = '';
+        input.focus();
+    }
+
+    function renderSelectedAnalyses() {
+        selectedUl.innerHTML = '';
+
+        selectedAnalyses.forEach(a => {
+            const li = document.createElement('li');
+            li.className = 'list-group-item d-flex justify-content-between align-items-center';
+
+            li.innerHTML = `
+                <span class="fw-semibold text-primary">${a.name}</span>
+                <button type="button" class="btn btn-sm btn-outline-danger rounded-pill px-3">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            `;
+
+            li.querySelector('button').onclick = () => {
+                selectedAnalyses = selectedAnalyses.filter(x => x.id !== a.id);
+                renderSelectedAnalyses();
+            };
+
+            selectedUl.appendChild(li);
+        });
+    }
+
+    document.getElementById('saveAnalysePrescription').addEventListener('click', async () => {
+        hideError();
+
+        if (selectedAnalyses.length === 0) {
+            showError("Veuillez sélectionner au moins une analyse.");
+            return;
+        }
+
+        const payload = {
+            patient: {{ fiche_client.id }},
+            analyses: selectedAnalyses,
+            comment: document.getElementById('analyseComment').value
+        };
+
+        try {
+            const res = await fetch('/api/analyse/prescription', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+
+            const data = await res.json();
+            if (data.success) {
+                location.reload();
+            } else {
+                showError(data.message || "Erreur lors de l'enregistrement.");
+            }
+        } catch (err) {
+            showError("Erreur sauvegarde : " + err.message);
+        }
+    });
+
+});
+</script>
+

@@ -139,6 +139,12 @@ class FicheClient
     #[ORM\OneToMany(targetEntity: ArretMaladie::class, mappedBy: 'patient')]
     private Collection $arretMaladies;
 
+    /**
+     * @var Collection<int, AnalysePrescription>
+     */
+    #[ORM\OneToMany(targetEntity: AnalysePrescription::class, mappedBy: 'patient')]
+    private Collection $analysePrescriptions;
+
     public function __construct()
     {
         $this->paiements = new ArrayCollection();
@@ -148,6 +154,7 @@ class FicheClient
         $this->dossierMedicals = new ArrayCollection();
         $this->recommendationLetters = new ArrayCollection();
         $this->arretMaladies = new ArrayCollection();
+        $this->analysePrescriptions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -533,6 +540,36 @@ class FicheClient
             // set the owning side to null (unless already changed)
             if ($arretMalady->getPatient() === $this) {
                 $arretMalady->setPatient(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, AnalysePrescription>
+     */
+    public function getAnalysePrescriptions(): Collection
+    {
+        return $this->analysePrescriptions;
+    }
+
+    public function addAnalysePrescription(AnalysePrescription $analysePrescription): static
+    {
+        if (!$this->analysePrescriptions->contains($analysePrescription)) {
+            $this->analysePrescriptions->add($analysePrescription);
+            $analysePrescription->setPatient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAnalysePrescription(AnalysePrescription $analysePrescription): static
+    {
+        if ($this->analysePrescriptions->removeElement($analysePrescription)) {
+            // set the owning side to null (unless already changed)
+            if ($analysePrescription->getPatient() === $this) {
+                $analysePrescription->setPatient(null);
             }
         }
 
