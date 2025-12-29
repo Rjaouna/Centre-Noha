@@ -200,10 +200,7 @@
 		<i class="bi bi-person-lines-fill"></i>
 		Gestion paiement
 	</button>
-<button class="btn btn-success rounded-pill px-4 shadow-sm d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#modalAnalysePrescription">
-	<i class="bi bi-clipboard-pulse"></i>
-	Demander des analyses
-</button>
+
 
 
 
@@ -479,47 +476,32 @@ Ajouter Photos, ordonnances, traitements...
 	</div>
 
 <div class="card shadow-sm rounded-4 mt-4">
-	<div class="card-body">
-		<h5 class="fw-bold text-success">
-			<i class="bi bi-clipboard-check"></i>
-			Analyses prescrites
-		</h5>
+	<div
+		class="card-body">
 
-		{% for p in fiche_client.analysePrescriptions %}
-			<div class="border rounded-3 p-3 mb-2">
-				<div class="d-flex justify-content-between">
-					<div>
-						<strong>{{ p.prescribedAt|date('d/m/Y') }}</strong>
-						<span class="mt-2">
-							{% for a in p.analyses %}
-								<span class="badge bg-info me-1 mb-1">
-									{{ a.name }}
-								</span>
-							{% endfor %}
-						</span>
+		<!-- HEADER -->
+		<div class="d-flex justify-content-between align-items-center mb-3">
+			<h5 class="fw-bold text-success mb-0 d-flex align-items-center gap-2">
+				<i class="bi bi-clipboard-check"></i>
+				Analyses prescrites
+			</h5>
 
+			<button class="btn btn-success rounded-pill px-4 shadow-sm d-flex align-items-center gap-2 text-light" data-bs-toggle="modal" data-bs-target="#modalAnalysePrescription">
+				<i class="bi bi-clipboard-pulse"></i>
+				Demander des analyses
+			</button>
+		</div>
 
-						{% set statusClass = {
-'prescrite': 'warning',
-    'recue': 'success'
-} %}
+		<!-- CONTENT -->
+		<div id="analysePrescriptionsContainer">
+			{% include 'fiche_client/_composants/_analyse_prescriptions.html.twig' with {
+                prescriptions: fiche_client.analysePrescriptions
+            } %}
+		</div>
 
-						<span class="badge bg-{{ statusClass[p.status]|default('secondary') }}">
-							{{ p.status|capitalize }}
-						</span>
-
-
-					</div>
-					<a href="{{ path('analyse_prescription_pdf', {id: p.id}) }}" class="btn btn-sm btn-outline-danger rounded-pill d-flex align-items-center gap-2">
-						PDF
-					</a>
-				</div>
-			</div>
-		{% endfor %}
 	</div>
-
-
 </div>
+
 
 
 </div>

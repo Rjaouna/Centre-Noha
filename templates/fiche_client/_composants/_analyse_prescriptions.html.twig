@@ -1,0 +1,103 @@
+<div class="row g-3">
+	{% for p in prescriptions %}
+		<div class="col-12 col-sm-6 col-lg-3" id="prescription-{{ p.id }}">
+			<div
+				class="card shadow-sm border-0 rounded-4 h-100 position-relative">
+
+				<!-- 🗑️ DELETE ICON -->
+				<button class="btn btn-sm btn-outline-danger rounded-circle position-absolute top-0 end-0 m-2 btn-delete-prescription" data-id="{{ p.id }}" title="Supprimer la prescription">
+					<i class="bi bi-trash"></i>
+				</button>
+
+				<div
+					class="card-body p-3 d-flex flex-column justify-content-between">
+
+					<!-- DATE + STATUT -->
+					<div class="mb-2">
+						<div class="fw-bold text-primary small">
+							{{ p.prescribedAt|date('d/m/Y') }}
+						</div>
+
+						{% set statusMap = {
+                        'prescrite': 'warning',
+                        'en_cours': 'info',
+                        'recue': 'success'
+                    } %}
+
+						<span class="badge bg-{{ statusMap[p.status]|default('secondary') }} mt-1">
+							{{ p.status|capitalize }}
+						</span>
+					</div>
+
+					<!-- ANALYSES -->
+					<div class="mb-2">
+						{% for a in p.analyses %}
+							<span class="badge bg-info text-dark me-1 mb-1">
+								{{ a.name }}
+							</span>
+						{% endfor %}
+					</div>
+
+					<!-- COMMENTAIRE -->
+					{% if p.comment %}
+						<div class="text-muted small mb-2">
+							{{ p.comment }}
+						</div>
+					{% endif %}
+
+					<!-- ACTION -->
+					<div class="text-end mt-auto">
+						<a href="{{ path('analyse_prescription_pdf', {id: p.id}) }}" class="btn btn-sm btn-link  rounded-pill d-inline-flex align-items-center gap-1">
+<i class="bi bi-file-earmark-pdf link-danger fs-4"></i>
+
+						</a>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	{% else %}
+		<div class="col-12 text-muted small">
+			Aucune analyse prescrite.
+		</div>
+	{% endfor %}
+</div>
+
+ <script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    document.addEventListener('click', async (e) => {
+
+        const btn = e.target.closest('.btn-delete-prescription');
+        if (!btn) return;
+
+        const id = btn.dataset.id;
+
+        if (!confirm("Supprimer cette prescription d’analyses ?")) return;
+
+        try {
+            const res = await fetch(`/api/analyse-prescription/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+
+            const data = await res.json();
+
+            if (data.success) {
+                document.getElementById(`prescription-${id}`).remove();
+            } else {
+                alert(data.message || "Erreur lors de la suppression.");
+            }
+
+        } catch (err) {
+            alert("Erreur suppression : " + err.message);
+        }
+    });
+
+});
+</script>
+

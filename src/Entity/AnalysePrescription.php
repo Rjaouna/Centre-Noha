@@ -36,6 +36,9 @@ class AnalysePrescription
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $receivedAt = null;
 
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $compteRendu = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -121,6 +124,18 @@ class AnalysePrescription
     public function setReceivedAt(?\DateTimeImmutable $receivedAt): static
     {
         $this->receivedAt = $receivedAt;
+
+        return $this;
+    }
+
+    public function getCompteRendu(): ?string
+    {
+        return $this->compteRendu;
+    }
+
+    public function setCompteRendu(?string $compteRendu): static
+    {
+        $this->compteRendu = $compteRendu;
 
         return $this;
     }

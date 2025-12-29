@@ -146,7 +146,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const data = await res.json();
             if (data.success) {
-                location.reload();
+               if (data.success) {
+
+    // Fermer le modal
+    bootstrap.Modal
+        .getInstance(document.getElementById('modalAnalysePrescription'))
+        .hide();
+
+    // Recharger le bloc analyses prescrites
+    const container = document.getElementById('analysePrescriptionsContainer');
+
+    const res2 = await fetch(
+        `/api/patient/{{ fiche_client.id }}/analyse-prescriptions`
+    );
+    container.innerHTML = await res2.text();
+
+    // Reset formulaire
+    selectedAnalyses = [];
+    renderSelectedAnalyses();
+    document.getElementById('analyseComment').value = '';
+}
+
             } else {
                 showError(data.message || "Erreur lors de l'enregistrement.");
             }
