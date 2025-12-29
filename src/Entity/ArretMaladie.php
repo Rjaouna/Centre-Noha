@@ -28,7 +28,7 @@ class ArretMaladie
 
     #[ORM\ManyToOne(inversedBy: 'arretMaladies')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?ficheClient $patient = null;
+    private ?FicheClient $patient = null;
 
     #[ORM\Column]
     private ?int $duree = null;
