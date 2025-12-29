@@ -1,0 +1,53 @@
+/* LOADER GLOBAL FULLSCREEN */
+.login-loader {
+    position: fixed;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+}
+
+/* Fade out */
+.login-loader.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s ease;
+}
+
+/* CONTENU */
+.loader-box {
+    text-align: center;
+}
+
+/* CERCLE (repris login) */
+.pulse-circle {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #0d6efd, #4da3ff);
+    margin: 0 auto 20px;
+    animation: pulse 1.1s ease-in-out infinite;
+}
+
+/* TEXTE */
+.loader-text {
+    font-weight: 600;
+    color: #0d6efd;
+    letter-spacing: .5px;
+    animation: fadeText 1.2s ease-in-out infinite;
+}
+
+/* ANIMATIONS */
+@keyframes pulse {
+    0% { transform: scale(0.9); opacity: 0.6; }
+    50% { transform: scale(1.05); opacity: 1; }
+    100% { transform: scale(0.9); opacity: 0.6; }
+}
+
+@keyframes fadeText {
+    0% { opacity: .4; }
+    50% { opacity: 1; }
+    100% { opacity: .4; }
+}

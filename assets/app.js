@@ -6,6 +6,7 @@ import "./styles/app.css";
  * Import de ton CSS principal
  */
 import "./styles/app.scss";
+import "./styles/global-loader.css";
 
 /**
  * Import jQuery
@@ -89,7 +90,6 @@ document.addEventListener("DOMContentLoaded", () => {
         buttonSoundClick(el.id);
     });
 });
-
 
 function loadNotifications() {
     fetch("/api/notifications/feeds", { cache: "no-store" })
@@ -203,3 +203,13 @@ document
 setInterval(loadNotifications, 15000);
 
 loadNotifications();
+window.addEventListener("load", () => {
+    const loader = document.getElementById("global-loader");
+    if (!loader) return;
+
+    loader.classList.add("hidden");
+
+    loader.addEventListener("transitionend", () => {
+        loader.remove();
+    });
+});
