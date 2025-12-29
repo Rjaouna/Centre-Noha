@@ -37,8 +37,13 @@ class ArretMaladieController extends AbstractController
 
 		// 📝 Texte par défaut (template)
 		$body = sprintf(
-			"Le patient nécessite un arrêt de travail pour une durée de %d jour(s) 
-            à compter du %s inclus, pour le motif suivant : %s.",
+			"Au vu de l’examen clinique réalisé ce jour, l’état de santé du patient nécessite un arrêt de travail d’une durée de %d jour(s), à compter du %s inclus.
+
+Cet arrêt est prescrit pour le motif suivant : %s.
+
+Il est recommandé au patient de respecter un repos adapté durant toute la durée de l’arrêt et d’éviter toute activité professionnelle susceptible de nuire à son rétablissement.
+
+Une reprise du travail pourra être envisagée à l’issue de cette période, sous réserve d’une évolution favorable.",
 			$duree,
 			$debutAt->format('d/m/Y'),
 			$motif
