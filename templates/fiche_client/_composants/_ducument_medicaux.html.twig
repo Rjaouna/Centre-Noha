@@ -20,15 +20,27 @@
 					class="d-grid gap-3">
 
 					<!-- CERTIFICAT -->
-					<button class="btn btn-outline-primary btn-lg rounded-pill d-flex align-items-center justify-content-center gap-2" onclick="openCertificatModal({{ fiche_client.id }})">
-						<i class="bi bi-file-medical fs-4"></i>
-						Imprimer un certificat médical
-					</button>
+<!-- CERTIFICAT -->
+<button class="btn btn-outline-primary rounded-pill d-flex align-items-center justify-content-center gap-2" onclick="
+				        closeDocumentsModal();
+				        setTimeout(() => openCertificatModal({{ fiche_client.id }}), 300);
+				    ">
+	<i class="bi bi-file-medical fs-4"></i>
+	Imprimer un certificat médical
+</button>
 
-<button class="btn btn-outline-danger btn-lg rounded-pill d-flex align-items-center gap-2" onclick="openArretModal({{ fiche_client.id }})">
+
+<!-- ARRÊT MALADIE -->
+<button class="btn btn-outline-danger rounded-pill d-flex align-items-center justify-content-center gap-2" onclick="
+				        closeDocumentsModal();
+				        setTimeout(() => openArretModal({{ fiche_client.id }}), 300);
+				    ">
+
 	<i class="bi bi-file-earmark-medical fs-4"></i>
 	Générer un arrêt maladie
 </button>
+
+
 
 
 
@@ -39,4 +51,17 @@
 		</div>
 	</div>
 </div>
+
+ <script>
+function closeDocumentsModal() {
+    const modalEl = document.getElementById('documentsModal');
+    if (!modalEl) return;
+
+    const modalInstance = bootstrap.Modal.getInstance(modalEl);
+    if (modalInstance) {
+        modalInstance.hide();
+    }
+}
+</script>
+
 

@@ -4,7 +4,9 @@
 	<div class="modal-dialog modal-md modal-dialog-centered">
 		<div class="modal-content rounded-4 shadow-lg">
 
-			<div class="modal-header bg-danger text-white rounded-top-4">
+<div class="modal-header bg-danger text-white rounded-top-4" st>
+
+
 				<h5 class="modal-title fw-bold">
 					<i class="bi bi-file-earmark-medical me-2"></i>
 					Générer un arrêt maladie
@@ -162,7 +164,9 @@ function generateArret() {
     arretModal.hide();
 
     // 🖨️ Impression automatique
-    window.open(`/arret-maladie/print/${data.id}`, "_blank");
+window.open(`/arret-maladie/print/${data.id}`);
+
+
   })
   .catch(err => {
     console.error(err);
