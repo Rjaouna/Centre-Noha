@@ -38,11 +38,17 @@
 {% if app.request.attributes.get('_route') != 'app_login' %}
 	<div id="global-loader" class="login-loader">
 		<div class="loader-box">
-			<div class="pulse-circle"></div>
+<div class="spinner-grow text-primary" role="status">
+	<span class="sr-only"></span>
+</div>
+
+
 			<p class="loader-text">Chargement…</p>
 		</div>
 	</div>
 {% endif %}
+
+
 
 
 <header class="app-header">

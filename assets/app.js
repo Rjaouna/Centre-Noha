@@ -203,13 +203,36 @@ document
 setInterval(loadNotifications, 15000);
 
 loadNotifications();
+const LOADER_MIN_DURATION = 2000; // 2 secondes minimum
+const loaderStart = performance.now();
+
 window.addEventListener("load", () => {
     const loader = document.getElementById("global-loader");
     if (!loader) return;
 
-    loader.classList.add("hidden");
+    const elapsed = performance.now() - loaderStart;
+    const remaining = Math.max(0, LOADER_MIN_DURATION - elapsed);
 
-    loader.addEventListener("transitionend", () => {
-        loader.remove();
-    });
+    setTimeout(() => {
+        loader.classList.add("hidden");
+
+        loader.addEventListener(
+            "transitionend",
+            () => {
+                loader.remove();
+            },
+            { once: true }
+        );
+    }, remaining);
+});
+
+document.addEventListener("click", (e) => {
+    const link = e.target.closest("a");
+    if (!link) return;
+    if (link.target === "_blank") return;
+    if (link.href.startsWith("#")) return;
+    if (link.hasAttribute("data-no-loader")) return;
+
+    const loader = document.getElementById("global-loader");
+    if (loader) loader.classList.remove("hidden");
 });
