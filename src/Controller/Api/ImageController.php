@@ -14,31 +14,40 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class ImageController extends AbstractController
 {
 	#[Route('/upload/{id}', name: 'app_image_upload', methods: ['POST'])]
-	public function upload(Request $request, FicheClient $ficheClient, EntityManagerInterface $em): JsonResponse
-	{
-		$fileBag = $request->files->get('image');
+	public function upload(
+		Request $request,
+		FicheClient $ficheClient,
+		EntityManagerInterface $em
+	): JsonResponse {
+		$file = $request->files->get('image')['imageFile'] ?? null;
 
-		if (!$fileBag || !isset($fileBag['imageFile'])) {
+		if (!$file) {
 			return new JsonResponse([
-				'status' => 'error',
-				'message' => 'Fichier trop volumineux ou upload interrompu'
+				'success' => false,
+				'message' => 'Aucun fichier reçu'
 			], 400);
 		}
 
-		$file = $fileBag['imageFile'];
-
-
 		$image = new Image();
 		$image->setClient($ficheClient);
-		$image->setImageFile($file); // Vich gère tout
+		$image->setImageFile($file); // VichUploader
 
 		$em->persist($image);
 		$em->flush();
 
 		return new JsonResponse([
-			'status' => 'success',
-			'message' => 'Image uploadée',
+			'success'  => true,
+			'id'       => $image->getId(),
 			'fileName' => $image->getFileName()
 		]);
+	}
+
+	#[Route('/delete/{id}', name: 'app_image_delete', methods: ['DELETE'])]
+	public function delete(Image $image, EntityManagerInterface $em): JsonResponse
+	{
+		$em->remove($image);
+		$em->flush();
+
+		return new JsonResponse(['success' => true]);
 	}
 }

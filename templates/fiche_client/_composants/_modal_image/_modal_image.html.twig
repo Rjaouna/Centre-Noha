@@ -26,21 +26,41 @@
 	</div>
 </div>
 
+ <script src="https://unpkg.com/browser-image-compression/dist/browser-image-compression.js"></script>
 
- <script>
-document.getElementById('imageUploadForm').addEventListener('submit', async function(e) {
+ <script type="module">
+import imageCompression from 'browser-image-compression';
+
+document.getElementById('imageUploadForm').addEventListener('submit', async function (e) {
     e.preventDefault();
 
-    const form    = this;
-    const formData = new FormData(form);
-    const resultBox = document.getElementById("uploadResult");
-    const pop = document.getElementById("popupSuccess");
+    const input = this.querySelector('input[type="file"]');
+    const file = input.files[0];
 
-    resultBox.innerHTML = "";
+    if (!file) {
+        alert("Aucune image sélectionnée");
+        return;
+    }
+
+    // ⚡ COMPRESSION
+    let compressedFile;
+    try {
+        compressedFile = await imageCompression(file, {
+            maxSizeMB: 2,
+            maxWidthOrHeight: 1920,
+            useWebWorker: true
+        });
+    } catch (e) {
+        alert("Erreur lors de la compression");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('image[imageFile]', compressedFile);
 
     const url = "{{ path('app_image_upload', { id: fiche_client.id }) }}";
 
-    let response = await fetch(url, {
+    const response = await fetch(url, {
         method: "POST",
         body: formData
     });
@@ -48,67 +68,29 @@ document.getElementById('imageUploadForm').addEventListener('submit', async func
     let data;
     try {
         data = await response.json();
-    } catch (error) {
-        resultBox.innerHTML = `
-            <div class="alert alert-danger rounded-4">Erreur interne.</div>
-        `;
+    } catch {
+        alert("Erreur serveur");
         return;
     }
 
-    if (data.status === "success") {
+    if (data.status === 'success') {
+        addImageToGallery(data.fileName, data.id);
 
-        // 🟢 Popup succès
-        pop.style.display = "block";
-        buttonSoundSuccess('imageUploadForm');
-
-        pop.innerHTML = `
-<div class="d-flex align-items-start">
-	<i class="bi bi-check-circle-fill fs-1 text-white bg-success p-2 rounded-circle me-3"></i>
-	<div>
-		<h5 class="fw-bold mb-1 text-light">Image ajoutée avec succès 🎉</h5>
-		<p class="text-light mb-1">Votre image a été enregistrée.</p>
-	</div>
-	<button type="button" class="btn-close" onclick="document.getElementById('popupSuccess').style.display='none';"></button>
-</div>
-        `;
-
-        // 🔒 Fermer la modal automatiquement
-        const modal = bootstrap.Modal.getInstance(document.getElementById('modalUploadImage'));
+        const modal = bootstrap.Modal.getInstance(
+            document.getElementById('modalUploadImage')
+        );
         modal.hide();
 
-        // 🔄 Reset du formulaire
-        form.reset();
-
-        // 🎨 Ajouter l'image dans la galerie sans recharger
-        if (data.fileName) {
-            const gallery = document.getElementById("gallery");
-
-            if (gallery) {
-                gallery.insertAdjacentHTML("afterbegin", `
-                    <div class="gallery-item position-relative col-2">
-                        <img src="/uploads/clients/${data.fileName}"
-                             alt="Image du patient"
-                             class="img-fluid rounded shadow-sm gallery-thumb new-image"
-                             data-bs-toggle="modal"
-                             data-bs-target="#modalGalleryView"
-                             data-image="${data.fileName}">
-                    </div>
-                `);
-            }
-        }
-
-        // ✨ Animation d’apparition
-        setTimeout(() => {
-            document.querySelector(".new-image")?.classList.remove("new-image");
-        }, 50);
-
+        this.reset();
     } else {
-        resultBox.innerHTML = `
-            <div class="alert alert-danger rounded-4">${data.message}</div>
-        `;
+        alert(data.message);
     }
 });
 </script>
+
+
+
+
 
 
 

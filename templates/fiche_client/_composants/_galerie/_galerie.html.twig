@@ -1,59 +1,162 @@
 <style>
-.gallery-thumb {
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s;
-}
-.gallery-thumb:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-}
+	.gallery-item {
+		position: relative;
+	}
+
+	.gallery-thumb {
+		cursor: pointer;
+		transition: transform 0.2s ease, box-shadow 0.2s;
+	}
+
+	.gallery-thumb:hover {
+		transform: scale(1.05);
+		box-shadow: 0 6px 18px rgba(0, 0, 0, .3);
+	}
+
+	/* Bouton supprimer */
+	.delete-image-btn {
+		position: absolute;
+		top: 6px;
+		right: 6px;
+		background: rgba(220, 53, 69, .9);
+		color: #fff;
+		border: none;
+		border-radius: 50%;
+		width: 30px;
+		height: 30px;
+		display: none;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+		z-index: 10;
+	}
+
+	.gallery-item:hover .delete-image-btn {
+		display: flex;
+	}
 </style>
 
+<div class="row g-3" id="gallery">
+	{% for img in fiche_client.images %}
+		<div class="gallery-item col-6 col-md-3 col-lg-2" data-id="{{ img.id }}">
+			<button class="delete-image-btn" data-id="{{ img.id }}">
+				<i class="bi bi-trash"></i>
+			</button>
 
-<div class="row d-flex" id="gallery">
-
-
-
-	{% if fiche_client.images is not empty %}
-		{% for img in fiche_client.images %}
-			<div class="gallery-item position-relative col-2">
-				<img src="{{ asset('uploads/clients/' ~ img.fileName) }}" alt="Image du patient" class="img-fluid rounded shadow-sm gallery-thumb" data-bs-toggle="modal" data-bs-target="#modalGalleryView" data-image="{{ img.fileName }}">
-			</div>
-		{% endfor %}
-	
-	{% endif %}
+			<img src="{{ asset('uploads/clients/' ~ img.fileName) }}" class="img-fluid rounded shadow-sm gallery-thumb" data-image="{{ img.fileName }}">
+		</div>
+	{% endfor %}
 </div>
 
-
-
-
-
-
-
 <div class="modal fade" id="modalGalleryView" tabindex="-1">
-	<div class="modal-dialog modal-dialog-centered modal-lg">
+	<div class="modal-dialog modal-dialog-centered modal-xl">
 		<div class="modal-content">
-
 			<div class="modal-header bg-primary text-white">
 				<h5 class="modal-title">Aperçu</h5>
 				<button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
 			</div>
-
 			<div class="modal-body text-center">
-				<img id="modalImageView" src="" class="img-fluid rounded shadow">
+				<img id="modalImageView" class="img-fluid rounded shadow">
 			</div>
 		</div>
 	</div>
 </div>
 
- <script>
-document.addEventListener("click", function (e) {
-    let img = e.target.closest(".gallery-thumb");
+<div class="modal fade" id="modalUploadImage" tabindex="-1">
+	<div class="modal-dialog">
+		<div class="modal-content">
 
+			<div class="modal-header bg-primary text-white">
+				<h5 class="modal-title">Ajouter une image</h5>
+				<button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+			</div>
+
+			<div class="modal-body">
+				<form id="imageUploadForm">
+					<input type="file" class="form-control mb-3" accept="image/*" required>
+					<button class="btn btn-success w-100 rounded-pill">
+						<i class="bi bi-upload"></i>
+						Upload
+					</button>
+				</form>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+ <script src="https://unpkg.com/browser-image-compression/dist/browser-image-compression.js"></script>
+
+ <script>
+/* 🔍 ZOOM IMAGE */
+document.addEventListener("click", e => {
+    const img = e.target.closest(".gallery-thumb");
     if (img) {
-        let file = img.getAttribute("data-image");
-        document.getElementById("modalImageView").src = "/uploads/clients/" + file;
+        document.getElementById("modalImageView").src =
+            "/uploads/clients/" + img.dataset.image;
+        new bootstrap.Modal('#modalGalleryView').show();
     }
 });
+
+/* 🗑️ SUPPRESSION */
+document.addEventListener("click", e => {
+    const btn = e.target.closest(".delete-image-btn");
+    if (!btn) return;
+
+    const id = btn.dataset.id;
+    if (!confirm("Supprimer cette image ?")) return;
+
+    fetch(`/image/delete/${id}`, { method: "DELETE" })
+        .then(r => r.json())
+        .then(() => btn.closest(".gallery-item").remove());
+});
+
+/* ⬆️ UPLOAD + COMPRESSION */
+document.getElementById("imageUploadForm").addEventListener("submit", async e => {
+    e.preventDefault();
+
+    const input = e.target.querySelector("input[type=file]");
+    const file = input.files[0];
+    if (!file) return;
+
+    const compressed = await imageCompression(file, {
+        maxSizeMB: 2,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true
+    });
+
+    const formData = new FormData();
+    formData.append("image[imageFile]", compressed);
+
+    const res = await fetch("{{ path('app_image_upload', {id: fiche_client.id}) }}", {
+        method: "POST",
+        body: formData
+    });
+
+    const data = await res.json();
+    if (!data.success) return alert("Erreur upload");
+
+    addImageToGallery(data.fileName, data.id);
+
+    bootstrap.Modal.getInstance(
+        document.getElementById("modalUploadImage")
+    ).hide();
+
+    e.target.reset();
+});
+
+/* ➕ AJOUT GALERIE */
+function addImageToGallery(fileName, id) {
+    document.getElementById("gallery").insertAdjacentHTML("afterbegin", `
+        <div class="gallery-item col-6 col-md-3 col-lg-2" data-id="${id}">
+            <button class="delete-image-btn" data-id="${id}">
+                <i class="bi bi-trash"></i>
+            </button>
+            <img src="/uploads/clients/${fileName}"
+                 class="img-fluid rounded shadow-sm gallery-thumb"
+                 data-image="${fileName}">
+        </div>
+    `);
+}
 </script>
 
