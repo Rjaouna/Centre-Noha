@@ -16,15 +16,17 @@ class ImageController extends AbstractController
 	#[Route('/upload/{id}', name: 'app_image_upload', methods: ['POST'])]
 	public function upload(Request $request, FicheClient $ficheClient, EntityManagerInterface $em): JsonResponse
 	{
-		$file = $request->files->get('image')['imageFile'] ?? null;
+		$fileBag = $request->files->get('image');
 
-
-		if (!$file) {
+		if (!$fileBag || !isset($fileBag['imageFile'])) {
 			return new JsonResponse([
 				'status' => 'error',
-				'message' => 'Aucun fichier reçu'
+				'message' => 'Fichier trop volumineux ou upload interrompu'
 			], 400);
 		}
+
+		$file = $fileBag['imageFile'];
+
 
 		$image = new Image();
 		$image->setClient($ficheClient);
