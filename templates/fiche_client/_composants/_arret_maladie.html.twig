@@ -154,26 +154,23 @@ function generateArret() {
       "X-Requested-With": "XMLHttpRequest"
     }
   })
-  .then(res => res.json())
-  .then(data => {
-    if (!data.success) {
-      alert("Erreur lors de la génération");
-      return;
-    }
+    .then(res => res.json())
+    .then(data => {
+      if (!data.success) {
+        alert("Erreur lors de la génération");
+        return;
+      }
 
-    arretModal.hide();
+      // ✅ Fermer le modal
+      arretModal.hide();
 
-    // 🖨️ Impression automatique
-window.location.href = `/arret-maladie/print/${data.id}`;
-
-
-
-
-  })
-  .catch(err => {
-    console.error(err);
-    alert("Erreur serveur");
-  });
+      // ✅ Redirection (compatible mobile)
+      window.location.href = `/arret-maladie/print/${data.id}`;
+    })
+    .catch(err => {
+      console.error(err);
+      alert("Erreur serveur");
+    });
 }
 
 /**
