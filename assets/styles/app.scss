@@ -86,13 +86,7 @@ body {
   border-color: $primary;
   box-shadow: 0 0 0 .25rem rgba(76, 201, 166, 0.25);
 }
-.btn {
-    text-transform: capitalize;
-    border: none;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
-    transition: color 0.4s, background-color 0.4s, border-color 0.4s, box-shadow 0.4s;
-    font-weight: 900;
-}
+
 
 .bg-gradient-bloc {
     background: linear-gradient(
@@ -131,7 +125,10 @@ body {
     transform: translateY(-6px);
     box-shadow: 0 14px 28px rgba(0, 0, 0, .18);
 }
-
+.btn:not(.disabled):hover {
+    margin-top: 0px;
+    border-bottom-width: 3px;
+}
 .dashboard-pro h5 {
     font-weight: 800;
     margin-bottom: 6px;
