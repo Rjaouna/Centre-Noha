@@ -30,6 +30,8 @@ class UserFixtures extends Fixture
 		$admin = new User();
 		$admin->setEmail('admin@noha.ma');
 		$admin->setRoles(['ROLE_ADMIN']);
+		$admin->setNom('Admin');
+		$admin->setPrenom('Jaouna');
 		$password = $this->hasher->hashPassword($admin, 'admin123');
 		$admin->setPassword($password);
 		$manager->persist($admin);
@@ -38,6 +40,8 @@ class UserFixtures extends Fixture
 		$assist = new User();
 		$assist->setEmail('assist@noha.ma');
 		$assist->setRoles(['ROLE_ASSIST']);
+		$assist->setNom('Admin');
+		$assist->setPrenom('Doctor');
 		$password = $this->hasher->hashPassword($assist, 'assist123');
 		$assist->setPassword($password);
 		$manager->persist($assist);
@@ -46,6 +50,8 @@ class UserFixtures extends Fixture
 		$assist = new User();
 		$assist->setEmail('dr.brouk@gmail.com');
 		$assist->setRoles(['ROLE_ASSIST']);
+		$assist->setNom('Admin');
+		$assist->setPrenom('Doctor');
 		$password = $this->hasher->hashPassword($assist, 'brouk2025');
 		$assist->setPassword($password);
 		$manager->persist($assist);

@@ -53,7 +53,50 @@
 				display: none !important;
 			}
 		}
+		/* LOADER FULLSCREEN */
+.login-loader {
+    position: fixed;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+/* BOITE LOADER */
+.loader-box {
+    text-align: center;
+}
+
+/* CERCLE */
+.pulse-circle {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #0d6efd, #4da3ff);
+    margin: 0 auto 20px;
+}
+
+/* TEXTE */
+.loader-text {
+    font-weight: 600;
+    color: #0d6efd;
+    letter-spacing: .5px;
+}
+
 	</style>
+ <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+
+
+<!-- LOADER -->
+<div id="loginLoader" class="login-loader d-none">
+	<div class="loader-box">
+		<div class="pulse-circle"></div>
+		<p class="loader-text">Connexion en cours…</p>
+	</div>
+</div>
+
 
 	<div class="container d-flex justify-content-center align-items-center" style="min-height: 90vh;">
 <div class="shadow-lg login-card">
@@ -136,6 +179,18 @@
 						🔐 Accès réservé au personnel autorisé du Centre Noha.
 					</p>
 				</div>
+<!-- LOADER CONNEXION -->
+<div id="loginLoader" class="login-loader d-none">
+	<div class="loader-card">
+		<div class="spinner"></div>
+		<h5 class="fw-bold mt-3 text-primary">Connexion en cours…</h5>
+		<p class="text-muted small mb-0">
+			Vérification de vos accès sécurisés
+		</p>
+	</div>
+</div>
+
+
 
 				<!-- RIGHT IMAGE -->
 <div class="col-md-6 login-right d-none d-md-flex bg-white justify-content-center align-items-center">
@@ -153,6 +208,51 @@
 		box.style.display = box.style.display === 'block' ? 'none' : 'block';
 	});
 	</script>
+ <script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    const form = document.querySelector("form");
+    const loader = document.getElementById("loginLoader");
+
+    if (!form) return;
+
+    form.addEventListener("submit", function (e) {
+        e.preventDefault(); // stop submit immédiat
+
+        // Affiche le loader
+        loader.classList.remove("d-none");
+
+        // Animation GSAP
+        gsap.fromTo(".pulse-circle",
+            { scale: 0.9, opacity: 0.6 },
+            {
+                scale: 1.1,
+                opacity: 1,
+                duration: 0.8,
+                repeat: -1,
+                yoyo: true,
+                ease: "power1.inOut"
+            }
+        );
+
+        gsap.fromTo(".loader-text",
+            { opacity: 0 },
+            {
+                opacity: 1,
+                duration: 1,
+                repeat: -1,
+                yoyo: true
+            }
+        );
+
+        // ⏳ délai 4 secondes puis submit réel
+        setTimeout(() => {
+            form.submit();
+        }, 4000);
+    });
+});
+</script>
+
 
 {% endblock %}
 
