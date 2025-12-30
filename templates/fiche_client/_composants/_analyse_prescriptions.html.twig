@@ -58,7 +58,9 @@
 {% else %}
 	<div class="text-muted small mb-2">
 		<em>En attente de compte rendu disponible.</em>
-		<button class="btn btn-sm btn-link btnAddCompteRendu" data-id="{{ p.id }}" data-bs-toggle="modal" data-bs-target="#modalCompteRendu">
+<button class="btn btn-sm btn-link btnAddCompteRendu" data-id="{{ p.id }}">
+
+
 			Ajouter un compte rendu
 		</button>
 	</div>
@@ -119,13 +121,11 @@
 		</div>
 	</div>
 </div>
-
-
  <script>
 document.addEventListener('DOMContentLoaded', () => {
 
     const modalEl = document.getElementById('modalCompteRendu');
-    const modal = new bootstrap.Modal(modalEl);
+    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
 
     const inputId   = document.getElementById('compteRenduPrescriptionId');
     const textarea  = document.getElementById('compteRenduText');
@@ -135,6 +135,14 @@ document.addEventListener('DOMContentLoaded', () => {
         textarea.value = '';
         errorBox.classList.add('d-none');
         errorBox.textContent = '';
+    }
+
+    async function reloadAnalysePrescriptions() {
+        const container = document.getElementById('analysePrescriptionsContainer');
+        const patientId = container.dataset.patientId;
+
+        const res = await fetch(`/api/patient/${patientId}/analyse-prescriptions`);
+        container.innerHTML = await res.text();
     }
 
     // AJOUT
@@ -158,7 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
         modal.show();
     });
 
-    // SAVE AJAX
+    // SAVE
     document.getElementById('saveCompteRendu').addEventListener('click', async () => {
 
         const id = inputId.value;
@@ -184,56 +192,32 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        await reloadAnalysePrescriptions();
         modal.hide();
+
+        modalEl.addEventListener('hidden.bs.modal', async () => {
+            await reloadAnalysePrescriptions();
+        }, { once: true });
     });
 
-    async function reloadAnalysePrescriptions() {
-        const container = document.getElementById('analysePrescriptionsContainer');
-        const patientId = container.dataset.patientId;
+    // BACKDROP CLEAN (sécurité ultime)
+    modalEl.addEventListener('hidden.bs.modal', () => {
+        document.body.classList.remove('modal-open');
+        document.querySelectorAll('.modal-backdrop').forEach(b => b.remove());
+    });
 
-        const res = await fetch(`/api/patient/${patientId}/analyse-prescriptions`);
-        container.innerHTML = await res.text();
-    }
-
-});
-</script>
-
-
-
- <script>
-document.addEventListener('DOMContentLoaded', () => {
-
+    // DELETE
     document.addEventListener('click', async (e) => {
-
         const btn = e.target.closest('.btn-delete-prescription');
         if (!btn) return;
 
-        const id = btn.dataset.id;
-
         if (!confirm("Supprimer cette prescription d’analyses ?")) return;
 
-        try {
-            const res = await fetch(`/api/analyse-prescription/${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            });
+        await fetch(`/api/analyse-prescription/${btn.dataset.id}`, {
+            method: 'DELETE',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        });
 
-            if (!res.ok) throw new Error('HTTP ' + res.status);
-
-            const data = await res.json();
-
-            if (data.success) {
-                document.getElementById(`prescription-${id}`).remove();
-            } else {
-                alert(data.message || "Erreur lors de la suppression.");
-            }
-
-        } catch (err) {
-            alert("Erreur suppression : " + err.message);
-        }
+        await reloadAnalysePrescriptions();
     });
 
 });
