@@ -203,7 +203,7 @@ document
 setInterval(loadNotifications, 15000);
 
 loadNotifications();
-const LOADER_MIN_DURATION = 1000; // 2 secondes minimum
+const LOADER_MIN_DURATION = 1000; // 1 secondes minimum
 const loaderStart = performance.now();
 
 window.addEventListener("load", () => {

@@ -44,6 +44,27 @@
 							{{ p.comment }}
 						</div>
 					{% endif %}
+<!-- COMPTE RENDU -->
+<!-- COMPTE RENDU -->
+	{% if p.compteRendu %}
+		<div class="text-muted small mb-2 d-flex align-items-start gap-2"> <div>
+			{{ p.compteRendu }}
+		</div>
+
+		<button class="btn btn-sm btn-link p-0 btnEditCompteRendu" data-id="{{ p.id }}" data-text="{{ p.compteRendu|e('html_attr') }}" title="Modifier le compte rendu">
+			<i class="bi bi-pencil-square text-primary"></i>
+		</button>
+	</div>
+{% else %}
+	<div class="text-muted small mb-2">
+		<em>En attente de compte rendu disponible.</em>
+		<button class="btn btn-sm btn-link btnAddCompteRendu" data-id="{{ p.id }}" data-bs-toggle="modal" data-bs-target="#modalCompteRendu">
+			Ajouter un compte rendu
+		</button>
+	</div>
+{% endif %}
+
+
 
 					<!-- ACTION -->
 					<div class="text-end mt-auto">
@@ -62,6 +83,123 @@
 		</div>
 	{% endfor %}
 </div>
+<div class="modal fade" id="modalCompteRendu" tabindex="-1">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content rounded-4">
+
+			<div class="modal-header bg-primary text-white">
+				<h5 class="modal-title fw-bold">
+					<i class="bi bi-file-earmark-medical"></i>
+					Compte rendu d’analyse
+				</h5>
+				<button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+			</div>
+
+			<div class="modal-body">
+
+				<input type="hidden" id="compteRenduPrescriptionId">
+
+				<label class="fw-bold mb-2">
+					Compte rendu du laboratoire
+				</label>
+
+				<textarea id="compteRenduText" class="form-control" rows="6" placeholder="Saisir le compte rendu…"></textarea>
+
+				<div id="compteRenduError" class="alert alert-danger mt-3 d-none"></div>
+
+			</div>
+
+			<div class="modal-footer">
+				<button id="saveCompteRendu" class="btn btn-success rounded-pill px-4">
+					<i class="bi bi-check-lg"></i>
+					Enregistrer
+				</button>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+
+ <script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    const modalEl = document.getElementById('modalCompteRendu');
+    const modal = new bootstrap.Modal(modalEl);
+
+    const inputId   = document.getElementById('compteRenduPrescriptionId');
+    const textarea  = document.getElementById('compteRenduText');
+    const errorBox  = document.getElementById('compteRenduError');
+
+    function resetModal() {
+        textarea.value = '';
+        errorBox.classList.add('d-none');
+        errorBox.textContent = '';
+    }
+
+    // AJOUT
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('.btnAddCompteRendu');
+        if (!btn) return;
+
+        resetModal();
+        inputId.value = btn.dataset.id;
+        modal.show();
+    });
+
+    // MODIFICATION
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('.btnEditCompteRendu');
+        if (!btn) return;
+
+        resetModal();
+        inputId.value = btn.dataset.id;
+        textarea.value = btn.dataset.text;
+        modal.show();
+    });
+
+    // SAVE AJAX
+    document.getElementById('saveCompteRendu').addEventListener('click', async () => {
+
+        const id = inputId.value;
+        const text = textarea.value.trim();
+
+        if (!text) {
+            errorBox.textContent = 'Le compte rendu ne peut pas être vide.';
+            errorBox.classList.remove('d-none');
+            return;
+        }
+
+        const res = await fetch(`/api/analyse-prescription/${id}/compte-rendu`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ compteRendu: text })
+        });
+
+        const data = await res.json();
+
+        if (!data.success) {
+            errorBox.textContent = data.message || 'Erreur serveur';
+            errorBox.classList.remove('d-none');
+            return;
+        }
+
+        await reloadAnalysePrescriptions();
+        modal.hide();
+    });
+
+    async function reloadAnalysePrescriptions() {
+        const container = document.getElementById('analysePrescriptionsContainer');
+        const patientId = container.dataset.patientId;
+
+        const res = await fetch(`/api/patient/${patientId}/analyse-prescriptions`);
+        container.innerHTML = await res.text();
+    }
+
+});
+</script>
+
+
 
  <script>
 document.addEventListener('DOMContentLoaded', () => {

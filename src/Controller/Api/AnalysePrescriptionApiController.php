@@ -29,4 +29,33 @@ class AnalysePrescriptionApiController extends AbstractController
 			'success' => true
 		]);
 	}
+
+	#[Route(
+		'/analyse-prescription/{id}/compte-rendu',
+		methods: ['POST']
+	)]
+	public function saveCompteRendu(
+		AnalysePrescription $prescription,
+		Request $request,
+		EntityManagerInterface $em
+	): JsonResponse {
+
+		$data = json_decode($request->getContent(), true);
+		$compteRendu = trim($data['compteRendu'] ?? '');
+
+		if ($compteRendu === '') {
+			return $this->json([
+				'success' => false,
+				'message' => 'Compte rendu vide'
+			], 400);
+		}
+
+		$prescription->setCompteRendu($compteRendu);
+		$prescription->setStatus('recue');
+		$prescription->setReceivedAt(new \DateTimeImmutable());
+
+		$em->flush();
+
+		return $this->json(['success' => true]);
+	}
 }

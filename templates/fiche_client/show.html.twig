@@ -500,11 +500,13 @@ Analyses
 		</div>
 
 		<!-- CONTENT -->
-		<div id="analysePrescriptionsContainer">
-			{% include 'fiche_client/_composants/_analyse_prescriptions.html.twig' with {
-                prescriptions: fiche_client.analysePrescriptions
-            } %}
-		</div>
+<div id="analysePrescriptionsContainer" data-patient-id="{{ fiche_client.id }}">
+	{% include 'fiche_client/_composants/_analyse_prescriptions.html.twig' with {
+        prescriptions: fiche_client.analysePrescriptions
+    } %}
+</div>
+
+
 
 	</div>
 </div>
