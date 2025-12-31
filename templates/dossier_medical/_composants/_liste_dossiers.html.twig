@@ -1,0 +1,65 @@
+<div id="dossiersContainer" class="row g-4"></div>
+
+ <script>
+async function getDossier() {
+
+	const container = document.getElementById("dossiersContainer");
+
+	try {
+		const url = "{{ path('api_dossier_medical_by_patient', { id: patient.id }) }}";
+
+		const response = await fetch(url, {
+			headers: {
+				"Authorization": "Bearer " + localStorage.getItem("jwt_token")
+			}
+		});
+
+		if (!response.ok) {
+			container.innerHTML = `
+				<div class="col-12 text-center py-4 text-danger">
+					Erreur API (${response.status})
+				</div>
+			`;
+			return;
+		}
+
+		const dossiers = await response.json();
+		container.innerHTML = "";
+
+		if (dossiers.length === 0) {
+			container.innerHTML = `
+				<div class="text-center">
+					Aucun dossier trouvé pour ce patient
+				</div>
+			`;
+			return;
+		}
+
+		dossiers.forEach(d => {
+			const urlSuivi = "{{ path('app_suivi_par_dossier', { patientId: patient.id, dossierId: '__ID__' }) }}"
+				.replace("__ID__", d.id);
+
+			container.insertAdjacentHTML("beforeend", `
+				<div class="col-12 col-md-6 col-lg-4">
+					<div class="card h-100 shadow-sm rounded-4">
+						<div class="card-body">
+							<h5 class="text-primary fw-bold">${d.titre}</h5>
+							<p class="text-muted small">${d.description ?? "Aucune description"}</p>
+							<a href="${urlSuivi}" class="btn btn-outline-success btn-sm">
+								Voir le dossier
+							</a>
+						</div>
+					</div>
+				</div>
+			`);
+		});
+
+	} catch (e) {
+		console.error(e);
+		container.innerHTML = `<div class="text-danger text-center">Erreur chargement</div>`;
+	}
+}
+
+document.addEventListener("DOMContentLoaded", getDossier);
+</script>
+

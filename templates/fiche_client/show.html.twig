@@ -436,34 +436,199 @@ Ajouter Photos, ordonnances, traitements...
 
 				<hr class="my-4">
 
-				{# ============================== #}
-				{# 📁 DOSSIERS DE SUIVI            #}
-				{# ============================== #}
-					<div class="d-flex justify-content-between align-items-center mb-3"> <h5 class="fw-bold text-warning d-flex align-items-center mb-0">
-						<i class="bi bi-folder-fill me-2"></i>
-						Dossiers de suivi
-					</h5>
+			{# ============================== #}
+{# 📁 DOSSIERS DE SUIVI            #}
+{# ============================== #}
 
-					<a href="{{ path('app_dossier_medical_index', { id: fiche_client.id }) }}" class="btn btn-warning rounded-pill px-3 shadow-sm">
-						<i class="bi bi-folder-plus me-1"></i>
-						Accéder
-					</a>
-				</div>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="fw-bold text-warning d-flex align-items-center mb-0">
+        <i class="bi bi-folder-fill me-2"></i>
+        Dossiers de suivi
+    </h5>
 
-				<div class="p-3 bg-light rounded-3 d-flex align-items-center justify-content-between">
-					<div>
-						<p class="mb-1 fw-semibold">
-							Dossiers enregistrés
-						</p>
-						<small class="text-muted">
-							Historique médical, observations et évolution
-						</small>
-					</div>
+    <button
+class="btn btn-warning rounded-pill px-4 shadow-sm d-flex align-items-center gap-2 text-light"
 
-					<span class="badge bg-warning text-dark fs-6 px-3 py-2 rounded-pill">
-						{{ fiche_client.dossierMedicals|length }}
-					</span>
-				</div>
+        data-bs-toggle="modal"
+        data-bs-target="#modalAddDossier"
+    >
+        <i class="bi bi-folder-plus fs-4"></i>
+        Nouveau dossier
+    </button>
+</div>
+
+<div class="p-3 bg-light rounded-3 d-flex align-items-center justify-content-between mb-3">
+    <div>
+        <p class="mb-1 fw-semibold">Dossiers enregistrés</p>
+        <small class="text-muted">
+            Historique médical, observations et évolution
+        </small>
+    </div>
+
+    <span
+        id="dossierCount"
+        class="badge bg-warning text-dark fs-6 px-3 py-2 rounded-pill"
+    >
+        {{ fiche_client.dossierMedicals|length }}
+    </span>
+</div>
+
+<div id="dossiersContainer" class="row g-4"></div>
+
+{# ============================== #}
+{# 📜 JAVASCRIPT                  #}
+{# ============================== #}
+
+ <script>
+function createDossierCard(d) {
+    const urlSuivi = "{{ path('app_suivi_par_dossier', {
+        patientId: fiche_client.id,
+        dossierId: '__ID__'
+    }) }}".replace('__ID__', d.id);
+
+    return `
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm rounded-4 border-warning">
+                <div class="card-body">
+                    <h5 class="fw-bold text-warning">${d.titre}</h5>
+                    <p class="text-muted small">
+                        ${d.description ?? "Aucune description"}
+                    </p>
+                    <small class="text-muted">${d.createdAt}</small>
+                    <div class="mt-3 text-end">
+<a href="${urlSuivi}" class="btn btn-outline-success btn-sm rounded-pill">
+
+
+                            <i class="bi bi-search-heart me-1"></i>
+                            Voir le dossier
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+/* =========================
+   CHARGEMENT INITIAL
+========================= */
+async function loadDossiers() {
+    const container = document.getElementById("dossiersContainer");
+
+    container.innerHTML = `
+        <div class="col-12 text-center py-4">
+            <div class="spinner-border text-warning"></div>
+        </div>
+    `;
+
+    try {
+        const response = await fetch(
+            "{{ path('api_dossier_medical_by_patient', { id: fiche_client.id }) }}",
+            {
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("jwt_token")
+                }
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error("Erreur chargement");
+        }
+
+        const dossiers = await response.json();
+        container.innerHTML = "";
+
+        dossiers.forEach(d => {
+            container.insertAdjacentHTML("beforeend", createDossierCard(d));
+        });
+
+    } catch (error) {
+        console.error(error);
+        container.innerHTML = `
+            <div class="text-danger text-center">
+                Erreur chargement dossiers
+            </div>
+        `;
+    }
+}
+
+/* =========================
+   AJOUT DOSSIER
+========================= */
+document.addEventListener("DOMContentLoaded", () => {
+
+    loadDossiers();
+
+    const form = document.getElementById("formAddDossier");
+    const modalEl = document.getElementById("modalAddDossier");
+    const modal = new bootstrap.Modal(modalEl);
+    const addBtn = document.getElementById("addDossier");
+    const container = document.getElementById("dossiersContainer");
+    const badge = document.getElementById("dossierCount");
+
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const motif = document.querySelector('input[name="motif"]:checked');
+        if (!motif) {
+            alert("Veuillez sélectionner un motif.");
+            return;
+        }
+
+        addBtn.disabled = true;
+        addBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Création...`;
+
+        try {
+            const response = await fetch(
+                "{{ path('api_dossier_medical_add', { id: fiche_client.id }) }}",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + localStorage.getItem("jwt_token")
+                    },
+                    body: JSON.stringify({
+                        titre: motif.value,
+                        description: document.getElementById("dossier_description").value
+                    })
+                }
+            );
+
+            if (response.status !== 200 && response.status !== 201) {
+                throw new Error("Erreur ajout");
+            }
+
+            const dossier = await response.json();
+
+            /* ➕ AJOUT IMMÉDIAT */
+            container.insertAdjacentHTML("afterbegin", createDossierCard(dossier));
+
+            /* 🔢 Compteur */
+            badge.textContent = parseInt(badge.textContent) + 1;
+
+            /* Reset & fermeture */
+            form.reset();
+            modal.hide();
+
+        } catch (error) {
+            console.error(error);
+            alert("Erreur lors de l'ajout du dossier");
+        } finally {
+            addBtn.disabled = false;
+            addBtn.innerHTML = `<i class="bi bi-check-circle"></i> Enregistrer`;
+        }
+    });
+
+});
+</script>
+
+
+
+{{ include('dossier_medical/_composants/_modal_ajouter_dossier.html.twig', {
+patient: fiche_client
+
+}) }}
+
 
 				<div class="mt-3">
 					{{ include('fiche_client/_composants/_modal_rdv/_modal_rdv.html.twig') }}
@@ -518,6 +683,9 @@ Analyses
 
 
 
+
+
+
 	
 
 	<style>
@@ -544,6 +712,74 @@ Analyses
 	}
 	</style>
  <script>
+
+
+ function appendDossier(d) {
+    const container = document.getElementById("dossiersContainer");
+
+    const urlSuivi = "{{ path('app_suivi_par_dossier', {
+        patientId: fiche_client.id,
+        dossierId: '__ID__'
+    }) }}".replace("__ID__", d.id);
+
+    container.insertAdjacentHTML("afterbegin", `
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm rounded-4 border-warning">
+                <div class="card-body">
+                    <h5 class="fw-bold text-warning">${d.titre}</h5>
+                    <p class="text-muted small">
+                        ${d.description ?? "Aucune description"}
+                    </p>
+                    <small class="text-muted">${d.createdAt}</small>
+                    <div class="mt-3 text-end">
+<a href="${urlSuivi}" class="btn btn-outline-success btn-sm rounded-pill">
+
+                            Voir le dossier
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `);
+}
+
+
+form.addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const response = await fetch(form.action, {
+        method: "POST",
+        headers: {
+            "Authorization": "Bearer " + localStorage.getItem("jwt_token")
+        },
+        body: new FormData(form)
+    });
+
+    if (!response.ok) {
+        alert("Erreur ajout dossier");
+        return;
+    }
+
+    const newDossier = await response.json();
+
+    // 🔥 AJOUT IMMÉDIAT DANS LA LISTE
+    appendDossier(newDossier);
+
+    // 🔢 Mise à jour du badge
+    const badge = document.getElementById("dossierCount");
+    badge.textContent = parseInt(badge.textContent) + 1;
+
+    // ❌ pas de refresh
+    // ❌ pas de getDossier()
+
+    // Fermer modal
+    bootstrap.Modal.getInstance(
+        document.getElementById("modalAddDossier")
+    ).hide();
+
+    form.reset();
+});
+
 document.addEventListener("DOMContentLoaded", () => {
 
     const daysList = document.querySelectorAll(".day-card");

@@ -6,11 +6,12 @@ use App\Entity\FicheClient;
 use App\Entity\DossierMedical;
 use App\Form\DossierMedicalType;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Repository\DossierMedicalRepository;
 use App\Repository\FicheClientRepository;
+use App\Repository\DossierMedicalRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/dossier/medical')]
@@ -35,6 +36,46 @@ final class DossierMedicalController extends AbstractController
         return $this->render('dossier_medical/index.html.twig', [
             'dossiers' => $dossiers,
             'patient' => $patient
+        ]);
+    }
+
+    #[Route('/api/dossier-medical/{id}', name: 'api_dossier_medical_add', methods: ['POST'])]
+    public function add(
+        int $id,
+        Request $request,
+        EntityManagerInterface $em,
+        FicheClientRepository $patientRepository
+    ): JsonResponse {
+
+        $data = json_decode($request->getContent(), true);
+
+        if (!$data || !isset($data['titre'])) {
+            return $this->json([
+                'error' => 'Payload invalide',
+                'raw' => $request->getContent()
+            ], 400);
+        }
+
+        $patient = $patientRepository->find($id);
+        if (!$patient) {
+            return $this->json(['error' => 'Patient introuvable'], 404);
+        }
+
+        $dossier = new DossierMedical();
+        $dossier->setTitre($data['titre']);
+        $dossier->setDescription($data['description'] ?? null);
+        $dossier->setPatient($patient);
+        $dossier->setCreatedAt(new \DateTimeImmutable());
+
+        $em->persist($dossier);
+        $em->flush();
+
+        return $this->json([
+            'id' => $dossier->getId(),
+            'titre' => $dossier->getTitre(),
+            'description' => $dossier->getDescription(),
+            'createdAt' => $dossier->getCreatedAt()->format('d/m/Y'),
+            'suiviCount' => 0
         ]);
     }
 

@@ -231,107 +231,170 @@
 
 <!-- CSS DOCTOLIB -->
 <style>
-	.docto-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-		gap: 15px;
-	}
+	/* ======================================
+   DOCTOLIB – STYLE MÉDICAL LIGHT & PRO
+====================================== */
 
-	.docto-option {
-		border: 2px solid #ddd;
-		padding: 12px;
-		border-radius: 14px;
-		display: flex;
-		cursor: pointer;
-		transition: 0.2s;
-		background: #fff;
-	}
+/* ===== GRID ===== */
+.docto-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+}
 
-	.docto-option:hover {
-		border-color: #0d6efd;
-	}
+@media (max-width: 992px) {
+    .docto-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
 
-	.docto-option input {
-		display: none;
-	}
+@media (max-width: 576px) {
+    .docto-grid {
+        grid-template-columns: 1fr;
+    }
+}
 
-	.docto-option input:checked + .docto-content {
-		background: #e7f1ff;
-		border-radius: 12px;
-		border: 2px solid #0d6efd;
-	}
+/* ===== OPTION CARD ===== */
+.docto-option {
+    position: relative;
+    background: #ffffff;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 18px;
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.04);
+}
 
-	.docto-content {
-		display: flex;
-		gap: 12px;
-		width: 100%;
-	}
+/* Hide radio */
+.docto-option input {
+    display: none;
+}
 
-	.docto-title {
-		font-weight: bold;
-		font-size: 1rem;
-	}
-	.docto-desc {
-		font-size: 0.8rem;
-		color: #555;
-	}
+/* ===== CONTENT ===== */
+.docto-content {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+}
+
+/* ===== IMAGE ===== */
+.docto-content img {
+    width: 46px;
+    height: 46px;
+    object-fit: contain;
+    flex-shrink: 0;
+    opacity: 0.9;
+    transition: opacity 0.2s ease;
+}
+
+/* ===== TEXT ===== */
+.docto-title {
+    font-weight: 600;
+    font-size: 1rem;
+    color: #1f2937;
+    margin-bottom: 3px;
+    transition: color 0.2s ease;
+}
+
+.docto-desc {
+    font-size: 0.82rem;
+    color: #6b7280;
+    line-height: 1.4;
+    transition: color 0.2s ease;
+}
+
+/* ======================================
+   HOVER – FULL BLOCK
+====================================== */
+.docto-option:hover {
+    background: #f1f5ff;
+    border-color: #c7d2fe;
+    box-shadow: 0 10px 24px rgba(59, 130, 246, 0.14);
+    transform: translateY(-2px);
+}
+
+/* Neutraliser fond interne */
+.docto-option:hover .docto-content {
+    background: transparent;
+    padding: 0;
+    border: none;
+}
+
+.docto-option:hover .docto-title {
+    color: #1d4ed8;
+}
+
+.docto-option:hover .docto-desc {
+    color: #4b5563;
+}
+
+.docto-option:hover img {
+    opacity: 1;
+}
+
+/* ======================================
+   SELECTED – FULL BLOCK
+====================================== */
+.docto-option:has(input:checked) {
+    background: #eef2ff;
+    border-color: #c7d2fe;
+    box-shadow: 0 12px 28px rgba(59, 130, 246, 0.18);
+}
+
+/* Neutraliser fond interne */
+.docto-option:has(input:checked) .docto-content {
+    background: transparent;
+    padding: 0;
+    border: none;
+}
+
+.docto-option:has(input:checked) .docto-title {
+    color: #1d4ed8;
+    font-weight: 700;
+}
+
+.docto-option:has(input:checked) .docto-desc {
+    color: #374151;
+}
+
+.docto-option:has(input:checked) img {
+    opacity: 1;
+}
+
+/* Priorité sélection > hover */
+.docto-option:has(input:checked):hover {
+    transform: none;
+    background: #eef2ff;
+    box-shadow: 0 12px 28px rgba(59, 130, 246, 0.18);
+}
+
+/* ===== TEXTAREA ===== */
+textarea.form-control {
+    border-radius: 14px;
+    border: 1.5px solid #e5e7eb;
+    padding: 14px;
+    font-size: 0.9rem;
+}
+
+textarea.form-control:focus {
+    border-color: #93c5fd;
+    box-shadow: 0 0 0 0.15rem rgba(59, 130, 246, 0.15);
+}
+
+/* ===== BUTTON ===== */
+#addDossier {
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 14px;
+    transition: all 0.2s ease;
+}
+
+#addDossier:hover {
+    background-color: #1d4ed8;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(29, 78, 216, 0.25);
+}
+
 </style>
-
-<!-- SCRIPT -->
- <script>
-document.addEventListener("DOMContentLoaded", () => {
-
-    const form = document.getElementById("formAddDossier");
-    const modal = new bootstrap.Modal(document.getElementById("modalAddDossier"));
-    const addDossier = document.querySelector("#addDossier");
-
-    form.addEventListener("submit", async e => {
-        e.preventDefault();
-
-        const motif = document.querySelector('input[name="motif"]:checked');
-        if (!motif) {
-            alert("Veuillez sélectionner un motif.");
-            return;
-        }
-
-        const payload = {
-            titre: motif.value,
-            description: document.getElementById("dossier_description").value
-        };
-
-        const apiUrl = `{{ path('api_dossier_medical_create', { id: patient.id }) }}`;
-
-        addDossier.disabled = true;
-let seconds = 1;
-
-
-
-        addDossier.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Création... (${seconds}s)`;
-
-        const countdown = setInterval(() => {
-            seconds--;
-            addDossier.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Création... (${seconds}s)`;
-
-            if (seconds <= 0) {
-                clearInterval(countdown);
-                form.reset();
-                modal.hide();
-
-                addDossier.innerHTML = `<i class="bi bi-check-circle"></i> Enregistrer`;
-                addDossier.disabled = false;
-            }
-        }, 1000);
-
-        await fetch(apiUrl, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + localStorage.getItem("jwt_token")
-            },
-            body: JSON.stringify(payload)
-        });
-    });
-
-});
-</script>
-
