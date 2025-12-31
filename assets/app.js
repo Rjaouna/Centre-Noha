@@ -6,7 +6,6 @@ import "./styles/app.css";
  * Import de ton CSS principal
  */
 import "./styles/app.scss";
-import "./styles/global-loader.css";
 
 /**
  * Import jQuery

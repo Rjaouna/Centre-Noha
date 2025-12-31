@@ -13,27 +13,26 @@
 
 	<div class="container py-4">
 
-		{# ======================= #}
-		{# 🔹 HEADER DASHBOARD #}
-		{# ======================= #}
+{# ======================= #}
+{# 🔹 HEADER DASHBOARD #}
+{# ======================= #}
+
 <div class="card border-0 shadow-sm rounded-4 mb-4 dashboard-header">
-<div class="card-body py-3">
+	<div class="card-body py-3">
 
 
 		<div
 			class="d-flex justify-content-between align-items-center flex-wrap gap-3">
 
 			<!-- LEFT -->
-			<div class="d-flex align-items-center gap-3">
+<div class="d-flex align-items-center gap-3">
 
 				<div class="dashboard-icon">
 					<i class="bi bi-clipboard-pulse"></i>
 				</div>
 
 				<div>
-					<h3 class="fw-bold mb-0">
-						Tableau de bord
-					</h3>
+<h3 class="fw-bold mb-0">Tableau de bord</h3>
 
 					<small class="text-muted">
 						Cabinet
@@ -42,16 +41,49 @@
 				</div>
 			</div>
 
-			<!-- RIGHT -->
-			<div class="d-none d-md-flex align-items-center text-muted small">
-				<i class="bi bi-calendar-event me-2"></i>
-				{{ "now"|date("l d F Y") }}
+<!-- RIGHT : HORLOGE -->
+<div class="d-none d-md-block">
+	<div class="clock-card">
+		<div id="clock-time">--:--:--</div>
+		<div id="clock-date">--</div>
+	</div>
+
 			</div>
 
 		</div>
 
 	</div>
 </div>
+
+ <script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    function updateClock() {
+        const now = new Date();
+
+        const h = String(now.getHours()).padStart(2, '0');
+        const m = String(now.getMinutes()).padStart(2, '0');
+        const s = String(now.getSeconds()).padStart(2, '0');
+
+        const timeEl = document.getElementById('clock-time');
+        const dateEl = document.getElementById('clock-date');
+
+        if (!timeEl || !dateEl) return;
+
+        timeEl.textContent = `${h}:${m}:${s}`;
+        dateEl.textContent = now.toLocaleDateString('fr-FR', {
+            weekday: 'long',
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+        });
+    }
+
+    updateClock();
+    setInterval(updateClock, 1000);
+});
+</script>
+
 
 
 

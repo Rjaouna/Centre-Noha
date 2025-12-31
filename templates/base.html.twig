@@ -34,19 +34,10 @@
 	</head>
 
 <body
-	data-turbo="false" class="{% if app.request.attributes.get('_route') in ['app_home', 'app_login'] %}home-bg{% endif %}">{# NAVBAR #}
-{% if app.request.attributes.get('_route') != 'app_login' %}
-	<div id="global-loader" class="login-loader">
-		<div class="loader-box">
-<div class="spinner-grow text-primary" role="status">
-	<span class="sr-only"></span>
-</div>
-
-
-			<p class="loader-text">Chargement…</p>
-		</div>
-	</div>
-{% endif %}
+data-turbo="false" class="
+{% if app.request.attributes.get('_route') in ['app_home', 'app_login'] %}home-bg
+{% endif %}">
+{# NAVBAR #}
 
 
 
