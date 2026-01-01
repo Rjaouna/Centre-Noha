@@ -110,15 +110,21 @@ class="mt-4">
 	class="col-12 col-md-4 d-flex flex-column flex-md-row justify-content-md-end justify-content-center gap-2">
 
 	<!-- Bouton Ajouter -->
-	<button class="btn btn-outline-primary btn-lg rounded-pill px-4 shadow-sm w-100 w-md-auto" data-bs-toggle="modal" data-bs-target="#modalAddSuivi">
-		<i class="bi bi-clipboard-plus fs-4"></i>
-Ordonnance
+<button class="btn btn-outline-primary  rounded-pill px-4 shadow-sm d-flex align-items-center gap-2 w-100 w-md-auto" data-bs-toggle="modal" data-bs-target="#modalAddSuivi">
+
+
+	<i class="bi bi-clipboard-plus"></i>
+	Ajouter un suivi
+
+
 
 
 	</button>
 
 	<!-- Bouton Retour -->
-<button type="button" onclick="history.back()" class="btn btn-outline-primary btn-lg rounded-pill px-4 shadow-sm d-flex align-items-center gap-2 w-100 w-md-auto">
+<button type="button" onclick="history.back()" class="btn btn-outline-primary  rounded-pill px-4 shadow-sm d-flex align-items-center gap-2 w-100 w-md-auto">
+
+
 	<i class="bi bi-arrow-left"></i>
 	Retour
 
@@ -154,13 +160,35 @@ Ordonnance
         timeline.innerHTML = ""; // clear
 
         if (data.length === 0) {
-            timeline.innerHTML = `
-<div class="text-center">
+timeline.innerHTML = `
+<div id="empty-suivi" class="timeline-item fade-in">
+	<div class="timeline-marker bg-secondary"></div>
+
+	<div class="timeline-content text-center border-0 shadow-sm rounded-4 empty-suivi-card">
+
+		<div class="mb-3">
+			<i class="bi bi-journal-x fs-1 text-primary"></i>
+		</div>
+
+		<h4 class="fw-bold text-primary mb-2">
+			Aucun suivi médical
+		</h4>
+
+		<p class="text-muted mb-4">
+			Ce dossier ne contient encore aucun suivi.<br>
+			Vous pouvez commencer par en créer un dès maintenant.
+		</p>
+
+		<button class="btn btn-primary rounded-pill px-4 shadow-sm" data-bs-toggle="modal" data-bs-target="#modalAddSuivi">
+			<i class="bi bi-clipboard-plus me-2"></i>
+			Ajouter le premier suivi
+		</button>
+
+	</div>
+</div>
+`;
 
 
-                    Aucun suivi trouvé pour ce dossier.
-                </div>
-            `;
             return;
         }
 
@@ -174,7 +202,9 @@ Ordonnance
 
         <div class="timeline-header">
             <i class="bi bi-clipboard2-pulse text-primary fs-4 me-2"></i>
-<h5 class="mb-0 fw-bold text-primary">Ordonnance  N° : ${suivi.id}</h5>
+<h5 class="mb-0 fw-bold text-primary">Suivi  N° : ${suivi.id}</h5>
+
+
 
 
 
@@ -408,7 +438,9 @@ function reloadTimeline() {
 
         <div class="timeline-header">
             <i class="bi bi-clipboard2-pulse text-primary fs-4 me-2"></i>
-<h5 class="mb-0 fw-bold text-primary">Ordonnance  N° : ${suivi.id}</h5>
+<h5 class="mb-0 fw-bold text-primary">Suivi N° : ${suivi.id}</h5>
+
+
 
 
 
@@ -446,36 +478,63 @@ Médicaments prescrits
             <i class="bi bi-clock-history me-1"></i>
             ${suivi.createdAt}
         </div>
-
+<div class="suivi-actions mt-4">
+<!-- MOBILE -->
 <div
-	class="mt-3 text-end d-flex justify-content-end gap-2">
+	class="d-flex d-md-none justify-content-center gap-2 mt-3">
 
 	<!-- SUPPRIMER -->
-	<a href="#" onclick="deleteSuivi(${suivi.id}, this.closest('.timeline-item'))" class="btn btn-outline-danger btn-sm rounded-pill">
+	<a href="#" onclick="deleteSuivi(${suivi.id}, this.closest('.timeline-item'))" class="btn btn-outline-danger btn-sm">
 		<i class="bi bi-trash"></i>
 	</a>
 
 	<!-- AJOUTER MÉDICAMENT -->
-	<a href="#" class="btn btn-outline-primary btn-sm rounded-pill openMedicModal" data-suivi-id="${suivi.id}" data-bs-toggle="modal" data-bs-target="#modalMedicSearch">
+	<a href="#" class="btn btn-outline-primary btn-sm openMedicModal" data-suivi-id="${suivi.id}" data-bs-toggle="modal" data-bs-target="#modalMedicSearch">
 		<i class="bi bi-capsule-pill"></i>
 	</a>
 
-	<!-- IMPRIMER LE SUIVI -->
-<a href="#" target="_blank" class="btn btn-outline-secondary btn-sm rounded-pill">
-
-
+	<!-- IMPRIMER -->
+	<a href="/suivi/${suivi.id}/ordonnance?print=1" target="_blank" class="btn btn-outline-secondary btn-sm text-secondary">
 		<i class="bi bi-printer"></i>
 	</a>
-<a href="/suivi/${suivi.id}/ordonnance" class="btn btn-primary">
-	<i class="bi bi-file-pdf"></i>
-	Voir / Générer l’ordonnance
-</a>
 
+	<!-- PDF -->
+	<a href="/suivi/${suivi.id}/ordonnance" class="btn btn-danger text-white btn-sm">
+		<i class="bi bi-file-pdf"></i>
+	</a>
 
+</div>
+
+<!-- DESKTOP -->
+<div
+	class="d-none d-md-flex justify-content-end gap-2 mt-3">
+
+	<!-- SUPPRIMER -->
+	<a href="#" onclick="deleteSuivi(${suivi.id}, this.closest('.timeline-item'))" class="btn btn-outline-danger btn-sm">
+		<i class="bi bi-trash"></i>
+	</a>
+
+	<!-- AJOUTER MÉDICAMENT -->
+	<a href="#" class="btn btn-outline-primary btn-sm openMedicModal" data-suivi-id="${suivi.id}" data-bs-toggle="modal" data-bs-target="#modalMedicSearch">
+		<i class="bi bi-capsule-pill"></i>
+	</a>
+
+	<!-- IMPRIMER -->
+	<a href="/suivi/${suivi.id}/ordonnance?print=1" target="_blank" class="btn btn-outline-secondary btn-sm text-secondary">
+		<i class="bi bi-printer"></i>
+	</a>
+
+	<!-- PDF -->
+	<a href="/suivi/${suivi.id}/ordonnance" class="btn btn-danger text-white btn-sm">
+		<i class="bi bi-file-pdf"></i>
+	</a>
+
+</div>
 
 
 
 </div>
+
 
 
 

@@ -3,6 +3,7 @@
 namespace App\Controller\Api;
 
 use App\Entity\Medicine;
+use App\Entity\SuiviSoin;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,6 +13,20 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class MedicineController extends AbstractController
 {
+	#[Route('/suivi/{id}/medicines', name: 'api_suivi_medicines', methods: ['GET'])]
+	public function getMedicinesBySuivi(SuiviSoin $suivi): JsonResponse
+	{
+		$data = [];
+
+		foreach ($suivi->getMedicine() as $medicine) {
+			$data[] = [
+				'id' => $medicine->getId(),
+				'name' => $medicine->getName(),
+			];
+		}
+
+		return $this->json($data);
+	}
 	#[Route('/medicine/new', name: 'medicine_new', methods: ['GET'])]
 	public function new(): Response
 	{

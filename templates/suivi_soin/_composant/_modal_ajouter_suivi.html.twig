@@ -11,24 +11,17 @@
 				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
 			</div>
 
-<div class="modal-body p-4">
+			<div class="modal-body p-4">
 
-<input type="text" id="symptomeSearch" class="form-control mb-1" placeholder="Tapez un symptôme (ex: fièvre, toux, douleur...)" autocomplete="off">
+				<input type="text" id="symptomeSearch" class="form-control mb-1" placeholder="Tapez un symptôme (ex: fièvre, toux, douleur...)" autocomplete="off">
 
-<div id="symptomeResults" class="list-group position-absolute w-100 shadow-sm" style="z-index:1050; display:none;"></div>
-
-
+				<div id="symptomeResults" class="list-group position-absolute w-100 shadow-sm" style="z-index:1050; display:none;"></div>
 
 				<form id="formAddSuivi">
 
-					<input type="hidden" id="patient_id" value="{{ patient.id }}">
-					<input type="hidden" id="dossier_id" value="{{ dossier.id }}">
-
 					<div class="form-floating mb-3">
 						<textarea id="suivi_diagnostic" class="form-control" style="height:120px;" placeholder="Diagnostic" required></textarea>
-<label for="suivi_diagnostic">Ordonnance</label>
-
-
+						<label for="suivi_diagnostic">Ordonnance</label>
 					</div>
 
 					<button id="addSuivi" class="btn btn-primary w-100 rounded-pill py-2">
@@ -39,173 +32,69 @@
 				</form>
 
 			</div>
-
 		</div>
 	</div>
 </div>
 
 {% block javascripts %}
-
  <script>
-function addSuivi(){
-
 document.addEventListener("DOMContentLoaded", () => {
 
+    const form = document.getElementById("formAddSuivi");
+    const modalEl = document.getElementById("modalAddSuivi");
+    const modal = new bootstrap.Modal(modalEl);
+    const addBtn = document.getElementById("addSuivi");
 
-	    const form = document.getElementById("formAddSuivi");
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
 
-	    const modalElement = document.getElementById("modalAddSuivi");
-	    const modal = new bootstrap.Modal(modalElement);
+        // UI loading
+        addBtn.disabled = true;
+        addBtn.innerHTML = `
+            <span class="spinner-border spinner-border-sm me-2"></span>
+            Enregistrement...
+        `;
 
-	    const addBtn = document.getElementById("addSuivi");
+        const payload = {
+            diagnostic: document.getElementById("suivi_diagnostic").value
+        };
 
-	    if (!addBtn) {
-	        console.error("❌ ERREUR : Le bouton #addSuivi n'existe pas dans le DOM.");
-	        return;
-	    }
+        try {
+            const res = await fetch(
+                `{{ path('api_suivi_create', { patientId: patient.id, dossierId: dossier.id }) }}`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + localStorage.getItem("jwt_token")
+                    },
+                    body: JSON.stringify(payload)
+                }
+            );
 
-	    const timeline = document.querySelector(".timeline-container");
+            const data = await res.json();
 
-	    form.addEventListener("submit", async (e) => {
-	        e.preventDefault();
+            if (!data.success) {
+                throw new Error(data.message || "Erreur API");
+            }
 
-	        // Spinner + countdown
-	        let seconds = 2;
-	        addBtn.disabled = true;
-	        addBtn.innerHTML = `
-	            <span class="spinner-border spinner-border-sm me-2"></span>
-	            Création de suivi en cours... (${seconds}s)
-	        `;
+            // ✅ Recharger toute la timeline proprement
+            reloadTimeline();
 
-	        const countdown = setInterval(() => {
-	            seconds--;
-	            addBtn.innerHTML = `
-	                <span class="spinner-border spinner-border-sm me-2"></span>
-                    Création de suivi en cours... (${seconds}s)
+            // Reset & close
+            form.reset();
+            modal.hide();
 
-	            `;
-	            if (seconds <= 0) clearInterval(countdown);
-	        }, 1000);
-
-	        // Payload
-	        const payload = {
-	            diagnostic: document.getElementById("suivi_diagnostic").value
-	        };
-
-	        const apiUrl = `{{ path('api_suivi_create', { patientId: patient.id, dossierId: dossier.id }) }}`;
-
-	        const res = await fetch(apiUrl, {
-	            method: "POST",
-	            headers: {
-	                "Content-Type": "application/json",
-	                "Authorization": "Bearer " + localStorage.getItem("jwt_token")
-	            },
-	            body: JSON.stringify(payload)
-	        });
-
-	        const data = await res.json();
-
-	        if (!data.success) {
-	            addBtn.innerHTML = `<i class="bi bi-x-circle"></i> Erreur`;
-	            addBtn.classList.add("btn-danger");
-	            return;
-	        }
-
-	        // 🔹 data.id doit être renvoyé par l'API
-	        if (!data.id) {
-	            console.error("L'API ne renvoie pas l'id du suivi créé.");
-	            return;
-	        }
-
-	        // Cacher le message "Aucun suivi"
-	        const noData = document.getElementById("noData");
-	        if (noData) noData.classList.add("d-none");
-
-	        // ✨ Nouvel élément timeline avec bouton supprimer qui appelle deleteSuivi(...)
-	        const newItem = `
-	            <div class="timeline-item fade-in">
-	                <div class="timeline-marker"></div>
-
-	                <div class="timeline-content shadow-sm rounded-4">
-
-	                    <div class="timeline-header">
-	                        <i class="bi bi-clipboard2-pulse text-primary fs-4 me-2"></i>
-<h5 class="mb-0 fw-bold text-primary">Ordonnance ${data.id}</h5>
-
-
-	                    </div>
-
-	                    <p class="text-secondary mt-3">${data.diagnostic}</p>
-
-	                    <div class="timeline-meta text-muted small mt-2">
-	                        <i class="bi bi-clock-history me-1"></i>
-	                        Ajouté maintenant
-	                    </div>
-
-<div
-	class="mt-3 text-end d-flex justify-content-end gap-2">
-
-	<!-- SUPPRIMER -->
-<a href="#" onclick="deleteSuivi(${data.id}, this.closest('.timeline-item'))" class="btn btn-outline-danger btn-sm">
-
-
-
-		<i class="bi bi-trash"></i>
-	</a>
-
-	<!-- AJOUTER MÉDICAMENT -->
-<a href="#" class="btn btn-outline-primary btn-sm openMedicModal" data-suivi-id="${data.id}" data-bs-toggle="modal" data-bs-target="#modalMedicSearch">
-
-
-
-		<i class="bi bi-capsule-pill"></i>
-	</a>
-
-	<!-- IMPRIMER LE SUIVI -->
-<!-- IMPRIMER LE SUIVI -->
-<a href="/suivi/${data.id}/ordonnance?print=1" target="_blank" class="btn btn-outline-secondary btn-sm text-secondary">
-	<i class="bi bi-printer"></i>
-</a>
-
-<a href="/suivi/${data.id}/ordonnance" class="btn btn-danger text-white btn-sm">
-
-
-	<i class="bi bi-file-pdf"></i>
-
-</a>
-
-
-
-
-
-	
-
-
-
-
-</div>
-
-
-
-	                </div>
-	            </div>
-	        `;
-
-	        timeline.insertAdjacentHTML("afterbegin", newItem);
-
-	        setTimeout(() => {
-	            form.reset();
-	            modal.hide();
-	            addBtn.disabled = false;
-	            addBtn.innerHTML = `<i class="bi bi-check-circle"></i> Enregistrer`;
-	        }, 2000);
-	    });
-
-	});
-}
-addSuivi();
-
-	</script>
+        } catch (error) {
+            console.error(error);
+            alert("Erreur lors de l'ajout du suivi.");
+        } finally {
+            addBtn.disabled = false;
+            addBtn.innerHTML = `<i class="bi bi-check-circle"></i> Enregistrer`;
+        }
+    });
+});
+</script>
  <script>
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -214,7 +103,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const diagnosticField = document.getElementById("suivi_diagnostic");
 
     let timeout = null;
-    let selectedSymptomes = new Set(); // pour éviter doublons
+    let selectedSymptomes = new Set();
 
     input.addEventListener("input", () => {
         const query = input.value.trim();
@@ -247,10 +136,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     <small class="text-muted d-block">${symptome.category}</small>
                 `;
 
-                item.addEventListener("click", () => {
-                    addSymptomeToTextarea(symptome.name);
-                });
-
+                item.onclick = () => addSymptome(symptome.name);
                 resultsBox.appendChild(item);
             });
 
@@ -258,49 +144,25 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 300);
     });
 
-    function addSymptomeToTextarea(symptomeName) {
-    if (selectedSymptomes.has(symptomeName)) return;
+    function addSymptome(name) {
+        if (selectedSymptomes.has(name)) return;
+        selectedSymptomes.add(name);
 
-    selectedSymptomes.add(symptomeName);
-
-    let currentText = diagnosticField.value;
-
-    // Si le textarea est vide → on initialise
-    if (currentText.trim() === "") {
-        diagnosticField.value = "Symptômes :\n- " + symptomeName + "\n";
-        return;
+        let text = diagnosticField.value.trim();
+        if (!text.includes("Symptômes :")) {
+            diagnosticField.value = `Symptômes :\n- ${name}\n\n${text}`;
+        } else {
+            diagnosticField.value += `- ${name}\n`;
+        }
     }
 
-    // Si "Symptômes :" n'existe pas encore
-    if (!currentText.includes("Symptômes :")) {
-        diagnosticField.value =
-            "Symptômes :\n- " + symptomeName + "\n\n" + currentText;
-        return;
-    }
-
-    // Sinon → on ajoute TOUJOURS à la fin
-    if (!currentText.endsWith("\n")) {
-        currentText += "\n";
-    }
-
-    diagnosticField.value = currentText + "- " + symptomeName + "\n";
-}
-
-
-    document.addEventListener("click", (e) => {
+    document.addEventListener("click", e => {
         if (!e.target.closest("#symptomeSearch")) {
             resultsBox.style.display = "none";
         }
     });
-
 });
 </script>
-
-
-
-
 {% endblock %}
-
-
 
 
