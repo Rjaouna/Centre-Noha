@@ -149,54 +149,119 @@ background: linear-gradient(135deg, #257cfd, #0dcaf0);
 		transform: scale(1);
 	}
 }
+.rdv-card {
+    background: #ffffff;
+    border-left: 4px solid #0d6efd;
+    border-radius: 14px;
+    padding: 14px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+    transition: .25s;
+}
+
+.rdv-card:hover {
+    transform: translateY(-4px);
+    background: #f6f9ff;
+}
+
+.rdv-name {
+    font-weight: 700;
+    color: #0d6efd;
+}
+
+.rdv-time {
+    font-size: .9rem;
+    color: #6c757d;
+}
 </style>
 
 
-
-
-
 <!-- ============================= -->
-<!-- 🔥 SECTION ANALYTIQUE -->
+<!-- 📅 PROCHAINS RENDEZ-VOUS -->
 <!-- ============================= -->
-<!-- ============================= -->
-<!-- 🔥 SECTION ANALYTIQUE — NEW CLEAN VERSION -->
-<!-- ============================= -->
-<div
-class=" mt-4">
-
-
-
-	<!-- 🎯 TITRE -->
-<h4 class="fw-bold text-primary mt-5">
-
-
-		<i class="bi bi-calendar-event"></i>
-		Derniers rendez-vous
+	<div
+	class="mt-5"> <!-- 🎯 TITRE -->
+	<h4 class="fw-bold text-primary mb-4">
+		<i class="bi bi-calendar-event me-2"></i>
+		Prochains rendez-vous
 	</h4>
 
 	<div
-		class="row g-3">
-<!-- 🖼️ PHOTO sur 3 colonnes -->
-<div class="col-lg-4">
-<img src="{{asset('/assets/img/3943280.jpg')}}" alt="Illustration Dashboard" class="rounded-4" style="width: 100%;  object-fit: cover;">
+		class="row g-4 align-items-stretch">
 
+		<!-- 🖼️ ILLUSTRATION (desktop uniquement) -->
+		<div class="col-lg-4 d-none d-lg-block">
+			<img src="{{ asset('/assets/img/3943280.jpg') }}" alt="Illustration rendez-vous" class="rounded-4 shadow-sm w-100" style="height: 100%; object-fit: cover;">
+		</div>
 
-
-
-
-</div>
-
-		<!-- 🟦 RDV sur 9 colonnes -->
+		<!-- 🟦 LISTE DES RDV -->
 		<div class="col-lg-8">
 			<div
-				class="row g-3" id="rdvRow"><!-- Les RDV insérés dynamiquement ici -->
+				class="row g-3" id="rdvList">{# RDV injectés en JS #}
 			</div>
 		</div>
+
+	</div>
+
 </div>
 
 
 
-</div>
+
+
+ <script>
+async function loadNextRDV() {
+    const res = await fetch('/api/rendezvous/next');
+    const rdvs = await res.json();
+    const container = document.getElementById('rdvList');
+
+    container.innerHTML = '';
+
+    if (rdvs.length === 0) {
+        container.innerHTML = `
+            <div class="col-12 text-muted text-center">
+                Aucun rendez-vous à venir
+            </div>
+        `;
+        return;
+    }
+
+    rdvs.forEach(rdv => {
+        container.insertAdjacentHTML('beforeend', `
+            <div class="col-md-6 col-lg-6">
+                <div class="rdv-card h-100">
+                    <div class="rdv-name">
+                        <i class="bi bi-person-circle me-1"></i>
+                        ${rdv.nom}
+                    </div>
+
+                    <div class="rdv-time mt-1">
+                        <i class="bi bi-clock me-1"></i>
+                        ${rdv.date} à ${rdv.heure}
+                    </div>
+
+                    <button class="btn btn-sm btn-outline-danger rounded-pill mt-3 w-100"
+                        onclick="annulerRDV(${rdv.id})">
+                        <i class="bi bi-x-circle"></i>
+                        Annuler
+                    </button>
+                </div>
+            </div>
+        `);
+    });
+}
+
+async function annulerRDV(id) {
+    if (!confirm('Annuler ce rendez-vous ?')) return;
+
+    await fetch(`/api/rendezvous/${id}/annuler`, {
+        method: 'POST'
+    });
+
+    loadNextRDV();
+}
+
+document.addEventListener('DOMContentLoaded', loadNextRDV);
+</script>
 
 
 
