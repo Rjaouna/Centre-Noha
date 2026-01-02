@@ -2,44 +2,39 @@
 
 namespace App\Entity;
 
-use App\Repository\RendezVousRepository;
+use App\Repository\IndisponibiliteRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: RendezVousRepository::class)]
-class RendezVous
+#[ORM\Entity(repositoryClass: IndisponibiliteRepository::class)]
+class Indisponibilite
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'rendezVouses')]
+    #[ORM\ManyToOne(inversedBy: 'indisponibilites')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?User $praticien = null;
-
-    #[ORM\ManyToOne(inversedBy: 'rendezVouses')]
-    private ?FicheClient $patient = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTime $date = null;
 
-    #[ORM\Column(type: Types::TIME_MUTABLE)]
+    #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
     private ?\DateTime $heureDebut = null;
 
-    #[ORM\Column(type: Types::TIME_MUTABLE)]
+    #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
     private ?\DateTime $heureFin = null;
 
-    #[ORM\Column(length: 50)]
-    private ?string $statut = null;
-
-    #[ORM\Column(length: 50, nullable: true)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $motif = null;
 
-    #[ORM\Column]
-    private ?\DateTimeImmutable $createdAt = null;
+    #[ORM\Column(nullable: true)]
+    private ?bool $actif = null;
 
-    #[ORM\Column]
-    private ?\DateTimeImmutable $expiresAt = null;
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $createdAt = null;
 
     public function getId(): ?int
     {
@@ -54,18 +49,6 @@ class RendezVous
     public function setPraticien(?User $praticien): static
     {
         $this->praticien = $praticien;
-
-        return $this;
-    }
-
-    public function getPatient(): ?FicheClient
-    {
-        return $this->patient;
-    }
-
-    public function setPatient(?FicheClient $patient): static
-    {
-        $this->patient = $patient;
 
         return $this;
     }
@@ -106,18 +89,6 @@ class RendezVous
         return $this;
     }
 
-    public function getStatut(): ?string
-    {
-        return $this->statut;
-    }
-
-    public function setStatut(string $statut): static
-    {
-        $this->statut = $statut;
-
-        return $this;
-    }
-
     public function getMotif(): ?string
     {
         return $this->motif;
@@ -130,26 +101,26 @@ class RendezVous
         return $this;
     }
 
+    public function isActif(): ?bool
+    {
+        return $this->actif;
+    }
+
+    public function setActif(?bool $actif): static
+    {
+        $this->actif = $actif;
+
+        return $this;
+    }
+
     public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    public function setCreatedAt(?\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    public function getExpiresAt(): ?\DateTimeImmutable
-    {
-        return $this->expiresAt;
-    }
-
-    public function setExpiresAt(\DateTimeImmutable $expiresAt): static
-    {
-        $this->expiresAt = $expiresAt;
 
         return $this;
     }

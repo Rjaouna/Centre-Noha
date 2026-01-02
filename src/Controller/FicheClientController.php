@@ -5,7 +5,6 @@ use App\Entity\Paiement;
 use App\Form\PaiementType;
 use App\Entity\FicheClient;
 use App\Form\FicheClientType;
-use App\Repository\RendezVousRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\FicheClientRepository;
 use Symfony\Component\HttpFoundation\Request;
@@ -105,7 +104,6 @@ final class FicheClientController extends AbstractController
     #[Route('/{id}', name: 'app_fiche_client_show', methods: ['GET'])]
     public function show(
         FicheClient $ficheClient,
-        RendezVousRepository $rdvRepo,
         EntityManagerInterface $em
     ): Response {
         $ficheClient->setIsConsulted(true);
@@ -114,23 +112,7 @@ final class FicheClientController extends AbstractController
 
         $now = new \DateTimeImmutable();
 
-        // Récupération des rdv du client
-        $rdvs = $rdvRepo->findBy(['client' => $ficheClient], ['dateRdvAt' => 'ASC']);
 
-        // Tri par catégories
-        $rdvPast = [];
-        $rdvCanceled = [];
-        $rdvFuture = [];
-
-        foreach ($rdvs as $rdv) {
-            if ($rdv->getStatut() === "annulé") {
-                $rdvCanceled[] = $rdv;
-            } else if ($rdv->getDateRdvAt() < $now) {
-                $rdvPast[] = $rdv;
-            } else {
-                $rdvFuture[] = $rdv;
-            }
-        }
 
         // 🔥 Création du formulaire Paiement
         $paiement = new Paiement();
@@ -140,11 +122,7 @@ final class FicheClientController extends AbstractController
 
         return $this->render('fiche_client/show.html.twig', [
             'fiche_client' => $ficheClient,
-            'rdv_total'    => count($rdvs),
-            'rdv_past'     => count($rdvPast),
-            'rdv_future'   => count($rdvFuture),
-            'rdv_canceled' => count($rdvCanceled),
-            'rdvs'         => $rdvs,
+
 
             // 🔥 On envoie le formulaire à la vue
             'formPaiement' => $formPaiement->createView(),

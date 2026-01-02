@@ -7,7 +7,6 @@ use App\Entity\TroublesDigestifs;
 use App\Entity\SymptomesGeneraux;
 use App\Entity\MaladiesChroniques;
 use App\Entity\Paiement;
-use App\Entity\RendezVous;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
@@ -111,31 +110,6 @@ class AppFixtures extends Fixture
                 $paiement->setTypePaiement($faker->randomElement(['Espèces', 'Carte', 'Virement']));
 
                 $manager->persist($paiement);
-            }
-
-            // ------------ RDV ------------
-            $nbRdv = random_int(1, 5);
-
-            for ($r = 0; $r < $nbRdv; $r++) {
-
-                $statut = $faker->randomElement(['A venir', 'Annulé', 'Passé']);
-
-                $rdv = new RendezVous();
-                $rdv->setClient($client);
-                $rdv->setMotif($faker->randomElement(['Consultation', 'Suivi', 'Douleur', 'Diagnostic']));
-                $rdv->setStatut($statut);
-                $rdv->setCommentaire($faker->sentence(8));
-
-                // Dates réalistes
-                if ($statut === 'A venir') {
-                    $rdv->setDateRdvAt(new \DateTimeImmutable('+ ' . rand(0, 2) . ' days'));
-                } elseif ($statut === 'Passé') {
-                    $rdv->setDateRdvAt(new \DateTimeImmutable('- ' . rand(1, 2) . ' days'));
-                } else {
-                    $rdv->setDateRdvAt(new \DateTimeImmutable('- ' . rand(0, 15) . ' days'));
-                }
-
-                $manager->persist($rdv);
             }
         }
 

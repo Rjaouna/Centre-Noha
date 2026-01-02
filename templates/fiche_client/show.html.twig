@@ -43,183 +43,6 @@
 
 
 
-<!-- MODAL RDV -->
-<div class="modal fade" id="modalRdv" tabindex="-1">
-	<div class="modal-dialog modal-lg">
-		<div class="modal-content rounded-4 shadow-lg">
-
-			<div class="modal-header bg-primary text-white rounded-top-4">
-				<h5 class="modal-title fw-bold">
-					<i class="bi bi-calendar-plus me-2"></i>
-					Réserver un rendez-vous
-				</h5>
-				<button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-			</div>
-
-			<div class="modal-body p-4">
-
-				<h5 class="fw-bold mb-3 text-primary">
-					Sélectionner un jour (30 prochains jours)
-				</h5>
-
-				<!-- JOURS -->
-				<div id="daysList" class="row g-3 mb-4">
-					{% for i in 0..29 %}
-						{% set dateObj = "now"|date_modify("+" ~ i ~ " days") %}
-						{% set fullDate = dateObj|date("Y-m-d") %}
-						{% set dayName = dateObj|date("D") %}
-						{% set dayNum = dateObj|date("d") %}
-						{% set month = dateObj|date("M") %}
-
-{% set daysFR = {
-    'Mon': 'Lundi',
-    'Tue': 'Mardi',
-    'Wed': 'Mercredi',
-    'Thu': 'Jeudi',
-    'Fri': 'Vendredi',
-    'Sat': 'Samedi',
-    'Sun': 'Dimanche'
-} %}
-
-
-						<div class="col-4 col-md-2">
-							<div class="day-card shadow-sm rounded-4 p-2 text-center border" style="cursor:pointer;" data-date="{{ fullDate }}">
-
-								<div class="fw-bold fs-5">{{ dayNum }}</div>
-								<div class="text-primary">{{ month }}</div>
-<small class="text-muted">
-	{{ daysFR[dayName] ?? dayName }}</small>
-
-
-							</div>
-						</div>
-					{% endfor %}
-				</div>
-
-				<h5 class="fw-bold mb-3 text-primary">Créneaux disponibles</h5>
-
-				<div id="creneauxList" class="row g-3">
-					<p class="text-muted text-center">Sélectionnez d'abord un jour…</p>
-				</div>
-
-			</div>
-		</div>
-	</div>
-</div>
-
-
-<!-- MODAL CHOIX MOTIF -->
-<div class="modal fade" id="modalMotif" tabindex="-1">
-	<div class="modal-dialog">
-		<div class="modal-content rounded-4 shadow-lg">
-
-			<div class="modal-header bg-primary text-white rounded-top-4">
-				<h5 class="modal-title fw-bold">
-					<i class="bi bi-list-check me-2"></i>Motif du rendez-vous
-				</h5>
-				<button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-			</div>
-
-			<div class="modal-body p-4">
-
-				<label class="fw-bold mb-2">Sélectionner un motif :</label>
-				<select id="selectMotif" class="form-select mb-3">
-<option value="Santé mentale">Santé mentale (mal-être, anxiété, stress)</option>
-
-<option
-
-">Fièvre</option>
-<option value="Rhume">Rhume</option>
-<option value="Maux de gorge">Maux de gorge</option>
-
-<option value="Renouvellement et réévaluation de traitement">Renouvellement et réévaluation de traitement</option>
-
-<option value="Consultation de suivi">Consultation de suivi</option>
-
-<option value="Troubles digestifs">Troubles digestifs</option>
-
-<option value="Gêne urinaire">Gêne urinaire</option>
-
-<option value="Douleur au dos">Douleur au dos</option>
-
-<option value="Symptômes allergiques">Symptômes allergiques</option>
-
-<option value="Gynécologie">Gynécologie</option>
-
-<option value="Problème de peau">Problème de peau</option>
-
-<option value="Maux de tête">Maux de tête</option>
-
-<option value="Suivi général">Suivi général</option></select>
-
-
-
-				
-				<button class="btn btn-primary w-100 rounded-pill mt-3" id="validerMotif">
-					<i class="bi bi-check-lg"></i>
-					Valider
-				</button>
-
-			</div>
-		</div>
-	</div>
-</div>
-
-
-
-
-
-
-
-
-            <!-- BOUTONS -->
-            <div class="d-flex flex-column flex-lg-row gap-2">
-
-
-
-<!-- RDV -->
-<button class="btn btn-primary rounded-pill px-4 shadow-sm d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#modalRdv">
-	<i class="bi bi-calendar-plus"></i>
-	Réserver un RDV
-</button>
-<!-- Documents médicaux -->
-<button class="btn btn-outline-primary rounded-pill px-4 shadow-sm d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#documentsModal">
-	<i class="bi bi-folder2-open"></i>
-	Documents médicaux
-</button>
-
-<!-- Modifier fiche -->
-<button class="btn btn-outline-primary rounded-pill px-4 shadow-sm d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#modalEditFiche">
-	<i class="bi bi-pencil-square"></i>
-	Modifier la fiche
-</button>
-
-<!-- Paiement -->
-<div class="btn-group">
-	<button type="button" class="btn btn-outline-primary rounded-pill px-4 shadow-sm d-flex align-items-center gap-2 dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-		<i class="bi bi-person-lines-fill"></i>
-		Gestion paiement
-	</button>
-
-
-
-
-	<ul class="dropdown-menu shadow-sm rounded-3">
-		<li>
-			<a class="dropdown-item d-flex align-items-center gap-2" href="{{ path('app_paiement_index', { id: fiche_client.id }) }}">
-				<i class="bi bi-clock-history"></i>
-				Historique paiements
-			</a>
-		</li>
-
-		<li>
-			<a class="dropdown-item d-flex align-items-center gap-2" href="#" data-bs-toggle="modal" data-bs-target="#paiementModal">
-				<i class="bi bi-plus-circle"></i>
-				Ajouter un paiement
-			</a>
-		</li>
-	</ul>
-</div>
 
 <!-- Retour -->
 <a href="{{ path('app_fiche_client_index') }}" class="btn btn-light rounded-pill px-4 shadow-sm d-flex align-items-center gap-2">
@@ -227,6 +50,11 @@
 	<i class="bi bi-arrow-left"></i>
 	Liste des patients
 </a>
+<button class="btn btn-primary rounded-pill" data-bs-toggle="modal" data-bs-target="#modalRdv">
+	<i class="bi bi-calendar-plus me-1"></i>
+	Prendre un rendez-vous
+</button>
+
 
             </div>
 
@@ -332,32 +160,7 @@
 					</div>
 				</div>
 
-				{# ================= RDV ================= #}
-				<hr class="my-4">
-
-				<h6 class="fw-bold text-info d-flex align-items-center mb-3">
-					<i class="bi bi-calendar-event me-2"></i>
-					Rendez-vous
-				</h6>
-
-				<div class="d-flex flex-wrap gap-4 small">
-
-					{% macro stat(value, label, color) %}
-						<div class="text-center">
-							<div class="rounded-circle bg-{{ color }} text-white
-								                                        d-flex justify-content-center align-items-center fw-bold" style="width:48px;height:48px;">
-								{{ value }}
-							</div>
-							<div class="fw-semibold text-{{ color }} mt-1">{{ label }}</div>
-						</div>
-					{% endmacro %}
-
-					{{ _self.stat(rdv_total, 'Total', 'primary') }}
-					{{ _self.stat(rdv_future, 'À venir', 'success') }}
-					{{ _self.stat(rdv_canceled, 'Annulés', 'warning') }}
-					{{ _self.stat(rdv_past, 'Passés', 'danger') }}
-
-				</div>
+		
 
 			</div>
 		</div>
@@ -422,6 +225,8 @@
 {{ include('fiche_client/_composants/_arret_maladie.html.twig') }}
 {{ include('fiche_client/_composants/_ducument_medicaux.html.twig') }}
 {{ include('fiche_client/_composants/_modal_analyse.html.twig') }}
+{{ include('fiche_client/_composants/_modal_rendezvous.html.twig') }}
+
 
 
 
@@ -662,7 +467,7 @@ patient: fiche_client
 
 
 				<div class="mt-3">
-					{{ include('fiche_client/_composants/_modal_rdv/_modal_rdv.html.twig') }}
+		
 					{{ include('fiche_client/_composants/_modal_paiment/_modal_paiment.html.twig') }}
 					{{ include('fiche_client/_composants/_certficat.html.twig') }}
 				</div>
@@ -826,27 +631,7 @@ Analyses
     box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
 }
 
-		.rdv-circle {
-			width: 40px;
-			height: 40px;
-			font-size: 1rem;
-			transition: transform 0.2s ease-in-out;
-		}
-		.rdv-circle:hover {
-			transform: scale(1.12);
-		}
-			.day-card {
-		transition: 0.2s ease;
-	}
-	.day-card:hover {
-		background: rgba(50, 158, 244, 0.1);
-		transform: translateY(-3px);
-	}
-	.day-card.selected {
-		background: var(--bs-primary);
-		color: white !important;
-		border-color: var(--bs-primary);
-	}
+
 	</style>
  <script>
 
@@ -917,92 +702,6 @@ form.addEventListener("submit", async function (e) {
     form.reset();
 });
 
-document.addEventListener("DOMContentLoaded", () => {
-
-    const daysList = document.querySelectorAll(".day-card");
-    const creneauxList = document.getElementById("creneauxList");
-
-    daysList.forEach(day => {
-
-        day.addEventListener("click", async () => {
-            // reset selection
-            daysList.forEach(d => d.classList.remove("selected"));
-            day.classList.add("selected");
-
-            const selectedDate = day.dataset.date;
-
-            creneauxList.innerHTML = `
-                <div class="text-center py-3">
-                    <div class="spinner-border text-primary"></div>
-                </div>
-            `;
-
-            const res = await fetch(`/api/rdv/disponibilites/${selectedDate}`);
-            const data = await res.json();
-
-            creneauxList.innerHTML = "";
-
-            data.forEach(c => {
-                creneauxList.innerHTML += `
-                    <div class="col-4 col-md-3">
-                        <button 
-                            class="btn ${c.disponible ? 'btn-success' : 'btn-secondary'} w-100 rounded-pill"
-                            ${c.disponible ? '' : 'disabled'}
-                            onclick="reserverRdv('${selectedDate}', '${c.heure}')">
-                            ${c.heure}
-                        </button>
-                    </div>
-                `;
-            });
-        });
-
-    });
-
-});
-
-
-async function reserverRdv(date, heure) {
-    rdvDateSelected = date;
-    rdvHeureSelected = heure;
-
-    // Ouvre le modal des motifs
-    new bootstrap.Modal(document.getElementById("modalMotif")).show();
-}
-
-// Quand l'utilisateur valide le motif
-document.getElementById("validerMotif").addEventListener("click", async () => {
-
-    const selectMotif = document.getElementById("selectMotif").value;
-
-    const motif =  selectMotif;
-
-    if (!motif) {
-        alert("Veuillez sélectionner ou saisir un motif.");
-        return;
-    }
-
-    const payload = {
-        patient: {{ fiche_client.id }},
-        date: rdvDateSelected,
-        heure: rdvHeureSelected,
-        motif: motif
-    };
-
-    const res = await fetch("/api/rdv/reserver", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-    });
-
-    const data = await res.json();
-
-    if (data.success) {
-        alert("RDV réservé !");
-        location.reload();
-    } else {
-        alert(data.error);
-    }
-});
 
 </script>
 

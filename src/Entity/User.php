@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
 use App\Entity\Traits\TimestampableTrait;
@@ -42,6 +43,31 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $prenom = null;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection<int, Disponibilite>
+     */
+    #[ORM\OneToMany(targetEntity: Disponibilite::class, mappedBy: 'praticien')]
+    private \Doctrine\Common\Collections\Collection $disponibilites;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection<int, Indisponibilite>
+     */
+    #[ORM\OneToMany(targetEntity: Indisponibilite::class, mappedBy: 'praticien')]
+    private \Doctrine\Common\Collections\Collection $indisponibilites;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection<int, RendezVous>
+     */
+    #[ORM\OneToMany(targetEntity: RendezVous::class, mappedBy: 'praticien')]
+    private \Doctrine\Common\Collections\Collection $rendezVouses;
+
+    public function __construct()
+    {
+        $this->disponibilites = new ArrayCollection();
+        $this->indisponibilites = new ArrayCollection();
+        $this->rendezVouses = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -144,6 +170,96 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPrenom(?string $prenom): static
     {
         $this->prenom = $prenom;
+
+        return $this;
+    }
+
+    /**
+     * @return \Doctrine\Common\Collections\Collection<int, Disponibilite>
+     */
+    public function getDisponibilites(): \Doctrine\Common\Collections\Collection
+    {
+        return $this->disponibilites;
+    }
+
+    public function addDisponibilite(Disponibilite $disponibilite): static
+    {
+        if (!$this->disponibilites->contains($disponibilite)) {
+            $this->disponibilites->add($disponibilite);
+            $disponibilite->setPraticien($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDisponibilite(Disponibilite $disponibilite): static
+    {
+        if ($this->disponibilites->removeElement($disponibilite)) {
+            // set the owning side to null (unless already changed)
+            if ($disponibilite->getPraticien() === $this) {
+                $disponibilite->setPraticien(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return \Doctrine\Common\Collections\Collection<int, Indisponibilite>
+     */
+    public function getIndisponibilites(): \Doctrine\Common\Collections\Collection
+    {
+        return $this->indisponibilites;
+    }
+
+    public function addIndisponibilite(Indisponibilite $indisponibilite): static
+    {
+        if (!$this->indisponibilites->contains($indisponibilite)) {
+            $this->indisponibilites->add($indisponibilite);
+            $indisponibilite->setPraticien($this);
+        }
+
+        return $this;
+    }
+
+    public function removeIndisponibilite(Indisponibilite $indisponibilite): static
+    {
+        if ($this->indisponibilites->removeElement($indisponibilite)) {
+            // set the owning side to null (unless already changed)
+            if ($indisponibilite->getPraticien() === $this) {
+                $indisponibilite->setPraticien(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return \Doctrine\Common\Collections\Collection<int, RendezVous>
+     */
+    public function getRendezVouses(): \Doctrine\Common\Collections\Collection
+    {
+        return $this->rendezVouses;
+    }
+
+    public function addRendezVouse(RendezVous $rendezVouse): static
+    {
+        if (!$this->rendezVouses->contains($rendezVouse)) {
+            $this->rendezVouses->add($rendezVouse);
+            $rendezVouse->setPraticien($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRendezVouse(RendezVous $rendezVouse): static
+    {
+        if ($this->rendezVouses->removeElement($rendezVouse)) {
+            // set the owning side to null (unless already changed)
+            if ($rendezVouse->getPraticien() === $this) {
+                $rendezVouse->setPraticien(null);
+            }
+        }
 
         return $this;
     }

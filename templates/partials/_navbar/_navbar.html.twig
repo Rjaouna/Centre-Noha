@@ -1,19 +1,15 @@
 {% if app.user %}
 
-<nav class="navbar navbar-expand-lg navbar-dark shadow-sm sticky-top">
-
-
+	<nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
 
 
 		<div
 			class="container-fluid">
 
 
-
-
 			<!-- LOGO -->
-<a class="navbar-brand fs-3" href="{{ path('app_home') }}">
-	<i class="bi bi-clipboard-pulse"></i>
+			<a class="navbar-brand fs-3" href="{{ path('app_home') }}">
+				<i class="bi bi-clipboard-pulse"></i>
 
 
 				<span id="logoName">
@@ -29,13 +25,13 @@
 
 				<!-- NOTIFICATION ICON MOBILE (ouvre le MODAL) -->
 				<div class="nav-item mx-2 d-lg-none">
-<a class="nav-link position-relative mx-2" href="#" id="notifMobile" data-bs-toggle="modal" data-bs-target="#notifModal">
+					<a class="nav-link position-relative mx-2" href="#" id="notifMobile" data-bs-toggle="modal" data-bs-target="#notifModal">
 
 
-	<i class="bi bi-bell-fill fs-2 text-white"></i>
+						<i class="bi bi-bell-fill fs-2 text-white"></i>
 
 
-<span class="badge bg-danger position-absolute top-0 start-100 translate-middle px-2 rounded-pill" id="notifMobileBadge">
+						<span class="badge bg-danger position-absolute top-0 start-100 translate-middle px-2 rounded-pill" id="notifMobileBadge">
 
 
 							0
@@ -44,8 +40,7 @@
 				</div>
 
 				<!-- PROFILE ICON MOBILE -->
-<div class="nav-item dropdown d-none d-lg-none mx-2">
-
+				<div class="nav-item dropdown d-none d-lg-none mx-2">
 
 
 					<a class="nav-link" href="#" id="profileMobile" data-bs-toggle="dropdown">
@@ -78,10 +73,9 @@
 				</div>
 
 				<!-- BURGER -->
-<button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileDrawer">
-	<i class="bi bi-list fs-1 text-white"></i>
-</button>
-
+				<button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileDrawer">
+					<i class="bi bi-list fs-1 text-white"></i>
+				</button>
 
 
 			</div>
@@ -107,67 +101,54 @@
 						</a>
 					</li>
 
-<li class="nav-item dropdown">
-	<a class="nav-link dropdown-toggle" href="#" id="santeDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" id="santeDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 
 
-<i class="bi bi-heart-pulse"></i>
-Référentiel médical
+							<i class="bi bi-heart-pulse"></i>
+							Référentiel médical
 
 
-
-
-</a>
-
-<ul class="dropdown-menu shadow rounded-4" aria-labelledby="santeDropdown">
-
-	<li>
-		<a class="dropdown-item d-flex align-items-center gap-2" href="{{ path('symptome_index') }}">
-			<i class="bi bi-activity text-primary"></i>
-
-Gestion des symptômes
-
-</a></li>
-
-
-<li>
-	<a class="dropdown-item d-flex align-items-center gap-2" href="{{ path('maladie_chronique_index') }}">
-		<i class="bi bi-heart-pulse text-danger"></i>
-		Maladies chroniques
-
-</a></li>
-<li>
-	<a class="dropdown-item d-flex align-items-center gap-2" href="{{ path('certificats_index') }}">
-<i class="bi bi-file-medical text-secondary"></i>
-
-
-		Gestion des certificats
-	</a>
-<li>
-	<a class="dropdown-item d-flex align-items-center gap-2" href="{{ path('traitement_index') }}">
-		<i class="bi bi-capsule text-success"></i>
-		Traitements
-	</a>
-</li>
-<li>
-	<a class="dropdown-item d-flex align-items-center gap-2" href="{{ path('analyse_index') }}">
-		<i class="bi bi-flask text-info"></i>
-		Analyses
-	</a>
-</li>
-
-
-
-
-</ul></li>
-
-
-					<li class="nav-item">
-						<a class="nav-link {{ app.request.attributes.get('_route') starts with 'app_rdv' ? 'active' : '' }}" href="{{ path('app_rdv_index') }}">
-							<i class="bi bi-calendar-week"></i>
-							Rendez-vous
 						</a>
+
+						<ul class="dropdown-menu shadow rounded-4" aria-labelledby="santeDropdown">
+
+							<li>
+								<a class="dropdown-item d-flex align-items-center gap-2" href="{{ path('symptome_index') }}">
+									<i class="bi bi-activity text-primary"></i>
+
+									Gestion des symptômes
+
+								</a>
+							</li>
+
+
+							<li>
+								<a class="dropdown-item d-flex align-items-center gap-2" href="{{ path('maladie_chronique_index') }}">
+									<i class="bi bi-heart-pulse text-danger"></i>
+									Maladies chroniques
+
+								</a>
+							</li>
+							<li>
+								<a class="dropdown-item d-flex align-items-center gap-2" href="{{ path('certificats_index') }}">
+									<i class="bi bi-file-medical text-secondary"></i>
+
+
+									Gestion des certificats</a>
+							</li>
+							<li>
+								<a class="dropdown-item d-flex align-items-center gap-2" href="{{ path('traitement_index') }}">
+									<i class="bi bi-capsule text-success"></i>
+									Traitements
+								</a>
+							</li>
+
+
+						</ul>
 					</li>
+
+
 
 				</ul>
 
@@ -179,8 +160,7 @@ Gestion des symptômes
 					<li class="nav-item">
 						<a class="nav-link position-relative" href="#" id="notifDesktop" data-bs-toggle="modal" data-bs-target="#notifModal">
 							<i class="bi bi-bell-fill fs-5"></i>
-<span class="badge bg-danger position-absolute top-3 start-100 translate-middle px-2 rounded-pill">
-
+							<span class="badge bg-danger position-absolute top-3 start-100 translate-middle px-2 rounded-pill">
 
 
 								0
@@ -189,57 +169,55 @@ Gestion des symptômes
 					</li>
 
 					<!-- PROFILE DESKTOP -->
-<li class="nav-item d-none d-lg-block position-relative">
+					<li class="nav-item d-none d-lg-block position-relative">
 
-	<a href="#" class="nav-link d-flex align-items-center gap-2" id="userPopupToggle">
+						<a href="#" class="nav-link d-flex align-items-center gap-2" id="userPopupToggle">
 
-		<span class="fw-semibold">{{ app.user.nom ?? app.user.email }}</span>
+							<span class="fw-semibold">{{ app.user.nom ?? app.user.email }}</span>
 
-		<img src="https://ui-avatars.com/api/?name={{ app.user.nom ?? app.user.email }}&background=0D8ABC&color=fff" class="rounded-circle shadow-sm" width="40" height="40">
-	</a>
+							<img src="https://ui-avatars.com/api/?name={{ app.user.nom ?? app.user.email }}&background=0D8ABC&color=fff" class="rounded-circle shadow-sm" width="40" height="40">
+						</a>
 
-	<!-- POPUP -->
-	<div id="userPopup" class="user-popup shadow-lg">
+						<!-- POPUP -->
+						<div id="userPopup" class="user-popup shadow-lg">
 
-		<div class="popup-header">
-			<img src="https://ui-avatars.com/api/?name={{ app.user.nom ?? app.user.email }}&background=0D8ABC&color=fff" class="rounded-circle mb-2" width="56" height="56">
+							<div class="popup-header">
+								<img src="https://ui-avatars.com/api/?name={{ app.user.nom ?? app.user.email }}&background=0D8ABC&color=fff" class="rounded-circle mb-2" width="56" height="56">
 
-			<div class="fw-bold">{{  app.user.email }}</div>
-<small class="text-muted">
-	{% if app.user.nom or app.user.prenom %}
-		{{ app.user.nom }}
-		{{ app.user.prenom }}
-	{% else %}
-		Compte médical
-	{% endif %}
-</small>
+								<div class="fw-bold">{{  app.user.email }}</div>
+								<small class="text-muted">
+									{% if app.user.nom or app.user.prenom %}
+										{{ app.user.nom }}
+										{{ app.user.prenom }}
+									{% else %}
+										Compte médical
+									{% endif %}
+								</small>
 
 
+							</div>
 
-		</div>
+							<div class="popup-body">
+								<a href="{{ path('app_user_profile') }}" class="popup-link">
+									<i class="bi bi-person-circle"></i>
+									Profil
+								</a>
 
-		<div class="popup-body">
-			<a href="{{ path('app_user_profile') }}" class="popup-link">
-				<i class="bi bi-person-circle"></i>
-				Profil
-			</a>
+								<a href="{{ path('app_cabinet_index') }}" class="popup-link">
+									<i class="bi bi-gear"></i>
+									Paramètres
+								</a>
 
-			<a href="{{ path('app_cabinet_index') }}" class="popup-link">
-				<i class="bi bi-gear"></i>
-				Paramètres
-			</a>
+								<hr>
 
-			<hr>
+								<a href="{{ path('app_logout') }}" class="popup-link text-danger">
+									<i class="bi bi-box-arrow-right"></i>
+									Déconnexion
+								</a>
+							</div>
 
-			<a href="{{ path('app_logout') }}" class="popup-link text-danger">
-				<i class="bi bi-box-arrow-right"></i>
-				Déconnexion
-			</a>
-		</div>
-
-	</div>
-</li>
-
+						</div>
+					</li>
 
 
 				</ul>
@@ -291,428 +269,412 @@ Gestion des symptômes
 		</div>
 	</div>
 
-	<div class="offcanvas offcanvas-end mobile-drawer" tabindex="-1" id="mobileDrawer">
+	<div
+		class="offcanvas offcanvas-end mobile-drawer" tabindex="-1" id="mobileDrawer">
 
-    <!-- HEADER USER -->
-    <div class="drawer-header">
-        <div class="d-flex align-items-center gap-3">
-            <img src="https://ui-avatars.com/api/?name={{ app.user.nom ?? app.user.email }}&background=0D8ABC&color=fff"
-                 class="rounded-circle" width="56" height="56">
+		<!-- HEADER USER -->
+		<div class="drawer-header">
+			<div class="d-flex align-items-center gap-3">
+				<img src="https://ui-avatars.com/api/?name={{ app.user.nom ?? app.user.email }}&background=0D8ABC&color=fff" class="rounded-circle" width="56" height="56">
 
-            <div>
-                <div class="fw-bold text-white">
-                    {{ app.user.nom ?? app.user.email }}
-                </div>
-                <small class="text-white-50">Compte médical</small>
-            </div>
-        </div>
+				<div>
+					<div class="fw-bold text-white">
+						{{ app.user.nom ?? app.user.email }}
+					</div>
+					<small class="text-white-50">Compte médical</small>
+				</div>
+			</div>
 
-        <button class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
-    </div>
+			<button class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+		</div>
 
-<!-- BODY -->
-<div class="drawer-body">
+		<!-- BODY -->
+		<div class="drawer-body">
 
-	<a href="{{ path('app_home') }}" class="drawer-link">
-		<i class="bi bi-house-door"></i>
-		Accueil
-	</a>
+			<a href="{{ path('app_home') }}" class="drawer-link">
+				<i class="bi bi-house-door"></i>
+				Accueil
+			</a>
 
-	<a href="{{ path('app_fiche_client_index') }}" class="drawer-link">
-		<i class="bi bi-people"></i>
-		Patients
-	</a>
+			<a href="{{ path('app_fiche_client_index') }}" class="drawer-link">
+				<i class="bi bi-people"></i>
+				Patients
+			</a>
 
-{# ===== SECTION Référentiel médical  ===== #}
-
-
-	<a class="drawer-link d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#santeCollapse" role="button" aria-expanded="false" aria-controls="santeCollapse">
-
-		<span>
-			<i class="bi bi-heart-pulse text-danger"></i>
-Référentiel médical
+			{# ===== SECTION Référentiel médical  ===== #}
 
 
-		</span>
+			<a class="drawer-link d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#santeCollapse" role="button" aria-expanded="false" aria-controls="santeCollapse">
 
-		<i class="bi bi-chevron-down small"></i>
-	</a>
-
-	<div class="collapse ps-3" id="santeCollapse">
-
-		<a href="{{ path('symptome_index') }}" class="drawer-link">
-			<i class="bi bi-activity text-warning"></i>
-			Symptômes
-		</a>
-
-		<a href="{{ path('maladie_chronique_index') }}" class="drawer-link">
-			<i class="bi bi-heart-pulse text-danger"></i>
-			Maladies chroniques
-		</a>
-<a href="{{ path('certificats_index') }}" class="drawer-link">
-
-	<i class="bi bi-capsule text-success"></i>
-	Gestion de certificats</a>
-<a href="{{ path('traitement_index') }}" class="drawer-link">
+				<span>
+					<i class="bi bi-heart-pulse text-danger"></i>
+					Référentiel médical
 
 
+				</span>
+
+				<i class="bi bi-chevron-down small"></i>
+			</a>
+
+			<div class="collapse ps-3" id="santeCollapse">
+
+				<a href="{{ path('symptome_index') }}" class="drawer-link">
+					<i class="bi bi-activity text-warning"></i>
+					Symptômes
+				</a>
+
+				<a href="{{ path('maladie_chronique_index') }}" class="drawer-link">
+					<i class="bi bi-heart-pulse text-danger"></i>
+					Maladies chroniques
+				</a>
+				<a href="{{ path('certificats_index') }}" class="drawer-link">
+
+					<i class="bi bi-capsule text-success"></i>
+					Gestion de certificats</a>
+				<a href="{{ path('traitement_index') }}" class="drawer-link">
 
 
-	<i class="bi bi-capsule text-success"></i>
-	Traitements
-</a>
-<a class="drawer-link" href="{{ path('analyse_index') }}">
+					<i class="bi bi-capsule text-success"></i>
+					Traitements
+				</a>
 
 
-	<i class="bi bi-flask text-info"></i>
-	Analyses
-</a>
+			</div>
+			{# ========================== #}
 
 
+			<hr>
 
+			<a href="{{ path('app_user_profile') }}" class="drawer-link secondary">
+				<i class="bi bi-person-circle"></i>
+				Profil
+			</a>
+
+			<a href="{{ path('app_cabinet_index') }}" class="drawer-link secondary">
+				<i class="bi bi-gear"></i>
+				Paramètres
+			</a>
+
+			<a href="{{ path('app_logout') }}" class="btn btn-danger w-100 rounded-pill">
+				<i class="bi bi-box-arrow-right me-2"></i>
+				Déconnexion
+			</a>
+
+		</div>
 
 
 	</div>
-	{# ========================== #}
-
-	<a href="{{ path('app_rdv_index') }}" class="drawer-link">
-		<i class="bi bi-calendar-week text-info"></i>
-		Rendez-vous
-	</a>
-
-	<hr>
-
-	<a href="{{ path('app_user_profile') }}" class="drawer-link secondary">
-		<i class="bi bi-person-circle"></i>
-		Profil
-	</a>
-
-	<a href="{{ path('app_cabinet_index') }}" class="drawer-link secondary">
-		<i class="bi bi-gear"></i>
-		Paramètres
-	</a>
-
-	<a href="{{ path('app_logout') }}" class="btn btn-danger w-100 rounded-pill">
-		<i class="bi bi-box-arrow-right me-2"></i>
-		Déconnexion
-	</a>
-
-</div>
-
-
-
-
-
-</div>
- <script>
-document.addEventListener('DOMContentLoaded', () => {
-
-    const toggle = document.getElementById('userPopupToggle');
-    const popup  = document.getElementById('userPopup');
-
-    if (!toggle || !popup) return;
-
-    toggle.addEventListener('click', (e) => {
-        e.preventDefault();
-        popup.style.display = popup.style.display === 'block' ? 'none' : 'block';
-    });
-
-    document.addEventListener('click', (e) => {
-        if (!popup.contains(e.target) && !toggle.contains(e.target)) {
-            popup.style.display = 'none';
-        }
-    });
-});
-</script>
-
-
-<style>
-.mobile-drawer {
-    width: 100vw !important;      /* 👈 clé du fix */
-    max-width: 90vw;
-    height: 100vh;
-    background: linear-gradient(180deg, #0d6efd, #0dcaf0);
-    color: white;
-    border-top-left-radius: 24px;
-    border-bottom-left-radius: 24px;
-}
-
-
-.drawer-header {
-    padding: 24px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.drawer-body {
-    padding: 20px;
-    background: #f8f9fa;
-    color: #212529;
-    height: 100%;
-}
-
-.drawer-link {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 16px;
-    border-radius: 16px;
-    font-size: 1.15rem;
-    font-weight: 600;
-    margin-bottom: 12px;
-    background: white;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
-    color: #212529;
-    text-decoration: none;
-    transition: .25s;
-}
-
-.drawer-link:hover {
-    transform: translateX(4px);
-    background: #eef4ff;
-}
-
-.drawer-link i {
-    font-size: 1.4rem;
-    color: #0d6efd;
-}
-
-.drawer-link.secondary {
-    background: #f1f3f5;
-}
-
-
-
-.notify-card {
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    border-radius: 12px;
-    background: #fff;
-    padding: 14px 18px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    transition: .2s ease;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.04);
-}
-
-.notify-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 18px rgba(0,0,0,0.07);
-    background: #f9fbff;
-}
-
-.notify-left {
-    max-width: 75%;
-}
-
-.notify-title {
-    font-weight: 600;
-    font-size: 1rem;
-}
-
-.notify-sub {
-    font-size: 0.87rem;
-    color: #6c757d;
-}
-
-.badge-status {
-    font-size: .75rem;
-    padding: 4px 8px;
-}
-
-.navbar-nav .nav-link {
-    font-size: 1.1rem;
-    font-weight: 600;
-}
-
-.icon-circle {
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-@media(max-width: 768px) {
-    #logoName {
-        font-size: 1.4rem;
-        font-weight: 100;
-    }
-
-    .navbar-nav .nav-link {
-        font-size: 1.2rem;
-        font-weight: 700;
-        padding: 12px;
-    }
-
-    .dropdown-menu {
-        width: 90%;
-        margin-left: 5%;
-        border-radius: 15px;
-    }
-
-    .dropdown-item {
-        font-size: 1.1rem;
-        padding: 12px 18px;
-    }
-}
-
-/* Loader global */
-#globalLoader {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(2px);
-    display: none; /* masqué */
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-}
-
-#globalLoader .spinner {
-    width: 70px;
-    height: 70px;
-    border: 6px solid #ddd;
-    border-top-color: #d9534f;
-    border-radius: 50%;
-    animation: spin 0.9s linear infinite;
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-</style>
-<script>
-function showLoader() {
-    document.getElementById('globalLoader').style.display = 'flex';
-}
-
-function hideLoader() {
-    document.getElementById('globalLoader').style.display = 'none';
-}
-
-async function majLogo() {
-    const el = document.getElementById('logoName');
-
-    el.innerHTML = `<span class="sr-only">Loading...</span>`;
-
-    const url = "{{ path('app_nom_cabinet') }}";
-    const urlConfig = "{{ path('app_cabinet_index') }}";
-
-    try {
-        const response = await fetch(url);
-
-        if (!response.ok) {
-            el.textContent = "Erreur serveur";
-            return;
-        }
-
-        const data = await response.json();
-
-        if (!data.nom || data.nom === "null") {
-            el.innerHTML = `
-                <span class="text-warning fw-bold">Cabinet non configuré</span>
-                <a href="${urlConfig}" class="btn btn-sm btn-warning ms-2">Configurer</a>
-            `;
-        } else {
-            el.textContent = data.nom;
-        }
-
-    } catch (e) {
-        console.error(e);
-        el.textContent = "Erreur réseau";
-    }
-}
-
-// =============================
-// NOTIFICATIONS
-// =============================
-const NOTIF_URL = "{{ path('api_notifications_feeds') }}";
-
-function loadNotifications() {
-    fetch(NOTIF_URL)
-        .then(res => res.json())
-        .then(data => {
-
-            const desktopBadge = document.querySelector('#notifDesktop .badge');
-            const mobileBadge  = document.getElementById('notifMobileBadge');
-
-            if (desktopBadge) desktopBadge.textContent = data.total;
-            if (mobileBadge) mobileBadge.textContent = data.total;
-
-            // --- Clients ---
-            let cardClient = (c) => `
-                <div class="notify-card">
-                    <div class="notify-left">
-                        <div class="notify-title">
-                            <i class="bi bi-person-circle text-primary me-1"></i>
-                            ${c.nom} • ${c.ville}
-                        </div>
-                        <div class="notify-sub">
-                            📞 ${c.telephone}<br>
-                            🕒 ${c.createdAt}
-                        </div>
-                    </div>
-<a href="/fiche/client/${c.id}" class="btn btn-sm btn-outline-primary fw-bold">Voir</a>
-
-
-                </div>
-            `;
-
-            let clientsHtml = data.newClients && data.newClients.length
-                ? data.newClients.map(c => cardClient(c)).join('')
-: "<div class='alert alert-light text-center py-2 mb-0'>Aucun nouveau patient</div>";
-
-
-
-            document.getElementById('notifClientsList').innerHTML = clientsHtml;
-
-            // --- RDV du jour ---
-            let cardRdv = (r) => `
-                <div class="notify-card">
-                    <div class="notify-left">
-                        <div class="notify-title">
-                            <i class="bi bi-clock-fill text-success me-1"></i>
-                            ${r.heure} — ${r.client}
-                        </div>
-                        <div class="notify-sub">
-                            📝 ${r.motif ?? "—"}<br>
-                            <span class="badge bg-info text-dark badge-status">
-                                ${r.statut ?? "En attente"}
-                            </span>
-                        </div>
-                    </div>
-<a href="/rdv" class="btn btn-sm btn-outline-success fw-bold">Ouvrir</a>
-
-
-                </div>
-            `;
-
-            let rdvHtml = data.rdvToday && data.rdvToday.length
-                ? data.rdvToday.map(r => cardRdv(r)).join('')
-: "<div class='alert alert-light text-center py-2 mb-0'>Aucun RDV aujourd’hui</div>";
-
-
-
-            document.getElementById('notifRdvList').innerHTML = rdvHtml;
-
-        })
-        .catch(err => console.error(err));
-}
-
-// Exécution au chargement
-document.addEventListener('DOMContentLoaded', () => {
-    majLogo();
-    loadNotifications();
-
-    // Refresh auto toutes les 30s
-    setInterval(loadNotifications, 30000);
-});
-</script>
+	 <script>
+	document.addEventListener('DOMContentLoaded', () => {
+	
+	    const toggle = document.getElementById('userPopupToggle');
+	    const popup  = document.getElementById('userPopup');
+	
+	    if (!toggle || !popup) return;
+	
+	    toggle.addEventListener('click', (e) => {
+	        e.preventDefault();
+	        popup.style.display = popup.style.display === 'block' ? 'none' : 'block';
+	    });
+	
+	    document.addEventListener('click', (e) => {
+	        if (!popup.contains(e.target) && !toggle.contains(e.target)) {
+	            popup.style.display = 'none';
+	        }
+	    });
+	});
+	</script>
+
+
+	<style>
+		.mobile-drawer {
+			width: 100vw !important; /* 👈 clé du fix */
+			max-width: 90vw;
+			height: 100vh;
+			background: linear-gradient(180deg, #0d6efd, #0dcaf0);
+			color: white;
+			border-top-left-radius: 24px;
+			border-bottom-left-radius: 24px;
+		}
+
+
+		.drawer-header {
+			padding: 24px;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+
+		.drawer-body {
+			padding: 20px;
+			background: #f8f9fa;
+			color: #212529;
+			height: 100%;
+		}
+
+		.drawer-link {
+			display: flex;
+			align-items: center;
+			gap: 14px;
+			padding: 16px;
+			border-radius: 16px;
+			font-size: 1.15rem;
+			font-weight: 600;
+			margin-bottom: 12px;
+			background: white;
+			box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+			color: #212529;
+			text-decoration: none;
+			transition: 0.25s;
+		}
+
+		.drawer-link:hover {
+			transform: translateX(4px);
+			background: #eef4ff;
+		}
+
+		.drawer-link i {
+			font-size: 1.4rem;
+			color: #0d6efd;
+		}
+
+		.drawer-link.secondary {
+			background: #f1f3f5;
+		}
+
+
+		.notify-card {
+			border: 1px solid rgba(0, 0, 0, 0.08);
+			border-radius: 12px;
+			background: #fff;
+			padding: 14px 18px;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			transition: 0.2s ease;
+			box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
+		}
+
+		.notify-card:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 5px 18px rgba(0, 0, 0, 0.07);
+			background: #f9fbff;
+		}
+
+		.notify-left {
+			max-width: 75%;
+		}
+
+		.notify-title {
+			font-weight: 600;
+			font-size: 1rem;
+		}
+
+		.notify-sub {
+			font-size: 0.87rem;
+			color: #6c757d;
+		}
+
+		.badge-status {
+			font-size: 0.75rem;
+			padding: 4px 8px;
+		}
+
+		.navbar-nav .nav-link {
+			font-size: 1.1rem;
+			font-weight: 600;
+		}
+
+		.icon-circle {
+			width: 38px;
+			height: 38px;
+			border-radius: 50%;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+
+		@media(max-width: 768px) {
+			#logoName {
+				font-size: 1.4rem;
+				font-weight: 100;
+			}
+
+			.navbar-nav .nav-link {
+				font-size: 1.2rem;
+				font-weight: 700;
+				padding: 12px;
+			}
+
+			.dropdown-menu {
+				width: 90%;
+				margin-left: 5%;
+				border-radius: 15px;
+			}
+
+			.dropdown-item {
+				font-size: 1.1rem;
+				padding: 12px 18px;
+			}
+		}
+
+		/* Loader global */
+		#globalLoader {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(255, 255, 255, 0.8);
+			backdrop-filter: blur(2px);
+			display: none; /* masqué */
+			justify-content: center;
+			align-items: center;
+			z-index: 9999;
+		}
+
+		#globalLoader .spinner {
+			width: 70px;
+			height: 70px;
+			border: 6px solid #ddd;
+			border-top-color: #d9534f;
+			border-radius: 50%;
+			animation: spin 0.9s linear infinite;
+		}
+
+		@keyframes spin {
+			to {
+				transform: rotate(360deg);
+			}
+		}
+	</style>
+	 <script>
+	function showLoader() {
+	    document.getElementById('globalLoader').style.display = 'flex';
+	}
+	
+	function hideLoader() {
+	    document.getElementById('globalLoader').style.display = 'none';
+	}
+	
+	async function majLogo() {
+	    const el = document.getElementById('logoName');
+	
+	    el.innerHTML = `<span class="sr-only">Loading...</span>`;
+	
+	    const url = "{{ path('app_nom_cabinet') }}";
+	    const urlConfig = "{{ path('app_cabinet_index') }}";
+	
+	    try {
+	        const response = await fetch(url);
+	
+	        if (!response.ok) {
+	            el.textContent = "Erreur serveur";
+	            return;
+	        }
+	
+	        const data = await response.json();
+	
+	        if (!data.nom || data.nom === "null") {
+	            el.innerHTML = `
+	                <span class="text-warning fw-bold">Cabinet non configuré</span>
+	                <a href="${urlConfig}" class="btn btn-sm btn-warning ms-2">Configurer</a>
+	            `;
+	        } else {
+	            el.textContent = data.nom;
+	        }
+	
+	    } catch (e) {
+	        console.error(e);
+	        el.textContent = "Erreur réseau";
+	    }
+	}
+	
+	// =============================
+	// NOTIFICATIONS
+	// =============================
+	const NOTIF_URL = "{{ path('api_notifications_feeds') }}";
+	
+	function loadNotifications() {
+	    fetch(NOTIF_URL)
+	        .then(res => res.json())
+	        .then(data => {
+	
+	            const desktopBadge = document.querySelector('#notifDesktop .badge');
+	            const mobileBadge  = document.getElementById('notifMobileBadge');
+	
+	            if (desktopBadge) desktopBadge.textContent = data.total;
+	            if (mobileBadge) mobileBadge.textContent = data.total;
+	
+	            // --- Clients ---
+	            let cardClient = (c) => `
+	                <div class="notify-card">
+	                    <div class="notify-left">
+	                        <div class="notify-title">
+	                            <i class="bi bi-person-circle text-primary me-1"></i>
+	                            ${c.nom} • ${c.ville}
+	                        </div>
+	                        <div class="notify-sub">
+	                            📞 ${c.telephone}<br>
+	                            🕒 ${c.createdAt}
+	                        </div>
+	                    </div>
+	<a href="/fiche/client/${c.id}" class="btn btn-sm btn-outline-primary fw-bold">Voir</a>
+	
+	
+	                </div>
+	            `;
+	
+	            let clientsHtml = data.newClients && data.newClients.length
+	                ? data.newClients.map(c => cardClient(c)).join('')
+	: "<div class='alert alert-light text-center py-2 mb-0'>Aucun nouveau patient</div>";
+	
+	
+	
+	            document.getElementById('notifClientsList').innerHTML = clientsHtml;
+	
+	            // --- RDV du jour ---
+	            let cardRdv = (r) => `
+	                <div class="notify-card">
+	                    <div class="notify-left">
+	                        <div class="notify-title">
+	                            <i class="bi bi-clock-fill text-success me-1"></i>
+	                            ${r.heure} — ${r.client}
+	                        </div>
+	                        <div class="notify-sub">
+	                            📝 ${r.motif ?? "—"}<br>
+	                            <span class="badge bg-info text-dark badge-status">
+	                                ${r.statut ?? "En attente"}
+	                            </span>
+	                        </div>
+	                    </div>
+	<a href="/rdv" class="btn btn-sm btn-outline-success fw-bold">Ouvrir</a>
+	
+	
+	                </div>
+	            `;
+	
+	            let rdvHtml = data.rdvToday && data.rdvToday.length
+	                ? data.rdvToday.map(r => cardRdv(r)).join('')
+	: "<div class='alert alert-light text-center py-2 mb-0'>Aucun RDV aujourd’hui</div>";
+	
+	
+	
+	            document.getElementById('notifRdvList').innerHTML = rdvHtml;
+	
+	        })
+	        .catch(err => console.error(err));
+	}
+	
+	// Exécution au chargement
+	document.addEventListener('DOMContentLoaded', () => {
+	    majLogo();
+	    loadNotifications();
+	
+	    // Refresh auto toutes les 30s
+	    setInterval(loadNotifications, 30000);
+	});
+	</script>
 
 
 {% endif %}
-

@@ -101,12 +101,6 @@ class FicheClient
     private ?MaladiesChroniques $maladiesChroniques = null;
 
     /**
-     * @var Collection<int, RendezVous>
-     */
-    #[ORM\OneToMany(targetEntity: RendezVous::class, mappedBy: 'client')]
-    private Collection $rendezVouses;
-
-    /**
      * @var Collection<int, SuiviSoin>
      */
     #[ORM\OneToMany(targetEntity: SuiviSoin::class, mappedBy: 'patient')]
@@ -145,16 +139,22 @@ class FicheClient
     #[ORM\OneToMany(targetEntity: AnalysePrescription::class, mappedBy: 'patient')]
     private Collection $analysePrescriptions;
 
+    /**
+     * @var Collection<int, RendezVous>
+     */
+    #[ORM\OneToMany(targetEntity: RendezVous::class, mappedBy: 'patient')]
+    private Collection $rendezVouses;
+
     public function __construct()
     {
         $this->paiements = new ArrayCollection();
-        $this->rendezVouses = new ArrayCollection();
         $this->images = new ArrayCollection(); // 👍
         $this->suiviSoins = new ArrayCollection();
         $this->dossierMedicals = new ArrayCollection();
         $this->recommendationLetters = new ArrayCollection();
         $this->arretMaladies = new ArrayCollection();
         $this->analysePrescriptions = new ArrayCollection();
+        $this->rendezVouses = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -350,35 +350,9 @@ class FicheClient
         return $this;
     }
 
-    /**
-     * @return Collection<int, RendezVous>
-     */
-    public function getRendezVouses(): Collection
-    {
-        return $this->rendezVouses;
-    }
 
-    public function addRendezVouse(RendezVous $rendezVouse): static
-    {
-        if (!$this->rendezVouses->contains($rendezVouse)) {
-            $this->rendezVouses->add($rendezVouse);
-            $rendezVouse->setClient($this);
-        }
 
-        return $this;
-    }
 
-    public function removeRendezVouse(RendezVous $rendezVouse): static
-    {
-        if ($this->rendezVouses->removeElement($rendezVouse)) {
-            // set the owning side to null (unless already changed)
-            if ($rendezVouse->getClient() === $this) {
-                $rendezVouse->setClient(null);
-            }
-        }
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, SuiviSoin>
@@ -570,6 +544,36 @@ class FicheClient
             // set the owning side to null (unless already changed)
             if ($analysePrescription->getPatient() === $this) {
                 $analysePrescription->setPatient(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, RendezVous>
+     */
+    public function getRendezVouses(): Collection
+    {
+        return $this->rendezVouses;
+    }
+
+    public function addRendezVouse(RendezVous $rendezVouse): static
+    {
+        if (!$this->rendezVouses->contains($rendezVouse)) {
+            $this->rendezVouses->add($rendezVouse);
+            $rendezVouse->setPatient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRendezVouse(RendezVous $rendezVouse): static
+    {
+        if ($this->rendezVouses->removeElement($rendezVouse)) {
+            // set the owning side to null (unless already changed)
+            if ($rendezVouse->getPatient() === $this) {
+                $rendezVouse->setPatient(null);
             }
         }
 
