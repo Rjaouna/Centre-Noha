@@ -113,13 +113,24 @@ document.addEventListener("DOMContentLoaded", () => {
 			<a href="{{ path('app_fiche_client_index') }}" class="text-decoration-none">
 				<div class="mobile-stat-card bg-primary">
 					<i class="bi bi-people-fill"></i>
-					<div class="value">{{ totalClients ?? 0 }}</div>
-					<span>Patients</span>
+					<div class="value">{{ totalClients ?? 0 }} Patients</div>
+					<span>Gestion & consultations</span>
 				</div>
 			</a>
 		</div>
+<div class="col-6">
+	<a href="{{ path('rendezvous_calendrier') }}" class="text-decoration-none">
+		<div class="mobile-stat-card bg-success">
+			<i class="bi bi-calendar-check-fill"></i>
+<div class="value">Rendez-vous</div>
 
-		
+<span>Agenda & consultations</span>
+
+		</div>
+	</a>
+</div>
+
+
 	</div>
 
 	
@@ -155,6 +166,17 @@ document.addEventListener("DOMContentLoaded", () => {
             bg: 'bg-medicines',
             link: path('medicine_index')
         } %}
+{% include 'home/_dashboard/_card_desktop.html.twig' with {
+    title: 'Rendez-vous',
+    desc: 'Agenda & consultations',
+    icon: 'bi-calendar-check-fill',
+    bg: 'bg-rdv',
+link: path('rendezvous_calendrier'),
+
+    badge: totalRdvToday ?? null
+} %}
+
+
 
 			
 
@@ -283,7 +305,7 @@ box-shadow: 0 8px 22px rgba(0,0,0,.15);
 }
 
 .mobile-stat-card .value {
-    font-size: 1.8rem;
+    font-size: 1rem;
     font-weight: 800;
     margin: 6px 0;
 }
