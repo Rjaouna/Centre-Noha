@@ -51,9 +51,9 @@ class CreneauController extends AbstractController
 			/* ========================
              * ⛔ WEEK-END (optionnel)
              * ======================== */
-			if ($jourSemaine >= 6) {
-				return $this->json(['creneaux' => []]);
-			}
+			// if ($jourSemaine >= 6) {
+			// 	return $this->json(['creneaux' => []]);
+			// }
 
 			/* ========================
              * 🟢 DISPONIBILITÉS
@@ -73,7 +73,8 @@ class CreneauController extends AbstractController
              * ======================== */
 			$rdvs = $rdvRepo->findBy([
 				'praticien' => $praticien,
-				'date'      => $date
+				'date'      => $date,
+				'statut'    => 'CONFIRME'
 			]);
 
 			/* ========================

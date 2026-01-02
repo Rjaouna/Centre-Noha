@@ -20,6 +20,16 @@
 				class="modal-body">
 
 <!-- ================= ÉTAPE 1 : JOURS ================= -->
+{% set jours = {
+    1: 'lun',
+    2: 'mar',
+    3: 'mer',
+    4: 'jeu',
+    5: 'ven',
+    6: 'sam',
+    7: 'dim'
+} %}
+
 <div id="stepDays">
 	<h6 class="fw-bold mb-3 text-primary">
 		<i class="bi bi-calendar-week me-2"></i>
@@ -35,20 +45,11 @@
 				{% set d = date('+' ~ (start + i) ~ ' day') %}
 				{% set weekend = d|date('N') >= 6 %}
 
-				<button type="button" class="
-											day-pill btn
-											position-relative
-											text-center
-											rounded-4
-											px-3 py-2
-											{{ weekend
-												? 'day-weekend'
-												: 'day-week'
-											}}
-										" data-date="{{ d|date('Y-m-d') }}">
+				<button type="button" class="day-pill btn position-relative text-center rounded-4 px-3 py-2
+											{{ weekend ? 'day-weekend' : 'day-week' }}" data-date="{{ d|date('Y-m-d') }}">
 
 					<div class="day-name">
-						{{ d|date('D') }}
+						{{ jours[d|date('N')] }}
 					</div>
 
 					<div class="day-number">
@@ -71,6 +72,8 @@
 		</button>
 	</div>
 </div>
+
+
 
 
 
@@ -330,7 +333,6 @@
 
 /* HOVER */
 .day-pill:hover {
-	transform: translateY(-2px);
 	box-shadow: 0 8px 20px rgba(13,110,253,0.15);
 	border-color: #0d6efd;
 }
@@ -394,104 +396,145 @@
 }
 
 
-</style> <script>
-	let selectedDate = null;
-	let selectedTime = null;
-	
-	const stepDays  = document.getElementById('stepDays');
-	const stepTimes = document.getElementById('stepTimes');
-	const stepRecap = document.getElementById('stepRecap');
-	
-	const btnNext = document.getElementById('btnNext');
-	const btnBack = document.getElementById('btnBack');
-	const btnConfirmTime = document.getElementById('btnConfirmTime');
-	const btnBackRecap = document.getElementById('btnBackRecap');
-	const btnConfirmFinal = document.getElementById('btnConfirmFinal');
-	
-	document.querySelectorAll('.day-pill').forEach(btn => {
-		btn.onclick = () => {
-			document.querySelectorAll('.day-pill').forEach(b => b.classList.remove('active'));
-			btn.classList.add('active');
-			selectedDate = btn.dataset.date;
-			btnNext.classList.remove('d-none');
-		};
-	});
-	
-	btnNext.onclick = async () => {
-		stepDays.classList.add('d-none');
-		stepTimes.classList.remove('d-none');
-	
-		const container = document.getElementById('creneaux');
-		container.innerHTML = 'Chargement...';
-	
-		const res = await fetch(`/api/creneaux?praticien={{ app.user.id }}&date=${selectedDate}`);
-		const data = await res.json();
-	
-		container.innerHTML = '';
-	
-		data.creneaux.forEach(c => {
-			const div = document.createElement('div');
-			div.className = 'creneau';
-			div.textContent = c.start;
-	
-			if (c.disabled) {
-				div.classList.add('disabled');
-			} else {
-				div.onclick = () => {
-					document.querySelectorAll('.creneau').forEach(x => x.classList.remove('active'));
-					div.classList.add('active');
-					selectedTime = c.start;
-					btnConfirmTime.classList.remove('d-none');
-				};
-			}
-	
-			container.appendChild(div);
-		});
-	};
-	
-	btnConfirmTime.onclick = () => {
-		stepTimes.classList.add('d-none');
-		stepRecap.classList.remove('d-none');
-	
-		document.getElementById('recapDate').textContent =
-			new Date(selectedDate).toLocaleDateString('fr-FR');
-		document.getElementById('recapTime').textContent = selectedTime;
-	};
-	
-	btnBack.onclick = () => {
-		stepTimes.classList.add('d-none');
-		stepDays.classList.remove('d-none');
-	};
-	
-	btnBackRecap.onclick = () => {
-		stepRecap.classList.add('d-none');
-		stepTimes.classList.remove('d-none');
-	};
-	
-	btnConfirmFinal.onclick = async () => {
-		const res = await fetch('/api/rendezvous', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({
-				patient: {{ fiche_client.id }},
-				date: selectedDate,
-				heure: selectedTime
-			})
-		});
-	
-		const json = await res.json();
-		if (json.success) location.reload();
-		else alert(json.message);
-	};
-	</script>
-
+</style>
  <script>
+let selectedDate = null;
+let selectedTime = null;
+
+const stepDays  = document.getElementById('stepDays');
+const stepTimes = document.getElementById('stepTimes');
+const stepRecap = document.getElementById('stepRecap');
+
+const btnNext = document.getElementById('btnNext');
+const btnBack = document.getElementById('btnBack');
+const btnConfirmTime = document.getElementById('btnConfirmTime');
+const btnBackRecap = document.getElementById('btnBackRecap');
+const btnConfirmFinal = document.getElementById('btnConfirmFinal');
+
+/* =========================
+ * 📅 SÉLECTION DU JOUR
+ * ========================= */
+document.querySelectorAll('.day-pill').forEach(btn => {
+	btn.onclick = () => {
+		document.querySelectorAll('.day-pill').forEach(b => b.classList.remove('active'));
+		btn.classList.add('active');
+		selectedDate = btn.dataset.date;
+		btnNext.classList.remove('d-none');
+	};
+});
+
+/* =========================
+ * ⏱️ ÉTAPE HEURES
+ * ========================= */
+btnNext.onclick = async () => {
+	stepDays.classList.add('d-none');
+	stepTimes.classList.remove('d-none');
+
+	const container = document.getElementById('creneaux');
+	container.innerHTML = 'Chargement...';
+
+	const res = await fetch(`/api/creneaux?praticien={{ app.user.id }}&date=${selectedDate}`);
+	const data = await res.json();
+
+	container.innerHTML = '';
+
+	const now = new Date();
+	const todayStr = now.toISOString().split('T')[0];
+
+	data.creneaux.forEach(c => {
+
+		const div = document.createElement('div');
+		div.className = 'creneau';
+		div.textContent = c.start;
+
+		let isPast = false;
+
+		// ⛔ désactiver UNIQUEMENT les heures passées du jour courant
+		if (selectedDate === todayStr) {
+			const [h, m] = c.start.split(':');
+			const slotTime = new Date();
+			slotTime.setHours(parseInt(h), parseInt(m), 0, 0);
+
+			if (slotTime <= now) {
+				isPast = true;
+			}
+		}
+
+		if (c.disabled || isPast) {
+			div.classList.add('disabled');
+		} else {
+			div.onclick = () => {
+				document.querySelectorAll('.creneau').forEach(x => x.classList.remove('active'));
+				div.classList.add('active');
+				selectedTime = c.start;
+				btnConfirmTime.classList.remove('d-none');
+			};
+		}
+
+		container.appendChild(div);
+	});
+};
+
+/* =========================
+ * 📋 RÉCAP
+ * ========================= */
+btnConfirmTime.onclick = () => {
+	stepTimes.classList.add('d-none');
+	stepRecap.classList.remove('d-none');
+
+	document.getElementById('recapDate').textContent =
+		new Date(selectedDate).toLocaleDateString('fr-FR', {
+			weekday: 'long',
+			year: 'numeric',
+			month: 'long',
+			day: 'numeric'
+		});
+
+	document.getElementById('recapTime').textContent = selectedTime;
+};
+
+/* =========================
+ * 🔙 NAVIGATION
+ * ========================= */
+btnBack.onclick = () => {
+	stepTimes.classList.add('d-none');
+	stepDays.classList.remove('d-none');
+};
+
+btnBackRecap.onclick = () => {
+	stepRecap.classList.add('d-none');
+	stepTimes.classList.remove('d-none');
+};
+
+/* =========================
+ * ✅ VALIDATION RDV
+ * ========================= */
+btnConfirmFinal.onclick = async () => {
+	const res = await fetch('/api/rendezvous', {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify({
+			patient: {{ fiche_client.id }},
+			date: selectedDate,
+			heure: selectedTime
+		})
+	});
+
+	const json = await res.json();
+	if (json.success) {
+		location.reload();
+	} else {
+		alert(json.message || 'Erreur lors de la prise de rendez-vous');
+	}
+};
+
+/* =========================
+ * 🔢 BADGES (NOMBRE DE CRÉNEAUX)
+ * ========================= */
 document.getElementById('modalRdv')
 	.addEventListener('show.bs.modal', async () => {
 
-	const res = await fetch(
-		`/api/creneaux/count?praticien={{ app.user.id }}`
-	);
+	const res = await fetch(`/api/creneaux/count?praticien={{ app.user.id }}`);
 	const data = await res.json();
 
 	document.querySelectorAll('.day-pill').forEach(btn => {
@@ -500,6 +543,9 @@ document.getElementById('modalRdv')
 		const badge = btn.querySelector('.day-badge');
 
 		const count = data[date] ?? 0;
+
+		btn.classList.remove('full');
+		badge.classList.remove('zero');
 
 		if (count === 0) {
 			btn.classList.add('full');

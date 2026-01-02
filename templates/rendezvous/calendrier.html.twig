@@ -1,0 +1,240 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Calendrier des rendez-vous
+{% endblock %}
+
+{% block body %}
+	<div class="mt-4">
+
+		<div class="card shadow-lg border-0 rounded-4 mb-4">
+			<div class="card-body py-4 px-4 d-flex align-items-center">
+				<i class="bi bi-calendar3 text-primary fs-1 me-3"></i>
+				<div>
+					<h2 class="fw-bold text-primary mb-1">Calendrier des rendez-vous</h2>
+					<p class="text-secondary m-0">Vue mois / semaine / jour</p>
+				</div>
+			</div>
+		</div>
+
+		<div class="card shadow-sm rounded-4">
+			<div class="card-body">
+				<div id="calendar"></div>
+			</div>
+		</div>
+
+	</div>
+
+	<!-- ================= MODAL DÉTAIL RDV ================= -->
+	<div class="modal fade" id="rdvModal" tabindex="-1">
+		<div class="modal-dialog modal-lg modal-dialog-centered">
+			<div
+				class="modal-content rounded-4 shadow">
+
+				<!-- HEADER -->
+				<div class="modal-header border-0 pb-0">
+					<h5 class="modal-title fw-bold">
+						<i class="bi bi-calendar-event me-2 text-primary"></i>
+						Détails du rendez-vous
+					</h5>
+					<button class="btn-close" data-bs-dismiss="modal"></button>
+				</div>
+
+				<!-- BODY -->
+				<div class="modal-body pt-3">
+
+					<div class="card recap-card border-0 shadow-sm rounded-4 p-4 mb-3">
+
+						<div class="recap-line">
+							<div class="recap-icon bg-primary-subtle text-primary">
+								<i class="bi bi-person"></i>
+							</div>
+							<div>
+								<div class="recap-label">Patient</div>
+								<div class="recap-value" id="mPatient"></div>
+							</div>
+						</div>
+
+						<div class="recap-line">
+							<div class="recap-icon bg-success-subtle text-success">
+								<i class="bi bi-calendar-event"></i>
+							</div>
+							<div>
+								<div class="recap-label">Date</div>
+								<div class="recap-value" id="mDate"></div>
+							</div>
+						</div>
+
+						<div class="recap-line">
+							<div class="recap-icon bg-warning-subtle text-warning">
+								<i class="bi bi-clock"></i>
+							</div>
+							<div>
+								<div class="recap-label">Heure</div>
+								<div class="recap-value" id="mHeure"></div>
+							</div>
+						</div>
+
+						<div class="recap-line">
+							<div class="recap-icon bg-info-subtle text-info">
+								<i class="bi bi-telephone"></i>
+							</div>
+							<div>
+								<div class="recap-label">Téléphone</div>
+								<div class="recap-value" id="mTel"></div>
+							</div>
+						</div>
+
+						<div class="recap-line">
+							<div class="recap-icon bg-secondary-subtle text-secondary">
+								<i class="bi bi-info-circle"></i>
+							</div>
+							<div>
+								<div class="recap-label">Statut</div>
+								<span id="mStatut" class="badge rounded-pill px-3 py-2"></span>
+							</div>
+						</div>
+
+					</div>
+
+					<input type="hidden" id="mId">
+				</div>
+
+				<!-- FOOTER -->
+				<div class="modal-footer border-0 pt-0">
+					<div class="d-flex justify-content-between w-100">
+						<button class="btn btn-outline-danger rounded-pill px-4" id="btnAnnuler">
+							<i class="bi bi-x-circle me-1"></i>
+							Annuler le rendez-vous
+						</button>
+						<button class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">
+							Fermer
+						</button>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+	<style>
+		.recap-card {
+			background: #f8fafc;
+		}
+		.recap-line {
+			display: flex;
+			align-items: center;
+			gap: 16px;
+			padding: 12px 0;
+		}
+		.recap-line:not(:last-child) {
+			border-bottom: 1px dashed #dee2e6;
+		}
+		.recap-icon {
+			width: 44px;
+			height: 44px;
+			border-radius: 12px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 1.25rem;
+		}
+		.recap-label {
+			font-size: 0.75rem;
+			color: #6c757d;
+			text-transform: uppercase;
+			letter-spacing: 0.04em;
+		}
+		.recap-value {
+			font-size: 1.1rem;
+			font-weight: 600;
+			color: #212529;
+		}
+	</style>
+
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css">
+ <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+
+	 <script>
+	document.addEventListener('DOMContentLoaded', function () {
+	
+	    const modal = new bootstrap.Modal(document.getElementById('rdvModal'));
+	    const calendarEl = document.getElementById('calendar');
+	
+	    const calendar = new FullCalendar.Calendar(calendarEl, {
+	        initialView: 'dayGridMonth',
+	        locale: 'fr',
+	        height: 'auto',
+	
+	        headerToolbar: {
+	            left: 'prev,next today',
+	            center: 'title',
+	            right: 'dayGridMonth,timeGridWeek,timeGridDay'
+	        },
+	
+	        eventTimeFormat: { hour: '2-digit', minute: '2-digit', hour12: false },
+	        events: '/api/rendezvous/events',
+	
+	        eventDidMount(info) {
+	            const statut = info.event.extendedProps.statut;
+	            const main = info.el.querySelector('.fc-event-main');
+	            if (!main) return;
+	
+	            if (statut === 'annule') {
+	                main.style.backgroundColor = '#dc3545';
+	                main.style.borderColor = '#dc3545';
+	                main.style.color = '#fff';
+	            }
+	
+	            if (statut === 'en_attente') {
+	                main.style.backgroundColor = '#ffc107';
+	                main.style.borderColor = '#ffc107';
+	                main.style.color = '#000';
+	            }
+	        },
+	
+	        eventClick(info) {
+	            info.jsEvent.preventDefault();
+	
+	            const e = info.event;
+	            const statut = e.extendedProps.statut || 'en_attente';
+	
+	            document.getElementById('mId').value = e.id;
+	            document.getElementById('mPatient').textContent = e.title;
+	            document.getElementById('mDate').textContent =
+	                e.start.toLocaleDateString('fr-FR',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+	            document.getElementById('mHeure').textContent =
+	                e.start.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}) +
+	                ' → ' +
+	                e.end.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+	            document.getElementById('mTel').textContent = e.extendedProps.tel || '—';
+	
+	            const badge = document.getElementById('mStatut');
+	            badge.className = 'badge rounded-pill px-3 py-2 ' +
+	                (statut === 'annule' ? 'bg-danger' : 'bg-warning');
+	            badge.textContent = statut === 'annule' ? 'Annulé' : 'En attente';
+	
+	            document.getElementById('btnAnnuler').classList.toggle('d-none', statut === 'annule');
+	
+	            modal.show();
+	        }
+	    });
+	
+	    calendar.render();
+	
+	    document.getElementById('btnAnnuler').addEventListener('click', async () => {
+	        const id = document.getElementById('mId').value;
+	        if (!confirm('Annuler ce rendez-vous ?')) return;
+	        await fetch(`/api/rendezvous/${id}/annuler`, { method: 'POST' });
+	        modal.hide();
+	        calendar.refetchEvents();
+	    });
+	
+	});
+	</script>
+{% endblock %}
+

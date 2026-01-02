@@ -100,6 +100,16 @@
 							Patients
 						</a>
 					</li>
+<li class="nav-item">
+	<a class="nav-link {{ app.request.attributes.get('_route') starts with 'rendezvous_calendrier' ? 'active' : '' }}" href="{{ path('rendezvous_calendrier') }}">
+
+
+		<i class="bi bi-calendar3"></i>
+		Rendez-vous
+	</a>
+</li>
+
+
 
 					<li class="nav-item dropdown">
 						<a class="nav-link dropdown-toggle" href="#" id="santeDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -143,6 +153,14 @@
 									Traitements
 								</a>
 							</li>
+<li>
+	<a class="dropdown-item d-flex align-items-center gap-2" href="{{ path('disponibilite_index') }}">
+		<i class="bi bi-calendar-check text-primary"></i>
+		Gestion des disponibilités
+	</a>
+</li>
+
+
 
 
 						</ul>
@@ -300,6 +318,13 @@
 				<i class="bi bi-people"></i>
 				Patients
 			</a>
+<a href="{{ path('rendezvous_calendrier') }}" class="drawer-link">
+
+	<i class="bi bi-calendar3"></i>
+	Rendez-vous
+</a>
+
+
 
 			{# ===== SECTION Référentiel médical  ===== #}
 
@@ -337,6 +362,12 @@
 					<i class="bi bi-capsule text-success"></i>
 					Traitements
 				</a>
+<a href="{{ path('disponibilite_index') }}" class="drawer-link">
+	<i class="bi bi-calendar-check text-primary"></i>
+	Gestion des disponibilités
+</a>
+
+
 
 
 			</div>

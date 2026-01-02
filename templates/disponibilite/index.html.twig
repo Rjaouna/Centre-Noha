@@ -1,0 +1,247 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des disponibilités
+{% endblock %}
+
+{% block body %}
+
+	<div
+		class="mt-4">
+
+		<!-- ⭐ HEADER ⭐ -->
+		<div class="card shadow-lg border-0 rounded-4 mb-4">
+			<div class="card-body py-4 px-4">
+				<div class="row align-items-center">
+
+					<div class="col-md-7 d-flex align-items-center">
+						<i class="bi bi-calendar-check text-primary fs-1 me-3"></i>
+						<div>
+							<h2 class="fw-bold text-primary mb-1">Gestion des disponibilités</h2>
+							<p class="text-secondary m-0">
+								Gérez vos créneaux de consultation
+							</p>
+						</div>
+					</div>
+
+					<div class="col-md-5 d-flex justify-content-md-end gap-2">
+						<button class="btn btn-primary btn-lg rounded-pill px-4 shadow-sm" data-bs-toggle="modal" data-bs-target="#modalDispo">
+							<i class="bi bi-plus-circle"></i>
+							Ajouter
+						</button>
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+		<!-- ⭐ AFFICHAGE PAR JOUR ⭐ -->
+		<div class="row g-3" id="dispoContainer"></div>
+
+	</div>
+
+	<!-- ================= MODAL ================= -->
+	<div class="modal fade" id="modalDispo" tabindex="-1">
+		<div class="modal-dialog modal-lg modal-dialog-centered">
+			<div class="modal-content rounded-4 shadow">
+
+				<form id="dispoForm">
+
+					<div class="modal-header bg-primary text-white">
+						<h5 class="modal-title fw-bold">
+							<i class="bi bi-calendar-check me-2"></i>
+							Disponibilité
+						</h5>
+						<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+					</div>
+
+					<div class="modal-body">
+
+						<div class="row g-3">
+
+							<div class="col-md-6">
+								<label class="form-label">Jour</label>
+								<select name="jourSemaine" class="form-select" required>
+									<option value="">— Choisir —</option>
+									<option value="1">Lundi</option>
+									<option value="2">Mardi</option>
+									<option value="3">Mercredi</option>
+									<option value="4">Jeudi</option>
+									<option value="5">Vendredi</option>
+									<option value="6">Samedi</option>
+									<option value="7">Dimanche</option>
+								</select>
+							</div>
+
+							<div class="col-md-3">
+								<label class="form-label">Début</label>
+								<input type="time" name="heureDebut" class="form-control" required>
+							</div>
+
+							<div class="col-md-3">
+								<label class="form-label">Fin</label>
+								<input type="time" name="heureFin" class="form-control" required>
+							</div>
+
+							<div class="col-md-6">
+								<label class="form-label">Durée du créneau (min)</label>
+								<input type="number" name="dureeCreneau" class="form-control" required>
+							</div>
+
+							<div class="col-md-6 d-flex align-items-end">
+								<div class="form-check">
+									<input class="form-check-input" type="checkbox" name="actif" checked>
+									<label class="form-check-label">Actif</label>
+								</div>
+							</div>
+
+						</div>
+
+					</div>
+
+					<div class="modal-footer">
+						<button class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">
+							Annuler
+						</button>
+						<button class="btn btn-primary rounded-pill">
+							Enregistrer
+						</button>
+					</div>
+
+				</form>
+
+			</div>
+		</div>
+	</div>
+
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+
+	 <script>
+	document.addEventListener('DOMContentLoaded', () => {
+	
+	    const jours = {
+	        1: 'Lundi',
+	        2: 'Mardi',
+	        3: 'Mercredi',
+	        4: 'Jeudi',
+	        5: 'Vendredi',
+	        6: 'Samedi',
+	        7: 'Dimanche'
+	    };
+	
+	    const container = document.getElementById('dispoContainer');
+	    const modal = new bootstrap.Modal(document.getElementById('modalDispo'));
+	    const form = document.getElementById('dispoForm');
+	    let editId = null;
+	
+	    // 🔄 Chargement
+	    async function loadDispos() {
+	        container.innerHTML = '';
+	
+	        const dispos = await fetch('/api/disponibilites').then(r => r.json());
+	
+	        const grouped = {};
+	        dispos.forEach(d => {
+	            grouped[d.jourSemaine] ??= [];
+	            grouped[d.jourSemaine].push(d);
+	        });
+	
+	        Object.keys(jours).forEach(jour => {
+	            const items = grouped[jour] ?? [];
+	
+	            container.insertAdjacentHTML('beforeend', `
+	                <div class="col-md-6 col-lg-4">
+	                    <div class="card shadow-sm rounded-4 h-100">
+	                        <div class="card-header bg-primary text-white rounded-top-4">
+	                            <h5 class="mb-0">${jours[jour]}</h5>
+	                        </div>
+	                        <div class="card-body">
+	
+	                            ${
+	                                items.length === 0
+	                                    ? `<p class="text-muted fst-italic">Aucune disponibilité</p>`
+	                                    : items.map(d => `
+	                                        <div class="d-flex justify-content-between align-items-center mb-2 p-2 border rounded-3">
+	                                            <div>
+	                                                <i class="bi bi-clock me-1"></i>
+	                                                <strong>${d.heureDebut}</strong>
+	                                                →
+	                                                <strong>${d.heureFin}</strong>
+	                                                <span class="text-muted">(${d.dureeCreneau} min)</span>
+	                                            </div>
+	                                            <div>
+	                                                <button
+	                                                    class="btn btn-sm btn-outline-primary rounded-pill me-1"
+	                                                    onclick='editDispo(${JSON.stringify(d)})'>
+	                                                    <i class="bi bi-pencil"></i>
+	                                                </button>
+	                                                <button
+	                                                    class="btn btn-sm btn-outline-danger rounded-pill"
+	                                                    onclick="deleteDispo(${d.id})">
+	                                                    <i class="bi bi-trash"></i>
+	                                                </button>
+	                                            </div>
+	                                        </div>
+	                                    `).join('')
+	                            }
+	
+	                        </div>
+	                    </div>
+	                </div>
+	            `);
+	        });
+	    }
+	
+	    // ✏️ Édition
+	    window.editDispo = d => {
+	        editId = d.id;
+	        form.jourSemaine.value = d.jourSemaine;
+	        form.heureDebut.value = d.heureDebut;
+	        form.heureFin.value = d.heureFin;
+	        form.dureeCreneau.value = d.dureeCreneau;
+	        form.actif.checked = d.actif;
+	        modal.show();
+	    };
+	
+	    // 🗑 Suppression
+	    window.deleteDispo = async id => {
+	        if (!confirm('Supprimer cette disponibilité ?')) return;
+	        await fetch(`/api/disponibilites/${id}`, { method: 'DELETE' });
+	        loadDispos();
+	    };
+	
+	    // 💾 Enregistrement
+	    form.addEventListener('submit', async e => {
+	        e.preventDefault();
+	
+	        const payload = {
+	            jourSemaine: form.jourSemaine.value,
+	            heureDebut: form.heureDebut.value,
+	            heureFin: form.heureFin.value,
+	            dureeCreneau: form.dureeCreneau.value,
+	            actif: form.actif.checked
+	        };
+	
+	        const url = editId
+	            ? `/api/disponibilites/${editId}`
+	            : `/api/disponibilites`;
+	
+	        await fetch(url, {
+	            method: editId ? 'PUT' : 'POST',
+	            headers: { 'Content-Type': 'application/json' },
+	            body: JSON.stringify(payload)
+	        });
+	
+	        editId = null;
+	        form.reset();
+	        modal.hide();
+	        loadDispos();
+	    });
+	
+	    loadDispos();
+	});
+	</script>
+{% endblock %}
+
