@@ -15,29 +15,42 @@ class RendezVousRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, RendezVous::class);
     }
+    public function findActifsByDate(User $praticien, \DateTimeImmutable $date)
+    {
+        return $this->createQueryBuilder('r')
+            ->andWhere('r.praticien = :p')
+            ->andWhere('r.date = :d')
+            ->andWhere('r.statut != :annule')
+            ->setParameter('p', $praticien)
+            ->setParameter('d', $date)
+            ->setParameter('annule', 'annule')
+            ->getQuery()
+            ->getResult();
+    }
 
-//    /**
-//     * @return RendezVous[] Returns an array of RendezVous objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('r')
-//            ->andWhere('r.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('r.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
 
-//    public function findOneBySomeField($value): ?RendezVous
-//    {
-//        return $this->createQueryBuilder('r')
-//            ->andWhere('r.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    //    /**
+    //     * @return RendezVous[] Returns an array of RendezVous objects
+    //     */
+    //    public function findByExampleField($value): array
+    //    {
+    //        return $this->createQueryBuilder('r')
+    //            ->andWhere('r.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->orderBy('r.id', 'ASC')
+    //            ->setMaxResults(10)
+    //            ->getQuery()
+    //            ->getResult()
+    //        ;
+    //    }
+
+    //    public function findOneBySomeField($value): ?RendezVous
+    //    {
+    //        return $this->createQueryBuilder('r')
+    //            ->andWhere('r.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->getQuery()
+    //            ->getOneOrNullResult()
+    //        ;
+    //    }
 }

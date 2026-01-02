@@ -15,29 +15,41 @@ class IndisponibiliteRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Indisponibilite::class);
     }
+    public function findByDateAndPraticien(\DateTimeImmutable $date, User $user)
+    {
+        return $this->createQueryBuilder('i')
+            ->andWhere('i.date = :date')
+            ->andWhere('i.praticien = :user')
+            ->andWhere('i.actif = true')
+            ->setParameter('date', $date)
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
+    }
 
-//    /**
-//     * @return Indisponibilite[] Returns an array of Indisponibilite objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('i')
-//            ->andWhere('i.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('i.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
 
-//    public function findOneBySomeField($value): ?Indisponibilite
-//    {
-//        return $this->createQueryBuilder('i')
-//            ->andWhere('i.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    //    /**
+    //     * @return Indisponibilite[] Returns an array of Indisponibilite objects
+    //     */
+    //    public function findByExampleField($value): array
+    //    {
+    //        return $this->createQueryBuilder('i')
+    //            ->andWhere('i.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->orderBy('i.id', 'ASC')
+    //            ->setMaxResults(10)
+    //            ->getQuery()
+    //            ->getResult()
+    //        ;
+    //    }
+
+    //    public function findOneBySomeField($value): ?Indisponibilite
+    //    {
+    //        return $this->createQueryBuilder('i')
+    //            ->andWhere('i.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->getQuery()
+    //            ->getOneOrNullResult()
+    //        ;
+    //    }
 }

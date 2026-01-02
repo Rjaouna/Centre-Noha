@@ -1,49 +1,516 @@
 <div class="modal fade" id="modalRdv" tabindex="-1">
-	<div class="modal-dialog modal-lg">
-		<div class="modal-content rounded-4">
+<div class="modal-dialog modal-lg modal-dialog-centered">
+	<div class="modal-content rounded-4 shadow">
 
-			<div class="modal-header bg-primary text-white">
-				<h5 class="modal-title">
-					<i class="bi bi-calendar-plus me-2"></i>
-					Nouveau rendez-vous
+
+<!-- HEADER -->
+<div class="modal-header border-0">
+	<h5 class="modal-title fw-bold">
+		<i class="bi bi-calendar-plus me-2 text-primary"></i>
+		Prendre un rendez-vous
+
+
 				</h5>
-				<button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+<button class="btn-close" data-bs-dismiss="modal"></button>
+
+
 			</div>
 
 			<div
 				class="modal-body">
 
-				<!-- DATE -->
-				<div class="mb-3">
-					<label class="form-label fw-bold">Date</label>
-					<input type="date" id="rdvDate" class="form-control">
-				</div>
+<!-- ================= ÉTAPE 1 : JOURS ================= -->
+<div id="stepDays">
+	<h6 class="fw-bold mb-3 text-primary">
+		<i class="bi bi-calendar-week me-2"></i>
+		Choisissez un jour
+	</h6>
 
-				<!-- CRENEAUX -->
-				<div class="mb-3">
-					<label class="form-label fw-bold">Créneau disponible</label>
-					<select id="rdvCreneau" class="form-select">
-						<option value="">Sélectionnez une date</option>
-					</select>
-				</div>
+	{% for week in 0..3 %}
+		{% set start = week * 7 %}
 
-				<!-- MOTIF -->
-				<div class="mb-3">
-					<label class="form-label fw-bold">Motif (optionnel)</label>
-					<input type="text" id="rdvMotif" class="form-control">
-				</div>
+		<div class="week-container mb-3 p-2 rounded-4 bg-light">
 
-			</div>
+			{% for i in 0..6 %}
+				{% set d = date('+' ~ (start + i) ~ ' day') %}
+				{% set weekend = d|date('N') >= 6 %}
 
-			<div class="modal-footer">
-				<button class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-				<button class="btn btn-primary" id="btnConfirmRdv">
-					<i class="bi bi-check-circle"></i>
-					Confirmer le rendez-vous
+				<button type="button" class="
+											day-pill btn
+											position-relative
+											text-center
+											rounded-4
+											px-3 py-2
+											{{ weekend
+												? 'day-weekend'
+												: 'day-week'
+											}}
+										" data-date="{{ d|date('Y-m-d') }}">
+
+					<div class="day-name">
+						{{ d|date('D') }}
+					</div>
+
+					<div class="day-number">
+						{{ d|date('d') }}
+					</div>
+
+					<span class="badge day-badge d-none"></span>
+
 				</button>
-			</div>
+
+			{% endfor %}
 
 		</div>
+	{% endfor %}
+
+	<div class="text-end mt-3">
+		<button class="btn btn-primary px-4 d-none" id="btnNext">
+			Suivant
+			<i class="bi bi-arrow-right ms-1"></i>
+		</button>
 	</div>
 </div>
+
+
+
+
+
+<!-- ================= ÉTAPE 2 : HEURES ================= -->
+<div id="stepTimes" class="d-none">
+	<h6 class="fw-bold mb-3">Choisissez une heure</h6>
+
+	<div id="creneaux" class="creneaux-grid mb-3"></div>
+
+	<div class="d-flex justify-content-between">
+		<button class="btn btn-outline-secondary" id="btnBack">
+			<i class="bi bi-arrow-left"></i>
+			Retour
+		</button>
+
+		<button class="btn btn-primary d-none" id="btnConfirmTime">
+			Continuer
+		</button>
+	</div>
+
+
+</div>
+
+<!-- ================= ÉTAPE 3 : RÉCAP ================= -->
+<div id="stepRecap" class="d-none">
+	<h6 class="fw-bold mb-3">
+		<i class="bi bi-clipboard-check me-2 text-primary"></i>
+		Récapitulatif du rendez-vous
+	</h6>
+
+	<div
+		class="card recap-card border-0 shadow-sm rounded-4 p-4 mb-4">
+
+		<!-- PATIENT -->
+		<div class="recap-line">
+			<div class="recap-icon bg-primary-subtle text-primary">
+				<i class="bi bi-person"></i>
+			</div>
+			<div>
+				<div class="recap-label">Patient</div>
+				<div class="recap-value">
+					{{ fiche_client.nom }}
+				</div>
+			</div>
+		</div>
+
+		<!-- DATE -->
+		<div class="recap-line">
+			<div class="recap-icon bg-success-subtle text-success">
+				<i class="bi bi-calendar-event"></i>
+			</div>
+			<div>
+				<div class="recap-label">Date</div>
+				<div class="recap-value" id="recapDate"></div>
+			</div>
+		</div>
+
+		<!-- HEURE -->
+		<div class="recap-line">
+			<div class="recap-icon bg-warning-subtle text-warning">
+				<i class="bi bi-clock"></i>
+			</div>
+			<div>
+				<div class="recap-label">Heure</div>
+				<div class="recap-value" id="recapTime"></div>
+			</div>
+		</div>
+
+	</div>
+
+	<!-- ACTIONS -->
+	<div class="d-flex justify-content-between">
+		<button class="btn btn-outline-secondary" id="btnBackRecap">
+			<i class="bi bi-arrow-left"></i>
+			Retour
+		</button>
+
+		<button class="btn btn-success btn-lg px-4 shadow-sm" id="btnConfirmFinal">
+			<i class="bi bi-check-circle me-1"></i>
+			Valider le rendez-vous
+		</button>
+	</div>
+</div>
+
+
+
+
+</div></div></div></div><style>
+.recap-card {
+	background: #f8fafc;
+}
+
+.recap-line {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	padding: 12px 0;
+}
+
+.recap-line:not(:last-child) {
+	border-bottom: 1px dashed #dee2e6;
+}
+
+.recap-icon {
+	width: 44px;
+	height: 44px;
+	border-radius: 12px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 1.25rem;
+}
+
+.recap-label {
+	font-size: 0.8rem;
+	color: #6c757d;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+}
+
+.recap-value {
+	font-size: 1.1rem;
+	font-weight: 600;
+	color: #212529;
+}
+
+.week-row {
+	display: grid;
+	grid-template-columns: repeat(7, 1fr);
+	gap: 8px;
+}
+
+.day-pill {
+	padding: 10px;
+	border-radius: 12px;
+	border: 1px solid #0d6efd;
+	background: #fff;
+	cursor: pointer;
+	transition: 0.2s;
+}
+
+.day-pill.weekend {
+	background: #fff3cd;
+	border-color: #ffc107;
+}
+
+.day-pill.active {
+	background: #0d6efd;
+	color: #fff;
+}
+
+.creneaux-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+	gap: 10px;
+}
+
+.creneau {
+	padding: 10px;
+	border-radius: 10px;
+	border: 1px solid #dee2e6;
+	cursor: pointer;
+}
+.day-badge {
+	position: absolute;
+	top: 6px;
+	right: 6px;
+	background: #198754;
+	color: #fff;
+	font-size: 0.7rem;
+	font-weight: 600;
+	padding: 2px 6px;
+	border-radius: 12px;
+}
+
+.day-pill {
+	position: relative;
+}
+
+.day-pill.full {
+	opacity: 0.4;
+	cursor: not-allowed;
+}
+
+.day-badge.zero {
+	background: #dc3545;
+}
+
+.creneau.disabled {
+	background: #f1f1f1;
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+.creneau.active {
+	background: #0d6efd;
+	color: #fff;
+}
+/* CONTENEUR SEMAINE */
+.week-container {
+	display: flex;
+	gap: 10px;
+	overflow-x: auto;
+	scrollbar-width: none;
+}
+.week-container::-webkit-scrollbar {
+	display: none;
+}
+
+/* GRILLE DESKTOP */
+@media (min-width: 768px) {
+	.week-container {
+		display: grid;
+		grid-template-columns: repeat(7, 1fr);
+		overflow: visible;
+	}
+}
+
+/* BOUTON JOUR */
+.day-pill {
+	min-width: 72px;
+	flex-shrink: 0;
+	background: #ffffff;
+	border: 1px solid #e9ecef;
+	box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+	transition: all 0.25s ease;
+}
+
+/* JOUR SEMAINE */
+.day-week {
+	background: linear-gradient(180deg, #ffffff, #f8f9fa);
+}
+
+/* WEEK-END */
+.day-weekend {
+	background: linear-gradient(180deg, #fff7e6, #fff3cd);
+	border-color: #ffe8a1;
+}
+
+/* TEXTE */
+.day-name {
+	font-size: 0.75rem;
+	font-weight: 600;
+	color: #6c757d;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+}
+
+.day-number {
+	font-size: 1.25rem;
+	font-weight: 700;
+	color: #212529;
+	line-height: 1.2;
+}
+
+/* HOVER */
+.day-pill:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 8px 20px rgba(13,110,253,0.15);
+	border-color: #0d6efd;
+}
+
+/* ACTIF */
+.day-pill.active {
+	background: linear-gradient(180deg, #0d6efd, #0b5ed7);
+	border-color: #0d6efd;
+	box-shadow: 0 10px 25px rgba(13,110,253,0.35);
+}
+
+.day-pill.active .day-name,
+.day-pill.active .day-number {
+	color: #fff;
+}
+.day-badge {
+	position: absolute;
+	top: 6px;
+	right: 6px;
+	min-width: 22px;
+	height: 18px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	font-size: 0.65rem;
+	font-weight: 600;
+	padding: 0 6px;
+	border-radius: 999px;
+
+	background: #198754;
+	color: #fff;
+
+	box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+
+	/* ✨ animation douce */
+	transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+/* état caché (par défaut) */
+.day-badge.invisible {
+	opacity: 0;
+	transform: scale(0.85);
+	pointer-events: none;
+}
+
+/* état visible */
+.day-badge.visible {
+	opacity: 1;
+	transform: scale(1);
+}
+
+/* état complet */
+.day-pill.full .day-badge {
+	background: #dc3545;
+}
+.btn .badge {
+	position: absolute;
+	top: -5px;
+	right: -10px;
+}
+
+
+</style> <script>
+	let selectedDate = null;
+	let selectedTime = null;
+	
+	const stepDays  = document.getElementById('stepDays');
+	const stepTimes = document.getElementById('stepTimes');
+	const stepRecap = document.getElementById('stepRecap');
+	
+	const btnNext = document.getElementById('btnNext');
+	const btnBack = document.getElementById('btnBack');
+	const btnConfirmTime = document.getElementById('btnConfirmTime');
+	const btnBackRecap = document.getElementById('btnBackRecap');
+	const btnConfirmFinal = document.getElementById('btnConfirmFinal');
+	
+	document.querySelectorAll('.day-pill').forEach(btn => {
+		btn.onclick = () => {
+			document.querySelectorAll('.day-pill').forEach(b => b.classList.remove('active'));
+			btn.classList.add('active');
+			selectedDate = btn.dataset.date;
+			btnNext.classList.remove('d-none');
+		};
+	});
+	
+	btnNext.onclick = async () => {
+		stepDays.classList.add('d-none');
+		stepTimes.classList.remove('d-none');
+	
+		const container = document.getElementById('creneaux');
+		container.innerHTML = 'Chargement...';
+	
+		const res = await fetch(`/api/creneaux?praticien={{ app.user.id }}&date=${selectedDate}`);
+		const data = await res.json();
+	
+		container.innerHTML = '';
+	
+		data.creneaux.forEach(c => {
+			const div = document.createElement('div');
+			div.className = 'creneau';
+			div.textContent = c.start;
+	
+			if (c.disabled) {
+				div.classList.add('disabled');
+			} else {
+				div.onclick = () => {
+					document.querySelectorAll('.creneau').forEach(x => x.classList.remove('active'));
+					div.classList.add('active');
+					selectedTime = c.start;
+					btnConfirmTime.classList.remove('d-none');
+				};
+			}
+	
+			container.appendChild(div);
+		});
+	};
+	
+	btnConfirmTime.onclick = () => {
+		stepTimes.classList.add('d-none');
+		stepRecap.classList.remove('d-none');
+	
+		document.getElementById('recapDate').textContent =
+			new Date(selectedDate).toLocaleDateString('fr-FR');
+		document.getElementById('recapTime').textContent = selectedTime;
+	};
+	
+	btnBack.onclick = () => {
+		stepTimes.classList.add('d-none');
+		stepDays.classList.remove('d-none');
+	};
+	
+	btnBackRecap.onclick = () => {
+		stepRecap.classList.add('d-none');
+		stepTimes.classList.remove('d-none');
+	};
+	
+	btnConfirmFinal.onclick = async () => {
+		const res = await fetch('/api/rendezvous', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({
+				patient: {{ fiche_client.id }},
+				date: selectedDate,
+				heure: selectedTime
+			})
+		});
+	
+		const json = await res.json();
+		if (json.success) location.reload();
+		else alert(json.message);
+	};
+	</script>
+
+ <script>
+document.getElementById('modalRdv')
+	.addEventListener('show.bs.modal', async () => {
+
+	const res = await fetch(
+		`/api/creneaux/count?praticien={{ app.user.id }}`
+	);
+	const data = await res.json();
+
+	document.querySelectorAll('.day-pill').forEach(btn => {
+
+		const date = btn.dataset.date;
+		const badge = btn.querySelector('.day-badge');
+
+		const count = data[date] ?? 0;
+
+		if (count === 0) {
+			btn.classList.add('full');
+			badge.textContent = '0';
+			badge.classList.add('zero');
+		} else {
+			badge.textContent = count;
+		}
+
+		badge.classList.remove('d-none');
+	});
+});
+</script>
 
