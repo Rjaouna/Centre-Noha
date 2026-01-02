@@ -482,13 +482,13 @@ class FicheClient
 
     public function getAgePatient(): ?int
     {
-        if (!$this->age) {
+        if (!$this->dateNaissance) {
             return null;
         }
 
-        $today = new \DateTimeImmutable();
-        return $today->diff($this->age)->y;
+        return (new \DateTimeImmutable())->diff($this->dateNaissance)->y;
     }
+
 
     /**
      * @return Collection<int, ArretMaladie>

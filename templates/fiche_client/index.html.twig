@@ -4,11 +4,10 @@
 {% endblock %}
 
 {% block body %}
-
 	<div
 		class="container-fluid mt-4">
 
-		<!-- 🔹 HEADER -->
+		<!-- ================= HEADER ================= -->
 		<div class="card shadow-lg border-0 rounded-4 mb-4">
 			<div class="card-body px-4 py-4">
 				<div class="row align-items-center">
@@ -22,22 +21,14 @@
 					</div>
 
 					<div class="col-md-5 d-flex flex-column flex-md-row gap-2 justify-content-md-end mt-3 mt-md-0">
-<button class="btn btn-primary  rounded-pill d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#modalAddClient">
-
+						<button class="btn btn-primary rounded-pill d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#modalAddClient">
 							<i class="bi bi-person-plus"></i>
 							Nouveau patient
 						</button>
 
-<a href="{{ path('app_home') }}" class="btn btn-light  rounded-pill d-flex align-items-center gap-2">
-
-
-
-
-
+						<a href="{{ path('app_home') }}" class="btn btn-light rounded-pill d-flex align-items-center gap-2">
 							<i class="bi bi-arrow-left"></i>
-Page d'accueil
-
-
+							Page d'accueil
 						</a>
 					</div>
 
@@ -45,20 +36,20 @@ Page d'accueil
 			</div>
 		</div>
 
-		<!-- 🔹 TABLE -->
+		<!-- ================= TABLE ================= -->
 		<div class="card shadow-sm border-0 rounded-4">
 			<div class="card-body p-4">
 
 				<table id="patientsTable" class="table table-hover align-middle w-100">
-
 					<thead class="table-light">
 						<tr>
 							<th>#</th>
 							<th>Patient</th>
 							<th>Ville</th>
 							<th>Téléphone</th>
-							<th>Pathologie</th>
-							<th>Dossier médical</th>
+							<th>Âge</th>
+							<th>Maladie</th>
+							<th>Statut</th>
 							<th class="text-center">Actions</th>
 						</tr>
 					</thead>
@@ -67,82 +58,75 @@ Page d'accueil
 						{% for fiche_client in fiche_clients %}
 							{% set isNew = not fiche_client.isConsulted %}
 
-							<tr
-								class="{{ isNew ? 'table-success bg-opacity-10' : '' }}">
-
-								<!-- ID -->
+							<tr class="{{ isNew ? 'table-success bg-opacity-10' : '' }}">
 								<td class="fw-bold">{{ fiche_client.id }}</td>
 
-								<!-- PATIENT -->
 								<td>
 									<div class="d-flex align-items-center gap-2">
 										<strong>{{ fiche_client.nom }}</strong>
-
 										{% if isNew %}
-											<span class="badge bg-success rounded-pill">
-												Nouveau
-											</span>
+											<span class="badge bg-success rounded-pill">Nouveau</span>
 										{% endif %}
 									</div>
 								</td>
 
-								<!-- VILLE -->
 								<td>{{ fiche_client.ville }}</td>
 
-								<!-- TEL -->
-								<td>{{ fiche_client.telephone }}</td>
+								<td>
+									<a href="tel:{{ fiche_client.telephone }}" class="text-decoration-none fw-semibold text-primary">
+										{{ fiche_client.telephone }}
+									</a>
+								</td>
 
-								<!-- MALADIE -->
+								<td>
+									{% if fiche_client.agePatient %}
+										<span class="badge bg-light rounded-pill px-3">
+											{{ fiche_client.agePatient }}
+											ans
+										</span>
+									{% else %}
+										<span class="text-muted">—</span>
+									{% endif %}
+								</td>
+
 								<td>
 									<span class="badge bg-info bg-opacity-75 rounded-pill px-3">
 										{{ fiche_client.typeMaladie }}
 									</span>
 								</td>
 
-								<!-- DOSSIER -->
 								<td>
-									<a href="{{ path('app_dossier_medical_index', { id: fiche_client.id }) }}" class="btn btn-sm {{ isNew ? 'btn-success' : 'btn-outline-primary' }}
-											                                      rounded-pill d-flex align-items-center gap-2 shadow-sm">
-
-										<i class="bi bi-folder2-open fs-5"></i>
-
-										{% if fiche_client.dossierMedicals|length > 0 %}
-											Dossiers
-											<span class="badge bg-warning text-dark">
-												{{ fiche_client.dossierMedicals|length }}
-											</span>
-										{% else %}
-											Créer dossier
-										{% endif %}
-									</a>
+									{% if fiche_client.isConsulted %}
+										<span class="badge bg-light rounded-pill">
+											Consulté
+										</span>
+									{% else %}
+										<span class="badge bg-success rounded-pill">
+											En attente
+										</span>
+									{% endif %}
 								</td>
 
-								<!-- ACTIONS -->
 								<td class="text-center">
-<a href="{{ path('app_fiche_client_show', {'id': fiche_client.id}) }}" class="btn btn-info text-light btn-sm rounded-pill px-3">
-
-
-
+									<a href="{{ path('app_fiche_client_show', {'id': fiche_client.id}) }}" class="btn btn-info text-light btn-sm rounded-pill px-3">
 										<i class="bi bi-eye"></i>
 										Voir
 									</a>
 								</td>
-
 							</tr>
 						{% endfor %}
 					</tbody>
-
 				</table>
 
 			</div>
 		</div>
-
 	</div>
 
-	<!-- 🔹 MODAL AJOUT -->
+	<!-- ================= MODAL AJOUT PATIENT ================= -->
 	<div class="modal fade" id="modalAddClient" tabindex="-1">
 		<div class="modal-dialog modal-xl modal-dialog-centered">
 			<div class="modal-content rounded-4 shadow-lg">
+
 				<div class="modal-header bg-primary text-white">
 					<h5 class="modal-title fw-bold">
 						<i class="bi bi-person-plus me-2"></i>
@@ -150,136 +134,101 @@ Page d'accueil
 					</h5>
 					<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
 				</div>
+
 				<div class="modal-body p-4">
 					{{ include('fiche_client/_form.html.twig') }}
 				</div>
+
 			</div>
 		</div>
 	</div>
-
 {% endblock %}
 
+{% block javascripts %}
+	{{ parent() }}
 
-
-
-
-
-{# -------------------------------------------- #}
-{# JAVASCRIPT : DATATABLES + TON JS             #}
-{# -------------------------------------------- #}
-	{% block javascripts %}
-{{ parent() }}
-
-
+	 <script>
+	document.addEventListener('DOMContentLoaded', () => {
 	
- <script>
-document.addEventListener("DOMContentLoaded", () => {
+	document.addEventListener('DOMContentLoaded', () => {
 
-    // Son au clic
-    buttonSoundClick("buttonSave", "disabled");
+	const table = $('#patientsTable');
 
-    const form  = document.getElementById("ficheForm");
-    const pop   = document.getElementById("popupSuccess");
-    const modal = new bootstrap.Modal(document.getElementById('modalAddClient'));
-const routeShowPatient = "{{ path('app_fiche_client_show', {'id': 0}) }}".replace('/0', '');
+	// 🔥 SOLUTION DÉFINITIVE
+	if ($.fn.DataTable.isDataTable(table)) {
+		table.DataTable().clear().destroy();
+	}
 
+	table.DataTable({
+		language: {
+			url: '//cdn.datatables.net/plug-ins/1.13.8/i18n/fr-FR.json'
+		},
+		pageLength: 10,
+		order: [[0, 'desc']],
+		responsive: true,
+		autoWidth: false
+	});
 
-
-
-    form.addEventListener("submit", async function (e) {
-        e.preventDefault();
-
-        const formData = new FormData(form);
-        let data = {};
-
-        formData.forEach((value, key) => {
-            const cleanKey = key.replace('fiche_client[', '').replace(']', '');
-            data[cleanKey] = value;
-        });
-
-        try {
-            const response = await fetch("{{ path('app_fiche_client_new') }}", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-Requested-With": "XMLHttpRequest"
-                },
-                body: JSON.stringify(data)
-            });
-
-            const text = await response.text();
-
-            if (!response.ok) {
-                moveElement("modalAddClient");
-                showFlashError("Erreur lors de l’enregistrement !");
-                buttonSoundError('buttonSave');
-                return;
-            }
-
-            // Essayer JSON
-            let result;
-            try {
-                result = JSON.parse(text);
-            } catch {
-                moveElement("modalAddClient");
-                showFlashError("Erreur lors de l’enregistrement !");
-                buttonSoundError('buttonSave');
-                return;
-            }
-
-            // Succès
-            buttonSoundSuccess('buttonSave');
-             // Reset + fermeture modal + animation carte
-            form.reset();
-            pop.style.display = "block";               // ← remplace display:none
-
-modal.hide();
-moveElement("blocListClient")
-
-
-
-
-            // 🔥 AFFICHER LE POPUP IMMÉDIATEMENT ICI
-           
-            pop.innerHTML = `
-<div class="d-flex align-items-start">
-	<i class="bi bi-check-circle-fill fs-1 text-white bg-success p-2 rounded-circle me-3"></i>
-
-	<div>
-		<h5 class="fw-bold mb-1">Patient ajouté avec succès ! 🎉</h5>
-
-		<p class="mb-1">
-			Le nouveau patient a été bien enregistré dans le système.
-		</p>
-
-		<ul class="mb-1 ps-3" style="font-size: 0.9rem;">
-			<li><strong>Nom :</strong> ${result.nom}</li>
-			<li><strong>Ville :</strong> ${result.ville}</li>
-			<li><strong>Téléphone :</strong> ${result.telephone}</li>
-		</ul>
-
-<a href="${routeShowPatient}/${result.id}" class="btn btn-outline-light btn-sm px-3 rounded-pill shadow-sm mt-2">
-	<i class="bi bi-eye"></i>
-	Voir le patient
-</a>
-
-	</div>
-
-	<button type="button" class="btn-close" onclick="document.getElementById('popupSuccess').style.display='none';"></button>
-</div>
-            `;
-
-           
-
-        } catch (error) {
-            console.error("Erreur JS :", error);
-            buttonSoundError('buttonSave');
-            moveElement("modalAddClient");
-            showFlashError("Erreur lors de l’enregistrement !");
-        }
-    });
 });
-</script>
-
+	
+		/* ================= AJAX FORM ================= */
+		const form  = document.getElementById('ficheForm');
+		const modal = new bootstrap.Modal(document.getElementById('modalAddClient'));
+		const pop   = document.getElementById('popupSuccess');
+	
+		const routeShowPatient =
+			"{{ path('app_fiche_client_show', {'id': 0}) }}".replace('/0', '');
+	
+		if (!form) return;
+	
+		form.addEventListener('submit', async (e) => {
+			e.preventDefault();
+	
+			const payload = {};
+			new FormData(form).forEach((v, k) => {
+				payload[k.replace('fiche_client[', '').replace(']', '')] = v;
+			});
+	
+			const response = await fetch("{{ path('app_fiche_client_new') }}", {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'X-Requested-With': 'XMLHttpRequest'
+				},
+				body: JSON.stringify(payload)
+			});
+	
+			if (!response.ok) {
+				alert("Erreur lors de l’enregistrement");
+				return;
+			}
+	
+			const result = await response.json();
+	
+			form.reset();
+			modal.hide();
+	
+			pop.style.display = 'block';
+			pop.innerHTML = `
+				<div class="d-flex align-items-start">
+					<i class="bi bi-check-circle-fill fs-1 text-white bg-success p-2 rounded-circle me-3"></i>
+					<div>
+						<h5 class="fw-bold mb-1">Patient ajouté avec succès 🎉</h5>
+						<ul class="mb-2 ps-3">
+							<li><strong>Nom :</strong> ${result.nom}</li>
+							<li><strong>Ville :</strong> ${result.ville}</li>
+							<li><strong>Téléphone :</strong> ${result.telephone}</li>
+						</ul>
+						<a href="${routeShowPatient}/${result.id}"
+						   class="btn btn-outline-light btn-sm rounded-pill">
+							<i class="bi bi-eye"></i>
+							Voir le patient
+						</a>
+					</div>
+				</div>
+			`;
+		});
+	});
+	</script>
 {% endblock %}
 
