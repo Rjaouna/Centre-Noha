@@ -149,6 +149,26 @@
 			font-weight: 600;
 			color: #212529;
 		}
+		/* 📱 FullCalendar mobile fix */
+@media (max-width: 767px) {
+
+    .fc-toolbar {
+        flex-direction: row;
+        gap: 6px;
+    }
+
+    .fc-toolbar-title {
+        font-size: 1rem;
+        text-align: center;
+        white-space: nowrap;
+    }
+
+    .fc-button {
+        padding: 4px 8px;
+        font-size: 0.85rem;
+    }
+}
+
 	</style>
 
 {% endblock %}
@@ -165,16 +185,24 @@
 	    const modal = new bootstrap.Modal(document.getElementById('rdvModal'));
 	    const calendarEl = document.getElementById('calendar');
 	
-	    const calendar = new FullCalendar.Calendar(calendarEl, {
-	        initialView: 'dayGridMonth',
-	        locale: 'fr',
-	        height: 'auto',
-	
-	        headerToolbar: {
-	            left: 'prev,next today',
-	            center: 'title',
-	            right: 'dayGridMonth,timeGridWeek,timeGridDay'
-	        },
+	    const isMobile = window.innerWidth < 768;
+
+const calendar = new FullCalendar.Calendar(calendarEl, {
+    initialView: 'dayGridMonth',
+    locale: 'fr',
+    height: 'auto',
+
+    headerToolbar: isMobile
+        ? {
+            left: 'prev',
+            center: 'title',
+            right: 'next'
+        }
+        : {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        },
 	
 	        eventTimeFormat: { hour: '2-digit', minute: '2-digit', hour12: false },
 	        events: '/api/rendezvous/events',
