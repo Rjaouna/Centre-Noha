@@ -117,6 +117,47 @@
 	</div>
 
 	<style>
+	/* =============================== */
+/* 🎨 COULEURS RDV FULLCALENDAR */
+/* =============================== */
+
+/* 🔴 RDV annulé */
+.fc-daygrid-event.rdv-annule .fc-event-main,
+.fc-timegrid-event.rdv-annule .fc-event-main {
+    background-color: #dc3545 !important;
+    border-color: #dc3545 !important;
+    color: #fff !important;
+}
+
+/* 🟡 RDV en attente */
+.fc-daygrid-event.rdv-attente .fc-event-main,
+.fc-timegrid-event.rdv-attente .fc-event-main {
+    background-color: #ffc107 !important;
+    border-color: #ffc107 !important;
+    color: #000 !important;
+}
+
+/* 🟢 RDV confirmé */
+.fc-daygrid-event.rdv-confirme .fc-event-main,
+.fc-timegrid-event.rdv-confirme .fc-event-main {
+    background-color: #198754 !important;
+    border-color: #198754 !important;
+    color: #fff !important;
+}
+
+/* Petit point (vue mois dot-event) */
+.fc-daygrid-dot-event.rdv-annule .fc-daygrid-event-dot {
+    border-color: #dc3545 !important;
+}
+
+.fc-daygrid-dot-event.rdv-attente .fc-daygrid-event-dot {
+    border-color: #ffc107 !important;
+}
+
+.fc-daygrid-dot-event.rdv-confirme .fc-daygrid-event-dot {
+    border-color: #198754 !important;
+}
+
 		.recap-card {
 			background: #f8fafc;
 		}
@@ -208,22 +249,27 @@ const calendar = new FullCalendar.Calendar(calendarEl, {
 	        events: '/api/rendezvous/events',
 	
 	        eventDidMount(info) {
-	            const statut = info.event.extendedProps.statut;
-	            const main = info.el.querySelector('.fc-event-main');
-	            if (!main) return;
-	
-	            if (statut === 'annule') {
-	                main.style.backgroundColor = '#dc3545';
-	                main.style.borderColor = '#dc3545';
-	                main.style.color = '#fff';
-	            }
-	
-	            if (statut === 'en_attente') {
-	                main.style.backgroundColor = '#ffc107';
-	                main.style.borderColor = '#ffc107';
-	                main.style.color = '#000';
-	            }
-	        },
+    const statut = info.event.extendedProps.statut;
+
+    info.el.classList.remove(
+        'rdv-annule',
+        'rdv-attente',
+        'rdv-confirme'
+    );
+
+    if (statut === 'annule') {
+        info.el.classList.add('rdv-annule');
+    }
+
+    if (statut === 'en_attente') {
+        info.el.classList.add('rdv-attente');
+    }
+
+    if (statut === 'confirme') {
+        info.el.classList.add('rdv-confirme');
+    }
+},
+
 	
 	        eventClick(info) {
 	            info.jsEvent.preventDefault();
