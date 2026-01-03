@@ -96,7 +96,9 @@
 	{# 🔷 INFOS CLIENT — VERSION COMPACTE & PRO (BOOTSTRAP) #}
 	{# ===================================================== #}
 
-		<div class="row mb-4"> <div class="col-12">
+<div class="row mb-4">
+	<div class="col-12 px-0">
+
 
 			<div class="card shadow-sm border-0 rounded-4">
 				<div
@@ -174,7 +176,9 @@
 					</div>
 
 					{# ================= TRAITEMENT ================= #}
-					<hr class="my-4">
+<hr class="hr-animated">
+
+
 
 					<h6 class="fw-bold text-warning d-flex align-items-center mb-3">
 						<i class="bi bi-journal-medical me-2"></i>
@@ -202,7 +206,7 @@
 			</div>
 
 		</div>
-	</div>
+	 </div>
 
 
 	{# ===================================================== #}
@@ -222,24 +226,20 @@
 					</h4>
 
 					<div class="row g-4">
-						<div class="col-12">
 							{{ include('fiche_client/_composants/_trouble_digestifs.html.twig') }}
-						</div>
 
-						<div class="col-12">
 							{{ include('fiche_client/_composants/_symptomes_generaux.html.twig') }}
-						</div>
 
-						<div class="col-12">
 							{{ include('fiche_client/_composants/_maladies_chroniques.html.twig') }}
-						</div>
 					</div>
 
 					<div class="mt-3">
 						{{ include('fiche_client/_composants/_modal_edit_client/_modal_edit_client.html.twig') }}
 					</div>
 
-					<hr class="my-4">
+<hr class="hr-animated">
+
+
 
 					{# ============================== #}
 					{# 📸 DOCUMENTATION CLINIQUE      #}
@@ -268,7 +268,9 @@
 
 					</button>
 
-					<hr class="my-4">
+<hr class="hr-animated">
+
+
 
 					{# ============================== #}
 					{# 📁 DOSSIERS DE SUIVI            #}
@@ -492,7 +494,9 @@ patient: fiche_client
 			</div>
 		</div>
 
-		<div class="card shadow-sm rounded-4 mt-4">
+<div class="container-fluid card shadow-sm rounded-4 mt-4">
+
+
 			<div
 				class="card-body">
 
@@ -527,7 +531,9 @@ patient: fiche_client
 		</div>
 
 
-	</div>
+</div>
+
+
 
 
 	{% include 'fiche_client/_composants/_paiements.html.twig' %}
@@ -537,6 +543,17 @@ patient: fiche_client
 		/* ===============================
    DOSSIER MÉDICAL – CARD DESIGN
 =============================== */
+.hr-animated {
+    border: none;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #0d6efd, transparent);
+    background-size: 200% 100%;
+    animation: hrMove 3s linear infinite;
+	margin-top: 2rem;
+	margin-bottom: 2rem;
+}
+
+
 
 
 		.medical-card {
