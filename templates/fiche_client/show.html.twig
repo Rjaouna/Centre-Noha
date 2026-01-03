@@ -61,7 +61,8 @@
 
 			<ul class="dropdown-menu shadow-sm rounded-3">
 				<li>
-					<a class="dropdown-item d-flex align-items-center gap-2" href="{{ path('app_paiement_index', { id: fiche_client.id }) }}">
+<a class="dropdown-item d-flex align-items-center gap-2" href="#">
+
 						<i class="bi bi-clock-history"></i>
 						Historique
 					</a>
@@ -512,7 +513,6 @@ patient: fiche_client
 
 				<div class="mt-3">
 		
-					{{ include('fiche_client/_composants/_modal_paiment/_modal_paiment.html.twig') }}
 					{{ include('fiche_client/_composants/_certficat.html.twig') }}
 				</div>
 
@@ -563,6 +563,8 @@ Analyses
 
 
 
+
+{% include 'fiche_client/_composants/_paiements.html.twig' %}
 
 
 
