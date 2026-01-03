@@ -338,6 +338,54 @@
 		transform: scale(1);
 	}
 }
+/* ===============================
+   📊 ANALYTICS CARD
+=============================== */
+
+.analytics-card {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 18px;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+    height: 100%;
+    transition: .25s;
+}
+
+.analytics-card:hover {
+    transform: translateY(-4px);
+}
+
+/* Header du graphe */
+.analytics-header {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    margin-bottom: 14px;
+}
+
+.analytics-header i {
+    font-size: 1.4rem;
+    color: #0d6efd;
+}
+
+.analytics-header strong {
+    display: block;
+    font-size: 0.95rem;
+    color: #212529;
+}
+
+.analytics-header span {
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+/* Zone graphe */
+.analytics-chart {
+    height: 220px;
+    display: flex;
+    align-items: center;
+}
+
 </style>
 
 
@@ -378,96 +426,153 @@
 
 
 
-
-
 <!-- ============================= -->
-<!-- 🌟 HEADER AVEC ILLUSTRATION -->
+<!-- 🧰 MODULES DE RÉFÉRENCE -->
 <!-- ============================= -->
-	<div class=" my-5 "> <div class="dashboard-hero">
+	<div class="mt-5"> <div class="d-flex align-items-center justify-content-between mb-4">
+		<div>
+			<h4 class="fw-bold mb-1 text-primary">
+				<i class="bi bi-ui-checks-grid me-2"></i>
+				Modules de référence
+			</h4>
+			<p class="text-muted mb-0 small">
+				Outils de consultation et de recherche utilisés dans la pratique quotidienne
+			</p>
+		</div>
+	</div>
 
-		<div
-			class="row align-items-center w-100">
+	<div class="row g-4">
 
-			<!-- 📝 TEXTE (8 colonnes) -->
-			<div class="col-md-8">
-				<h2 class="fw-bold mb-3">
-					<i class="bi bi-speedometer2"></i>
-					Tableau de bord analytique
-				</h2>
+		{% include 'home/_resources/_resource_card.html.twig' with {
+            icon: 'bi-activity',
+            color: 'text-warning',
+            title: 'Symptômes',
+            subtitle: 'Explorer le référentiel clinique',
+            link: path('symptome_index')
+        } %}
 
-				<p style="opacity: .9;">
-					Analysez vos données en un coup d’œil grâce à une interface moderne, claire et intuitive.
-															                    Visualisez vos statistiques, suivez l’évolution de votre activité et gérez efficacement vos rendez-vous.
-				</p>
+		{% include 'home/_resources/_resource_card.html.twig' with {
+            icon: 'bi-hospital',
+            color: 'text-primary',
+            title: 'Établissements',
+            subtitle: 'Localiser et consulter les structures',
+            link: path('hopital_search_page')
+        } %}
 
-				<div class="mt-3">
-					<span class="badge bg-light text-dark mb-1 me-2 px-3 py-2 rounded-pill">
-						📊 Statistiques intelligentes
-					</span>
-					<span class="badge bg-light text-dark mb-1 me-2 px-3 py-2 rounded-pill">
-						🔔 Suivi en temps réel
-					</span>
-					<span class="badge bg-light text-dark mb-1 px-3 py-2 rounded-pill">
-						🔒 Données sécurisées
-					</span>
+		{% include 'home/_resources/_resource_card.html.twig' with {
+            icon: 'bi-capsule-pill',
+            color: 'text-danger',
+            title: 'Médicaments',
+            subtitle: 'Consulter les données CNOPS – ANAM',
+            link: path('medicine_index')
+        } %}
+
+		{% include 'home/_resources/_resource_card.html.twig' with {
+            icon: 'bi-heart-pulse',
+            color: 'text-success',
+            title: 'Dispositifs',
+            subtitle: 'Accéder aux dispositifs remboursables',
+            link: path('dispositif_search')
+        } %}
+
+	</div>
+
+</div>
+
+
+<!-- ===== ANALYTICS GRAPHS ===== -->
+<div class="mt-5">
+	<div class="d-flex align-items-center justify-content-between mb-4">
+		<div>
+			<h4 class="fw-bold mb-1 text-primary">
+				<i class="bi bi-graph-up me-2"></i>
+				Indicateurs statistiques
+			</h4>
+			<p class="text-muted mb-0 small">
+				Analyse et visualisation de l’activité à partir des données enregistrées
+			</p>
+		</div>
+	</div>
+</div>
+
+
+<div
+	class="row g-4 mt-4">
+
+	<!-- 💳 PAIEMENTS -->
+	<div class="col-12 col-lg-3">
+		<div class="analytics-card">
+			<div class="analytics-header">
+				<i class="bi bi-cash-coin"></i>
+				<div>
+					<strong>Modes de paiement</strong>
+					<span>Répartition des paiements enregistrés</span>
 				</div>
 			</div>
 
-			<!-- 🖼️ IMAGE (4 colonnes) -->
-			<div class="col-md-4 text-center mt-4 mt-md-0">
-				<img src="/assets/img/3736765.jpg" alt="Illustration du dashboard" class="img-fluid rounded-4" style="height: 220px; width: 100%; object-fit: cover; border: 4px solid rgba(255,255,255,0.4);">
+			<div class="analytics-chart">
+				<canvas id="chartPaiements"></canvas>
+			</div>
+		</div>
+	</div>
+
+	<!-- ❤️ MALADIES -->
+	<div class="col-12 col-lg-3">
+		<div class="analytics-card">
+			<div class="analytics-header">
+				<i class="bi bi-heart-pulse"></i>
+				<div>
+					<strong>Types de maladies</strong>
+					<span>Distribution des pathologies observées</span>
+				</div>
 			</div>
 
+			<div class="analytics-chart">
+				<canvas id="chartPieMaladies"></canvas>
+			</div>
 		</div>
-
 	</div>
+
+	<!-- 🌡️ SYMPTÔMES -->
+	<div class="col-12 col-lg-3">
+		<div class="analytics-card">
+			<div class="analytics-header">
+				<i class="bi bi-thermometer"></i>
+				<div>
+					<strong>Symptômes</strong>
+					<span>Fréquence et intensité des symptômes</span>
+				</div>
+			</div>
+
+			<div class="analytics-chart">
+				<canvas id="chartSymptomes"></canvas>
+			</div>
+		</div>
+	</div>
+
+	<!-- 📈 FRÉQUENTATION -->
+	<div class="col-12 col-lg-3">
+		<div class="analytics-card">
+			<div class="analytics-header">
+				<i class="bi bi-graph-up"></i>
+				<div>
+					<strong>Clients par jour</strong>
+					<span>Évolution quotidienne de la fréquentation</span>
+				</div>
+			</div>
+
+			<div class="analytics-chart">
+				<canvas id="chartClientsPerDay"></canvas>
+			</div>
+		</div>
+	</div>
+
 </div>
+
 
 
 <!-- ===== GRAPHIQUES ===== -->
-<div class="row g-4 mt-2">
 
-	<div class="col-12 col-lg-3">
-		<div class="chart-box">
-			<h5 class="chart-title">
-				<i class="bi bi-cash-coin"></i>
-				Type paiements
-			</h5>
-			<canvas id="chartPaiements"></canvas>
-		</div>
-	</div>
-
-	<div class="col-12 col-lg-3">
-		<div class="chart-box">
-			<h5 class="chart-title">
-				<i class="bi bi-heart-pulse"></i>
-				Types de maladies
-			</h5>
-			<canvas id="chartPieMaladies"></canvas>
-		</div>
-	</div>
-
-	<div class="col-12 col-lg-3">
-		<div class="chart-box">
-			<h5 class="chart-title">
-				<i class="bi bi-thermometer"></i>
-				Symptômes généraux
-			</h5>
-			<canvas id="chartSymptomes"></canvas>
-		</div>
-	</div>
-
-	<div class="col-12 col-lg-3">
-		<div class="chart-box">
-			<h5 class="chart-title">
-				<i class="bi bi-pie-chart-fill"></i>
-				Clients par jour
-			</h5>
-			<canvas id="chartClientsPerDay"></canvas>
-		</div>
-	</div>
-
-</div>
 
 
  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

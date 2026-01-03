@@ -186,47 +186,7 @@ link: path('rendezvous_calendrier'),
 		{# ======================= #}
 		{# 🔹 RESSOURCES #}
 		{# ======================= #}
-			<div class="mt-5"> <h4 class="fw-bold mb-4">
-				<i class="bi bi-ui-checks-grid text-primary me-2"></i>
-				Référentiels & Ressources
-			</h4>
-
-			<div class="row g-3">
-				{% include 'home/_resources/_resource_card.html.twig' with {
-                icon: 'bi-activity',
-                color: 'text-warning',
-                title: 'Symptômes',
-                subtitle: 'Référentiel clinique',
-                link: path('symptome_index')
-            } %}
-
-				{% include 'home/_resources/_resource_card.html.twig' with {
-                icon: 'bi-hospital',
-                color: 'text-primary',
-                title: 'Établissements hospitaliers',
-                subtitle: 'Recherche & consultation',
-                link: path('hopital_search_page')
-            } %}
-
-				{% include 'home/_resources/_resource_card.html.twig' with {
-                icon: 'bi-capsule-pill',
-                color: 'text-danger',
-                title: 'Médicaments',
-                subtitle: 'CNOPS – ANAM',
-                link: path('medicine_index')
-            } %}
-            {% include 'home/_resources/_resource_card.html.twig' with {
-                icon: 'bi-heart-pulse',
-                color: 'text-success',
-                title: 'Dispositifs Remboursables',
-                subtitle: 'CNOPS – ANAM',
-                link: path('dispositif_search')
-            } %}
-
-
-
-			</div>
-		</div>
+			
 
 		{{ include('home/_stats/_stats.html.twig') }}
 
@@ -326,6 +286,66 @@ box-shadow: 0 8px 22px rgba(0,0,0,.15);
     display: block;
     margin-bottom: 6px;
 }
+/* ===============================
+   🧰 MODULES DE RÉFÉRENCE
+=============================== */
+
+.resource-card {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 18px;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+    height: 100%;
+    transition: .25s ease;
+    cursor: pointer;
+}
+
+.resource-card:hover {
+    transform: translateY(-4px);
+    background: #f6f9ff;
+}
+
+/* Header */
+.resource-card-header {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.resource-card-header i {
+    font-size: 1.4rem;
+}
+
+/* Texte */
+.resource-card-title {
+    font-weight: 700;
+    color: #212529;
+    font-size: 0.95rem;
+}
+
+.resource-card-subtitle {
+    font-size: 0.8rem;
+    color: #6c757d;
+    line-height: 1.4;
+}
+
+/* Indication action */
+.resource-card::after {
+    content: '→';
+    position: absolute;
+    bottom: 14px;
+    right: 16px;
+    color: #0d6efd;
+    font-weight: 700;
+    opacity: 0;
+    transition: .25s;
+}
+
+.resource-card:hover::after {
+    opacity: 1;
+}
+
 </style>
 {% endblock %}
 
