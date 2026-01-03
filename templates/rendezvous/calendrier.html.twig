@@ -298,7 +298,9 @@ const calendar = new FullCalendar.Calendar(calendarEl, {
             : 'Raté';
 
 	
-	            document.getElementById('btnAnnuler').classList.toggle('d-none', statut === 'annule');
+document.getElementById('btnAnnuler').classList.toggle('d-none', statut === 'annule' || statut === 'valide');
+
+
 	
 	            modal.show();
 	        }
