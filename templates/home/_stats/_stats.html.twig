@@ -149,119 +149,55 @@ background: linear-gradient(135deg, #257cfd, #0dcaf0);
 		transform: scale(1);
 	}
 }
-.rdv-card {
-    background: #ffffff;
-    border-left: 4px solid #0d6efd;
-    border-radius: 14px;
-    padding: 14px;
-    box-shadow: 0 6px 16px rgba(0,0,0,0.08);
-    transition: .25s;
-}
 
-.rdv-card:hover {
-    transform: translateY(-4px);
-    background: #f6f9ff;
-}
-
-.rdv-name {
-    font-weight: 700;
-    color: #0d6efd;
-}
-
-.rdv-time {
-    font-size: .9rem;
-    color: #6c757d;
-}
 </style>
 
 
+
+
+
 <!-- ============================= -->
-<!-- 📅 PROCHAINS RENDEZ-VOUS -->
+<!-- 🔥 SECTION ANALYTIQUE -->
 <!-- ============================= -->
-	<div
-	class="mt-5"> <!-- 🎯 TITRE -->
-	<h4 class="fw-bold text-primary mb-4">
-		<i class="bi bi-calendar-event me-2"></i>
-		Prochains rendez-vous
+<!-- ============================= -->
+<!-- 🔥 SECTION ANALYTIQUE — NEW CLEAN VERSION -->
+<!-- ============================= -->
+<div
+class=" mt-4">
+
+
+
+	<!-- 🎯 TITRE -->
+<h4 class="fw-bold text-primary mt-5">
+
+
+		<i class="bi bi-calendar-event"></i>
+		Derniers rendez-vous
 	</h4>
 
 	<div
-		class="row g-4 align-items-stretch">
+		class="row g-3">
+<!-- 🖼️ PHOTO sur 3 colonnes -->
+<div class="col-lg-4">
+<img src="{{asset('/assets/img/3943280.jpg')}}" alt="Illustration Dashboard" class="rounded-4" style="width: 100%;  object-fit: cover;">
 
-		<!-- 🖼️ ILLUSTRATION (desktop uniquement) -->
-		<div class="col-lg-4 d-none d-lg-block">
-			<img src="{{ asset('/assets/img/3943280.jpg') }}" alt="Illustration rendez-vous" class="rounded-4 shadow-sm w-100" style="height: 100%; object-fit: cover;">
-		</div>
 
-		<!-- 🟦 LISTE DES RDV -->
+
+
+
+</div>
+
+		<!-- 🟦 RDV sur 9 colonnes -->
 		<div class="col-lg-8">
 			<div
-				class="row g-3" id="rdvList">{# RDV injectés en JS #}
+				class="row g-3" id="rdvRow"><!-- Les RDV insérés dynamiquement ici -->
 			</div>
 		</div>
-
-	</div>
-
 </div>
 
 
 
-
-
- <script>
-async function loadNextRDV() {
-    const res = await fetch('/api/rendezvous/next');
-    const rdvs = await res.json();
-    const container = document.getElementById('rdvList');
-
-    container.innerHTML = '';
-
-    if (rdvs.length === 0) {
-        container.innerHTML = `
-            <div class="col-12 text-muted text-center">
-                Aucun rendez-vous à venir
-            </div>
-        `;
-        return;
-    }
-
-    rdvs.forEach(rdv => {
-        container.insertAdjacentHTML('beforeend', `
-            <div class="col-md-6 col-lg-6">
-                <div class="rdv-card h-100">
-                    <div class="rdv-name">
-                        <i class="bi bi-person-circle me-1"></i>
-                        ${rdv.nom}
-                    </div>
-
-                    <div class="rdv-time mt-1">
-                        <i class="bi bi-clock me-1"></i>
-                        ${rdv.date} à ${rdv.heure}
-                    </div>
-
-                    <button class="btn btn-sm btn-outline-danger rounded-pill mt-3 w-100"
-                        onclick="annulerRDV(${rdv.id})">
-                        <i class="bi bi-x-circle"></i>
-                        Annuler
-                    </button>
-                </div>
-            </div>
-        `);
-    });
-}
-
-async function annulerRDV(id) {
-    if (!confirm('Annuler ce rendez-vous ?')) return;
-
-    await fetch(`/api/rendezvous/${id}/annuler`, {
-        method: 'POST'
-    });
-
-    loadNextRDV();
-}
-
-document.addEventListener('DOMContentLoaded', loadNextRDV);
-</script>
+</div>
 
 
 
@@ -313,7 +249,7 @@ document.addEventListener('DOMContentLoaded', loadNextRDV);
 <!-- ===== GRAPHIQUES ===== -->
 <div class="row g-4 mt-2">
 
-	<div class="col-6 col-lg-3">
+	<div class="col-12 col-lg-3">
 		<div class="chart-box">
 			<h5 class="chart-title">
 				<i class="bi bi-cash-coin"></i>
@@ -323,7 +259,7 @@ document.addEventListener('DOMContentLoaded', loadNextRDV);
 		</div>
 	</div>
 
-	<div class="col-6 col-lg-3">
+	<div class="col-12 col-lg-3">
 		<div class="chart-box">
 			<h5 class="chart-title">
 				<i class="bi bi-heart-pulse"></i>
@@ -333,7 +269,7 @@ document.addEventListener('DOMContentLoaded', loadNextRDV);
 		</div>
 	</div>
 
-	<div class="col-6 col-lg-3">
+	<div class="col-12 col-lg-3">
 		<div class="chart-box">
 			<h5 class="chart-title">
 				<i class="bi bi-thermometer"></i>
@@ -343,7 +279,7 @@ document.addEventListener('DOMContentLoaded', loadNextRDV);
 		</div>
 	</div>
 
-	<div class="col-6 col-lg-3">
+	<div class="col-12 col-lg-3">
 		<div class="chart-box">
 			<h5 class="chart-title">
 				<i class="bi bi-pie-chart-fill"></i>
@@ -357,182 +293,179 @@ document.addEventListener('DOMContentLoaded', loadNextRDV);
 
 
 
-
-<!-- ============================= -->
-<!-- 📊 CHART JS SCRIPTS -->
-<!-- ============================= -->
  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
  <script>
+/* ================= GLOBAL ================= */
+let charts = {};
 
-/* ----- TOOLTIP ----- */
-const tooltipLabel = ctx => ctx.label + " : " + ctx.raw;
+function destroyChart(id) {
+    if (charts[id]) {
+        charts[id].destroy();
+        delete charts[id];
+    }
+}
 
+/* ================= GRAPHIQUES ================= */
 
-/* ----- CHARTS ----- */
+// 💳 Paiements → BAR HORIZONTAL
 async function loadPaiementsChart() {
-    const res = await fetch("/api/statistics/paiements");
+    const res = await fetch('/api/statistics/paiements');
     const stats = await res.json();
 
-    const colors = [
-        "rgba(13,110,253,0.8)",
-        "rgba(25,135,84,0.8)",
-        "rgba(255,193,7,0.8)",
-        "rgba(220,53,69,0.8)",
-        "rgba(108,117,125,0.8)"
-    ];
+    destroyChart('paiements');
 
-    new Chart(document.getElementById("chartPaiements"), {
-        type: "pie",
-        data: { labels: stats.labels, datasets: [{ data: stats.values, backgroundColor: colors }] },
-        options: { plugins: { legend: { display: false }, tooltip: { callbacks: { label: tooltipLabel } } } }
-    });
-
-}
-
-async function loadMaladiesChart() {
-    const res = await fetch("{{ path('api_statistics_maladies') }}");
-    const stats = await res.json();
-
-    const colors = [
-        'rgba(255,99,132,0.8)','rgba(54,162,235,0.8)','rgba(255,206,86,0.8)',
-        'rgba(75,192,192,0.8)','rgba(153,102,255,0.8)','rgba(255,159,64,0.8)'
-    ];
-
-    new Chart(document.getElementById("chartPieMaladies"), {
-        type: "pie",
-        data: { labels: stats.labels, datasets: [{ data: stats.values, backgroundColor: colors }] },
-        options: { plugins: { legend: { display: false }, tooltip: { callbacks: { label: tooltipLabel } } } }
-    });
-
-}
-
-async function loadSymptomesChart() {
-    const res = await fetch("{{ path('api_statistics_symptomes') }}");
-    const stats = await res.json();
-
-    const colors = [
-        'rgba(255,99,132,0.8)','rgba(54,162,235,0.8)','rgba(255,206,86,0.8)'
-    ];
-
-    new Chart(document.getElementById("chartSymptomes"), {
-        type: "pie",
-        data: { labels: stats.labels, datasets: [{ data: stats.values, backgroundColor: colors }] },
-        options: { plugins: { legend: { display: false }, tooltip: { callbacks: { label: tooltipLabel } } } }
-    });
-
-}
-
-async function loadClientsPerDayChart() {
-    const res = await fetch("/api/statistics/clients-per-day");
-    const stats = await res.json();
-
-    const colors = [
-        "rgba(13,110,253,0.8)",
-        "rgba(25,135,84,0.8)",
-        "rgba(255,193,7,0.8)",
-        "rgba(220,53,69,0.8)",
-        "rgba(108,117,125,0.8)",
-        "rgba(111,66,193,0.8)" 
-    ];
-
-    new Chart(document.getElementById("chartClientsPerDay"), {
-        type: "pie",
+    charts.paiements = new Chart(document.getElementById('chartPaiements'), {
+        type: 'bar',
         data: {
             labels: stats.labels,
             datasets: [{
                 data: stats.values,
-                backgroundColor: colors.slice(0, stats.values.length)
+                backgroundColor: 'rgba(13,110,253,.8)',
+                borderRadius: 12
             }]
         },
         options: {
-            plugins: {
-                legend: { display: false },
-                tooltip: { callbacks: { label: ctx => ctx.label + " : " + ctx.raw } }
+            indexAxis: 'y',
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { grid: { display: false } },
+                y: { grid: { display: false } }
             }
         }
     });
-
 }
 
+// ❤️ Maladies → DOUGHNUT ÉPAIS
+async function loadMaladiesChart() {
+    const res = await fetch("{{ path('api_statistics_maladies') }}");
+    const stats = await res.json();
 
-/* ----- RDV ----- */
-async function loadRDV() {
-    const res = await fetch("/api/rdv/today");
-    const rdvs = await res.json();
-    const row = document.getElementById("rdvRow");
+    destroyChart('maladies');
 
-    row.innerHTML = "";
-
-    if (rdvs.length === 0) {
-        row.innerHTML = `<p class="text-muted text-center">Aucun rendez-vous aujourd’hui</p>`;
-        return;
-    }
-
-    // Afficher max 6 RDV
-rdvs.slice(0, 4).forEach(rdv => {
-
-
-
-
-    row.insertAdjacentHTML("beforeend", `
-        <div class="col-6 col-md-4 col-lg-6">
-            <div class="rdv-mini">
-                <strong><i class="bi bi-person-circle"></i> ${rdv.nom}</strong><br>
-                <small class="text-muted">
-                    <i class="bi bi-chat-left-text"></i>
-                    ${rdv.motif ?? "Sans motif"}
-                </small>
-                <div class="mt-1">
-                    <span class="badge bg-success">${rdv.statut}</span>
-                </div>
-                <small class="text-muted d-block mt-1">
-                    <i class="bi bi-clock"></i> ${rdv.date}
-                </small>
-<button class="clicSound btn btn-sm btn-success rounded-pill mt-2 btn-validate-rdv" data-id="${rdv.id}" id="btn-rdv-${rdv.id}">
-
-
-                    <i class="bi bi-check-circle"></i>
-                </button>
-            </div>
-        </div>
-    `);
-	   // 🔊 ACTIVER LE SON ICI
-    buttonSoundClick(`btn-rdv-${rdv.id}`, "disabled");
-});
-
-attachValidationEvents();
-
-}
-
-
-function attachValidationEvents() {
-    document.querySelectorAll(".btn-validate-rdv").forEach(btn => {
-        btn.addEventListener("click", async e => {
-            e.preventDefault();
-            const id = btn.dataset.id;
-
-            const res = await fetch(`/api/rdv/validate/${id}`, { method: "POST" });
-            const data = await res.json();
-
-            if (data.success) {
-                btn.classList.add("validated-animation");
-                btn.innerHTML = `<i class="bi bi-check-circle-fill"></i>`;
-                btn.disabled = true;
-
-                setTimeout(() => loadRDV(), 300);
-            }
-        });
+    charts.maladies = new Chart(document.getElementById('chartPieMaladies'), {
+        type: 'doughnut',
+        data: {
+            labels: stats.labels,
+            datasets: [{
+                data: stats.values,
+                backgroundColor: [
+                    '#0d6efd','#20c997','#ffc107','#dc3545','#6f42c1'
+                ],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            cutout: '70%',
+            plugins: { legend: { position: 'bottom' } }
+        }
     });
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+// 🌡️ Symptômes → RADAR
+async function loadSymptomesChart() {
+    const res = await fetch("{{ path('api_statistics_symptomes') }}");
+    const stats = await res.json();
+
+    destroyChart('symptomes');
+
+    charts.symptomes = new Chart(document.getElementById('chartSymptomes'), {
+        type: 'radar',
+        data: {
+            labels: stats.labels,
+            datasets: [{
+                data: stats.values,
+                backgroundColor: 'rgba(13,110,253,.2)',
+                borderColor: '#0d6efd',
+                pointBackgroundColor: '#0d6efd'
+            }]
+        },
+        options: {
+            plugins: { legend: { display: false } }
+        }
+    });
+}
+
+// 📈 Clients / jour → LINE GRADIENT
+async function loadClientsPerDayChart() {
+    const res = await fetch('/api/statistics/clients-per-day');
+    const stats = await res.json();
+
+    destroyChart('clients');
+
+    const ctx = document.getElementById('chartClientsPerDay').getContext('2d');
+    const gradient = ctx.createLinearGradient(0,0,0,200);
+    gradient.addColorStop(0,'rgba(13,110,253,.5)');
+    gradient.addColorStop(1,'rgba(13,110,253,0)');
+
+    charts.clients = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: stats.labels,
+            datasets: [{
+                data: stats.values,
+                fill: true,
+                backgroundColor: gradient,
+                borderColor: '#0d6efd',
+                tension: .4
+            }]
+        },
+        options: {
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { grid: { display: false } },
+                y: { grid: { display: false } }
+            }
+        }
+    });
+}
+
+/* ================= RDV ================= */
+async function loadNextRDV() {
+    const res = await fetch('/api/rendezvous/next');
+    const rdvs = await res.json();
+    const container = document.getElementById('rdvList');
+
+    container.innerHTML = '';
+
+    if (!rdvs.length) {
+        container.innerHTML = `<div class="text-center text-muted">Aucun rendez-vous à venir</div>`;
+        return;
+    }
+
+    rdvs.forEach(rdv => {
+        container.insertAdjacentHTML('beforeend', `
+            <div class="col-md-6">
+                <div class="rdv-card">
+                    <div class="rdv-name">
+                        <i class="bi bi-person-circle"></i> ${rdv.nom}
+                    </div>
+                    <div class="rdv-time mt-1">
+                        <i class="bi bi-clock"></i> ${rdv.date} à ${rdv.heure}
+                    </div>
+                    <button class="btn btn-sm btn-outline-danger rounded-pill mt-3 w-100"
+                        onclick="annulerRDV(${rdv.id})">
+                        <i class="bi bi-x-circle"></i> Annuler
+                    </button>
+                </div>
+            </div>
+        `);
+    });
+}
+
+async function annulerRDV(id) {
+    if (!confirm('Annuler ce rendez-vous ?')) return;
+    await fetch(`/api/rendezvous/${id}/annuler`, { method: 'POST' });
+    loadNextRDV();
+}
+
+/* ================= INIT ================= */
+document.addEventListener('DOMContentLoaded', () => {
     loadPaiementsChart();
     loadMaladiesChart();
     loadSymptomesChart();
     loadClientsPerDayChart();
-    loadRDV();
+    loadNextRDV();
 });
-
 </script>
 
