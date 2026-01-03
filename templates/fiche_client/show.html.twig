@@ -6,751 +6,713 @@
 
 {% block body %}
 
-<div class="mt-4">
+	<div class="mt-4">
 
-	<div class="card shadow-lg border-0 mb-4 rounded-4">
-		<div
-			class="card-body py-4 d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
-
-			<!-- TITRE -->
-			<div>
-				<h2 class="fw-bold text-primary mb-1 d-flex align-items-center">
-					<i class="bi bi-person-vcard me-2 fs-1"></i>
-					{{ fiche_client.nom }}
-				</h2>
-
-				<!-- Infos -->
-				<div class="d-flex align-items-center text-muted small gap-3">
-					<span class="d-flex align-items-center">
-						<i class="bi bi-geo-alt-fill me-1 text-danger"></i>
-						{{ fiche_client.ville }}
-					</span>
-
-					<span class="d-flex align-items-center">
-						<i class="bi bi-telephone-fill me-1 text-success"></i>
-						<a href="tel:{{ fiche_client.telephone }}" class="text-decoration-none text-success fw-semibold">
-							{{ fiche_client.telephone }}
-						</a>
-					</span>
-				</div>
-			</div>
-
-<!-- ================= ACTIONS PATIENT (ICÔNES ONLY) ================= -->
-<div
-	class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-
-	<!-- ACTIONS -->
-	<div
-		class="d-flex align-items-center gap-3">
-
-		<!-- 🗓️ RDV -->
-		<span class="action-icon bg-primary text-white" data-bs-toggle="modal" data-bs-target="#modalRdv" data-bs-toggle="tooltip" title="Prendre un rendez-vous">
-			<i class="bi bi-calendar-plus"></i>
-		</span>
-
-		<!-- 📁 Documents -->
-		<span class="action-icon bg-outline" data-bs-toggle="modal" data-bs-target="#documentsModal" data-bs-toggle="tooltip" title="Documents médicaux">
-			<i class="bi bi-folder2-open"></i>
-		</span>
-
-		<!-- 💳 Paiements -->
-		<div class="dropdown">
-			<span class="action-icon bg-outline" data-bs-toggle="dropdown" data-bs-toggle="tooltip" title="Gestion des paiements">
-				<i class="bi bi-cash-coin"></i>
-			</span>
-
-			<ul class="dropdown-menu shadow-sm rounded-3">
-				<li>
-<a class="dropdown-item d-flex align-items-center gap-2" href="#">
-
-						<i class="bi bi-clock-history"></i>
-						Historique
-					</a>
-				</li>
-				<li>
-					<a class="dropdown-item d-flex align-items-center gap-2" href="#" data-bs-toggle="modal" data-bs-target="#paiementModal">
-						<i class="bi bi-plus-circle"></i>
-						Ajouter un paiement
-					</a>
-				</li>
-			</ul>
-		</div>
-
-	</div>
-
-	<!-- RETOUR -->
-	<a href="{{ path('app_fiche_client_index') }}" class="action-icon bg-light" data-bs-toggle="tooltip" title="Retour à la liste des patients">
-		<i class="bi bi-arrow-left"></i>
-	</a>
-
-</div>
-
-
-
-
-
-
-		</div>
-	</div>
-
-</div>
-
-
-
-
-
-{# ===================================================== #}
-{# 🔷 INFOS CLIENT — VERSION COMPACTE & PRO (BOOTSTRAP) #}
-{# ===================================================== #}
-
-	<div class="row mb-4"> <div class="col-12">
-
-		<div class="card shadow-sm border-0 rounded-4">
+		<div class="card shadow-lg border-0 mb-4 rounded-4">
 			<div
-				class="card-body p-4">
+				class="card-body py-4 d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
 
-{# ================= TITRE + ACTION ================= #}
-<div class="d-flex justify-content-between align-items-center mb-4">
+				<!-- TITRE -->
+				<div>
+					<h2 class="fw-bold text-primary mb-1 d-flex align-items-center">
+						<i class="bi bi-person-vcard me-2 fs-1"></i>
+						{{ fiche_client.nom }}
+					</h2>
 
-	<h4 class="fw-bold text-primary d-flex align-items-center mb-0">
-		<i class="bi bi-person-lines-fill me-2 fs-4"></i>
-		Informations patient
-	</h4>
+					<!-- Infos -->
+					<div class="d-flex align-items-center text-muted small gap-3">
+						<span class="d-flex align-items-center">
+							<i class="bi bi-geo-alt-fill me-1 text-danger"></i>
+							{{ fiche_client.ville }}
+						</span>
 
-	<button class="btn btn-outline-primary rounded-pill px-4 shadow-sm d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#modalEditFiche">
-		<i class="bi bi-pencil-square"></i>
-		Modifier
-	</button>
+						<span class="d-flex align-items-center">
+							<i class="bi bi-telephone-fill me-1 text-success"></i>
+							<a href="tel:{{ fiche_client.telephone }}" class="text-decoration-none text-success fw-semibold">
+								{{ fiche_client.telephone }}
+							</a>
+						</span>
+					</div>
+				</div>
 
-</div>
+				<!-- ================= ACTIONS PATIENT (ICÔNES ONLY) ================= -->
+				<div
+					class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+
+					<!-- ACTIONS -->
+					<div
+						class="d-flex align-items-center gap-3">
+
+						<!-- 🗓️ RDV -->
+						<span class="action-icon bg-primary text-white" data-bs-toggle="modal" data-bs-target="#modalRdv" data-bs-toggle="tooltip" title="Prendre un rendez-vous">
+							<i class="bi bi-calendar-plus"></i>
+						</span>
+
+						<!-- 📁 Documents -->
+						<span class="action-icon bg-outline" data-bs-toggle="modal" data-bs-target="#documentsModal" data-bs-toggle="tooltip" title="Documents médicaux">
+							<i class="bi bi-folder2-open"></i>
+						</span>
+
+						<!-- 💳 Paiements -->
+						<div class="dropdown">
+							<span class="action-icon bg-outline" data-bs-toggle="dropdown" data-bs-toggle="tooltip" title="Gestion des paiements">
+								<i class="bi bi-cash-coin"></i>
+							</span>
+
+							<ul class="dropdown-menu shadow-sm rounded-3">
+								<li>
+									<a class="dropdown-item d-flex align-items-center gap-2" href="#">
+
+										<i class="bi bi-clock-history"></i>
+										Historique
+									</a>
+								</li>
+								<li>
+									<a class="dropdown-item d-flex align-items-center gap-2" href="#" data-bs-toggle="modal" data-bs-target="#paiementModal">
+										<i class="bi bi-plus-circle"></i>
+										Ajouter un paiement
+									</a>
+								</li>
+							</ul>
+						</div>
+
+					</div>
+
+					<!-- RETOUR -->
+					<a href="{{ path('app_fiche_client_index') }}" class="action-icon bg-light" data-bs-toggle="tooltip" title="Retour à la liste des patients">
+						<i class="bi bi-arrow-left"></i>
+					</a>
+
+				</div>
 
 
+			</div>
+		</div>
 
-				{# ================= INFOS GRID ================= #}
-				<div class="row g-3 small">
+	</div>
 
-					{% macro info(label, value, color) %}
+
+	{# ===================================================== #}
+	{# 🔷 INFOS CLIENT — VERSION COMPACTE & PRO (BOOTSTRAP) #}
+	{# ===================================================== #}
+
+		<div class="row mb-4"> <div class="col-12">
+
+			<div class="card shadow-sm border-0 rounded-4">
+				<div
+					class="card-body p-4">
+
+					{# ================= TITRE + ACTION ================= #}
+					<div class="d-flex justify-content-between align-items-center mb-4">
+
+						<h4 class="fw-bold text-primary d-flex align-items-center mb-0">
+							<i class="bi bi-person-lines-fill me-2 fs-4"></i>
+							Informations patient
+						</h4>
+
+						<button class="btn btn-outline-primary rounded-pill px-4 shadow-sm d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#modalEditFiche">
+							<i class="bi bi-pencil-square"></i>
+							Modifier
+						</button>
+
+					</div>
+
+
+					{# ================= INFOS GRID ================= #}
+					<div class="row g-3 small">
+
+						{% macro info(label, value, color) %}
+							<div class="col-6 col-md-4">
+								<div class="border-start border-3 border-{{ color }} ps-2 h-100">
+									<div class="text-muted small">{{ label }}</div>
+									<div class="fw-semibold">{{ value ?: '—' }}</div>
+								</div>
+							</div>
+						{% endmacro %}
+
+						{{ _self.info('Nom', fiche_client.nom, 'primary') }}
+						{{ _self.info('Ville', fiche_client.ville, 'info') }}
+						{{ _self.info('Téléphone', fiche_client.telephone, 'success') }}
+						{{ _self.info('Poids', fiche_client.poids ? fiche_client.poids ~ ' kg' : null, 'danger') }}
+						{{ _self.info('Durée maladie', fiche_client.dureeMaladie ? fiche_client.dureeMaladie ~ ' jours' : null, 'warning') }}
+						{{ _self.info('Type maladie', fiche_client.typeMaladie, 'secondary') }}
+
+						{# ÂGE (calcul) #}
 						<div class="col-6 col-md-4">
-							<div class="border-start border-3 border-{{ color }} ps-2 h-100">
-								<div class="text-muted small">{{ label }}</div>
-								<div class="fw-semibold">{{ value ?: '—' }}</div>
+							<div class="border-start border-3 border-dark ps-2 h-100">
+								<div class="text-muted small">Âge</div>
+								<div class="fw-semibold">
+									{% if fiche_client.dateNaissance %}
+										{% set diff = fiche_client.dateNaissance.diff(date()) %}
+
+										{% if diff.y >= 1 %}
+											{{ diff.y }}
+											an{{ diff.y > 1 ? 's' : '' }}
+										{% elseif diff.m >= 1 %}
+											{{ diff.m }}
+											mois
+										{% elseif diff.d >= 7 %}
+											{{ (diff.d / 7)|round(0, 'floor') }}
+											semaine{{ (diff.d / 7)|round(0, 'floor') > 1 ? 's' : '' }}
+										{% elseif diff.d > 0 %}
+											{{ diff.d }}
+											jour{{ diff.d > 1 ? 's' : '' }}
+										{% else %}
+											moins d’un jour
+										{% endif %}
+									{% else %}
+										—
+									{% endif %}
+								</div>
+
+
 							</div>
 						</div>
-					{% endmacro %}
 
-					{{ _self.info('Nom', fiche_client.nom, 'primary') }}
-					{{ _self.info('Ville', fiche_client.ville, 'info') }}
-					{{ _self.info('Téléphone', fiche_client.telephone, 'success') }}
-					{{ _self.info('Poids', fiche_client.poids ? fiche_client.poids ~ ' kg' : null, 'danger') }}
-					{{ _self.info('Durée maladie', fiche_client.dureeMaladie ? fiche_client.dureeMaladie ~ ' jours' : null, 'warning') }}
-					{{ _self.info('Type maladie', fiche_client.typeMaladie, 'secondary') }}
+						{{ _self.info('Créé le', fiche_client.createdAt|date('d/m/Y'), 'dark') }}
 
-					{# ÂGE (calcul) #}
-					<div class="col-6 col-md-4">
-						<div class="border-start border-3 border-dark ps-2 h-100">
-							<div class="text-muted small">Âge</div>
-<div class="fw-semibold">
-	{% if fiche_client.dateNaissance %}
-		{% set diff = fiche_client.dateNaissance.diff(date()) %}
+					</div>
 
-		{% if diff.y >= 1 %}
-			{{ diff.y }}
-			an{{ diff.y > 1 ? 's' : '' }}
-		{% elseif diff.m >= 1 %}
-			{{ diff.m }}
-			mois
-		{% elseif diff.d >= 7 %}
-			{{ (diff.d / 7)|round(0, 'floor') }}
-			semaine{{ (diff.d / 7)|round(0, 'floor') > 1 ? 's' : '' }}
-		{% elseif diff.d > 0 %}
-			{{ diff.d }}
-			jour{{ diff.d > 1 ? 's' : '' }}
-		{% else %}
-			moins d’un jour
-		{% endif %}
-	{% else %}
-		—
-	{% endif %}
-</div>
+					{# ================= TRAITEMENT ================= #}
+					<hr class="my-4">
 
+					<h6 class="fw-bold text-warning d-flex align-items-center mb-3">
+						<i class="bi bi-journal-medical me-2"></i>
+						Traitement & observations
+					</h6>
 
+					<div class="row g-3 small">
+						<div class="col-12 col-md-6">
+							<div class="p-3 bg-light rounded-3 h-100">
+								<div class="fw-semibold text-muted mb-1">Traitement</div>
+								<div>{{ fiche_client.traitement ?: '—' }}</div>
+							</div>
+						</div>
+
+						<div class="col-12 col-md-6">
+							<div class="p-3 bg-light rounded-3 h-100">
+								<div class="fw-semibold text-muted mb-1">Observations</div>
+								<div>{{ fiche_client.observation ?: '—' }}</div>
+							</div>
 						</div>
 					</div>
 
-					{{ _self.info('Créé le', fiche_client.createdAt|date('d/m/Y'), 'dark') }}
 
 				</div>
-
-				{# ================= TRAITEMENT ================= #}
-				<hr class="my-4">
-
-				<h6 class="fw-bold text-warning d-flex align-items-center mb-3">
-					<i class="bi bi-journal-medical me-2"></i>
-					Traitement & observations
-				</h6>
-
-				<div class="row g-3 small">
-					<div class="col-12 col-md-6">
-						<div class="p-3 bg-light rounded-3 h-100">
-							<div class="fw-semibold text-muted mb-1">Traitement</div>
-							<div>{{ fiche_client.traitement ?: '—' }}</div>
-						</div>
-					</div>
-
-					<div class="col-12 col-md-6">
-						<div class="p-3 bg-light rounded-3 h-100">
-							<div class="fw-semibold text-muted mb-1">Observations</div>
-							<div>{{ fiche_client.observation ?: '—' }}</div>
-						</div>
-					</div>
-				</div>
-
-		
-
 			</div>
-		</div>
 
+		</div>
 	</div>
-</div>
 
 
+	{# ===================================================== #}
+	{# 🟢 INFORMATIONS MÉDICALES / DOCUMENTATION / SUIVI    #}
+	{# ===================================================== #}
 
+		<div class="row g-4 mb-4"> <div class="col-12">
+			<div class="card shadow-lg border-0 rounded-4">
 
-{# ===================================================== #}
-{# 🟢 INFORMATIONS MÉDICALES / DOCUMENTATION / SUIVI    #}
-{# ===================================================== #}
+				<div class="card-body py-4 px-4">
 
-	<div class="row g-4 mb-4"> <div class="col-12">
-		<div class="card shadow-lg border-0 rounded-4">
+					{# ========================= #}
+					{# 🩺 INFORMATIONS MÉDICALES #}
+					{# ========================= #}
+						<h4 class="fw-bold text-success d-flex align-items-center mb-4"> <i class="bi bi-heart-pulse-fill me-2 fs-4"></i>
+						Informations médicales
+					</h4>
 
-			<div class="card-body py-4 px-4">
+					<div class="row g-4">
+						<div class="col-12">
+							{{ include('fiche_client/_composants/_trouble_digestifs.html.twig') }}
+						</div>
 
-				{# ========================= #}
-				{# 🩺 INFORMATIONS MÉDICALES #}
-				{# ========================= #}
-					<h4 class="fw-bold text-success d-flex align-items-center mb-4"> <i class="bi bi-heart-pulse-fill me-2 fs-4"></i>
-					Informations médicales
-				</h4>
+						<div class="col-12">
+							{{ include('fiche_client/_composants/_symptomes_generaux.html.twig') }}
+						</div>
 
-				<div class="row g-4">
-					<div class="col-12">
-						{{ include('fiche_client/_composants/_trouble_digestifs.html.twig') }}
+						<div class="col-12">
+							{{ include('fiche_client/_composants/_maladies_chroniques.html.twig') }}
+						</div>
 					</div>
 
-					<div class="col-12">
-						{{ include('fiche_client/_composants/_symptomes_generaux.html.twig') }}
+					<div class="mt-3">
+						{{ include('fiche_client/_composants/_modal_edit_client/_modal_edit_client.html.twig') }}
 					</div>
 
-					<div class="col-12">
-						{{ include('fiche_client/_composants/_maladies_chroniques.html.twig') }}
+					<hr class="my-4">
+
+					{# ============================== #}
+					{# 📸 DOCUMENTATION CLINIQUE      #}
+					{# ============================== #}
+						<h5 class="fw-bold text-info d-flex align-items-center "> <i class="bi bi-camera-fill me-2"></i>
+						Documentation clinique
+					</h5>
+
+					<p class="text-muted small mb-3">
+						Photographies médicales permettant le suivi visuel et l’évolution du patient.
+					</p>
+
+					{{ include('fiche_client/_composants/_galerie/_galerie.html.twig') }}
+					{{ include('fiche_client/_composants/_modal_image/_modal_image.html.twig') }}
+
+
+					{{ include('fiche_client/_composants/_arret_maladie.html.twig') }}
+					{{ include('fiche_client/_composants/_ducument_medicaux.html.twig') }}
+					{{ include('fiche_client/_composants/_modal_analyse.html.twig') }}
+					{{ include('fiche_client/_composants/_modal_rendezvous.html.twig') }}
+
+
+					<button class="btn btn-info rounded-pill mt-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#modalUploadImage">
+						<i class="bi bi-camera me-1"></i>
+						Ajouter Photos, ordonnances, traitements...
+
+					</button>
+
+					<hr class="my-4">
+
+					{# ============================== #}
+					{# 📁 DOSSIERS DE SUIVI            #}
+					{# ============================== #}
+
+						<div class="d-flex justify-content-between align-items-center mb-3"> <h5 class="fw-bold text-warning d-flex align-items-center mb-0">
+							<i class="bi bi-folder-fill me-2"></i>
+							Suivi Dossiers
+
+
+						</h5>
+
+						<button class="btn btn-warning rounded-pill px-4 shadow-sm d-flex align-items-center gap-2 text-light" data-bs-toggle="modal" data-bs-target="#modalAddDossier">
+							<i class="bi bi-folder-plus"></i>
+
+							Dossier
+
+
+						</button>
 					</div>
-				</div>
 
-				<div class="mt-3">
-					{{ include('fiche_client/_composants/_modal_edit_client/_modal_edit_client.html.twig') }}
-				</div>
+					<div class="p-3 bg-light rounded-3 d-flex align-items-center justify-content-between mb-3">
+						<div>
+							<p class="mb-1 fw-semibold">Dossiers enregistrés</p>
+							<small class="text-muted">
+								Historique médical, observations et évolution
+							</small>
+						</div>
 
-				<hr class="my-4">
+						<span id="dossierCount" class="badge bg-warning text-dark fs-6 px-3 py-2 rounded-pill">
+							{{ fiche_client.dossierMedicals|length }}
+						</span>
+					</div>
 
-				{# ============================== #}
-				{# 📸 DOCUMENTATION CLINIQUE      #}
-				{# ============================== #}
-					<h5 class="fw-bold text-info d-flex align-items-center "> <i class="bi bi-camera-fill me-2"></i>
-					Documentation clinique
-				</h5>
+					<div id="dossiersContainer" class="row g-4"></div>
 
-				<p class="text-muted small mb-3">
-					Photographies médicales permettant le suivi visuel et l’évolution du patient.
-				</p>
+					{# ============================== #}
+					{# 📜 JAVASCRIPT                  #}
+					{# ============================== #}
 
-				{{ include('fiche_client/_composants/_galerie/_galerie.html.twig') }}
-{{ include('fiche_client/_composants/_modal_image/_modal_image.html.twig') }}
-
-
-{{ include('fiche_client/_composants/_arret_maladie.html.twig') }}
-{{ include('fiche_client/_composants/_ducument_medicaux.html.twig') }}
-{{ include('fiche_client/_composants/_modal_analyse.html.twig') }}
-{{ include('fiche_client/_composants/_modal_rendezvous.html.twig') }}
-
-
-
-
-
-
-
-				<button class="btn btn-info rounded-pill mt-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#modalUploadImage">
-					<i class="bi bi-camera me-1"></i>
-Ajouter Photos, ordonnances, traitements...
-
-				</button>
-
-				<hr class="my-4">
-
-			{# ============================== #}
-{# 📁 DOSSIERS DE SUIVI            #}
-{# ============================== #}
-
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h5 class="fw-bold text-warning d-flex align-items-center mb-0">
-        <i class="bi bi-folder-fill me-2"></i>
-Suivi Dossiers
-
-
-    </h5>
-
-    <button
-class="btn btn-warning rounded-pill px-4 shadow-sm d-flex align-items-center gap-2 text-light"
-
-        data-bs-toggle="modal"
-        data-bs-target="#modalAddDossier"
-    >
-<i class="bi bi-folder-plus"></i>
-
-Dossier
-
-
-    </button>
-</div>
-
-<div class="p-3 bg-light rounded-3 d-flex align-items-center justify-content-between mb-3">
-    <div>
-        <p class="mb-1 fw-semibold">Dossiers enregistrés</p>
-        <small class="text-muted">
-            Historique médical, observations et évolution
-        </small>
-    </div>
-
-    <span
-        id="dossierCount"
-        class="badge bg-warning text-dark fs-6 px-3 py-2 rounded-pill"
-    >
-        {{ fiche_client.dossierMedicals|length }}
-    </span>
-</div>
-
-<div id="dossiersContainer" class="row g-4"></div>
-
-{# ============================== #}
-{# 📜 JAVASCRIPT                  #}
-{# ============================== #}
-
- <script>
-function createDossierCard(d) {
-    const urlSuivi = "{{ path('app_suivi_par_dossier', {
-        patientId: fiche_client.id,
-        dossierId: '__ID__'
-    }) }}".replace('__ID__', d.id);
-
-    return `
-<div class="col-md-6 col-lg-4">
-	<div
-		class="medical-card h-100">
-
-		<!-- HEADER -->
-		<div class="medical-card-header">
-			<div class="medical-icon">
-				<i class="bi bi-folder2-open"></i>
-			</div>
-
-			<div class="medical-title">
-				<h5>${d.titre}</h5>
-				<span class="medical-id">Dossier #${d.id}</span>
-			</div>
-		</div>
-
-		<!-- BODY -->
-		<div class="medical-card-body">
-			<p class="medical-description">
-				${d.description ?? "Aucune description renseignée pour ce dossier."}
-			</p>
-		</div>
-
-		<!-- FOOTER -->
-		<div class="medical-card-footer">
-			<div class="medical-meta">
-				<span>
-					<i class="bi bi-calendar3"></i>
-					${d.createdAt}
-				</span>
-				<span class="medical-count">
-					<i class="bi bi-activity"></i>
-					${d.suiviCount ?? 0} suivis
-				</span>
-			</div>
-
-			<a href="${urlSuivi}" class="btn btn-outline-primary btn-sm rounded-pill">
-				<i class="bi bi-search-heart me-1"></i>
-				Voir le dossier
-			</a>
-		</div>
-
-	</div>
-</div>
-
-    `;
-}
-
-/* =========================
-   CHARGEMENT INITIAL
-========================= */
-async function loadDossiers() {
-    const container = document.getElementById("dossiersContainer");
-
-    container.innerHTML = `
-        <div class="col-12 text-center py-4">
-            <div class="spinner-border text-warning"></div>
-        </div>
-    `;
-
-    try {
-        const response = await fetch(
-            "{{ path('api_dossier_medical_by_patient', { id: fiche_client.id }) }}",
-            {
-                headers: {
-                    "Authorization": "Bearer " + localStorage.getItem("jwt_token")
-                }
-            }
-        );
-
-        if (!response.ok) {
-            throw new Error("Erreur chargement");
-        }
-
-        const dossiers = await response.json();
-        container.innerHTML = "";
-
-        dossiers.forEach(d => {
-            container.insertAdjacentHTML("beforeend", createDossierCard(d));
-        });
-
-    } catch (error) {
-        console.error(error);
-        container.innerHTML = `
-            <div class="text-danger text-center">
-                Erreur chargement dossiers
-            </div>
-        `;
-    }
-}
-
-/* =========================
-   AJOUT DOSSIER
-========================= */
-document.addEventListener("DOMContentLoaded", () => {
-
-    loadDossiers();
-
-    const form = document.getElementById("formAddDossier");
-    const modalEl = document.getElementById("modalAddDossier");
-    const modal = new bootstrap.Modal(modalEl);
-    const addBtn = document.getElementById("addDossier");
-    const container = document.getElementById("dossiersContainer");
-    const badge = document.getElementById("dossierCount");
-
-    form.addEventListener("submit", async (e) => {
-        e.preventDefault();
-
-        const motif = document.querySelector('input[name="motif"]:checked');
-        if (!motif) {
-            alert("Veuillez sélectionner un motif.");
-            return;
-        }
-
-        addBtn.disabled = true;
-        addBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Création...`;
-
-        try {
-            const response = await fetch(
-                "{{ path('api_dossier_medical_add', { id: fiche_client.id }) }}",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": "Bearer " + localStorage.getItem("jwt_token")
-                    },
-                    body: JSON.stringify({
-                        titre: motif.value,
-                        description: document.getElementById("dossier_description").value
-                    })
-                }
-            );
-
-            if (response.status !== 200 && response.status !== 201) {
-                throw new Error("Erreur ajout");
-            }
-
-            const dossier = await response.json();
-
-            /* ➕ AJOUT IMMÉDIAT */
-            container.insertAdjacentHTML("afterbegin", createDossierCard(dossier));
-
-            /* 🔢 Compteur */
-            badge.textContent = parseInt(badge.textContent) + 1;
-
-            /* Reset & fermeture */
-            form.reset();
-            modal.hide();
-
-        } catch (error) {
-            console.error(error);
-            alert("Erreur lors de l'ajout du dossier");
-        } finally {
-            addBtn.disabled = false;
-            addBtn.innerHTML = `<i class="bi bi-check-circle"></i> Enregistrer`;
-        }
-    });
-
-});
-</script>
+					 <script>
+					function createDossierCard(d) {
+					    const urlSuivi = "{{ path('app_suivi_par_dossier', {
+					        patientId: fiche_client.id,
+					        dossierId: '__ID__'
+					    }) }}".replace('__ID__', d.id);
+					
+					    return `
+					<div class="col-md-6 col-lg-4">
+						<div
+							class="medical-card h-100">
+					
+							<!-- HEADER -->
+							<div class="medical-card-header">
+								<div class="medical-icon">
+									<i class="bi bi-folder2-open"></i>
+								</div>
+					
+								<div class="medical-title">
+									<h5>${d.titre}</h5>
+									<span class="medical-id">Dossier #${d.id}</span>
+								</div>
+							</div>
+					
+							<!-- BODY -->
+							<div class="medical-card-body">
+								<p class="medical-description">
+									${d.description ?? "Aucune description renseignée pour ce dossier."}
+								</p>
+							</div>
+					
+							<!-- FOOTER -->
+							<div class="medical-card-footer">
+								<div class="medical-meta">
+									<span>
+										<i class="bi bi-calendar3"></i>
+										${d.createdAt}
+									</span>
+									<span class="medical-count">
+										<i class="bi bi-activity"></i>
+										${d.suiviCount ?? 0} suivis
+									</span>
+								</div>
+					
+								<a href="${urlSuivi}" class="btn btn-outline-primary btn-sm rounded-pill">
+									<i class="bi bi-search-heart me-1"></i>
+									Voir le dossier
+								</a>
+							</div>
+					
+						</div>
+					</div>
+					
+					    `;
+					}
+					
+					/* =========================
+					   CHARGEMENT INITIAL
+					========================= */
+					async function loadDossiers() {
+					    const container = document.getElementById("dossiersContainer");
+					
+					    container.innerHTML = `
+					        <div class="col-12 text-center py-4">
+					            <div class="spinner-border text-warning"></div>
+					        </div>
+					    `;
+					
+					    try {
+					        const response = await fetch(
+					            "{{ path('api_dossier_medical_by_patient', { id: fiche_client.id }) }}",
+					            {
+					                headers: {
+					                    "Authorization": "Bearer " + localStorage.getItem("jwt_token")
+					                }
+					            }
+					        );
+					
+					        if (!response.ok) {
+					            throw new Error("Erreur chargement");
+					        }
+					
+					        const dossiers = await response.json();
+					        container.innerHTML = "";
+					
+					        dossiers.forEach(d => {
+					            container.insertAdjacentHTML("beforeend", createDossierCard(d));
+					        });
+					
+					    } catch (error) {
+					        console.error(error);
+					        container.innerHTML = `
+					            <div class="text-danger text-center">
+					                Erreur chargement dossiers
+					            </div>
+					        `;
+					    }
+					}
+					
+					/* =========================
+					   AJOUT DOSSIER
+					========================= */
+					document.addEventListener("DOMContentLoaded", () => {
+					
+					    loadDossiers();
+					
+					    const form = document.getElementById("formAddDossier");
+					    const modalEl = document.getElementById("modalAddDossier");
+					    const modal = new bootstrap.Modal(modalEl);
+					    const addBtn = document.getElementById("addDossier");
+					    const container = document.getElementById("dossiersContainer");
+					    const badge = document.getElementById("dossierCount");
+					
+					    form.addEventListener("submit", async (e) => {
+					        e.preventDefault();
+					
+					        const motif = document.querySelector('input[name="motif"]:checked');
+					        if (!motif) {
+					            alert("Veuillez sélectionner un motif.");
+					            return;
+					        }
+					
+					        addBtn.disabled = true;
+					        addBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Création...`;
+					
+					        try {
+					            const response = await fetch(
+					                "{{ path('api_dossier_medical_add', { id: fiche_client.id }) }}",
+					                {
+					                    method: "POST",
+					                    headers: {
+					                        "Content-Type": "application/json",
+					                        "Authorization": "Bearer " + localStorage.getItem("jwt_token")
+					                    },
+					                    body: JSON.stringify({
+					                        titre: motif.value,
+					                        description: document.getElementById("dossier_description").value
+					                    })
+					                }
+					            );
+					
+					            if (response.status !== 200 && response.status !== 201) {
+					                throw new Error("Erreur ajout");
+					            }
+					
+					            const dossier = await response.json();
+					
+					            /* ➕ AJOUT IMMÉDIAT */
+					            container.insertAdjacentHTML("afterbegin", createDossierCard(dossier));
+					
+					            /* 🔢 Compteur */
+					            badge.textContent = parseInt(badge.textContent) + 1;
+					
+					            /* Reset & fermeture */
+					            form.reset();
+					            modal.hide();
+					
+					        } catch (error) {
+					            console.error(error);
+					            alert("Erreur lors de l'ajout du dossier");
+					        } finally {
+					            addBtn.disabled = false;
+					            addBtn.innerHTML = `<i class="bi bi-check-circle"></i> Enregistrer`;
+					        }
+					    });
+					
+					});
+					</script>
 
 
-
-{{ include('dossier_medical/_composants/_modal_ajouter_dossier.html.twig', {
+					{{ include('dossier_medical/_composants/_modal_ajouter_dossier.html.twig', {
 patient: fiche_client
 
 }) }}
 
 
-				<div class="mt-3">
-		
-					{{ include('fiche_client/_composants/_certficat.html.twig') }}
+						<div class="mt-3"> {{ include('fiche_client/_composants/_certficat.html.twig') }}
+					</div>
+
 				</div>
+			</div>
+		</div>
+
+		<div class="card shadow-sm rounded-4 mt-4">
+			<div
+				class="card-body">
+
+				<!-- HEADER -->
+				<div class="d-flex justify-content-between align-items-center mb-3">
+					<h5 class="fw-bold text-success mb-0 d-flex align-items-center gap-2">
+						<i class="bi bi-clipboard-check"></i>
+						Suivi analyses
+
+
+					</h5>
+
+					<button class="btn btn-success rounded-pill px-4 shadow-sm d-flex align-items-center gap-2 text-light" data-bs-toggle="modal" data-bs-target="#modalAnalysePrescription">
+						<i class="bi bi-flask text-light"></i>
+
+
+						Analyses
+
+
+					</button>
+				</div>
+
+				<!-- CONTENT -->
+				<div id="analysePrescriptionsContainer" data-patient-id="{{ fiche_client.id }}">
+					{% include 'fiche_client/_composants/_analyse_prescriptions.html.twig' with {
+        prescriptions: fiche_client.analysePrescriptions
+    } %}
+				</div>
+
 
 			</div>
 		</div>
-	</div>
-
-<div class="card shadow-sm rounded-4 mt-4">
-	<div
-		class="card-body">
-
-		<!-- HEADER -->
-		<div class="d-flex justify-content-between align-items-center mb-3">
-			<h5 class="fw-bold text-success mb-0 d-flex align-items-center gap-2">
-				<i class="bi bi-clipboard-check"></i>
-Suivi analyses
-
-
-			</h5>
-
-			<button class="btn btn-success rounded-pill px-4 shadow-sm d-flex align-items-center gap-2 text-light" data-bs-toggle="modal" data-bs-target="#modalAnalysePrescription">
-<i class="bi bi-flask text-light"></i>
-
-
-
-Analyses
-
-
-			</button>
-		</div>
-
-		<!-- CONTENT -->
-<div id="analysePrescriptionsContainer" data-patient-id="{{ fiche_client.id }}">
-	{% include 'fiche_client/_composants/_analyse_prescriptions.html.twig' with {
-        prescriptions: fiche_client.analysePrescriptions
-    } %}
-</div>
-
 
 
 	</div>
-</div>
 
 
+	{% include 'fiche_client/_composants/_paiements.html.twig' %}
 
-</div>
-
-
-
-
-
-{% include 'fiche_client/_composants/_paiements.html.twig' %}
-
-
-
-	
 
 	<style>
-	/* ===============================
+		/* ===============================
    DOSSIER MÉDICAL – CARD DESIGN
 =============================== */
 
 
-.medical-card {
-    background: #ffffff;
-    border-radius: 18px;
-    padding: 18px;
-    border: 1px solid #e5e7eb;
-    box-shadow: 0 8px 22px rgba(0,0,0,0.05);
-    display: flex;
-    flex-direction: column;
-    transition: all 0.25s ease;
-    height: 100%;
-}
+		.medical-card {
+			background: #ffffff;
+			border-radius: 18px;
+			padding: 18px;
+			border: 1px solid #e5e7eb;
+			box-shadow: 0 8px 22px rgba(0, 0, 0, 0.05);
+			display: flex;
+			flex-direction: column;
+			transition: all 0.25s ease;
+			height: 100%;
+		}
 
-.medical-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 18px 40px rgba(59, 130, 246, 0.18);
-    border-color: #bfdbfe;
-}
+		.medical-card:hover {
+			transform: translateY(-4px);
+			box-shadow: 0 18px 40px rgba(59, 130, 246, 0.18);
+			border-color: #bfdbfe;
+		}
 
-/* HEADER */
-.medical-card-header {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    margin-bottom: 12px;
-}
+		/* HEADER */
+		.medical-card-header {
+			display: flex;
+			align-items: center;
+			gap: 14px;
+			margin-bottom: 12px;
+		}
 
-.medical-icon {
-    width: 46px;
-    height: 46px;
-    border-radius: 14px;
-    background: #eef2ff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #2563eb;
-    font-size: 1.4rem;
-}
+		.medical-icon {
+			width: 46px;
+			height: 46px;
+			border-radius: 14px;
+			background: #eef2ff;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			color: #2563eb;
+			font-size: 1.4rem;
+		}
 
-.medical-title h5 {
-    margin: 0;
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: #1f2937;
-}
+		.medical-title h5 {
+			margin: 0;
+			font-size: 1.05rem;
+			font-weight: 700;
+			color: #1f2937;
+		}
 
-.medical-id {
-    font-size: 0.75rem;
-    color: #6b7280;
-}
+		.medical-id {
+			font-size: 0.75rem;
+			color: #6b7280;
+		}
 
-/* BODY */
-.medical-card-body {
-    flex: 1;
-    margin-top: 6px;
-}
+		/* BODY */
+		.medical-card-body {
+			flex: 1;
+			margin-top: 6px;
+		}
 
-.medical-description {
-    font-size: 0.85rem;
-    color: #4b5563;
-    line-height: 1.5;
-}
+		.medical-description {
+			font-size: 0.85rem;
+			color: #4b5563;
+			line-height: 1.5;
+		}
 
-/* FOOTER */
-.medical-card-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 16px;
-    gap: 10px;
-    flex-wrap: wrap;
-}
+		/* FOOTER */
+		.medical-card-footer {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-top: 16px;
+			gap: 10px;
+			flex-wrap: wrap;
+		}
 
-.medical-meta {
-    display: flex;
-    gap: 12px;
-    font-size: 0.75rem;
-    color: #6b7280;
-}
+		.medical-meta {
+			display: flex;
+			gap: 12px;
+			font-size: 0.75rem;
+			color: #6b7280;
+		}
 
-.medical-meta i {
-    margin-right: 4px;
-}
+		.medical-meta i {
+			margin-right: 4px;
+		}
 
-.medical-count {
-    font-weight: 600;
-    color: #2563eb;
-}
+		.medical-count {
+			font-weight: 600;
+			color: #2563eb;
+		}
 
-/* BUTTON */
-.medical-card-footer .btn {
-    font-weight: 600;
-    font-size: 0.75rem;
-    padding: 6px 14px;
-    transition: all 0.2s ease;
-}
+		/* BUTTON */
+		.medical-card-footer .btn {
+			font-weight: 600;
+			font-size: 0.75rem;
+			padding: 6px 14px;
+			transition: all 0.2s ease;
+		}
 
-.medical-card-footer .btn:hover {
-    background-color: #2563eb;
-    color: #ffffff;
-    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
-}
+		.medical-card-footer .btn:hover {
+			background-color: #2563eb;
+			color: #ffffff;
+			box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+		}
 
 
 	</style>
- <script>
-
-
- function appendDossier(d) {
-    const container = document.getElementById("dossiersContainer");
-
-    const urlSuivi = "{{ path('app_suivi_par_dossier', {
-        patientId: fiche_client.id,
-        dossierId: '__ID__'
-    }) }}".replace("__ID__", d.id);
-
-    container.insertAdjacentHTML("afterbegin", `
-        <div class="col-12 col-md-6 col-lg-4">
-            <div class="card h-100 shadow-sm rounded-4 border-warning">
-                <div class="card-body">
-                    <h5 class="fw-bold text-warning">${d.titre}</h5>
-                    <p class="text-muted small">
-                        ${d.description ?? "Aucune description"}
-                    </p>
-                    <small class="text-muted">${d.createdAt}</small>
-                    <div class="mt-3 text-end">
-<a href="${urlSuivi}" class="btn btn-outline-success btn-sm rounded-pill">
-
-                            Voir le dossier
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `);
-}
-
-
-form.addEventListener("submit", async function (e) {
-    e.preventDefault();
-
-    const response = await fetch(form.action, {
-        method: "POST",
-        headers: {
-            "Authorization": "Bearer " + localStorage.getItem("jwt_token")
-        },
-        body: new FormData(form)
-    });
-
-    if (!response.ok) {
-        alert("Erreur ajout dossier");
-        return;
-    }
-
-    const newDossier = await response.json();
-
-    // 🔥 AJOUT IMMÉDIAT DANS LA LISTE
-    appendDossier(newDossier);
-
-    // 🔢 Mise à jour du badge
-    const badge = document.getElementById("dossierCount");
-    badge.textContent = parseInt(badge.textContent) + 1;
-
-    // ❌ pas de refresh
-    // ❌ pas de getDossier()
-
-    // Fermer modal
-    bootstrap.Modal.getInstance(
-        document.getElementById("modalAddDossier")
-    ).hide();
-
-    form.reset();
-});
-
-
-</script>
+	 <script>
+	
+	
+	 function appendDossier(d) {
+	    const container = document.getElementById("dossiersContainer");
+	
+	    const urlSuivi = "{{ path('app_suivi_par_dossier', {
+	        patientId: fiche_client.id,
+	        dossierId: '__ID__'
+	    }) }}".replace("__ID__", d.id);
+	
+	    container.insertAdjacentHTML("afterbegin", `
+	        <div class="col-12 col-md-6 col-lg-4">
+	            <div class="card h-100 shadow-sm rounded-4 border-warning">
+	                <div class="card-body">
+	                    <h5 class="fw-bold text-warning">${d.titre}</h5>
+	                    <p class="text-muted small">
+	                        ${d.description ?? "Aucune description"}
+	                    </p>
+	                    <small class="text-muted">${d.createdAt}</small>
+	                    <div class="mt-3 text-end">
+	<a href="${urlSuivi}" class="btn btn-outline-success btn-sm rounded-pill">
+	
+	                            Voir le dossier
+	                        </a>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+	    `);
+	}
+	
+	
+	form.addEventListener("submit", async function (e) {
+	    e.preventDefault();
+	
+	    const response = await fetch(form.action, {
+	        method: "POST",
+	        headers: {
+	            "Authorization": "Bearer " + localStorage.getItem("jwt_token")
+	        },
+	        body: new FormData(form)
+	    });
+	
+	    if (!response.ok) {
+	        alert("Erreur ajout dossier");
+	        return;
+	    }
+	
+	    const newDossier = await response.json();
+	
+	    // 🔥 AJOUT IMMÉDIAT DANS LA LISTE
+	    appendDossier(newDossier);
+	
+	    // 🔢 Mise à jour du badge
+	    const badge = document.getElementById("dossierCount");
+	    badge.textContent = parseInt(badge.textContent) + 1;
+	
+	    // ❌ pas de refresh
+	    // ❌ pas de getDossier()
+	
+	    // Fermer modal
+	    bootstrap.Modal.getInstance(
+	        document.getElementById("modalAddDossier")
+	    ).hide();
+	
+	    form.reset();
+	});
+	
+	
+	</script>
 
 {% endblock %}
-
