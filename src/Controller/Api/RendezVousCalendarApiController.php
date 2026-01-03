@@ -2,11 +2,13 @@
 // src/Controller/Api/RendezVousCalendarApiController.php
 namespace App\Controller\Api;
 
+use App\Entity\RendezVous;
 use App\Repository\RendezVousRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/api/rendezvous')]
 class RendezVousCalendarApiController extends AbstractController
@@ -45,12 +47,71 @@ class RendezVousCalendarApiController extends AbstractController
 				'start' => $startDt->format(\DateTimeInterface::ATOM),
 				'end'   => $endDt->format(\DateTimeInterface::ATOM),
 				'extendedProps' => [
-					'statut' => $rdv->getStatut(),
-					'tel'    => $rdv->getPatient()->getTelephone(),
+					'statut'    => $rdv->getStatut(),
+					'tel'       => $rdv->getPatient()->getTelephone(),
+					'expiresAt' => $rdv->getExpiresAt()->format(\DateTimeInterface::ATOM),
 				]
 			];
 		}
 
 		return $this->json($events);
+	}
+
+	#[Route('/list', name: 'api_rendezvous_list', methods: ['GET'])]
+	public function list(RendezVousRepository $repo): JsonResponse
+	{
+		$rdvs = $repo->createQueryBuilder('r')
+			->andWhere('r.praticien = :p')
+			->andWhere('r.statut = :s')
+			->setParameter('p', $this->getUser())
+			->setParameter('s', 'confirme')
+			->orderBy('r.date', 'ASC')
+			->addOrderBy('r.heureDebut', 'ASC')
+			->getQuery()
+			->getResult();
+
+		$now = new \DateTimeImmutable();
+		$data = [];
+
+		foreach ($rdvs as $rdv) {
+			$date = $rdv->getDate(); // DateTime (date)
+			$hFin = $rdv->getHeureFin(); // DateTime (time)
+
+			// ✅ On construit la vraie date/heure de FIN du rdv
+			$endDt = (clone $date)->setTime(
+				(int) $hFin->format('H'),
+				(int) $hFin->format('i'),
+				0
+			);
+
+			$data[] = [
+				'id'        => $rdv->getId(),
+				'nom'       => $rdv->getPatient()->getNom(),
+				'date'      => $rdv->getDate()->format('d/m/Y'),
+				'heureDebut' => $rdv->getHeureDebut()->format('H:i'),
+				'heureFin'  => $rdv->getHeureFin()->format('H:i'),
+				'isLate'    => $endDt <= $now, // ✅ LA VRAIE CONDITION
+			];
+		}
+		return $this->json($data);
+	}
+
+
+	#[Route('/{id}/absent', name: 'api_rendezvous_absent', methods: ['POST'])]
+	public function absent(RendezVous $rdv, EntityManagerInterface $em): JsonResponse
+	{
+		if ($rdv->getPraticien() !== $this->getUser()) {
+			return $this->json(['error' => 'Accès refusé'], 403);
+		}
+
+		// on autorise "absent" seulement si c'est confirmé
+		if ($rdv->getStatut() !== 'confirme') {
+			return $this->json(['error' => 'Statut invalide'], 400);
+		}
+
+		$rdv->setStatut('absent');
+		$em->flush();
+
+		return $this->json(['success' => true]);
 	}
 }

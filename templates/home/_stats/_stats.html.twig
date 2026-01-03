@@ -2,52 +2,89 @@
 <!-- 🌟 STYLE GLOBAL DU DASHBOARD -->
 <!-- ============================= -->
 	<style>
-/* Card RDV compacte */
-.rdv-mini {
+	.rdv-ux-card {
     background: #ffffff;
-    border-left: 4px solid #0d6efd;
-    border-radius: 12px;
-    padding: 12px;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.06);
-    transition:.25s;
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+    transition: .25s;
     height: 100%;
 }
 
-.rdv-mini:hover {
-    background: #f5f8ff;
+.rdv-ux-card:hover {
     transform: translateY(-4px);
+}
+
+.rdv-expired {
+    background: #fff5f5;
+    border-left: 4px solid #dc3545;
+}
+
+.rdv-date {
+    background: #0d6efd;
+    color: #fff;
+    font-weight: 700;
+    font-size: .85rem;
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 999px;
+}
+
+.rdv-name {
+    font-weight: 700;
+    color: #0d6efd;
+    margin-top: 6px;
+}
+
+.rdv-time {
+    font-size: .9rem;
+    color: #6c757d;
+}
+
+/* Card RDV compacte */
+.rdv-mini {
+	background: #ffffff;
+	border-left: 4px solid #0d6efd;
+	border-radius: 12px;
+	padding: 12px;
+	box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+	transition: 0.25s;
+	height: 100%;
+}
+
+.rdv-mini:hover {
+	background: #f5f8ff;
+	transform: translateY(-4px);
 }
 
 /* Nom */
 .rdv-mini strong {
-    font-size: .95rem;
-    color:#0d6efd;
+	font-size: 0.95rem;
+	color: #0d6efd;
 }
 
 /* Badge état */
 .rdv-mini .badge {
-    font-size:.70rem;
+	font-size: 0.70rem;
 }
 
 /* Graph Box Style */
 .chart-box {
-    background: #fff;
-    border-radius: 18px;
-    padding: 20px;
-    box-shadow: 0 8px 18px rgba(0,0,0,0.08);
-    border: 1px solid #ececec;
+	background: #fff;
+	border-radius: 18px;
+	padding: 20px;
+	box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+	border: 1px solid #ececec;
 }
 
 .chart-title {
-    font-weight: 700;
-    color: #0d6efd;
-    margin-bottom: 12px;
+	font-weight: 700;
+	color: #0d6efd;
+	margin-bottom: 12px;
 }
 /* ---------- HEADER ---------- */
 .dashboard-hero {
-background: linear-gradient(135deg, #257cfd, #0dcaf0);
-
-
+	background: linear-gradient(135deg, #257cfd, #0dcaf0);
 
 
 	border-radius: 22px;
@@ -67,7 +104,6 @@ background: linear-gradient(135deg, #257cfd, #0dcaf0);
 	border: 4px solid rgba(255, 255, 255, 0.5);
 	box-shadow: 0 8px 15px rgba(0, 0, 0, 0.25);
 }
-
 
 
 /* ---------- CARDS ---------- */
@@ -149,11 +185,7 @@ background: linear-gradient(135deg, #257cfd, #0dcaf0);
 		transform: scale(1);
 	}
 }
-
 </style>
-
-
-
 
 
 <!-- ============================= -->
@@ -161,14 +193,9 @@ background: linear-gradient(135deg, #257cfd, #0dcaf0);
 <!-- ============================= -->
 <!-- ============================= -->
 <!-- 🔥 SECTION ANALYTIQUE — NEW CLEAN VERSION -->
-<!-- ============================= -->
-<div
-class=" mt-4">
-
-
-
-	<!-- 🎯 TITRE -->
-<h4 class="fw-bold text-primary mt-5">
+	<!-- ============================= --> <div
+	class=" mt-4"><!-- 🎯 TITRE -->
+	<h4 class="fw-bold text-primary mt-5">
 
 
 		<i class="bi bi-calendar-event"></i>
@@ -177,28 +204,22 @@ class=" mt-4">
 
 	<div
 		class="row g-3">
-<!-- 🖼️ PHOTO sur 3 colonnes -->
-<div class="col-lg-4">
-<img src="{{asset('/assets/img/3943280.jpg')}}" alt="Illustration Dashboard" class="rounded-4" style="width: 100%;  object-fit: cover;">
+		<!-- 🖼️ PHOTO sur 3 colonnes -->
+		<div class="col-lg-4">
+			<img src="{{asset('/assets/img/3943280.jpg')}}" alt="Illustration Dashboard" class="rounded-4" style="width: 100%;  object-fit: cover;">
 
 
-
-
-
-</div>
+		</div>
 
 		<!-- 🟦 RDV sur 9 colonnes -->
 		<div class="col-lg-8">
-			<div
-				class="row g-3" id="rdvRow"><!-- Les RDV insérés dynamiquement ici -->
-			</div>
+<div class="row g-3" id="rdvList"></div>
+
 		</div>
+	</div>
+
+
 </div>
-
-
-
-</div>
-
 
 
 <!-- ============================= -->
@@ -218,7 +239,7 @@ class=" mt-4">
 
 				<p style="opacity: .9;">
 					Analysez vos données en un coup d’œil grâce à une interface moderne, claire et intuitive.
-										                    Visualisez vos statistiques, suivez l’évolution de votre activité et gérez efficacement vos rendez-vous.
+															                    Visualisez vos statistiques, suivez l’évolution de votre activité et gérez efficacement vos rendez-vous.
 				</p>
 
 				<div class="mt-3">
@@ -243,7 +264,6 @@ class=" mt-4">
 
 	</div>
 </div>
-
 
 
 <!-- ===== GRAPHIQUES ===== -->
@@ -290,7 +310,6 @@ class=" mt-4">
 	</div>
 
 </div>
-
 
 
  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -420,44 +439,6 @@ async function loadClientsPerDayChart() {
     });
 }
 
-/* ================= RDV ================= */
-async function loadNextRDV() {
-    const res = await fetch('/api/rendezvous/next');
-    const rdvs = await res.json();
-    const container = document.getElementById('rdvList');
-
-    container.innerHTML = '';
-
-    if (!rdvs.length) {
-        container.innerHTML = `<div class="text-center text-muted">Aucun rendez-vous à venir</div>`;
-        return;
-    }
-
-    rdvs.forEach(rdv => {
-        container.insertAdjacentHTML('beforeend', `
-            <div class="col-md-6">
-                <div class="rdv-card">
-                    <div class="rdv-name">
-                        <i class="bi bi-person-circle"></i> ${rdv.nom}
-                    </div>
-                    <div class="rdv-time mt-1">
-                        <i class="bi bi-clock"></i> ${rdv.date} à ${rdv.heure}
-                    </div>
-                    <button class="btn btn-sm btn-outline-danger rounded-pill mt-3 w-100"
-                        onclick="annulerRDV(${rdv.id})">
-                        <i class="bi bi-x-circle"></i> Annuler
-                    </button>
-                </div>
-            </div>
-        `);
-    });
-}
-
-async function annulerRDV(id) {
-    if (!confirm('Annuler ce rendez-vous ?')) return;
-    await fetch(`/api/rendezvous/${id}/annuler`, { method: 'POST' });
-    loadNextRDV();
-}
 
 /* ================= INIT ================= */
 document.addEventListener('DOMContentLoaded', () => {
@@ -468,4 +449,101 @@ document.addEventListener('DOMContentLoaded', () => {
     loadNextRDV();
 });
 </script>
+
+ <script>
+async function loadAllRDV() {
+    const res = await fetch('/api/rendezvous/events');
+    const rdvs = await res.json();
+    const container = document.getElementById('rdvList');
+
+    container.innerHTML = '';
+    const now = new Date();
+
+    const confirmes = rdvs.filter(
+        rdv => rdv.extendedProps.statut === 'confirme'
+    );
+
+    if (confirmes.length === 0) {
+        container.innerHTML = `
+            <div class="text-muted text-center">
+                Aucun rendez-vous confirmé
+            </div>
+        `;
+        return;
+    }
+
+    confirmes.forEach(rdv => {
+
+        const expiresAt = new Date(rdv.extendedProps.expiresAt);
+        const isExpired = expiresAt < now;
+
+        const start = new Date(rdv.start);
+
+        const dateLabel = start.toLocaleDateString('fr-FR', {
+            weekday: 'short',
+            day: '2-digit',
+            month: 'short'
+        });
+
+        const timeLabel = start.toLocaleTimeString('fr-FR', {
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+
+        container.insertAdjacentHTML('beforeend', `
+            <div class="col-md-6 col-lg-4">
+                <div class="rdv-ux-card ${isExpired ? 'rdv-expired' : ''}">
+
+                    <!-- DATE -->
+                    <div class="rdv-date">
+                        ${dateLabel}
+                    </div>
+
+                    <!-- INFOS -->
+                    <div class="mt-2">
+                        <div class="rdv-name">
+                            <i class="bi bi-person-circle"></i>
+                            ${rdv.title}
+                        </div>
+
+                        <div class="rdv-time">
+                            <i class="bi bi-clock"></i>
+                            ${timeLabel}
+                        </div>
+                    </div>
+
+                    <!-- STATUT -->
+                    <div class="mt-2">
+                        ${
+                            isExpired
+                            ? `<span class="badge bg-danger">Rendez-vous raté</span>`
+                            : `<span class="badge bg-success">À venir</span>`
+                        }
+                    </div>
+
+                    <!-- ACTION -->
+                    <button
+                        class="btn btn-sm btn-success w-100 mt-3"
+                        onclick="validerRDV(${rdv.id})">
+                        <i class="bi bi-check-circle"></i>
+                        Valider
+                    </button>
+                </div>
+            </div>
+        `);
+    });
+}
+
+async function validerRDV(id) {
+    if (!confirm('Valider ce rendez-vous ?')) return;
+    await fetch(`/api/rendezvous/${id}/valider`, { method: 'POST' });
+    loadAllRDV();
+}
+
+document.addEventListener('DOMContentLoaded', loadAllRDV);
+</script>
+
+
+
+
 

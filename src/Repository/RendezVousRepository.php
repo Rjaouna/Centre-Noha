@@ -2,9 +2,10 @@
 
 namespace App\Repository;
 
+use App\Entity\User;
 use App\Entity\RendezVous;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @extends ServiceEntityRepository<RendezVous>
@@ -27,6 +28,21 @@ class RendezVousRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    // src/Repository/RendezVousRepository.php
+    public function findConfirmedByPraticienOrdered(User $praticien): array
+    {
+        return $this->createQueryBuilder('r')
+            ->andWhere('r.praticien = :p')
+            ->andWhere('r.statut = :s')
+            ->setParameter('p', $praticien)
+            ->setParameter('s', 'confirme')
+            ->orderBy('r.date', 'ASC')
+            ->addOrderBy('r.heureDebut', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
 
 
     //    /**

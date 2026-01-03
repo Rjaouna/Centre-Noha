@@ -113,9 +113,8 @@ class RendezVousController extends AbstractController
 			$rdv->setMotif($data['motif'] ?? null);
 			$rdv->setCreatedAt(new \DateTimeImmutable());
 			$rdv->setExpiresAt(
-				(new \DateTimeImmutable())->modify('+24 hours')
+				\DateTimeImmutable::createFromMutable($date)
 			);
-
 			$em->persist($rdv);
 			$em->flush();
 
