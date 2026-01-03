@@ -4,6 +4,40 @@
 {% endblock %}
 
 {% block body %}
+<style>
+	.dt-length {
+		display: none !important;
+	}
+	@media (max-width: 576px) {
+
+    .dt-search {
+        width: 100%;
+    }
+
+    .dt-search label {
+        width: 100%;
+        display: block;
+    }
+
+    .dt-search input {
+        width: 90% !important;
+        
+    }
+
+}
+@media (max-width: 576px) {
+    .dt-search label {
+        font-size: 0;
+    }
+
+    .dt-search input {
+        font-size: 1rem;
+    }
+}
+
+</style>
+
+
 	<div
 		class="container-fluid mt-4">
 
@@ -44,7 +78,7 @@
 
 		<!-- ================= TABLE ================= -->
 		<div class="card shadow-sm border-0 rounded-4">
-<div class="card-body px-1">
+<div class="card-body px-2">
 
 
 				<table id="patientsTable" class="table table-hover align-middle w-100">
@@ -155,7 +189,6 @@
 	{{ parent() }}
 
 	 <script>
-	document.addEventListener('DOMContentLoaded', () => {
 	
 	document.addEventListener('DOMContentLoaded', () => {
 
@@ -167,14 +200,16 @@
 	}
 
 	table.DataTable({
-		language: {
-			url: '//cdn.datatables.net/plug-ins/1.13.8/i18n/fr-FR.json'
-		},
-		pageLength: 10,
-		order: [[0, 'desc']],
-		responsive: true,
-		autoWidth: false
-	});
+    language: {
+        url: '//cdn.datatables.net/plug-ins/1.13.8/i18n/fr-FR.json'
+    },
+    pageLength: 10,
+    lengthChange: false, // ✅ SUPPRIME "Afficher X entrées"
+    order: [[0, 'desc']],
+    responsive: true,
+    autoWidth: false
+});
+
 
 });
 	
