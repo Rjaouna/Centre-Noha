@@ -2,6 +2,159 @@
 <!-- 🌟 STYLE GLOBAL DU DASHBOARD -->
 <!-- ============================= -->
 	<style>
+	/* ===============================
+   🧊 EMPTY STATE RDV
+=============================== */
+	/* ===============================
+   📅 RDV – DESIGN PRO
+=============================== */
+
+	/* Carte RDV */
+	.rdv-ux-card {
+		background: #ffffff;
+		border-radius: 18px;
+		padding: 18px 20px;
+		box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+		border-left: 5px solid #0d6efd;
+		transition: 0.25s ease;
+		height: 100%;
+		position: relative;
+	}
+
+	.rdv-ux-card:hover {
+		transform: translateY(-4px);
+		background: #f6f9ff;
+	}
+
+	/* RDV expiré */
+	.rdv-expired {
+		border-left-color: #dc3545;
+		background: #fff5f5;
+	}
+
+	/* Date bloc */
+	.rdv-date {
+		font-size: 0.8rem;
+		font-weight: 800;
+		text-transform: uppercase;
+		letter-spacing: 0.04em;
+		color: #0d6efd;
+	}
+
+	.rdv-expired .rdv-date {
+		color: #ffffffff;
+	}
+
+	/* Nom patient */
+	.rdv-name {
+		font-weight: 700;
+		font-size: 1rem;
+		margin-top: 6px;
+		color: #212529;
+	}
+
+	/* Heure */
+	.rdv-time {
+		font-size: 0.9rem;
+		color: #6c757d;
+		margin-top: 2px;
+	}
+
+	/* Badge */
+	.rdv-status {
+		margin-top: 10px;
+	}
+
+	/* Bouton */
+	.rdv-action-btn {
+		margin-top: 14px;
+	}
+
+	/* ===============================
+   🚫 EMPTY STATE
+=============================== */
+	.rdv-empty-state {
+		text-align: center;
+		padding: 50px 20px;
+	}
+
+	.rdv-empty-icon {
+		width: 80px;
+		height: 80px;
+		border-radius: 22px;
+		background: linear-gradient(135deg, #0d6efd, #4dabf7);
+		color: #fff;
+		font-size: 2.2rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		margin: 0 auto 20px;
+		box-shadow: 0 12px 30px rgba(13, 110, 253, 0.35);
+	}
+
+
+
+.rdv-empty-state {
+    background: linear-gradient(135deg, #f8faff, #eef3ff);
+    border-radius: 22px;
+    padding: 40px;
+    text-align: center;
+    box-shadow: 0 12px 30px rgba(13,110,253,0.15);
+}
+
+.rdv-empty-icon {
+    width: 72px;
+    height: 72px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #0d6efd, #4dabf7);
+    color: #fff;
+    font-size: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    box-shadow: 0 10px 25px rgba(13,110,253,0.35);
+}
+
+/* ===============================
+   📅 RDV CARD UX
+=============================== */
+.rdv-ux-card {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 18px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    border-left: 4px solid #0d6efd;
+    transition: .25s;
+    height: 100%;
+}
+
+.rdv-ux-card:hover {
+    transform: translateY(-4px);
+    background: #f6f9ff;
+}
+
+.rdv-expired {
+    border-left-color: #dc3545;
+    background: #fff5f5;
+}
+
+.rdv-date {
+    font-weight: 800;
+    color: #0d6efd;
+    text-transform: uppercase;
+    font-size: .85rem;
+}
+
+.rdv-name {
+    font-weight: 700;
+    color: #212529;
+}
+
+.rdv-time {
+    font-size: .9rem;
+    color: #6c757d;
+}
 	.rdv-ux-card {
     background: #ffffff;
     border-radius: 16px;
@@ -188,38 +341,41 @@
 </style>
 
 
-<!-- ============================= -->
-<!-- 🔥 SECTION ANALYTIQUE -->
-<!-- ============================= -->
-<!-- ============================= -->
-<!-- 🔥 SECTION ANALYTIQUE — NEW CLEAN VERSION -->
-	<!-- ============================= --> <div
-	class=" mt-4"><!-- 🎯 TITRE -->
-	<h4 class="fw-bold text-primary mt-5">
 
 
-		<i class="bi bi-calendar-event"></i>
-		Derniers rendez-vous
-	</h4>
-
+<!-- ============================= -->
+<!-- 📅 PROCHAINS RENDEZ-VOUS -->
+<!-- ============================= -->
 	<div
-		class="row g-3">
-		<!-- 🖼️ PHOTO sur 3 colonnes -->
-		<div class="col-lg-4">
-			<img src="{{asset('/assets/img/3943280.jpg')}}" alt="Illustration Dashboard" class="rounded-4" style="width: 100%;  object-fit: cover;">
+	class="mt-5"> <!-- TITRE -->
+	<div class="d-flex align-items-center justify-content-between mb-4">
+		<h4 class="fw-bold text-primary mb-0">
+			<i class="bi bi-calendar-check me-2"></i>
+			Prochains rendez-vous
+		</h4>
 
+		<a href="/calendrier" class="btn btn-outline-primary rounded-pill btn-sm">
+			<i class="bi bi-calendar-event me-1"></i>
+			Calendrier
+		</a>
+	</div>
 
-		</div>
+	<!-- CONTENEUR RDV -->
+	<div class="card border-0 shadow-sm rounded-4">
+		<div
+			class="card-body p-4">
 
-		<!-- 🟦 RDV sur 9 colonnes -->
-		<div class="col-lg-8">
-<div class="row g-3" id="rdvList"></div>
+			<!-- LISTE RDV (injectée en JS) -->
+			<div class="row g-4" id="rdvList"></div>
 
 		</div>
 	</div>
 
-
 </div>
+
+
+
+
 
 
 <!-- ============================= -->
@@ -459,19 +615,44 @@ async function loadAllRDV() {
     container.innerHTML = '';
     const now = new Date();
 
+    // 🔹 uniquement les RDV confirmés
     const confirmes = rdvs.filter(
         rdv => rdv.extendedProps.statut === 'confirme'
     );
 
+    /* ===============================
+     * 🚫 AUCUN RDV → EMPTY STATE PRO
+     * =============================== */
     if (confirmes.length === 0) {
         container.innerHTML = `
-            <div class="text-muted text-center">
-                Aucun rendez-vous confirmé
+            <div class="col-12">
+                <div class="rdv-empty-state">
+                    <div class="rdv-empty-icon">
+                        <i class="bi bi-calendar-x"></i>
+                    </div>
+
+                    <h5 class="fw-bold mt-3">
+                        Aucun rendez-vous programmé
+                    </h5>
+
+                    <p class="text-muted mb-4">
+                        Vous n’avez actuellement aucun rendez-vous confirmé.<br>
+                        Consultez le calendrier pour voir l’historique ou planifier.
+                    </p>
+
+                    <a href="/calendrier" class="btn btn-primary rounded-pill px-4">
+                        <i class="bi bi-calendar-event me-1"></i>
+                        Voir le calendrier
+                    </a>
+                </div>
             </div>
         `;
         return;
     }
 
+    /* ===============================
+     * ✅ LISTE DES RDV
+     * =============================== */
     confirmes.forEach(rdv => {
 
         const expiresAt = new Date(rdv.extendedProps.expiresAt);
@@ -523,10 +704,10 @@ async function loadAllRDV() {
 
                     <!-- ACTION -->
                     <button
-                        class="btn btn-sm btn-success w-100 mt-3"
+                        class="btn btn-sm ${isExpired ? 'btn-danger' : 'btn-success'} w-100 mt-3"
                         onclick="validerRDV(${rdv.id})">
                         <i class="bi bi-check-circle"></i>
-                        Valider
+                        ${isExpired ? 'Archiver' : 'Valider'}
                     </button>
                 </div>
             </div>
@@ -535,13 +716,15 @@ async function loadAllRDV() {
 }
 
 async function validerRDV(id) {
-    if (!confirm('Valider ce rendez-vous ?')) return;
+    if (!confirm('Confirmer cette action ?')) return;
     await fetch(`/api/rendezvous/${id}/valider`, { method: 'POST' });
     loadAllRDV();
 }
 
 document.addEventListener('DOMContentLoaded', loadAllRDV);
 </script>
+
+
 
 
 
