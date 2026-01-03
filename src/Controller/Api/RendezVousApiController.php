@@ -40,13 +40,9 @@ class RendezVousApiController extends AbstractController
 		if ($finRdv <= $now) {
 			// ❌ RDV raté (passé)
 			$rdv->setStatut('rate');
-			$rdv->setHeureDebut(new \DateTime('00:00'));
-			$rdv->setHeureFin(new \DateTime('00:00'));
 		} else {
 			// ✅ RDV traité correctement
 			$rdv->setStatut('valide');
-			$rdv->setHeureDebut(new \DateTime('00:00'));
-			$rdv->setHeureFin(new \DateTime('00:00'));
 		}
 
 		$em->flush();
