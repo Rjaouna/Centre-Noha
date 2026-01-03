@@ -290,7 +290,13 @@ const calendar = new FullCalendar.Calendar(calendarEl, {
 	            const badge = document.getElementById('mStatut');
 	            badge.className = 'badge rounded-pill px-3 py-2 ' +
 	                (statut === 'annule' ? 'bg-danger' : 'bg-warning');
-	            badge.textContent = statut === 'annule' ? 'Annulé' : 'En attente';
+	            badge.textContent =
+    statut === 'annule'
+        ? 'Annulé'
+        : statut === 'valide'
+            ? 'Validé'
+            : 'Raté';
+
 	
 	            document.getElementById('btnAnnuler').classList.toggle('d-none', statut === 'annule');
 	
