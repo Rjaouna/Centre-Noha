@@ -118,6 +118,8 @@ Informations patient
 						{{ _self.info('Type maladie', fiche_client.typeMaladie, 'secondary') }}
 						{{ _self.info('Créé le', fiche_client.createdAt|date('d/m/Y'), 'dark') }}
 					</div>
+<hr class="hr-animated">
+
 
 
 					<h6 class="fw-bold text-warning d-flex align-items-center mb-3">
@@ -345,6 +347,19 @@ Informations patient
 		width: 100%;
 		justify-content: center;
 	}
+}
+
+
+
+
+
+
+
+.hr-animated {
+    border: none;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #0d6efd, transparent);
+    background-size: 200% 100%;
 }
 
 
