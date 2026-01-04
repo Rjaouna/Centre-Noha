@@ -506,166 +506,111 @@ Prochains RDV
 		border: 1px solid rgba(13, 110, 253, .16);
 		color: #0d6efd;
 	}
-
+    
 </style>
 
 <style>
-	/* =========================
-   ANALYTICS SECTION
-========================= */
-	.analytics-section {
-		position: relative;
-		padding: 18px;
-		border-radius: 22px;
-		background: #fff;
-		border: 1px solid rgba(0, 0, 0, .06);
-		box-shadow: 0 14px 40px rgba(0, 0, 0, .08);
-	}
-	.analytics-section::before {
-		content: "";
-		position: absolute;
-		inset: 0;
-		border-radius: 22px;
-		background: radial-gradient(700px 240px at 12% 0%, rgba(13,110,253,.10), transparent 60%), radial-gradient(700px 240px at 88% 0%, rgba(220, 53, 69, 0.08), transparent 60%);
-		pointer-events: none;
-	}
-
-	/* =========================
-   ANALYTICS CARD
-========================= */
+	/* ====== ANALYTICS CARDS : clean medical ====== */
 	.analytics-card {
-		position: relative;
-		border-radius: 22px;
 		background: #fff;
-		border: 1px solid rgba(0, 0, 0, .06);
-		box-shadow: 0 12px 30px rgba(0, 0, 0, .08);
+		border: 1px solid #e9ecef;
+		border-radius: 18px;
 		padding: 16px;
-		transition: 0.18s ease;
-		overflow: hidden;
-		min-height: 260px;
+		box-shadow: 0 8px 22px rgba(16, 24, 40, .06);
+		transition: 0.15s ease;
 	}
 
 	.analytics-card:hover {
-		transform: translateY(-6px);
-		box-shadow: 0 22px 48px rgba(0, 0, 0, .12);
+		transform: translateY(-3px);
+		box-shadow: 0 14px 34px rgba(16, 24, 40, .10);
+		border-color: rgba(13, 110, 253, .18);
 	}
 
-	/* décor léger derrière */
-	.analytics-card::before {
-		content: "";
-		position: absolute;
-		inset: -1px;
-		border-radius: 22px;
-		background: radial-gradient(320px 160px at 10% 0%, rgba(13,110,253,.09), transparent 60%), radial-gradient(320px 160px at 90% 0%, rgba(25, 135, 84, 0.07), transparent 60%);
-		pointer-events: none;
-	}
-
-	/* =========================
-   HEADER CARD
-========================= */
+	/* header */
 	.analytics-header {
 		display: flex;
 		align-items: center;
 		gap: 12px;
-		padding: 10px 10px 12px;
-		border-radius: 18px;
-		background: rgba(0, 0, 0, .02);
-		border: 1px solid rgba(0, 0, 0, .05);
-		position: relative;
-		z-index: 1;
+		padding-bottom: 12px;
+		margin-bottom: 12px;
+		border-bottom: 1px dashed rgba(0, 0, 0, .10);
 	}
 
 	.analytics-header i {
-		width: 46px;
-		height: 46px;
-		border-radius: 16px;
-		display: inline-flex;
+		width: 44px;
+		height: 44px;
+		border-radius: 14px;
+		display: flex;
 		align-items: center;
 		justify-content: center;
-		font-size: 1.35rem;
-		background: rgba(13, 110, 253, .10);
-		border: 1px solid rgba(13, 110, 253, .16);
-		color: #0d6efd;
+		font-size: 1.25rem;
+		background: #f8f9fa;
+		border: 1px solid rgba(0, 0, 0, .06);
+		color: #0d6efd; /* défaut */
 		flex: 0 0 auto;
 	}
 
 	.analytics-header strong {
 		display: block;
-		font-weight: 900;
-		color: #111827;
-		line-height: 1.15;
+		font-weight: 800;
+		color: #212529;
+		line-height: 1.1;
 	}
+
 	.analytics-header span {
 		display: block;
-		font-size: 0.85rem;
-		color: #6b7280;
+		font-size: 0.86rem;
+		color: #6c757d;
 		margin-top: 2px;
-		font-weight: 500;
 	}
 
-	/* =========================
-   CHART ZONE
-========================= */
+	/* zone chart */
 	.analytics-chart {
-		margin-top: 12px;
-		border-radius: 18px;
-		background: #fff;
+		background: #f8f9fa;
 		border: 1px solid rgba(0, 0, 0, .06);
-		box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .5);
+		border-radius: 16px;
 		padding: 10px;
-		position: relative;
-		z-index: 1;
-		min-height: 170px;
-
+		min-height: 180px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 	}
 
 	.analytics-chart canvas {
-		max-height: 170px !important;
 		width: 100% !important;
+		max-height: 180px !important;
 	}
 
-	/* =========================
-   ICON VARIANTS by column order
-   (sans toucher ton HTML)
-========================= */
-	.row.g-4 .col-12.col-lg-3:nth-child(1) .analytics-header i {
-		background: rgba(25, 135, 84, .10);
-		border-color: rgba(25, 135, 84, .16);
+	/* couleurs simples par carte (ordre de tes colonnes) */
+	.row.g-4.mt-4 > .col-12.col-lg-3:nth-child(1) .analytics-header i {
 		color: #198754;
-	}
-	.row.g-4 .col-12.col-lg-3:nth-child(2) .analytics-header i {
-		background: rgba(220, 53, 69, .10);
-		border-color: rgba(220, 53, 69, .16);
+	} /* paiements */
+	.row.g-4.mt-4 > .col-12.col-lg-3:nth-child(2) .analytics-header i {
 		color: #dc3545;
-	}
-	.row.g-4 .col-12.col-lg-3:nth-child(3) .analytics-header i {
-		background: rgba(255, 193, 7, .16);
-		border-color: rgba(255, 193, 7, .22);
-		color: #b58100;
-	}
-	.row.g-4 .col-12.col-lg-3:nth-child(4) .analytics-header i {
-		background: rgba(13, 110, 253, .10);
-		border-color: rgba(13, 110, 253, .16);
+	} /* maladies */
+	.row.g-4.mt-4 > .col-12.col-lg-3:nth-child(3) .analytics-header i {
+		color: #fd7e14;
+	} /* symptômes */
+	.row.g-4.mt-4 > .col-12.col-lg-3:nth-child(4) .analytics-header i {
 		color: #0d6efd;
-	}
+	} /* fréquentation */
 
-	/* =========================
-   MOBILE COMFORT
-========================= */
+	/* mobile */
 	@media(max-width: 576px) {
 		.analytics-card {
 			padding: 14px;
-		}
-		.analytics-header {
-			padding: 10px;
+			border-radius: 16px;
 		}
 		.analytics-header i {
-			width: 44px;
-			height: 44px;
-			border-radius: 15px;
+			width: 42px;
+			height: 42px;
+			border-radius: 13px;
+		}
+		.analytics-chart {
+			min-height: 160px;
+		}
+		.analytics-chart canvas {
+			max-height: 160px !important;
 		}
 	}
 </style>
@@ -673,93 +618,163 @@ Prochains RDV
 
 
 <!-- ===== ANALYTICS GRAPHS ===== -->
-<div class="mt-5">
-	<div class="d-flex align-items-center justify-content-between mb-4">
-		<div>
-			<h4 class="fw-bold mb-1 text-primary">
-				<i class="bi bi-graph-up me-2"></i>
-				Indicateurs statistiques
-			</h4>
-			<p class="text-muted mb-0 small">
-				Analyse et visualisation de l’activité à partir des données enregistrées
-			</p>
-		</div>
-	</div>
-</div>
-
-
 <div
-	class="row g-4 mt-4">
+	class="mt-5">
 
-	<!-- 💳 PAIEMENTS -->
-	<div class="col-12 col-lg-3">
-		<div class="analytics-card">
-			<div class="analytics-header">
-				<i class="bi bi-cash-coin"></i>
+	<!-- ✅ HEADER DANS UN BLOC -->
+	<div class="analytics-section-head mb-4">
+		<div class="d-flex align-items-start justify-content-between gap-3">
+			<div class="d-flex align-items-start gap-3">
+				<div class="analytics-head-icon">
+					<i class="bi bi-graph-up"></i>
+				</div>
+
 				<div>
-					<strong>Modes de paiement</strong>
-					<span>Répartition des paiements enregistrés</span>
+					<h4 class="analytics-head-title mb-1">
+						Indicateurs statistiques
+					</h4>
+					<p class="analytics-head-subtitle mb-0">
+						Analyse et visualisation de l’activité à partir des données enregistrées
+					</p>
 				</div>
 			</div>
-
-			<div class="analytics-chart">
-				<canvas id="chartPaiements"></canvas>
-			</div>
 		</div>
-	</div>
 
-	<!-- ❤️ MALADIES -->
-	<div class="col-12 col-lg-3">
-		<div class="analytics-card">
-			<div class="analytics-header">
-				<i class="bi bi-heart-pulse"></i>
-				<div>
-					<strong>Types de maladies</strong>
-					<span>Distribution des pathologies observées</span>
+	<!-- ✅ CARTES -->
+	<div
+		class="row g-4 mt-2">
+
+		<!-- 💳 PAIEMENTS -->
+		<div class="col-12 col-lg-3">
+			<div class="analytics-card">
+				<div class="analytics-header">
+					<i class="bi bi-cash-coin"></i>
+					<div>
+						<strong>Modes de paiement</strong>
+						<span>Répartition des paiements enregistrés</span>
+					</div>
+				</div>
+
+				<div class="analytics-chart">
+					<canvas id="chartPaiements"></canvas>
 				</div>
 			</div>
-
-			<div class="analytics-chart">
-				<canvas id="chartPieMaladies"></canvas>
-			</div>
 		</div>
-	</div>
 
-	<!-- 🌡️ SYMPTÔMES -->
-	<div class="col-12 col-lg-3">
-		<div class="analytics-card">
-			<div class="analytics-header">
-				<i class="bi bi-thermometer"></i>
-				<div>
-					<strong>Symptômes</strong>
-					<span>Fréquence et intensité des symptômes</span>
+		<!-- ❤️ MALADIES -->
+		<div class="col-12 col-lg-3">
+			<div class="analytics-card">
+				<div class="analytics-header">
+					<i class="bi bi-heart-pulse"></i>
+					<div>
+						<strong>Types de maladies</strong>
+						<span>Distribution des pathologies observées</span>
+					</div>
+				</div>
+
+				<div class="analytics-chart">
+					<canvas id="chartPieMaladies"></canvas>
 				</div>
 			</div>
-
-			<div class="analytics-chart">
-				<canvas id="chartSymptomes"></canvas>
-			</div>
 		</div>
-	</div>
 
-	<!-- 📈 FRÉQUENTATION -->
-	<div class="col-12 col-lg-3">
-		<div class="analytics-card">
-			<div class="analytics-header">
-				<i class="bi bi-graph-up"></i>
-				<div>
-					<strong>Clients par jour</strong>
-					<span>Évolution quotidienne de la fréquentation</span>
+		<!-- 🌡️ SYMPTÔMES -->
+		<div class="col-12 col-lg-3">
+			<div class="analytics-card">
+				<div class="analytics-header">
+					<i class="bi bi-thermometer"></i>
+					<div>
+						<strong>Symptômes</strong>
+						<span>Fréquence et intensité des symptômes</span>
+					</div>
+				</div>
+
+				<div class="analytics-chart">
+					<canvas id="chartSymptomes"></canvas>
 				</div>
 			</div>
+		</div>
 
-			<div class="analytics-chart">
-				<canvas id="chartClientsPerDay"></canvas>
+		<!-- 📈 FRÉQUENTATION -->
+		<div class="col-12 col-lg-3">
+			<div class="analytics-card">
+				<div class="analytics-header">
+					<i class="bi bi-graph-up"></i>
+					<div>
+						<strong>Clients par jour</strong>
+						<span>Évolution quotidienne de la fréquentation</span>
+					</div>
+				</div>
+
+				<div class="analytics-chart">
+					<canvas id="chartClientsPerDay"></canvas>
+				</div>
 			</div>
 		</div>
-	</div>
 
+	</div>
 </div>
+</div>
+
+
+<style>
+	/* ✅ Bloc header (comme Modules de référence) */
+	.analytics-section-head {
+		background: #fff;
+		border: 1px solid rgba(0, 0, 0, .08);
+		border-radius: 18px;
+		padding: 14px 16px;
+		box-shadow: 0 10px 26px rgba(0, 0, 0, .06);
+	}
+
+	.analytics-head-icon {
+		width: 46px;
+		height: 46px;
+		border-radius: 16px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: rgba(13, 110, 253, .10);
+		color: #0d6efd;
+		box-shadow: inset 0 0 0 1px rgba(13, 110, 253, .14);
+		font-size: 1.35rem;
+		flex: 0 0 auto;
+	}
+
+	.analytics-head-title {
+		font-weight: 900;
+		color: #0d6efd;
+		line-height: 1.1;
+		margin: 0;
+	}
+
+	.analytics-head-subtitle {
+		color: #6c757d;
+		font-size: 0.90rem;
+	}
+
+	/* Mobile comfort */
+	@media(max-width:576px) {
+		.analytics-section-head {
+			border-radius: 16px;
+			padding: 12px;
+		}
+		.analytics-head-icon {
+			width: 42px;
+			height: 42px;
+			border-radius: 14px;
+		}
+		.analytics-head-title {
+			font-size: 1.05rem;
+		}
+		.analytics-head-subtitle {
+			font-size: 0.86rem;
+		}
+	}
+</style>
+
+
+
 
 
 
