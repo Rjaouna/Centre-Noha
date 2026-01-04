@@ -4,160 +4,167 @@
 {% endblock %}
 
 {% block body %}
-	<div class="mt-4">
+	<div
+		class="mt-4 container-fluid">
 
-		<div class="card shadow-lg border-0 rounded-4 mb-4">
-			<div class="card-body py-4 px-4 d-flex align-items-center">
-				<i class="bi bi-calendar3 text-primary fs-1 me-3"></i>
-				<div>
-					<h2 class="fw-bold text-primary mb-1">Calendrier des rendez-vous</h2>
-					<p class="text-secondary m-0">Vue mois / semaine / jour</p>
+		{# ================= HEADER (partial réutilisable) ================= #}
+		{% embed '_partials/_page_header.html.twig' with {
+        icon: 'bi bi-calendar3',
+        title: 'Calendrier des rendez-vous',
+        subtitle: 'Vue mois / semaine / jour'
+    } %}
+
+			{# Boutons métier (à gauche sur mobile / à droite sur desktop car tout le header est à droite en desktop) #}
+			{% block header_actions_left %}
+				<a href="{{ path('app_fiche_client_index') }}" class="action-icon bg-outline" data-bs-toggle="tooltip" title="Liste des patients">
+					<i class="bi bi-people-fill"></i>
+				</a>
+			{% endblock %}
+
+			{# On garde le bloc droit par défaut (Home + Retour) #}
+			{# {% block header_actions_right %}{% endblock %} #}
+
+		{% endembed %}
+
+		{# ================= CALENDAR CARD ================= #}
+		<section class="mb-4">
+			<div class="card shadow-sm rounded-4 border-0">
+				<div class="card-body p-3 p-md-4">
+					<div id="calendar"></div>
 				</div>
 			</div>
-		</div>
+		</section>
 
-		<div class="card shadow-sm rounded-4">
-			<div class="card-body">
-				<div id="calendar"></div>
-			</div>
-		</div>
+		{# ================= MODAL DÉTAIL RDV ================= #}
+		<div class="modal fade" id="rdvModal" tabindex="-1">
+			<div class="modal-dialog modal-lg modal-dialog-centered">
+				<div class="modal-content rounded-4 shadow">
 
-	</div>
-
-	<!-- ================= MODAL DÉTAIL RDV ================= -->
-	<div class="modal fade" id="rdvModal" tabindex="-1">
-		<div class="modal-dialog modal-lg modal-dialog-centered">
-			<div
-				class="modal-content rounded-4 shadow">
-
-				<!-- HEADER -->
-				<div class="modal-header border-0 pb-0">
-					<h5 class="modal-title fw-bold">
-						<i class="bi bi-calendar-event me-2 text-primary"></i>
-						Détails du rendez-vous
-					</h5>
-					<button class="btn-close" data-bs-dismiss="modal"></button>
-				</div>
-
-				<!-- BODY -->
-				<div class="modal-body pt-3">
-
-					<div class="card recap-card border-0 shadow-sm rounded-4 p-4 mb-3">
-
-						<div class="recap-line">
-							<div class="recap-icon bg-primary-subtle text-primary">
-								<i class="bi bi-person"></i>
-							</div>
-							<div>
-								<div class="recap-label">Patient</div>
-								<div class="recap-value" id="mPatient"></div>
-							</div>
-						</div>
-
-						<div class="recap-line">
-							<div class="recap-icon bg-success-subtle text-success">
-								<i class="bi bi-calendar-event"></i>
-							</div>
-							<div>
-								<div class="recap-label">Date</div>
-								<div class="recap-value" id="mDate"></div>
-							</div>
-						</div>
-
-						<div class="recap-line">
-							<div class="recap-icon bg-warning-subtle text-warning">
-								<i class="bi bi-clock"></i>
-							</div>
-							<div>
-								<div class="recap-label">Heure</div>
-								<div class="recap-value" id="mHeure"></div>
-							</div>
-						</div>
-
-						<div class="recap-line">
-							<div class="recap-icon bg-info-subtle text-info">
-								<i class="bi bi-telephone"></i>
-							</div>
-							<div>
-								<div class="recap-label">Téléphone</div>
-								<div class="recap-value" id="mTel"></div>
-							</div>
-						</div>
-
-						<div class="recap-line">
-							<div class="recap-icon bg-secondary-subtle text-secondary">
-								<i class="bi bi-info-circle"></i>
-							</div>
-							<div>
-								<div class="recap-label">Statut</div>
-								<span id="mStatut" class="badge rounded-pill px-3 py-2"></span>
-							</div>
-						</div>
-
+					<div class="modal-header border-0 pb-0">
+						<h5 class="modal-title fw-bold">
+							<i class="bi bi-calendar-event me-2 text-primary"></i>
+							Détails du rendez-vous
+						</h5>
+						<button class="btn-close" data-bs-dismiss="modal"></button>
 					</div>
 
-					<input type="hidden" id="mId">
-				</div>
+					<div class="modal-body pt-3">
+						<div class="card recap-card border-0 shadow-sm rounded-4 p-4 mb-3">
 
-				<!-- FOOTER -->
-				<div class="modal-footer border-0 pt-0">
-					<div class="d-flex justify-content-between w-100">
-						<button class="btn btn-outline-danger rounded-pill px-4" id="btnAnnuler">
-							<i class="bi bi-x-circle me-1"></i>
-							Annuler le rendez-vous
-						</button>
-						<button class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">
-							Fermer
-						</button>
+							<div class="recap-line">
+								<div class="recap-icon bg-primary-subtle text-primary">
+									<i class="bi bi-person"></i>
+								</div>
+								<div>
+									<div class="recap-label">Patient</div>
+									<div class="recap-value" id="mPatient"></div>
+								</div>
+							</div>
+
+							<div class="recap-line">
+								<div class="recap-icon bg-success-subtle text-success">
+									<i class="bi bi-calendar-event"></i>
+								</div>
+								<div>
+									<div class="recap-label">Date</div>
+									<div class="recap-value" id="mDate"></div>
+								</div>
+							</div>
+
+							<div class="recap-line">
+								<div class="recap-icon bg-warning-subtle text-warning">
+									<i class="bi bi-clock"></i>
+								</div>
+								<div>
+									<div class="recap-label">Heure</div>
+									<div class="recap-value" id="mHeure"></div>
+								</div>
+							</div>
+
+							<div class="recap-line">
+								<div class="recap-icon bg-info-subtle text-info">
+									<i class="bi bi-telephone"></i>
+								</div>
+								<div>
+									<div class="recap-label">Téléphone</div>
+									<div class="recap-value" id="mTel"></div>
+								</div>
+							</div>
+
+							<div class="recap-line">
+								<div class="recap-icon bg-secondary-subtle text-secondary">
+									<i class="bi bi-info-circle"></i>
+								</div>
+								<div>
+									<div class="recap-label">Statut</div>
+									<span id="mStatut" class="badge rounded-pill px-3 py-2"></span>
+								</div>
+							</div>
+
+						</div>
+
+						<input type="hidden" id="mId">
 					</div>
-				</div>
 
+					<div class="modal-footer border-0 pt-0">
+						<div class="d-flex justify-content-between w-100">
+							<button class="btn btn-outline-danger rounded-pill px-4" id="btnAnnuler">
+								<i class="bi bi-x-circle me-1"></i>
+								Annuler le rendez-vous
+							</button>
+							<button class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">
+								Fermer
+							</button>
+						</div>
+					</div>
+
+				</div>
 			</div>
 		</div>
+
 	</div>
 
 	<style>
-	/* =============================== */
-/* 🎨 COULEURS RDV FULLCALENDAR */
-/* =============================== */
+		/* =============================== */
+		/* 🎨 COULEURS RDV FULLCALENDAR */
+		/* =============================== */
 
-/* 🔴 RDV annulé */
-.fc-daygrid-event.rdv-annule .fc-event-main,
-.fc-timegrid-event.rdv-annule .fc-event-main {
-    background-color: #dc3545 !important;
-    border-color: #dc3545 !important;
-    color: #fff !important;
-}
+		/* 🔴 RDV annulé */
+		.fc-daygrid-event.rdv-annule .fc-event-main,
+		.fc-timegrid-event.rdv-annule .fc-event-main {
+			background-color: #dc3545 !important;
+			border-color: #dc3545 !important;
+			color: #fff !important;
+		}
 
-/* 🟡 RDV en attente */
-.fc-daygrid-event.rdv-attente .fc-event-main,
-.fc-timegrid-event.rdv-attente .fc-event-main {
-    background-color: #ffc107 !important;
-    border-color: #ffc107 !important;
-    color: #000 !important;
-}
+		/* 🟡 RDV en attente */
+		.fc-daygrid-event.rdv-attente .fc-event-main,
+		.fc-timegrid-event.rdv-attente .fc-event-main {
+			background-color: #ffc107 !important;
+			border-color: #ffc107 !important;
+			color: #000 !important;
+		}
 
-/* 🟢 RDV confirmé */
-.fc-daygrid-event.rdv-confirme .fc-event-main,
-.fc-timegrid-event.rdv-confirme .fc-event-main {
-    background-color: #198754 !important;
-    border-color: #198754 !important;
-    color: #fff !important;
-}
+		/* 🟢 RDV confirmé */
+		.fc-daygrid-event.rdv-confirme .fc-event-main,
+		.fc-timegrid-event.rdv-confirme .fc-event-main {
+			background-color: #198754 !important;
+			border-color: #198754 !important;
+			color: #fff !important;
+		}
 
-/* Petit point (vue mois dot-event) */
-.fc-daygrid-dot-event.rdv-annule .fc-daygrid-event-dot {
-    border-color: #dc3545 !important;
-}
+		/* Petit point (vue mois dot-event) */
+		.fc-daygrid-dot-event.rdv-annule .fc-daygrid-event-dot {
+			border-color: #dc3545 !important;
+		}
+		.fc-daygrid-dot-event.rdv-attente .fc-daygrid-event-dot {
+			border-color: #ffc107 !important;
+		}
+		.fc-daygrid-dot-event.rdv-confirme .fc-daygrid-event-dot {
+			border-color: #198754 !important;
+		}
 
-.fc-daygrid-dot-event.rdv-attente .fc-daygrid-event-dot {
-    border-color: #ffc107 !important;
-}
-
-.fc-daygrid-dot-event.rdv-confirme .fc-daygrid-event-dot {
-    border-color: #198754 !important;
-}
-
+		/* Modal recap */
 		.recap-card {
 			background: #f8fafc;
 		}
@@ -190,28 +197,24 @@
 			font-weight: 600;
 			color: #212529;
 		}
+
 		/* 📱 FullCalendar mobile fix */
-@media (max-width: 767px) {
-
-    .fc-toolbar {
-        flex-direction: row;
-        gap: 6px;
-    }
-
-    .fc-toolbar-title {
-        font-size: 1rem;
-        text-align: center;
-        white-space: nowrap;
-    }
-
-    .fc-button {
-        padding: 4px 8px;
-        font-size: 0.85rem;
-    }
-}
-
+		@media(max-width: 767px) {
+			.fc-toolbar {
+				flex-direction: row;
+				gap: 6px;
+			}
+			.fc-toolbar-title {
+				font-size: 1rem;
+				text-align: center;
+				white-space: nowrap;
+			}
+			.fc-button {
+				padding: 4px 8px;
+				font-size: 0.85rem;
+			}
+		}
 	</style>
-
 {% endblock %}
 
 {% block javascripts %}
@@ -223,89 +226,77 @@
 	 <script>
 	document.addEventListener('DOMContentLoaded', function () {
 	
-	    const modal = new bootstrap.Modal(document.getElementById('rdvModal'));
 	    const calendarEl = document.getElementById('calendar');
+	    const rdvModalEl = document.getElementById('rdvModal');
 	
+	    const modal = rdvModalEl ? new bootstrap.Modal(rdvModalEl) : null;
 	    const isMobile = window.innerWidth < 768;
-
-const calendar = new FullCalendar.Calendar(calendarEl, {
-    initialView: 'dayGridMonth',
-    locale: 'fr',
-    height: 'auto',
-
-    headerToolbar: isMobile
-        ? {
-            left: 'prev',
-            center: 'title',
-            right: 'next'
-        }
-        : {
-            left: 'prev,next today',
-            center: 'title',
-            right: 'dayGridMonth,timeGridWeek,timeGridDay'
-        },
+	
+	    const calendar = new FullCalendar.Calendar(calendarEl, {
+	        initialView: 'dayGridMonth',
+	        locale: 'fr',
+	        height: 'auto',
+	
+	        headerToolbar: isMobile
+	            ? { left: 'prev', center: 'title', right: 'next' }
+	            : { left: 'prev,next today', center: 'title', right: 'dayGridMonth,timeGridWeek,timeGridDay' },
 	
 	        eventTimeFormat: { hour: '2-digit', minute: '2-digit', hour12: false },
 	        events: '/api/rendezvous/events',
 	
 	        eventDidMount(info) {
-    const statut = info.event.extendedProps.statut;
-
-    info.el.classList.remove(
-        'rdv-annule',
-        'rdv-attente',
-        'rdv-confirme'
-    );
-
-    if (statut === 'annule') {
-        info.el.classList.add('rdv-annule');
-    }
-
-    if (statut === 'en_attente') {
-        info.el.classList.add('rdv-attente');
-    }
-
-    if (statut === 'confirme') {
-        info.el.classList.add('rdv-confirme');
-    }
-},
-
+	            const statut = info.event.extendedProps.statut;
+	
+	            info.el.classList.remove('rdv-annule', 'rdv-attente', 'rdv-confirme');
+	
+	            if (statut === 'annule') info.el.classList.add('rdv-annule');
+	            if (statut === 'en_attente') info.el.classList.add('rdv-attente');
+	            if (statut === 'confirme') info.el.classList.add('rdv-confirme');
+	        },
 	
 	        eventClick(info) {
 	            info.jsEvent.preventDefault();
+	            if (!modal) return;
 	
 	            const e = info.event;
 	            const statut = e.extendedProps.statut || 'en_attente';
 	
 	            document.getElementById('mId').value = e.id;
 	            document.getElementById('mPatient').textContent = e.title;
+	
 	            document.getElementById('mDate').textContent =
-	                e.start.toLocaleDateString('fr-FR',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+	                e.start.toLocaleDateString('fr-FR', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+	
 	            document.getElementById('mHeure').textContent =
-	                e.start.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}) +
+	                e.start.toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit' }) +
 	                ' → ' +
-	                e.end.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+	                e.end.toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit' });
+	
 	            document.getElementById('mTel').textContent = e.extendedProps.tel || '—';
 	
 	            const badge = document.getElementById('mStatut');
-	            badge.className = 'badge rounded-pill px-3 py-2 ' +
-	                (statut === 'annule' ? 'bg-danger' : 'bg-warning');
-	           badge.textContent =
-    statut === 'annule'
-        ? 'Annulé'
-        : statut === 'valide'
-            ? 'Validé'
-            : statut === 'confirme'
-                ? 'Confirmé'
-                : statut === 'rate'
-                    ? 'Raté'
-                    : '—';
-
-
 	
-document.getElementById('btnAnnuler').classList.toggle('d-none', statut === 'annule' || statut === 'valide');
-
-
+	            // Couleur badge
+	            badge.className = 'badge rounded-pill px-3 py-2 ' + (
+	                statut === 'annule' ? 'bg-danger' :
+	                statut === 'confirme' ? 'bg-success' :
+	                statut === 'valide' ? 'bg-success' :
+	                statut === 'rate' ? 'bg-secondary' :
+	                statut === 'en_attente' ? 'bg-warning text-dark' :
+	                'bg-light text-dark'
+	            );
+	
+	            // Texte badge
+	            badge.textContent =
+	                statut === 'annule' ? 'Annulé' :
+	                statut === 'valide' ? 'Validé' :
+	                statut === 'confirme' ? 'Confirmé' :
+	                statut === 'rate' ? 'Raté' :
+	                statut === 'en_attente' ? 'En attente' : '—';
+	
+	            // Bouton annuler visible seulement si autorisé
+	            const btnAnnuler = document.getElementById('btnAnnuler');
+	            btnAnnuler.classList.toggle('d-none', statut === 'annule' || statut === 'valide');
 	
 	            modal.show();
 	        }
@@ -313,10 +304,13 @@ document.getElementById('btnAnnuler').classList.toggle('d-none', statut === 'ann
 	
 	    calendar.render();
 	
-	    document.getElementById('btnAnnuler').addEventListener('click', async () => {
+	    const btnAnnuler = document.getElementById('btnAnnuler');
+	    btnAnnuler.addEventListener('click', async () => {
 	        const id = document.getElementById('mId').value;
 	        if (!confirm('Annuler ce rendez-vous ?')) return;
+	
 	        await fetch(`/api/rendezvous/${id}/annuler`, { method: 'POST' });
+	
 	        modal.hide();
 	        calendar.refetchEvents();
 	    });

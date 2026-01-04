@@ -1,108 +1,250 @@
-
-<!-- MODAL -->
-<div class="modal fade" id="arretMaladieModal" tabindex="-1">
+{# ===================== MODAL : ARRÊT MALADIE (THEME DOCS) ===================== #}
+<div class="modal fade" id="arretMaladieModal" tabindex="-1" aria-hidden="true">
 	<div class="modal-dialog modal-md modal-dialog-centered">
-		<div class="modal-content rounded-4 shadow-lg">
+		<div
+			class="modal-content rounded-4 shadow-lg border-0">
 
-<div class="modal-header bg-danger text-white rounded-top-4" st>
+			{# HEADER #}
+			<div class="modal-header bg-danger text-white rounded-top-4 border-0">
+				<div class="d-flex align-items-center gap-2">
+					<div class="doc-head-icon doc-head-icon-danger">
+						<i class="bi bi-file-earmark-medical"></i>
+					</div>
+					<div>
+						<h5 class="modal-title fw-bold mb-0">Arrêt maladie</h5>
+						<small class="text-white-50">Renseignez le motif puis la date de fin</small>
+					</div>
+				</div>
 
-
-				<h5 class="modal-title fw-bold">
-					<i class="bi bi-file-earmark-medical me-2"></i>
-					Générer un arrêt maladie
-				</h5>
-				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
 			</div>
 
+			{# BODY #}
 			<div
 				class="modal-body p-4">
 
-				<!-- ETAPE 1 : MOTIF -->
+				{# Progress #}
+				<div class="am-steps mb-3">
+					<div class="am-step active" id="amStep1">
+						<span class="am-dot">
+							<i class="bi bi-1-circle"></i>
+						</span>
+						<span class="am-label">Motif</span>
+					</div>
+					<div class="am-line" id="amLine"></div>
+					<div class="am-step" id="amStep2">
+						<span class="am-dot">
+							<i class="bi bi-2-circle"></i>
+						</span>
+						<span class="am-label">Dates</span>
+					</div>
+				</div>
+
+				{# ---------------- ETAPE 1 : MOTIF ---------------- #}
 				<div id="step-motif">
-					<h6 class="fw-semibold mb-3">Motif de l’arrêt</h6>
 
-					<select id="motif" class="form-select mb-4">
-						<option value="">-- Sélectionner un motif --</option>
-						<option>Fatigue / besoin de repos</option>
-						<option>Maladie virale</option>
-						<option>Douleur musculo-squelettique</option>
-						<option>Trouble ORL</option>
-						<option>Suivi médical</option>
-						<option>Autre</option>
-					</select>
+					<div class="am-card">
+						<div class="am-card-title">
+							<i class="bi bi-chat-left-text"></i>
+							Motif de l’arrêt
+						</div>
 
-					<div class="d-flex justify-content-end">
-						<button class="btn btn-danger" onclick="goToDateStep()">
-							Suivant →
-						</button>
+						<div class="mt-3">
+							<label class="form-label text-muted small mb-2">Sélectionnez un motif</label>
+							<select id="motif" class="form-select rounded-3">
+								<option value="">— Sélectionner un motif —</option>
+								<option>Fatigue / besoin de repos</option>
+								<option>Maladie virale</option>
+								<option>Douleur musculo-squelettique</option>
+								<option>Trouble ORL</option>
+								<option>Suivi médical</option>
+								<option>Autre</option>
+							</select>
+						</div>
+
+						<div class="d-flex justify-content-end mt-4">
+							<button type="button" class="btn btn-danger rounded-pill px-4 am-btn-next" onclick="goToDateStep()">
+								Suivant
+								<i class="bi bi-chevron-right ms-1"></i>
+							</button>
+						</div>
 					</div>
+
 				</div>
 
-				<!-- ETAPE 2 : DATE FIN -->
+				{# ---------------- ETAPE 2 : DATE FIN ---------------- #}
 				<div id="step-date" class="d-none">
-					<h6 class="fw-semibold mb-3">Date de fin de l’arrêt</h6>
 
-					<div class="mb-4">
-						<label class="form-label">Date de début</label>
-						<input type="text" class="form-control" id="dateDebut" disabled>
+					<div class="am-card">
+						<div class="am-card-title">
+							<i class="bi bi-calendar-event"></i>
+							Dates de l’arrêt
+						</div>
+
+						<div class="row g-3 mt-2">
+							<div class="col-12">
+								<label class="form-label text-muted small mb-2">Date de début</label>
+								<input type="text" class="form-control rounded-3" id="dateDebut" disabled>
+							</div>
+
+							<div class="col-12">
+								<label class="form-label text-muted small mb-2">Date de fin</label>
+								<input type="date" class="form-control rounded-3" id="dateFin">
+							</div>
+						</div>
+
+						<div class="d-flex justify-content-between align-items-center mt-4">
+							<button type="button" class="btn btn-light rounded-pill px-4" onclick="backToMotif()">
+								<i class="bi bi-chevron-left me-1"></i>
+								Retour
+							</button>
+
+							<button type="button" class="btn btn-success rounded-pill px-4" onclick="generateArret()">
+								<i class="bi bi-check2-circle me-1"></i>
+								Générer
+							</button>
+						</div>
 					</div>
 
-					<div class="mb-4">
-						<label class="form-label">Date de fin</label>
-						<input type="date" class="form-control" id="dateFin">
-					</div>
-
-					<div class="d-flex justify-content-between">
-						<button class="btn btn-outline-secondary" onclick="backToMotif()">
-							← Retour
-						</button>
-
-						<button class="btn btn-success" onclick="generateArret()">
-							Générer l’arrêt
-						</button>
-					</div>
 				</div>
 
+			</div>
+
+			{# FOOTER #}
+			<div class="modal-footer border-0 pt-0 pb-4 px-4">
+				<button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">
+					Fermer
+				</button>
 			</div>
 
 		</div>
 	</div>
 </div>
+
+<style>
+	/* ===== Header icon (même thème doc) ===== */
+	.doc-head-icon {
+		width: 42px;
+		height: 42px;
+		border-radius: 14px;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		background: rgba(255, 255, 255, .16);
+		box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .18);
+		font-size: 1.25rem;
+	}
+	.doc-head-icon-danger {
+		background: rgba(255, 255, 255, .18);
+	}
+
+	/* ===== Steps ===== */
+	.am-steps {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+	}
+	.am-step {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		color: #6b7280;
+		font-weight: 700;
+	}
+	.am-step .am-dot {
+		width: 34px;
+		height: 34px;
+		border-radius: 12px;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		background: rgba(0, 0, 0, .04);
+	}
+	.am-step.active {
+		color: #111827;
+	}
+	.am-step.active .am-dot {
+		background: rgba(220, 53, 69, .10);
+		color: #dc3545;
+		box-shadow: inset 0 0 0 1px rgba(220, 53, 69, .12);
+	}
+	.am-line {
+		flex: 1;
+		height: 3px;
+		border-radius: 999px;
+		background: rgba(0, 0, 0, .06);
+		position: relative;
+		overflow: hidden;
+	}
+	.am-line::after {
+		content: "";
+		position: absolute;
+		left: 0;
+		top: 0;
+		height: 100%;
+		width: 0;
+		background: rgba(220, 53, 69, .55);
+		transition: 0.25s ease;
+	}
+
+	/* ===== Card inside modal ===== */
+	.am-card {
+		border-radius: 18px;
+		background: #fff;
+		box-shadow: 0 10px 26px rgba(0, 0, 0, .06);
+		border: 1px solid rgba(0, 0, 0, .06);
+		padding: 14px;
+	}
+	.am-card-title {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		font-weight: 800;
+		color: #111827;
+	}
+	.am-card-title i {
+		width: 36px;
+		height: 36px;
+		border-radius: 14px;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		background: rgba(220, 53, 69, .10);
+		color: #dc3545;
+	}
+
+	/* ===== Buttons ===== */
+	.am-btn-next {
+		box-shadow: 0 10px 22px rgba(220, 53, 69, .22);
+	}
+</style>
+
  <script>
-
-
 let arretModal = null;
 let currentPatientId = null;
 
 document.addEventListener("DOMContentLoaded", () => {
   const modalEl = document.getElementById("arretMaladieModal");
-
   if (!modalEl) {
     console.error("Modal arrêt maladie introuvable");
     return;
   }
-
   arretModal = new bootstrap.Modal(modalEl);
 });
 
-/**
- * Ouvrir le modal
- */
+/* Ouvrir le modal */
 function openArretModal(patientId) {
   currentPatientId = patientId;
   resetArretForm();
   arretModal.show();
 }
 
-/**
- * Étape 1 → Étape 2
- */
+/* Étape 1 → Étape 2 */
 function goToDateStep() {
   const motifEl = document.getElementById("motif");
   if (!motifEl) return;
 
   const motif = motifEl.value;
-
   if (!motif) {
     alert("Veuillez sélectionner un motif");
     return;
@@ -111,22 +253,35 @@ function goToDateStep() {
   document.getElementById("step-motif").classList.add("d-none");
   document.getElementById("step-date").classList.remove("d-none");
 
+  // Progress UI
+  document.getElementById("amStep1")?.classList.remove("active");
+  document.getElementById("amStep2")?.classList.add("active");
+  const line = document.getElementById("amLine");
+  if (line) line.style.setProperty("--amProgress", "100%");
+  // fill line
+  const after = line?.querySelector?.("::after"); // (noop, cannot access)
+  // so we update via class toggle:
+  line?.classList.add("am-line-filled");
+  // simpler: set width via inline on pseudo isn't possible -> we use class
+  document.getElementById("amLine")?.classList.add("filled");
+
   // Date début = aujourd’hui
   const today = new Date().toISOString().split("T")[0];
   document.getElementById("dateDebut").value = today;
 }
 
-/**
- * Retour étape 1
- */
+/* Retour étape 1 */
 function backToMotif() {
   document.getElementById("step-date").classList.add("d-none");
   document.getElementById("step-motif").classList.remove("d-none");
+
+  // Progress UI
+  document.getElementById("amStep2")?.classList.remove("active");
+  document.getElementById("amStep1")?.classList.add("active");
+  document.getElementById("amLine")?.classList.remove("filled");
 }
 
-/**
- * Générer l’arrêt maladie (AJAX)
- */
+/* Générer l’arrêt maladie (AJAX) */
 function generateArret() {
   const motif = document.getElementById("motif").value;
   const debutAt = document.getElementById("dateDebut").value;
@@ -136,7 +291,6 @@ function generateArret() {
     alert("Veuillez sélectionner la date de fin");
     return;
   }
-
   if (!currentPatientId) {
     alert("Patient non défini");
     return;
@@ -150,9 +304,7 @@ function generateArret() {
   fetch(`/arret-maladie/save/${currentPatientId}`, {
     method: "POST",
     body: formData,
-    headers: {
-      "X-Requested-With": "XMLHttpRequest"
-    }
+    headers: { "X-Requested-With": "XMLHttpRequest" }
   })
     .then(res => res.json())
     .then(data => {
@@ -161,10 +313,7 @@ function generateArret() {
         return;
       }
 
-      // ✅ Fermer le modal
       arretModal.hide();
-
-      // ✅ Redirection (compatible mobile)
       window.location.href = `/arret-maladie/print/${data.id}`;
     })
     .catch(err => {
@@ -173,14 +322,27 @@ function generateArret() {
     });
 }
 
-/**
- * Reset formulaire
- */
+/* Reset formulaire */
 function resetArretForm() {
   document.getElementById("motif").value = "";
   document.getElementById("dateFin").value = "";
+
   document.getElementById("step-date").classList.add("d-none");
   document.getElementById("step-motif").classList.remove("d-none");
+
+  // Progress UI reset
+  document.getElementById("amStep1")?.classList.add("active");
+  document.getElementById("amStep2")?.classList.remove("active");
+  document.getElementById("amLine")?.classList.remove("filled");
 }
+
+/* Petit hack CSS : remplir la barre via class */
+document.addEventListener("DOMContentLoaded", () => {
+  const style = document.createElement("style");
+  style.textContent = `
+    #amLine.filled::after{ width:100% !important; }
+  `;
+  document.head.appendChild(style);
+});
 </script>
 

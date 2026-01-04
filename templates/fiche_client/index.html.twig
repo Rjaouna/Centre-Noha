@@ -7,43 +7,31 @@
 
 
 
-	<div
-		class="container-fluid mt-4">
 
-		<!-- ================= HEADER ================= -->
-		<div class="card shadow-lg border-0 rounded-4 mb-4">
-			<div class="card-body px-4 py-4">
-				<div class="row align-items-center">
+<div class="container-fluid mt-4">
 
-					<div class="col-md-7 d-flex align-items-center">
-						<i class="bi bi-people-fill text-primary fs-1 me-3"></i>
-						<div>
-							<h2 class="fw-bold text-primary mb-0">Gestion des patients</h2>
-							<small class="text-muted">Suivi médical & dossiers patients</small>
-						</div>
-					</div>
+	{% embed '_partials/_page_header.html.twig' with {
+		icon: 'bi bi-people-fill',
+		title: 'Gestion des patients',
+		subtitle: 'Suivi médical & dossiers patients'
+	} %}
+		{% block header_actions_left %}
+			<span class="action-icon bg-primary" role="button" data-bs-toggle="modal" data-bs-target="#modalAddClient" data-bs-toggle="tooltip" title="Nouveau patient">
+				<i class="bi bi-person-plus"></i>
+			</span>
+		{% endblock %}
 
-<div
-	class="col-md-5 d-flex gap-3 justify-content-md-end mt-3 mt-md-0">
+		{# Si tu veux garder home+retour par défaut, tu ne touches pas header_actions_right #}
+	{% endembed %}
 
-	<!-- ➕ Nouveau patient -->
-	<span class="action-icon bg-primary" role="button" data-bs-toggle="modal" data-bs-target="#modalAddClient" data-bs-toggle="tooltip" title="Nouveau patient">
-		<i class="bi bi-person-plus"></i>
-	</span>
-
-	<!-- ⬅️ Accueil -->
-	<a href="{{ path('app_home') }}" class="action-icon bg-light text-dark" data-bs-toggle="tooltip" title="Page d'accueil">
-		<i class="bi bi-house"></i>
-	</a>
-
-</div>
+	{# ... le reste de ta page ... #}
 
 
 
 
-				</div>
-			</div>
-		</div>
+
+
+
 
 		<!-- ================= TABLE ================= -->
 		<div class="card shadow-sm border-0 rounded-4">
@@ -152,6 +140,9 @@
 			</div>
 		</div>
 	</div>
+
+</div>
+
 {% endblock %}
 
 {% block javascripts %}

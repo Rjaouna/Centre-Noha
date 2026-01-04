@@ -87,48 +87,58 @@
 		class="mt-4">
 
 		{# ================= HEADER (même style que ton app) ================= #}
-		<section class="mb-4">
-			<div class="card shadow-lg border-0 rounded-4">
-				<div class="card-body py-4 d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
+{# ================= HEADER SUIVI MÉDICAL (avec ton partial) ================= #}
 
-					<div>
-						<h2 class="fw-bold text-primary mb-1 d-flex align-items-center">
-							<i class="bi bi-journal-medical me-2 fs-1"></i>
-							Suivi médical
-						</h2>
+{% embed '_partials/_page_header.html.twig' with {
+    icon: 'bi bi-journal-medical',
+    title: 'Suivi médical',
+    subtitle: null
+} %}
 
-						<div class="d-flex flex-wrap align-items-center text-muted small gap-3">
-							<span class="d-flex align-items-center">
-								<i class="bi bi-folder2-open me-1 text-warning"></i>
-								Dossier :
-								<strong class="ms-1">{{ dossier.titre }}</strong>
-							</span>
+	{# --------- Sous-ligne dossier + patient --------- #}
+	{% block header_subtitle %}
+		<div class="d-flex flex-wrap align-items-center text-muted small gap-3 mt-1">
 
-							<span class="d-flex align-items-center">
-								<i class="bi bi-person-fill me-1 text-primary"></i>
-								Patient :
-								<strong class="ms-1">{{ patient.nom }}</strong>
-							</span>
-						</div>
-					</div>
+			<span class="d-flex align-items-center">
+				<i class="bi bi-folder2-open me-1 text-warning"></i>
+				Dossier :
+				<strong class="ms-1">{{ dossier.titre }}</strong>
+			</span>
 
-					<div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-						<div class="d-flex align-items-center gap-3">
+			<span class="d-flex align-items-center">
+				<i class="bi bi-person-fill me-1 text-primary"></i>
+				Patient :
+				<strong class="ms-1">{{ patient.nom }}</strong>
+			</span>
 
-							<span class="action-icon bg-primary text-white" data-bs-toggle="modal" data-bs-target="#modalAddSuivi" title="Ajouter un suivi">
-								<i class="bi bi-clipboard-plus"></i>
-							</span>
+		</div>
+	{% endblock %}
 
-						</div>
+	{# --------- Actions métier (mobile à gauche / desktop à droite) --------- #}
+	{% block header_actions_left %}
 
-						<a href="javascript:void(0);" onclick="history.back()" class="action-icon bg-light" title="Retour">
-							<i class="bi bi-arrow-left"></i>
-						</a>
-					</div>
+		<span class="action-icon bg-primary text-white" role="button" data-bs-toggle="modal" data-bs-target="#modalAddSuivi" data-bs-toggle="tooltip" title="Ajouter un suivi">
+			<i class="bi bi-clipboard-plus"></i>
+		</span>
 
-				</div>
-			</div>
-		</section>
+	{% endblock %}
+
+	{# --------- Navigation (mobile à droite / desktop à droite) --------- #}
+	{% block header_actions_right %}
+
+		<a href="{{ path('app_home') }}" class="action-icon bg-light text-dark" data-bs-toggle="tooltip" title="Accueil">
+			<i class="bi bi-house"></i>
+		</a>
+
+		<a href="javascript:void(0);" onclick="history.back()" class="action-icon bg-light" data-bs-toggle="tooltip" title="Retour">
+			<i class="bi bi-arrow-left"></i>
+		</a>
+
+	{% endblock %}
+
+{% endembed %}
+
+
 
 		{# ================= LISTE SUIVI ================= #}
 		<section class="mb-4">

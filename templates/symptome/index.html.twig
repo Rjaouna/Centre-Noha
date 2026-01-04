@@ -4,69 +4,110 @@
 {% endblock %}
 
 {% block body %}
+<style>
+/* Actions DataTable : rendu pro */
+.table-actions{
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .35rem;
+  border-radius: 999px;
+  background: rgba(13,110,253,.06);
+  border: 1px solid rgba(13,110,253,.10);
+}
 
+.btn-action{
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  box-shadow: 0 6px 16px rgba(0,0,0,.06);
+}
+
+.btn-action-primary{
+  background: #fff;
+  border: 1px solid rgba(13,110,253,.25);
+  color: #0d6efd;
+}
+
+.btn-action-danger{
+  background: #fff;
+  border: 1px solid rgba(220,53,69,.25);
+  color: #dc3545;
+}
+
+/* Hover simple (pas de “move”) */
+.btn-action:hover{
+  filter: brightness(.98);
+}
+</style>
 	{# ================= DATATABLES CSS ================= #}
 	<link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css">
 
 	<div
 		class="mt-4">
 
-		<!-- ⭐ ENTÊTE ⭐ -->
-		<div class="card shadow-lg border-0 rounded-4 mb-4">
-			<div class="card-body py-4 px-4">
-				<div class="row align-items-center">
+		{# ================= HEADER (menu + actions) ================= #}
+		{% embed '_partials/_page_header.html.twig' with {
+			icon: 'bi bi-activity',
+			title: 'Gestion des symptômes',
+			subtitle: 'Ajoutez, modifiez et gérez les symptômes médicaux'
+		} %}
 
-					<div class="col-md-7 d-flex align-items-center">
-						<i class="bi bi-activity text-primary fs-1 me-3"></i>
-						<div>
-							<h2 class="fw-bold text-primary mb-1">Gestion des symptômes</h2>
-							<p class="text-secondary m-0">
-								Ajoutez, modifiez et gérez les symptômes médicaux
-							</p>
-						</div>
-					</div>
+			{# Actions métier (mobile à gauche) #}
+			{% block header_actions_left %}
+				{# ➕ Ajouter #}
+				<span class="action-icon bg-primary text-white" role="button" data-bs-toggle="modal" data-bs-target="#modalSymptome" data-bs-toggle="tooltip" title="Ajouter un symptôme">
+					<i class="bi bi-plus-circle"></i>
+				</span>
 
-					<div class="col-md-5 d-flex justify-content-md-end gap-2">
-						<button onclick="history.back()" class="btn btn-outline-primary btn-lg rounded-pill px-4 shadow-sm">
-							<i class="bi bi-arrow-left"></i>
-							Retour
-						</button>
+				{# 🧾 Traitements #}
+				<a href="{{ path('traitement_index') }}" class="action-icon bg-outline" data-bs-toggle="tooltip" title="Gestion des traitements">
+					<i class="bi bi-prescription2"></i>
+				</a>
+			{% endblock %}
 
-						<button class="btn btn-primary btn-lg rounded-pill px-4 shadow-sm" data-bs-toggle="modal" data-bs-target="#modalSymptome">
-							<i class="bi bi-plus-circle"></i>
-							Ajouter
-						</button>
-					</div>
+			{# Navigation (mobile à droite) : home + retour (déjà par défaut dans ton partial) #}
+		{% endembed %}
+
+
+		{# ================= TABLE DATATABLE ================= #}
+		<section class="mb-4">
+			<div class="card shadow-sm border-0 rounded-4">
+				<div class="card-body p-3 p-md-4">
+
+					<table id="symptomesTable" class="table table-striped table-hover align-middle mb-0" style="width:100%">
+						<thead class="table-primary">
+							<tr>
+								<th>Nom</th>
+								<th>Catégorie</th>
+								<th>Description</th>
+								<th class="text-center">Traitement</th>
+								<th class="text-center">Actions</th>
+							</tr>
+						</thead>
+						<tbody></tbody>
+					</table>
 
 				</div>
 			</div>
-		</div>
-
-		<!-- ⭐ TABLE DATATABLE ⭐ -->
-		<table id="symptomesTable" class="table table-striped table-hover align-middle rounded-4" style="width:100%">
-			<thead class="table-primary">
-				<tr>
-					<th>Nom</th>
-					<th>Catégorie</th>
-					<th>Description</th>
-<th class="text-center">Traitement</th>
-
-					<th class="text-center">Actions</th>
-				</tr>
-			</thead>
-			<tbody></tbody>
-		</table>
+		</section>
 
 	</div>
 
-	<!-- ================= MODAL ================= -->
+
+	{# ================= MODAL ================= #}
 	<div class="modal fade" id="modalSymptome" tabindex="-1">
-		<div class="modal-dialog modal-lg">
+		<div class="modal-dialog modal-lg modal-dialog-centered">
 			<div class="modal-content rounded-4 shadow">
 
 				<form id="symptomeForm">
 
-					<div class="modal-header bg-primary text-white">
+					<div class="modal-header bg-primary text-white rounded-top-4">
 						<h5 class="modal-title fw-bold">
 							<i class="bi bi-activity me-2"></i>
 							Symptôme
@@ -76,42 +117,45 @@
 
 					<div class="modal-body">
 
-						<div class="mb-3">
-							<label class="form-label">Nom</label>
-							<input name="name" class="form-control" required>
-						</div>
+						<div class="row g-3">
+							<div class="col-12">
+								<label class="form-label">Nom</label>
+								<input name="name" class="form-control" required>
+							</div>
 
-						<div class="mb-3">
-							<label class="form-label">Catégorie</label>
-							<select name="category" class="form-select" required>
-								<option value="" disabled selected>— Choisir —</option>
-								<option>Abdomen & système digestif</option>
-								<option>Appareil génito-urinaire</option>
-								<option>Articulations & muscles</option>
-								<option>Cerveau & système nerveux</option>
-								<option>Thorax & système respiratoire</option>
-								<option>ORL</option>
-								<option>Œil</option>
-								<option>Peau & cheveux</option>
-								<option>Saignements</option>
-								<option>Symptômes généraux</option>
-								<option>Gynécologie & obstétrique</option>
-								<option>Symptômes chez l’enfant</option>
-							</select>
-						</div>
+							<div class="col-12">
+								<label class="form-label">Catégorie</label>
+								<select name="category" class="form-select" required>
+									<option value="" disabled selected>— Choisir —</option>
+									<option>Abdomen & système digestif</option>
+									<option>Appareil génito-urinaire</option>
+									<option>Articulations & muscles</option>
+									<option>Cerveau & système nerveux</option>
+									<option>Thorax & système respiratoire</option>
+									<option>ORL</option>
+									<option>Œil</option>
+									<option>Peau & cheveux</option>
+									<option>Saignements</option>
+									<option>Symptômes généraux</option>
+									<option>Gynécologie & obstétrique</option>
+									<option>Symptômes chez l’enfant</option>
+								</select>
+							</div>
 
-						<div class="mb-3">
-							<label class="form-label">Description</label>
-							<textarea name="description" class="form-control" rows="3"></textarea>
+							<div class="col-12">
+								<label class="form-label">Description</label>
+								<textarea name="description" class="form-control" rows="3"></textarea>
+							</div>
 						</div>
 
 					</div>
 
 					<div class="modal-footer">
-						<button class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">
+						<button class="btn btn-secondary rounded-pill px-4" type="button" data-bs-dismiss="modal">
 							Annuler
 						</button>
-						<button class="btn btn-primary rounded-pill">
+						<button class="btn btn-primary rounded-pill px-4" type="submit">
+							<i class="bi bi-check2-circle me-1"></i>
 							Enregistrer
 						</button>
 					</div>
@@ -124,126 +168,133 @@
 
 {% endblock %}
 
-{% block javascripts %}
 
-	{# ================= DATATABLES JS ================= #}
+{% block javascripts %}
+	{{ parent() }}
+
+{# ================= DATATABLES JS ================= #}
 	 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 	 <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
 	 <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
 
-{{ parent() }}
-
 	 <script>
-	$(document).ready(function () {
+			$(document).ready(function () {
 	
-	    const modal = new bootstrap.Modal(document.getElementById("modalSymptome"));
-	    const form  = document.getElementById("symptomeForm");
-	    let editId  = null;
+				const modal = new bootstrap.Modal(document.getElementById("modalSymptome"));
+				const form  = document.getElementById("symptomeForm");
+				let editId  = null;
 	
-	    // ✅ DATATABLE
-	    const table = $('#symptomesTable').DataTable({
-	        ajax: {
-	            url: '/api/symptomes',
-	            dataSrc: ''
-	        },
-	        columns: [
-	            { data: 'name', className: 'fw-semibold' },
-	            {
-	                data: 'category',
-	                render: d =>
-	                    `<span class="badge bg-success rounded-pill px-3">${d}</span>`
-	            },
-	            {
-	                data: 'description',
-	                render: d => d ?? '<span class="text-muted">—</span>'
-	            },
-				{
-    data: 'hasTraitement',
-    className: 'text-center',
-    render: (has, type, row) => {
-        if (has) {
-            return `
-                <span class="badge bg-success rounded-pill px-3">
-                    ✔ ${row.traitementCount}
-                </span>
-            `;
-        }
-        return `
-            <span class="badge bg-warning rounded-pill px-3">
-<a href="{{path('traitement_index')}}">Ajouter un traitement</a>
+				// ✅ DATATABLE
+				const table = $('#symptomesTable').DataTable({
+					ajax: {
+						url: '/api/symptomes',
+						dataSrc: ''
+					},
+					columns: [
+						{ data: 'name', className: 'fw-semibold' },
+						{
+							data: 'category',
+							render: d => `<span class="badge bg-success rounded-pill px-3">${d}</span>`
+						},
+						{
+							data: 'description',
+							render: d => d ?? '<span class="text-muted">—</span>'
+						},
+						{
+							data: 'hasTraitement',
+							className: 'text-center',
+							render: (has, type, row) => {
+								if (has) {
+									return `
+										<span class="badge bg-success rounded-pill px-3">
+											<i class="bi bi-check2-circle me-1"></i>${row.traitementCount}
+										</span>
+									`;
+								}
+								return `
+									<a href="{{ path('traitement_index') }}"
+									   class="badge bg-warning text-dark rounded-pill px-3 text-decoration-none">
+										<i class="bi bi-plus-circle me-1"></i>Ajouter
+									</a>
+								`;
+							}
+						},
+						{
+							data: 'id',
+							orderable: false,
+							className: 'text-center',
+render: id => `
+<div class="table-actions">
+	<button type="button" class="btn btn-action btn-action-primary" onclick="editSymptome(${id})" title="Modifier">
+		<i class="bi bi-pencil"></i>
+	</button>
 
-            </span>
-        `;
-    }
-},
+	<button type="button" class="btn btn-action btn-action-danger" onclick="deleteSymptome(${id})" title="Supprimer">
+		<i class="bi bi-trash"></i>
+	</button>
+</div>
+`
 
-	            {
-	                data: 'id',
-	                orderable: false,
-	                className: 'text-center',
-	                render: id => `
-	                    <button class="btn btn-sm btn-outline-primary rounded-pill me-1"
-	                            onclick="editSymptome(${id})">
-	                        <i class="bi bi-pencil"></i>
-	                    </button>
-	                    <button class="btn btn-sm btn-outline-danger rounded-pill"
-	                            onclick="deleteSymptome(${id})">
-	                        <i class="bi bi-trash"></i>
-	                    </button>
-	                `
-	            }
-	        ],
-	        language: {
-	            url: '//cdn.datatables.net/plug-ins/1.13.8/i18n/fr-FR.json'
-	        },
-	        pageLength: 10,
-	        responsive: true
-	    });
+
+						}
+					],
+					language: {
+						url: '//cdn.datatables.net/plug-ins/1.13.8/i18n/fr-FR.json'
+					},
+					pageLength: 10,
+					responsive: true
+				});
 	
-	    // ✏️ EDIT
-	    window.editSymptome = async (id) => {
-	        const s = await fetch(`/api/symptomes/${id}`).then(r => r.json());
-	        editId = id;
-	        form.name.value        = s.name;
-	        form.category.value    = s.category;
-	        form.description.value = s.description ?? '';
-	        modal.show();
-	    };
+				// ✨ Reset état modal quand on ferme
+				document.getElementById("modalSymptome").addEventListener("hidden.bs.modal", () => {
+					editId = null;
+					form.reset();
+				});
 	
-	    // 🗑 DELETE
-	    window.deleteSymptome = async (id) => {
-	        if (!confirm("Supprimer ce symptôme ?")) return;
-	        await fetch(`/api/symptomes/${id}`, { method: 'DELETE' });
-	        table.ajax.reload(null, false);
-	    };
+				// ✏️ EDIT
+				window.editSymptome = async (id) => {
+					const s = await fetch(`/api/symptomes/${id}`).then(r => r.json());
+					editId = id;
+					form.name.value        = s.name;
+					form.category.value    = s.category;
+					form.description.value = s.description ?? '';
+					modal.show();
+				};
 	
-	    // 💾 SUBMIT
-	    form.addEventListener("submit", async (e) => {
-	        e.preventDefault();
+				// 🗑 DELETE
+				window.deleteSymptome = async (id) => {
+					if (!confirm("Supprimer ce symptôme ?")) return;
+					await fetch(`/api/symptomes/${id}`, { method: 'DELETE' });
+					table.ajax.reload(null, false);
+				};
 	
-	        const payload = {
-	            name: form.name.value,
-	            category: form.category.value,
-	            description: form.description.value
-	        };
+				// 💾 SUBMIT
+				form.addEventListener("submit", async (e) => {
+					e.preventDefault();
 	
-	        const url    = editId ? `/api/symptomes/${editId}` : `/api/symptomes`;
-	        const method = editId ? 'PUT' : 'POST';
+					const payload = {
+						name: form.name.value,
+						category: form.category.value,
+						description: form.description.value
+					};
 	
-	        await fetch(url, {
-	            method,
-	            headers: { 'Content-Type': 'application/json' },
-	            body: JSON.stringify(payload)
-	        });
+					const url    = editId ? `/api/symptomes/${editId}` : `/api/symptomes`;
+					const method = editId ? 'PUT' : 'POST';
 	
-	        editId = null;
-	        form.reset();
-	        modal.hide();
-	        table.ajax.reload(null, false);
-	    });
+					await fetch(url, {
+						method,
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify(payload)
+					});
 	
-	});
-	</script>
+					editId = null;
+					form.reset();
+					modal.hide();
+					table.ajax.reload(null, false);
+				});
+	
+			});
+		</script>
 
 {% endblock %}
 

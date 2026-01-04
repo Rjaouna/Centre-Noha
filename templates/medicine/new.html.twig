@@ -5,95 +5,188 @@
 
 {% block body %}
 
-	<div class="container mt-5">
-		<div class="card shadow-lg border-0 rounded-4">
+<div class="mt-4">
 
-			<div class="card-header bg-danger text-white rounded-top-4">
-				<h4 class="mb-0">
-					<i class="bi bi-capsule"></i>
-					Ajouter un médicament
-				</h4>
-			</div>
 
-			<div class="card-body">
+{# ================= HEADER : AJOUT MÉDICAMENT ================= #}
+{% embed '_partials/_page_header.html.twig' with {
+        icon: 'bi bi-capsule-pill',
+        title: 'Ajouter un médicament',
+        subtitle: null
+    } %}
 
-				<div id="alertBox"></div>
+	{% block header_subtitle %}
+		<small class="text-muted">
+			Créez une nouvelle fiche médicament dans la base
+		</small>
+	{% endblock %}
 
-				<form id="medicineForm">
+	{# Actions métier (mobile à gauche) #}
+	{% block header_actions_left %}
+<a href="{{ path('medicine_index') }}" class="action-icon bg-outline" data-bs-toggle="tooltip" title="Retour à la recherche">
 
-					<div class="row g-3">
 
-						<div class="col-md-6">
-							<label class="form-label">Code</label>
-							<input type="text" class="form-control" id="code" placeholder="3400931234567" required>
-						</div>
+			<i class="bi bi-search"></i>
+		</a>
+	{% endblock %}
 
-						<div class="col-md-6">
-							<label class="form-label">Nom</label>
-							<input type="text" class="form-control" id="name" placeholder="Doliprane" required>
-						</div>
+	{# Navigation (mobile à droite) #}
+	{% block header_actions_right %}
+		<a href="{{ path('app_home') }}" class="action-icon bg-light text-dark" data-bs-toggle="tooltip" title="Accueil">
+			<i class="bi bi-house"></i>
+		</a>
 
-						<div class="col-md-6">
-							<label class="form-label">DCI</label>
-							<input type="text" class="form-control" id="dci" placeholder="Paracétamol">
-						</div>
+		<a href="javascript:void(0);" onclick="history.back()" class="action-icon bg-light" data-bs-toggle="tooltip" title="Retour">
+			<i class="bi bi-arrow-left"></i>
+		</a>
+	{% endblock %}
 
-						<div class="col-md-3">
-							<label class="form-label">Dosage</label>
-							<input type="text" class="form-control" id="dosage" placeholder="500">
-						</div>
+{% endembed %}
 
-						<div class="col-md-3">
-							<label class="form-label">Unité dosage</label>
-							<input type="text" class="form-control" id="uniteDosage" placeholder="mg" required>
-						</div>
+{# ================= FORM CARD ================= #}
+<section class="mb-4">
+	<div class="card shadow-sm border-0 rounded-4">
+		<div class="card-body p-4 p-md-5">
 
-						<div class="col-md-6">
-							<label class="form-label">Forme</label>
-							<input type="text" class="form-control" id="forme" placeholder="Comprimé">
-						</div>
+			<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-4">
+				<div>
+					<h4 class="fw-bold mb-1 text-danger d-flex align-items-center">
+						<i class="bi bi-plus-circle me-2"></i>
+						Informations du médicament
+					</h4>
 
-						<div class="col-md-6">
-							<label class="form-label">Présentation</label>
-							<input type="text" class="form-control" id="presentation" placeholder="Boîte de 16 comprimés">
-						</div>
+<p class="text-muted small mb-0">
+	Renseignez les champs essentiels pour créer la fiche
+</p>
 
-						<div class="col-md-4">
-							<label class="form-label">PPV</label>
-							<input type="number" step="0.01" class="form-control" id="ppv" placeholder="2.18" required>
-						</div>
+</div>
 
-						<div class="col-md-4">
-							<label class="form-label">PH</label>
-							<input type="number" step="0.01" class="form-control" id="ph" placeholder="1.50">
-						</div>
 
-						<div class="col-md-4">
-							<label class="form-label">Taux remboursement (%)</label>
-							<input type="number" class="form-control" id="tauxRembourssement" placeholder="65">
-						</div>
+<span class="badge bg-danger-subtle text-danger rounded-pill px-3 py-2 align-self-start align-self-md-center">
+	<i class="bi bi-shield-check me-1"></i>
+	Ajout sécurisé
+</span></div>
 
-						<div class="col-md-12 form-check mt-2">
-							<input class="form-check-input" type="checkbox" id="isGeneric">
-							<label class="form-check-label">
-								Médicament générique
-							</label>
-						</div>
 
-					</div>
+<div id="alertBox"></div>
 
-					<div class="text-end mt-4">
-						<button type="submit" class="btn btn-danger px-5">
-							<i class="bi bi-plus-circle"></i>
-							Ajouter
-						</button>
-					</div>
 
-				</form>
+<form id="medicineForm">
 
-			</div>
-		</div>
+<div class="row g-3">
+
+
+<div class="col-md-6">
+
+<label class="form-label fw-semibold">Code</label>
+<input type="text" class="form-control rounded-3" id="code" placeholder="3400931234567" required></div>
+
+
+<div class="col-md-6">
+
+<label class="form-label fw-semibold">Nom</label>
+<input type="text" class="form-control rounded-3" id="name" placeholder="Doliprane" required></div>
+
+
+<div class="col-md-6">
+
+<label class="form-label fw-semibold">DCI</label>
+<input type="text" class="form-control rounded-3" id="dci" placeholder="Paracétamol"></div>
+
+
+<div class="col-md-3">
+
+<label class="form-label fw-semibold">Dosage</label>
+<input type="text" class="form-control rounded-3" id="dosage" placeholder="500"></div>
+
+
+<div class="col-md-3">
+
+<label class="form-label fw-semibold">Unité dosage</label>
+<input type="text" class="form-control rounded-3" id="uniteDosage" placeholder="mg" required></div>
+
+
+<div class="col-md-6">
+
+<label class="form-label fw-semibold">Forme</label>
+<input type="text" class="form-control rounded-3" id="forme" placeholder="Comprimé"></div>
+
+
+<div class="col-md-6">
+
+<label class="form-label fw-semibold">Présentation</label>
+<input type="text" class="form-control rounded-3" id="presentation" placeholder="Boîte de 16 comprimés"></div>
+
+
+<div class="col-md-4">
+
+<label class="form-label fw-semibold">PPV</label>
+<div class="input-group">
+	<span class="input-group-text bg-light">DH</span>
+	<input type="number" step="0.01" class="form-control rounded-end-3" id="ppv" placeholder="2.18" required>
+</div></div>
+
+
+<div class="col-md-4">
+
+<label class="form-label fw-semibold">PH</label>
+<div class="input-group">
+	<span class="input-group-text bg-light">DH</span>
+	<input type="number" step="0.01" class="form-control rounded-end-3" id="ph" placeholder="1.50">
+</div></div>
+
+
+<div class="col-md-4">
+
+<label class="form-label fw-semibold">Taux remboursement (%)</label>
+<input type="number" class="form-control rounded-3" id="tauxRembourssement" placeholder="65"></div>
+
+
+<div class="col-12">
+	<div class="form-check mt-2">
+		<input class="form-check-input" type="checkbox" id="isGeneric">
+
+<label class="form-check-label fw-semibold">
+	Médicament générique
+</label></div>
+
+</div>
+
+
+</div>
+
+
+<div class="d-flex flex-column flex-md-row justify-content-end gap-2 mt-4">
+	<button type="button" onclick="history.back()" class="btn btn-outline-secondary rounded-pill px-4">
+		<i class="bi bi-arrow-left me-1"></i>
+		Annuler
+	</button>
+
+	<button type="submit" class="btn btn-danger rounded-pill px-4 shadow-sm">
+		<i class="bi bi-plus-circle me-1"></i>
+		Ajouter
+	</button>
+</div>
+
+
+</form>
+
+
+</div></div>
+
+</section>
+
+
 	</div>
+
+<style>
+	/* petit polish */
+	.form-control:focus {
+		box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.15);
+		border-color: rgba(220, 53, 69, 0.4);
+	}
+</style>
+
 
 	 <script src="{{ asset('js/medicine.js') }}"></script>
 

@@ -185,3 +185,41 @@
         font-size: 1rem;
     }
 }
+/* Scrollbar style Bootstrap primary */
+:root{
+  /* fallback si jamais --bs-primary n'existe pas */
+  --scroll-thumb: var(--bs-primary, #0d6efd);
+  --scroll-track: rgba(0,0,0,.06);
+}
+
+/* Firefox */
+*{
+  scrollbar-width: thin;
+  scrollbar-color: var(--scroll-thumb) var(--scroll-track);
+}
+
+/* Chrome / Edge / Safari */
+*::-webkit-scrollbar{
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track{
+  background: var(--scroll-track);
+  border-radius: 999px;
+}
+
+*::-webkit-scrollbar-thumb{
+  background: var(--scroll-thumb);
+  border-radius: 999px;
+  border: 2px solid transparent;     /* effet “pill” clean */
+  background-clip: content-box;      /* garde un padding interne */
+}
+
+*::-webkit-scrollbar-thumb:hover{
+  filter: brightness(1.1);
+}
+
+*::-webkit-scrollbar-thumb:active{
+  filter: brightness(.95);
+}
