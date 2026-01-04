@@ -65,9 +65,11 @@
 					</ul>
 				</div>
 
-				<button type="button" class="btn btn-icon-soft d-lg-none" data-bs-toggle="offcanvas" data-bs-target="#moreOffcanvas" aria-label="Menu">
-					<i class="bi bi-three-dots-vertical"></i>
-				</button>
+<button type="button" class="btn btn-icon-soft d-lg-none" data-bs-toggle="offcanvas" data-bs-target="#mobileMenuOffcanvas" aria-label="Menu">
+	<i class="bi bi-three-dots-vertical"></i>
+</button>
+
+
 
 			</div>
 		</div>
@@ -148,35 +150,125 @@
 		</div>
 	</aside>
 
-	{# ===========================
-		   MOBILE BOTTOM NAV
-		=========================== #}
-	<nav class="app-bottom-nav d-lg-none" aria-label="Navigation principale">
-		<a href="{{ path('app_home') }}" class="bn-item {{ r == 'app_home' ? 'active' : '' }}">
-			<i class="bi bi-house-door"></i>
-			<span>Accueil</span>
-		</a>
+{# ===========================
+   OFFCANVAS: Menu Mobile (remplace le bottom nav)
+=========================== #}
+<div class="offcanvas offcanvas-end app-offcanvas d-lg-none" tabindex="-1" id="mobileMenuOffcanvas">
+	<div class="offcanvas-header border-0">
+		<div class="d-flex align-items-center gap-3">
+			<img src="https://ui-avatars.com/api/?name={{ app.user.nom ?? app.user.email }}&background=0D8ABC&color=fff" class="rounded-circle" width="48" height="48" alt="avatar">
+			<div class="min-w-0">
+				<div class="fw-bold text-truncate">{{ app.user.nom ?? app.user.email }}</div>
+				<small class="text-muted text-truncate d-block">{{ app.user.email }}</small>
+			</div>
+		</div>
+		<button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+	</div>
 
-		<a href="{{ path('app_fiche_client_index') }}" class="bn-item {{ r starts with 'app_fiche_client' ? 'active' : '' }}">
-			<i class="bi bi-people"></i>
-			<span>Patients</span>
-		</a>
+	<div
+		class="offcanvas-body pt-2">
 
-		<a href="{{ path('rendezvous_calendrier') }}" class="bn-item {{ r starts with 'rendezvous_calendrier' ? 'active' : '' }}">
-			<i class="bi bi-calendar3"></i>
-			<span>RDV</span>
-		</a>
+		{# 🔹 Navigation principale (ce que tu avais en bas) #}
+		<div class="mm-section-title">
+			<i class="bi bi-compass"></i>
+			<span>Navigation</span>
+		</div>
 
-		<button type="button" class="bn-item" data-bs-toggle="offcanvas" data-bs-target="#refOffcanvas" aria-label="Référentiel">
-			<i class="bi bi-heart-pulse"></i>
-			<span>Réf</span>
-		</button>
+		<div class="mm-grid">
+			<a class="mm-tile {{ r == 'app_home' ? 'active' : '' }}" href="{{ path('app_home') }}">
+				<span class="mm-icon">
+					<i class="bi bi-house-door"></i>
+				</span>
+				<span class="mm-label">Accueil</span>
+			</a>
 
-		<button type="button" class="bn-item" data-bs-toggle="offcanvas" data-bs-target="#moreOffcanvas" aria-label="Plus">
-			<i class="bi bi-grid-3x3-gap"></i>
-			<span>Plus</span>
-		</button>
-	</nav>
+			<a class="mm-tile {{ r starts with 'app_fiche_client' ? 'active' : '' }}" href="{{ path('app_fiche_client_index') }}">
+				<span class="mm-icon">
+					<i class="bi bi-people"></i>
+				</span>
+				<span class="mm-label">Patients</span>
+			</a>
+
+			<a class="mm-tile {{ r starts with 'rendezvous_calendrier' ? 'active' : '' }}" href="{{ path('rendezvous_calendrier') }}">
+				<span class="mm-icon">
+					<i class="bi bi-calendar3"></i>
+				</span>
+				<span class="mm-label">RDV</span>
+			</a>
+
+			<a class="mm-tile" href="{{ path('symptome_index') }}">
+				<span class="mm-icon">
+					<i class="bi bi-heart-pulse"></i>
+				</span>
+				<span class="mm-label">Référentiel</span>
+			</a>
+		</div>
+
+		<hr
+		class="my-3">
+
+		{# 🔹 Référentiel (accès rapides) #}
+		<div class="mm-section-title">
+			<i class="bi bi-heart-pulse text-danger"></i>
+			<span>Référentiel médical</span>
+		</div>
+
+		<div class="mm-list">
+			<a class="mm-row {{ r == 'symptome_index' ? 'active' : '' }}" href="{{ path('symptome_index') }}">
+				<i class="bi bi-activity"></i>
+				<span>Symptômes</span>
+				<i class="bi bi-chevron-right ms-auto"></i>
+			</a>
+			<a class="mm-row {{ r == 'traitement_index' ? 'active' : '' }}" href="{{ path('traitement_index') }}">
+				<i class="bi bi-capsule"></i>
+				<span>Traitements</span>
+				<i class="bi bi-chevron-right ms-auto"></i>
+			</a>
+			<a class="mm-row {{ r == 'maladie_chronique_index' ? 'active' : '' }}" href="{{ path('maladie_chronique_index') }}">
+				<i class="bi bi-heart-pulse"></i>
+				<span>Maladies chroniques</span>
+				<i class="bi bi-chevron-right ms-auto"></i>
+			</a>
+			<a class="mm-row {{ r == 'certificats_index' ? 'active' : '' }}" href="{{ path('certificats_index') }}">
+				<i class="bi bi-file-medical"></i>
+				<span>Certificats</span>
+				<i class="bi bi-chevron-right ms-auto"></i>
+			</a>
+			<a class="mm-row {{ r == 'disponibilite_index' ? 'active' : '' }}" href="{{ path('disponibilite_index') }}">
+				<i class="bi bi-calendar-check"></i>
+				<span>Disponibilités</span>
+				<i class="bi bi-chevron-right ms-auto"></i>
+			</a>
+		</div>
+
+		<hr
+		class="my-3">
+
+		{# 🔹 Compte (Plus) #}
+		<div class="mm-section-title">
+			<i class="bi bi-person"></i>
+			<span>Compte</span>
+		</div>
+
+		<div class="d-grid gap-2">
+			<a href="{{ path('app_user_profile') }}" class="btn btn-light rounded-pill text-start px-4">
+				<i class="bi bi-person-circle me-2"></i>
+				Profil
+			</a>
+			<a href="{{ path('app_cabinet_index') }}" class="btn btn-light rounded-pill text-start px-4">
+				<i class="bi bi-gear me-2"></i>
+				Paramètres
+			</a>
+
+			<a href="{{ path('app_logout') }}" class="btn btn-danger rounded-pill px-4 mt-1">
+				<i class="bi bi-box-arrow-right me-2"></i>
+				Déconnexion
+			</a>
+		</div>
+
+	</div>
+</div>
+
 
 	{# ===========================
 		   OFFCANVAS: Référentiel (mobile)
@@ -312,10 +404,85 @@
 			}
 		}
 		@media(max-width: 991.98px) {
-			body {
-				padding-bottom: 74px;
-			}
-		}
+	body { padding-bottom: 0; } /* ✅ plus de menu bottom */
+}
+/* ===== Mobile menu (offcanvas) ===== */
+.mm-section-title{
+	display:flex;
+	align-items:center;
+	gap:10px;
+	font-weight:900;
+	color:#111827;
+	margin-bottom:10px;
+}
+
+.mm-grid{
+	display:grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 10px;
+	margin-bottom: 6px;
+}
+
+.mm-tile{
+	background:#fff;
+	border:1px solid rgba(0,0,0,.06);
+	border-radius:18px;
+	padding:12px;
+	display:flex;
+	align-items:center;
+	gap:10px;
+	text-decoration:none;
+	color:#111827;
+	box-shadow:0 10px 26px rgba(0,0,0,.06);
+	transition:.18s ease;
+}
+.mm-tile:hover{ transform: translateY(-1px); }
+.mm-tile.active{
+	border-color: rgba(13,110,253,.25);
+	background: rgba(13,110,253,.06);
+}
+
+.mm-icon{
+	width:40px;
+	height:40px;
+	border-radius:14px;
+	display:inline-flex;
+	align-items:center;
+	justify-content:center;
+	background: rgba(13,110,253,.10);
+	color:#0d6efd;
+	box-shadow: inset 0 0 0 1px rgba(13,110,253,.12);
+	flex:0 0 auto;
+}
+.mm-label{ font-weight:900; }
+
+.mm-list{ display:grid; gap:8px; }
+.mm-row{
+	display:flex;
+	align-items:center;
+	gap:10px;
+	padding:12px 14px;
+	border-radius:16px;
+	background:#fff;
+	border:1px solid rgba(0,0,0,.06);
+	text-decoration:none;
+	color:#111827;
+	box-shadow:0 10px 26px rgba(0,0,0,.06);
+	transition:.18s ease;
+}
+.mm-row:hover{
+	background: rgba(13,110,253,.06);
+	border-color: rgba(13,110,253,.14);
+}
+.mm-row i:first-child{
+	color:#0d6efd;
+	font-size:1.1rem;
+}
+.mm-row.active{
+	background: rgba(13,110,253,.10);
+	border-color: rgba(13,110,253,.20);
+}
+
 
 		/* Topbar */
 		.app-topbar {
