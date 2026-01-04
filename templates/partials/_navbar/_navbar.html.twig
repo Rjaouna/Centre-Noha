@@ -1,276 +1,290 @@
+{# templates/_partials/_app_menu.html.twig #}
 {% if app.user %}
+	{% set r = app.request.attributes.get('_route') %}
 
-	<nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
+	{# ===========================
+		   TOP APP BAR (minimal, app-like)
+		=========================== #}
+	<header class="app-topbar border-bottom sticky-top">
+		<div class="container-fluid d-flex align-items-center justify-content-between py-2">
 
+			<a href="{{ path('app_home') }}" class="app-brand d-flex align-items-center gap-2 text-decoration-none">
+				<span class="brand-icon">
+					<i class="bi bi-clipboard-pulse"></i>
+				</span>
 
-		<div
-			class="container-fluid">
-
-
-			<!-- LOGO -->
-			<a class="navbar-brand fs-3" href="{{ path('app_home') }}">
-				<i class="bi bi-clipboard-pulse"></i>
-
-
-				<span id="logoName">
-					<span id="globalLoader">
-						<div class="spinner"></div>
-					</span>
+				<span class="brand-text">
+					<span class="brand-name" id="logoName">Chargement…</span>
+					<small class="brand-sub text-muted d-none d-sm-block">Cabinet</small>
 				</span>
 			</a>
 
-			<!-- RIGHT ICONS + BURGER (MOBILE FIRST) -->
 			<div
-				class="d-flex align-items-center">
+				class="d-flex align-items-center gap-2">
 
-				<!-- NOTIFICATION ICON MOBILE (ouvre le MODAL) -->
-				<div class="nav-item mx-2 d-lg-none">
-					<a class="nav-link position-relative mx-2" href="#" id="notifMobile" data-bs-toggle="modal" data-bs-target="#notifModal">
+				{# Notifications (ouvre modal) #}
+				<button type="button" class="btn btn-icon-soft position-relative" data-bs-toggle="modal" data-bs-target="#notifModal" aria-label="Notifications">
+					<i class="bi bi-bell-fill"></i>
+					<span class="badge bg-danger badge-notif" id="notifTopBadge">0</span>
+				</button>
 
-
-						<i class="bi bi-bell-fill fs-2 text-white"></i>
-
-
-						<span class="badge bg-danger position-absolute top-0 start-100 translate-middle px-2 rounded-pill" id="notifMobileBadge">
-
-
-							0
+				{# Profil : desktop dropdown / mobile offcanvas #}
+				<div class="d-none d-lg-block dropdown">
+					<button class="btn btn-user dropdown-toggle d-flex align-items-center gap-2" data-bs-toggle="dropdown" aria-expanded="false">
+						<span class="d-none d-xl-inline fw-semibold">
+							{{ app.user.nom ?? app.user.email }}
 						</span>
-					</a>
-				</div>
+						<img src="https://ui-avatars.com/api/?name={{ app.user.nom ?? app.user.email }}&background=0D8ABC&color=fff" class="rounded-circle" width="36" height="36" alt="avatar">
+					</button>
 
-				<!-- PROFILE ICON MOBILE -->
-				<div class="nav-item dropdown d-none d-lg-none mx-2">
-
-
-					<a class="nav-link" href="#" id="profileMobile" data-bs-toggle="dropdown">
-						<img src="https://ui-avatars.com/api/?name={{ app.user.nom ?? app.user.email }}&background=0D8ABC&color=fff" class="rounded-circle" width="40" height="40">
-					</a>
-
-					<ul class="dropdown-menu dropdown-menu-end shadow animated--grow-in">
+					<ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-4 p-2">
+						<li class="px-3 py-2">
+							<div class="fw-bold">{{ app.user.email }}</div>
+							<small class="text-muted">Compte médical</small>
+						</li>
+						<li><hr class="my-2"></li>
 						<li>
-							<a class="dropdown-item" href="{{ path('app_user_profile') }}">
-								<i class="bi bi-person-circle me-2"></i>
+							<a class="dropdown-item rounded-3 d-flex align-items-center gap-2" href="{{ path('app_user_profile') }}">
+								<i class="bi bi-person-circle"></i>
 								Profil
 							</a>
 						</li>
 						<li>
-							<a class="dropdown-item" href="{{ path('app_cabinet_index') }}">
-								<i class="bi bi-gear me-2"></i>
+							<a class="dropdown-item rounded-3 d-flex align-items-center gap-2" href="{{ path('app_cabinet_index') }}">
+								<i class="bi bi-gear"></i>
 								Paramètres
 							</a>
 						</li>
-
-						<li><hr></li>
-
+						<li><hr class="my-2"></li>
 						<li>
-							<a class="dropdown-item text-danger" href="{{ path('app_logout') }}">
-								<i class="bi bi-box-arrow-right me-2"></i>
+							<a class="dropdown-item rounded-3 d-flex align-items-center gap-2 text-danger" href="{{ path('app_logout') }}">
+								<i class="bi bi-box-arrow-right"></i>
 								Déconnexion
 							</a>
 						</li>
 					</ul>
 				</div>
 
-				<!-- BURGER -->
-				<button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileDrawer">
-					<i class="bi bi-list fs-1 text-white"></i>
+				<button type="button" class="btn btn-icon-soft d-lg-none" data-bs-toggle="offcanvas" data-bs-target="#moreOffcanvas" aria-label="Menu">
+					<i class="bi bi-three-dots-vertical"></i>
 				</button>
 
+			</div>
+		</div>
+	</header>
 
+	{# ===========================
+		   DESKTOP SIDEBAR
+		=========================== #}
+	<aside class="app-sidebar d-none d-lg-flex">
+		<div class="sidebar-inner">
+
+			<div class="sidebar-user">
+				<img src="https://ui-avatars.com/api/?name={{ app.user.nom ?? app.user.email }}&background=0D8ABC&color=fff" class="rounded-circle" width="44" height="44" alt="avatar">
+				<div class="min-w-0">
+					<div class="fw-bold text-truncate">{{ app.user.nom ?? app.user.email }}</div>
+					<small class="text-muted text-truncate d-block">Compte médical</small>
+				</div>
 			</div>
 
-			<!-- MENU COLLAPSABLE -->
-			<div
-				class="collapse navbar-collapse" id="mainNavbar">
+			<nav class="sidebar-nav mt-3">
 
-				<!-- LEFT MENU -->
-				<ul class="navbar-nav me-auto mt-3 mt-lg-0">
+				<a class="side-link {{ r == 'app_home' ? 'active' : '' }}" href="{{ path('app_home') }}">
+					<i class="bi bi-house-door"></i>
+					<span>Accueil</span>
+				</a>
 
-					<li class="nav-item">
-						<a class="nav-link {{ app.request.attributes.get('_route') == 'app_home' ? 'active' : '' }}" href="{{ path('app_home') }}">
-							<i class="bi bi-house-door"></i>
-							Accueil
-						</a>
-					</li>
+				<a class="side-link {{ r starts with 'app_fiche_client' ? 'active' : '' }}" href="{{ path('app_fiche_client_index') }}">
+					<i class="bi bi-people"></i>
+					<span>Patients</span>
+				</a>
 
-					<li class="nav-item">
-						<a class="nav-link {{ app.request.attributes.get('_route') starts with 'app_fiche_client' ? 'active' : '' }}" href="{{ path('app_fiche_client_index') }}">
-							<i class="bi bi-people"></i>
-							Patients
-						</a>
-					</li>
-<li class="nav-item">
-	<a class="nav-link {{ app.request.attributes.get('_route') starts with 'rendezvous_calendrier' ? 'active' : '' }}" href="{{ path('rendezvous_calendrier') }}">
+				<a class="side-link {{ r starts with 'rendezvous_calendrier' ? 'active' : '' }}" href="{{ path('rendezvous_calendrier') }}">
+					<i class="bi bi-calendar3"></i>
+					<span>Rendez-vous</span>
+				</a>
 
+				<div class="side-section mt-3">
+					<div class="side-section-title">
+						<i class="bi bi-heart-pulse text-danger"></i>
+						<span>Référentiel</span>
+					</div>
 
-		<i class="bi bi-calendar3"></i>
-		Rendez-vous
-	</a>
-</li>
+					<a class="side-sublink {{ r == 'symptome_index' ? 'active' : '' }}" href="{{ path('symptome_index') }}">
+						<i class="bi bi-activity"></i>
+						<span>Symptômes</span>
+					</a>
 
+					<a class="side-sublink {{ r == 'maladie_chronique_index' ? 'active' : '' }}" href="{{ path('maladie_chronique_index') }}">
+						<i class="bi bi-heart-pulse"></i>
+						<span>Maladies chroniques</span>
+					</a>
 
+					<a class="side-sublink {{ r == 'certificats_index' ? 'active' : '' }}" href="{{ path('certificats_index') }}">
+						<i class="bi bi-file-medical"></i>
+						<span>Certificats</span>
+					</a>
 
-					<li class="nav-item dropdown">
-						<a class="nav-link dropdown-toggle" href="#" id="santeDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+					<a class="side-sublink {{ r == 'traitement_index' ? 'active' : '' }}" href="{{ path('traitement_index') }}">
+						<i class="bi bi-capsule"></i>
+						<span>Traitements</span>
+					</a>
 
+					<a class="side-sublink {{ r == 'disponibilite_index' ? 'active' : '' }}" href="{{ path('disponibilite_index') }}">
+						<i class="bi bi-calendar-check"></i>
+						<span>Disponibilités</span>
+					</a>
+				</div>
 
-							<i class="bi bi-heart-pulse"></i>
-							Référentiel médical
+			</nav>
 
-
-						</a>
-
-						<ul class="dropdown-menu shadow rounded-4" aria-labelledby="santeDropdown">
-
-							<li>
-								<a class="dropdown-item d-flex align-items-center gap-2" href="{{ path('symptome_index') }}">
-									<i class="bi bi-activity text-primary"></i>
-
-									Gestion des symptômes
-
-								</a>
-							</li>
-
-
-							<li>
-								<a class="dropdown-item d-flex align-items-center gap-2" href="{{ path('maladie_chronique_index') }}">
-									<i class="bi bi-heart-pulse text-danger"></i>
-									Maladies chroniques
-
-								</a>
-							</li>
-							<li>
-								<a class="dropdown-item d-flex align-items-center gap-2" href="{{ path('certificats_index') }}">
-									<i class="bi bi-file-medical text-secondary"></i>
-
-
-									Gestion des certificats</a>
-							</li>
-							<li>
-								<a class="dropdown-item d-flex align-items-center gap-2" href="{{ path('traitement_index') }}">
-									<i class="bi bi-capsule text-success"></i>
-									Traitements
-								</a>
-							</li>
-<li>
-	<a class="dropdown-item d-flex align-items-center gap-2" href="{{ path('disponibilite_index') }}">
-		<i class="bi bi-calendar-check text-primary"></i>
-		Gestion des disponibilités
-	</a>
-</li>
-
-
-
-
-						</ul>
-					</li>
-
-
-
-				</ul>
-
-				<!-- DESKTOP RIGHT ICONS -->
-				<ul
-					class="navbar-nav ms-auto d-none d-lg-flex align-items-center gap-3">
-
-					<!-- NOTIF DESKTOP (ouvre aussi le MODAL) -->
-					<li class="nav-item">
-						<a class="nav-link position-relative" href="#" id="notifDesktop" data-bs-toggle="modal" data-bs-target="#notifModal">
-							<i class="bi bi-bell-fill fs-5"></i>
-							<span class="badge bg-danger position-absolute top-3 start-100 translate-middle px-2 rounded-pill">
-
-
-								0
-							</span>
-						</a>
-					</li>
-
-					<!-- PROFILE DESKTOP -->
-					<li class="nav-item d-none d-lg-block position-relative">
-
-						<a href="#" class="nav-link d-flex align-items-center gap-2" id="userPopupToggle">
-
-							<span class="fw-semibold">{{ app.user.nom ?? app.user.email }}</span>
-
-							<img src="https://ui-avatars.com/api/?name={{ app.user.nom ?? app.user.email }}&background=0D8ABC&color=fff" class="rounded-circle shadow-sm" width="40" height="40">
-						</a>
-
-						<!-- POPUP -->
-						<div id="userPopup" class="user-popup shadow-lg">
-
-							<div class="popup-header">
-								<img src="https://ui-avatars.com/api/?name={{ app.user.nom ?? app.user.email }}&background=0D8ABC&color=fff" class="rounded-circle mb-2" width="56" height="56">
-
-								<div class="fw-bold">{{  app.user.email }}</div>
-								<small class="text-muted">
-									{% if app.user.nom or app.user.prenom %}
-										{{ app.user.nom }}
-										{{ app.user.prenom }}
-									{% else %}
-										Compte médical
-									{% endif %}
-								</small>
-
-
-							</div>
-
-							<div class="popup-body">
-								<a href="{{ path('app_user_profile') }}" class="popup-link">
-									<i class="bi bi-person-circle"></i>
-									Profil
-								</a>
-
-								<a href="{{ path('app_cabinet_index') }}" class="popup-link">
-									<i class="bi bi-gear"></i>
-									Paramètres
-								</a>
-
-								<hr>
-
-								<a href="{{ path('app_logout') }}" class="popup-link text-danger">
-									<i class="bi bi-box-arrow-right"></i>
-									Déconnexion
-								</a>
-							</div>
-
-						</div>
-					</li>
-
-
-				</ul>
-
+			<div class="sidebar-footer">
+			
+				<a class="btn btn-danger w-100 rounded-pill mt-2" href="{{ path('app_logout') }}">
+					<i class="bi bi-box-arrow-right me-2"></i>Déconnexion
+				</a>
 			</div>
 
 		</div>
+	</aside>
+
+	{# ===========================
+		   MOBILE BOTTOM NAV
+		=========================== #}
+	<nav class="app-bottom-nav d-lg-none" aria-label="Navigation principale">
+		<a href="{{ path('app_home') }}" class="bn-item {{ r == 'app_home' ? 'active' : '' }}">
+			<i class="bi bi-house-door"></i>
+			<span>Accueil</span>
+		</a>
+
+		<a href="{{ path('app_fiche_client_index') }}" class="bn-item {{ r starts with 'app_fiche_client' ? 'active' : '' }}">
+			<i class="bi bi-people"></i>
+			<span>Patients</span>
+		</a>
+
+		<a href="{{ path('rendezvous_calendrier') }}" class="bn-item {{ r starts with 'rendezvous_calendrier' ? 'active' : '' }}">
+			<i class="bi bi-calendar3"></i>
+			<span>RDV</span>
+		</a>
+
+		<button type="button" class="bn-item" data-bs-toggle="offcanvas" data-bs-target="#refOffcanvas" aria-label="Référentiel">
+			<i class="bi bi-heart-pulse"></i>
+			<span>Réf</span>
+		</button>
+
+		<button type="button" class="bn-item" data-bs-toggle="offcanvas" data-bs-target="#moreOffcanvas" aria-label="Plus">
+			<i class="bi bi-grid-3x3-gap"></i>
+			<span>Plus</span>
+		</button>
 	</nav>
 
-	<!-- MODAL NOTIFICATIONS (mobile + desktop) -->
+	{# ===========================
+		   OFFCANVAS: Référentiel (mobile)
+		=========================== #}
+	<div class="offcanvas offcanvas-bottom app-offcanvas rounded-top-4" tabindex="-1" id="refOffcanvas">
+		<div class="offcanvas-header border-0 pb-0">
+			<div class="d-flex align-items-center gap-2">
+				<div class="offcanvas-icon bg-danger-subtle text-danger">
+					<i class="bi bi-heart-pulse"></i>
+				</div>
+				<div>
+					<div class="fw-bold">Référentiel médical</div>
+					<small class="text-muted">Accès rapide</small>
+				</div>
+			</div>
+			<button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+		</div>
+
+		<div class="offcanvas-body pt-3">
+			<div class="list-group list-group-flush">
+				<a class="list-group-item rounded-4 mb-2 shadow-sm border-0 d-flex align-items-center gap-2" href="{{ path('symptome_index') }}">
+					<i class="bi bi-activity text-primary"></i>
+					Symptômes
+				</a>
+
+				<a class="list-group-item rounded-4 mb-2 shadow-sm border-0 d-flex align-items-center gap-2" href="{{ path('traitement_index') }}">
+					<i class="bi bi-capsule text-success"></i>
+					Traitements
+				</a>
+
+				<a class="list-group-item rounded-4 mb-2 shadow-sm border-0 d-flex align-items-center gap-2" href="{{ path('maladie_chronique_index') }}">
+					<i class="bi bi-heart-pulse text-danger"></i>
+					Maladies chroniques
+				</a>
+
+				<a class="list-group-item rounded-4 mb-2 shadow-sm border-0 d-flex align-items-center gap-2" href="{{ path('certificats_index') }}">
+					<i class="bi bi-file-medical text-secondary"></i>
+					Certificats
+				</a>
+
+				<a class="list-group-item rounded-4 mb-2 shadow-sm border-0 d-flex align-items-center gap-2" href="{{ path('disponibilite_index') }}">
+					<i class="bi bi-calendar-check text-primary"></i>
+					Disponibilités
+				</a>
+			</div>
+		</div>
+	</div>
+
+	{# ===========================
+		   OFFCANVAS: Plus (mobile)
+		=========================== #}
+	<div class="offcanvas offcanvas-end app-offcanvas" tabindex="-1" id="moreOffcanvas">
+		<div class="offcanvas-header border-0">
+			<div class="d-flex align-items-center gap-3">
+				<img src="https://ui-avatars.com/api/?name={{ app.user.nom ?? app.user.email }}&background=0D8ABC&color=fff" class="rounded-circle" width="48" height="48" alt="avatar">
+				<div class="min-w-0">
+					<div class="fw-bold text-truncate">{{ app.user.nom ?? app.user.email }}</div>
+					<small class="text-muted text-truncate d-block">{{ app.user.email }}</small>
+				</div>
+			</div>
+			<button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+		</div>
+
+		<div class="offcanvas-body">
+			<div class="d-grid gap-2">
+				<a href="{{ path('app_user_profile') }}" class="btn btn-light rounded-pill text-start px-4">
+					<i class="bi bi-person-circle me-2"></i>
+					Profil
+				</a>
+				<a href="{{ path('app_cabinet_index') }}" class="btn btn-light rounded-pill text-start px-4">
+					<i class="bi bi-gear me-2"></i>
+					Paramètres
+				</a>
+
+				<hr class="my-2">
+
+				<a href="{{ path('app_logout') }}" class="btn btn-danger rounded-pill px-4">
+					<i class="bi bi-box-arrow-right me-2"></i>
+					Déconnexion
+				</a>
+			</div>
+		</div>
+	</div>
+
+	{# ===========================
+		   MODAL NOTIFICATIONS (inchangé)
+		=========================== #}
 	<div class="modal fade" id="notifModal" tabindex="-1" aria-hidden="true">
 		<div class="modal-dialog modal-lg modal-dialog-scrollable">
-			<div class="modal-content shadow-lg border-0">
+			<div class="modal-content shadow-lg border-0 rounded-4">
 
-				<div class="modal-header bg-primary text-white">
-					<h5 class="modal-title">
+				<div class="modal-header bg-primary text-white rounded-top-4 border-0">
+					<h5 class="modal-title fw-bold">
 						<i class="bi bi-bell-fill me-2"></i>Centre des notifications
 					</h5>
 					<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
 				</div>
 
-				<div
-					class="modal-body">
+				<div class="modal-body">
 
-					<!-- 📘 Nouveaux inscrits -->
 					<h6 class="fw-bold text-primary mb-3">
 						<i class="bi bi-person-plus-fill me-2"></i>
 						Nouveaux inscrits
 					</h6>
 					<div id="notifClientsList" class="vstack gap-3"></div>
 
-					<hr
-					class="my-4">
+					<hr class="my-4">
 
-					<!-- 📗 RDV du jour -->
 					<h6 class="fw-bold text-success mb-3">
 						<i class="bi bi-calendar-check-fill me-2"></i>
 						RDV du jour
@@ -279,433 +293,361 @@
 
 				</div>
 
-				<div class="modal-footer">
-					<button class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+				<div class="modal-footer border-0">
+					<button class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Fermer</button>
 				</div>
 
 			</div>
 		</div>
 	</div>
 
-	<div
-		class="offcanvas offcanvas-end mobile-drawer" tabindex="-1" id="mobileDrawer">
-
-		<!-- HEADER USER -->
-		<div class="drawer-header">
-			<div class="d-flex align-items-center gap-3">
-				<img src="https://ui-avatars.com/api/?name={{ app.user.nom ?? app.user.email }}&background=0D8ABC&color=fff" class="rounded-circle" width="56" height="56">
-
-				<div>
-					<div class="fw-bold text-white">
-						{{ app.user.nom ?? app.user.email }}
-					</div>
-					<small class="text-white-50">Compte médical</small>
-				</div>
-			</div>
-
-			<button class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
-		</div>
-
-		<!-- BODY -->
-		<div class="drawer-body">
-
-			<a href="{{ path('app_home') }}" class="drawer-link">
-				<i class="bi bi-house-door"></i>
-				Accueil
-			</a>
-
-			<a href="{{ path('app_fiche_client_index') }}" class="drawer-link">
-				<i class="bi bi-people"></i>
-				Patients
-			</a>
-<a href="{{ path('rendezvous_calendrier') }}" class="drawer-link">
-
-	<i class="bi bi-calendar3"></i>
-	Rendez-vous
-</a>
-
-
-
-			{# ===== SECTION Référentiel médical  ===== #}
-
-
-			<a class="drawer-link d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#santeCollapse" role="button" aria-expanded="false" aria-controls="santeCollapse">
-
-				<span>
-					<i class="bi bi-heart-pulse text-danger"></i>
-					Référentiel médical
-
-
-				</span>
-
-				<i class="bi bi-chevron-down small"></i>
-			</a>
-
-			<div class="collapse ps-3" id="santeCollapse">
-
-				<a href="{{ path('symptome_index') }}" class="drawer-link">
-					<i class="bi bi-activity text-warning"></i>
-					Symptômes
-				</a>
-
-				<a href="{{ path('maladie_chronique_index') }}" class="drawer-link">
-					<i class="bi bi-heart-pulse text-danger"></i>
-					Maladies chroniques
-				</a>
-				<a href="{{ path('certificats_index') }}" class="drawer-link">
-
-					<i class="bi bi-capsule text-success"></i>
-					Gestion de certificats</a>
-				<a href="{{ path('traitement_index') }}" class="drawer-link">
-
-
-					<i class="bi bi-capsule text-success"></i>
-					Traitements
-				</a>
-<a href="{{ path('disponibilite_index') }}" class="drawer-link">
-	<i class="bi bi-calendar-check text-primary"></i>
-	Gestion des disponibilités
-</a>
-
-
-
-
-			</div>
-			{# ========================== #}
-
-
-			<hr>
-
-			<a href="{{ path('app_user_profile') }}" class="drawer-link secondary">
-				<i class="bi bi-person-circle"></i>
-				Profil
-			</a>
-
-			<a href="{{ path('app_cabinet_index') }}" class="drawer-link secondary">
-				<i class="bi bi-gear"></i>
-				Paramètres
-			</a>
-
-			<a href="{{ path('app_logout') }}" class="btn btn-danger w-100 rounded-pill">
-				<i class="bi bi-box-arrow-right me-2"></i>
-				Déconnexion
-			</a>
-
-		</div>
-
-
-	</div>
-	 <script>
-	document.addEventListener('DOMContentLoaded', () => {
-	
-	    const toggle = document.getElementById('userPopupToggle');
-	    const popup  = document.getElementById('userPopup');
-	
-	    if (!toggle || !popup) return;
-	
-	    toggle.addEventListener('click', (e) => {
-	        e.preventDefault();
-	        popup.style.display = popup.style.display === 'block' ? 'none' : 'block';
-	    });
-	
-	    document.addEventListener('click', (e) => {
-	        if (!popup.contains(e.target) && !toggle.contains(e.target)) {
-	            popup.style.display = 'none';
-	        }
-	    });
-	});
-	</script>
-
-
+	{# ===========================
+		   STYLE (App look)
+		=========================== #}
 	<style>
-		.mobile-drawer {
-			width: 100vw !important; /* 👈 clé du fix */
-			max-width: 90vw;
-			height: 100vh;
-			background: linear-gradient(180deg, #0d6efd, #0dcaf0);
-			color: white;
-			border-top-left-radius: 24px;
-			border-bottom-left-radius: 24px;
+		/* Layout spacing for app feeling */
+		@media(min-width: 992px) {
+			body {
+				padding-left: 270px;
+			}
+		}
+		@media(max-width: 991.98px) {
+			body {
+				padding-bottom: 74px;
+			}
 		}
 
-
-		.drawer-header {
-			padding: 24px;
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
+		/* Topbar */
+		.app-topbar {
+			background: rgba(255, 255, 255, .92);
+			backdrop-filter: blur(10px);
 		}
-
-		.drawer-body {
-			padding: 20px;
-			background: #f8f9fa;
-			color: #212529;
-			height: 100%;
-		}
-
-		.drawer-link {
+		.app-brand .brand-icon {
+			width: 42px;
+			height: 42px;
+			border-radius: 14px;
 			display: flex;
 			align-items: center;
-			gap: 14px;
-			padding: 16px;
-			border-radius: 16px;
-			font-size: 1.15rem;
-			font-weight: 600;
-			margin-bottom: 12px;
-			background: white;
-			box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
-			color: #212529;
-			text-decoration: none;
-			transition: 0.25s;
-		}
-
-		.drawer-link:hover {
-			transform: translateX(4px);
-			background: #eef4ff;
-		}
-
-		.drawer-link i {
-			font-size: 1.4rem;
-			color: #0d6efd;
-		}
-
-		.drawer-link.secondary {
-			background: #f1f3f5;
-		}
-
-
-		.notify-card {
-			border: 1px solid rgba(0, 0, 0, 0.08);
-			border-radius: 12px;
-			background: #fff;
-			padding: 14px 18px;
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			transition: 0.2s ease;
-			box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
-		}
-
-		.notify-card:hover {
-			transform: translateY(-2px);
-			box-shadow: 0 5px 18px rgba(0, 0, 0, 0.07);
-			background: #f9fbff;
-		}
-
-		.notify-left {
-			max-width: 75%;
-		}
-
-		.notify-title {
-			font-weight: 600;
-			font-size: 1rem;
-		}
-
-		.notify-sub {
-			font-size: 0.87rem;
-			color: #6c757d;
-		}
-
-		.badge-status {
-			font-size: 0.75rem;
-			padding: 4px 8px;
-		}
-
-		.navbar-nav .nav-link {
-			font-size: 1.1rem;
-			font-weight: 600;
-		}
-
-		.icon-circle {
-			width: 38px;
-			height: 38px;
-			border-radius: 50%;
-			display: flex;
 			justify-content: center;
+			background: rgba(13, 110, 253, .10);
+			color: #0d6efd;
+			font-size: 1.25rem;
+			box-shadow: inset 0 0 0 1px rgba(13, 110, 253, .12);
+		}
+		.brand-text {
+			line-height: 1.1;
+		}
+		.brand-name {
+			font-weight: 900;
+			color: #111827;
+		}
+		.brand-sub {
+			font-size: 0.78rem;
+		}
+
+		.btn-icon-soft {
+			
+			border-radius: 14px;
+			background: #fff;
+			display: flex;
 			align-items: center;
+			justify-content: center;
+			box-shadow: 0 10px 26px rgba(0, 0, 0, .06);
+		}
+		.btn-icon-soft i {
+			font-size: 1.1rem;
+			color: #111827;
+		}
+		.badge-notif {
+			position: absolute;
+			top: -6px;
+			right: -6px;
+			font-size: 0.70rem;
+			border-radius: 999px;
+			padding: 0.25rem 0.45rem;
 		}
 
-		@media(max-width: 768px) {
-			#logoName {
-				font-size: 1.4rem;
-				font-weight: 100;
-			}
-
-			.navbar-nav .nav-link {
-				font-size: 1.2rem;
-				font-weight: 700;
-				padding: 12px;
-			}
-
-			.dropdown-menu {
-				width: 90%;
-				margin-left: 5%;
-				border-radius: 15px;
-			}
-
-			.dropdown-item {
-				font-size: 1.1rem;
-				padding: 12px 18px;
-			}
+		.btn-user {
+			background: #fff;
+			border-radius: 999px;
+			box-shadow: 0 10px 26px rgba(0, 0, 0, .06);
 		}
 
-		/* Loader global */
-		#globalLoader {
+		/* Sidebar */
+		.app-sidebar {
 			position: fixed;
 			top: 0;
 			left: 0;
-			width: 100%;
-			height: 100%;
-			background: rgba(255, 255, 255, 0.8);
-			backdrop-filter: blur(2px);
-			display: none; /* masqué */
-			justify-content: center;
+			width: 270px;
+			height: 100vh;
+			background: #ffffff;
+			border-right: 1px solid rgba(0, 0, 0, .06);
+			z-index: 1029;
+			padding-top: 64px; /* laisse respirer sous topbar */
+		}
+		.sidebar-inner {
+			height: calc(100vh - 64px);
+			display: flex;
+			flex-direction: column;
+			padding: 16px;
+		}
+		.sidebar-user {
+			display: flex;
+			gap: 12px;
 			align-items: center;
-			z-index: 9999;
+			padding: 12px;
+			border-radius: 18px;
+			background: rgba(13, 110, 253, .06);
+			border: 1px solid rgba(13, 110, 253, .10);
+		}
+		.sidebar-nav .side-link,
+		.sidebar-nav .side-sublink {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			padding: 12px 14px;
+			border-radius: 16px;
+			text-decoration: none;
+			color: #111827;
+			font-weight: 700;
+			margin-bottom: 8px;
+			transition: 0.18s ease;
+			border: 1px solid transparent;
+		}
+		.sidebar-nav .side-link i,
+		.sidebar-nav .side-sublink i {
+			font-size: 1.15rem;
+			color: #0d6efd;
+		}
+		.sidebar-nav .side-link:hover,
+		.sidebar-nav .side-sublink:hover {
+			background: rgba(13, 110, 253, .06);
+			border-color: rgba(13, 110, 253, .12);
+			transform: translateX(2px);
+		}
+		.sidebar-nav .active {
+			background: rgba(13, 110, 253, .10);
+			border-color: rgba(13, 110, 253, .18);
 		}
 
-		#globalLoader .spinner {
-			width: 70px;
-			height: 70px;
-			border: 6px solid #ddd;
-			border-top-color: #d9534f;
-			border-radius: 50%;
-			animation: spin 0.9s linear infinite;
+		.side-section-title {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			font-weight: 900;
+			color: #111827;
+			padding: 10px 12px;
+			border-radius: 16px;
+			background: rgba(220, 53, 69, .06);
+			border: 1px solid rgba(220, 53, 69, .10);
+			margin-bottom: 10px;
+		}
+		.sidebar-footer .side-link.muted {
+			font-weight: 700;
+			color: #374151;
+			background: #f3f4f6;
+		}
+		.sidebar-footer .side-link.muted i {
+			color: #6b7280;
 		}
 
-		@keyframes spin {
-			to {
-				transform: rotate(360deg);
-			}
+		/* Bottom nav */
+		.app-bottom-nav {
+			position: fixed;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			height: 68px;
+			background: rgba(255, 255, 255, .94);
+			backdrop-filter: blur(10px);
+			border-top: 1px solid rgba(0, 0, 0, .06);
+			display: flex;
+			justify-content: space-around;
+			align-items: center;
+			z-index: 1030;
+			padding: 6px 10px;
+		}
+		.bn-item {
+			width: 20%;
+			border: 0;
+			background: transparent;
+			text-decoration: none;
+			color: #6b7280;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			gap: 4px;
+			font-weight: 800;
+			font-size: 0.72rem;
+		}
+		.bn-item i {
+			font-size: 1.25rem;
+			color: #111827;
+			opacity: .75;
+		}
+		.bn-item.active {
+			color: #0d6efd;
+		}
+		.bn-item.active i {
+			color: #0d6efd;
+			opacity: 1;
+		}
+
+		/* Offcanvas */
+		.app-offcanvas .offcanvas-header {
+			padding: 16px 16px 6px;
+		}
+		.app-offcanvas .offcanvas-body {
+			padding: 16px;
+		}
+
+		.offcanvas-icon {
+			width: 44px;
+			height: 44px;
+			border-radius: 16px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 1.2rem;
 		}
 	</style>
+
+	{# ===========================
+		   JS : Nom cabinet + notifs
+		=========================== #}
 	 <script>
-	function showLoader() {
-	    document.getElementById('globalLoader').style.display = 'flex';
-	}
+			// =============================
+			// CABINET NAME (logo)
+			// =============================
+			async function majLogo() {
+				const el = document.getElementById('logoName');
+				const url = "{{ path('app_nom_cabinet') }}";
+				const urlConfig = "{{ path('app_cabinet_index') }}";
 	
-	function hideLoader() {
-	    document.getElementById('globalLoader').style.display = 'none';
-	}
+				el.textContent = "Chargement…";
 	
-	async function majLogo() {
-	    const el = document.getElementById('logoName');
+				try {
+					const response = await fetch(url);
+					if (!response.ok) {
+						el.textContent = "Erreur serveur";
+						return;
+					}
 	
-	    el.innerHTML = `<span class="sr-only">Loading...</span>`;
+					const data = await response.json();
 	
-	    const url = "{{ path('app_nom_cabinet') }}";
-	    const urlConfig = "{{ path('app_cabinet_index') }}";
+					if (!data.nom || data.nom === "null") {
+						el.innerHTML = `Cabinet non configuré`;
+					} else {
+						el.textContent = data.nom;
+					}
 	
-	    try {
-	        const response = await fetch(url);
+				} catch (e) {
+					console.error(e);
+					el.textContent = "Erreur réseau";
+				}
+			}
 	
-	        if (!response.ok) {
-	            el.textContent = "Erreur serveur";
-	            return;
-	        }
+			// =============================
+			// NOTIFICATIONS
+			// =============================
+			const NOTIF_URL = "{{ path('api_notifications_feeds') }}";
 	
-	        const data = await response.json();
+			function loadNotifications() {
+				fetch(NOTIF_URL)
+					.then(res => res.json())
+					.then(data => {
+						const topBadge = document.getElementById('notifTopBadge');
+						if (topBadge) topBadge.textContent = data.total ?? 0;
 	
-	        if (!data.nom || data.nom === "null") {
-	            el.innerHTML = `
-	                <span class="text-warning fw-bold">Cabinet non configuré</span>
-	                <a href="${urlConfig}" class="btn btn-sm btn-warning ms-2">Configurer</a>
-	            `;
-	        } else {
-	            el.textContent = data.nom;
-	        }
+						// --- Clients ---
+						const cardClient = (c) => `
+							<div class="notify-card">
+								<div class="notify-left">
+									<div class="notify-title">
+										<i class="bi bi-person-circle text-primary me-1"></i>
+										${c.nom} • ${c.ville}
+									</div>
+									<div class="notify-sub">
+										📞 ${c.telephone}<br>
+										🕒 ${c.createdAt}
+									</div>
+								</div>
+								<a href="/fiche/client/${c.id}" class="btn btn-sm btn-outline-primary fw-bold rounded-pill px-3">Voir</a>
+							</div>
+						`;
 	
-	    } catch (e) {
-	        console.error(e);
-	        el.textContent = "Erreur réseau";
-	    }
-	}
+						const clientsHtml = (data.newClients && data.newClients.length)
+							? data.newClients.map(c => cardClient(c)).join('')
+							: "<div class='alert alert-light text-center py-2 mb-0 rounded-4'>Aucun nouveau patient</div>";
 	
-	// =============================
-	// NOTIFICATIONS
-	// =============================
-	const NOTIF_URL = "{{ path('api_notifications_feeds') }}";
+						document.getElementById('notifClientsList').innerHTML = clientsHtml;
 	
-	function loadNotifications() {
-	    fetch(NOTIF_URL)
-	        .then(res => res.json())
-	        .then(data => {
+						// --- RDV du jour ---
+						const cardRdv = (r) => `
+							<div class="notify-card">
+								<div class="notify-left">
+									<div class="notify-title">
+										<i class="bi bi-clock-fill text-success me-1"></i>
+										${r.heure} — ${r.client}
+									</div>
+									<div class="notify-sub">
+										📝 ${r.motif ?? "—"}<br>
+										<span class="badge bg-info text-dark badge-status">${r.statut ?? "En attente"}</span>
+									</div>
+								</div>
+								<a href="/rdv" class="btn btn-sm btn-outline-success fw-bold rounded-pill px-3">Ouvrir</a>
+							</div>
+						`;
 	
-	            const desktopBadge = document.querySelector('#notifDesktop .badge');
-	            const mobileBadge  = document.getElementById('notifMobileBadge');
+						const rdvHtml = (data.rdvToday && data.rdvToday.length)
+							? data.rdvToday.map(r => cardRdv(r)).join('')
+							: "<div class='alert alert-light text-center py-2 mb-0 rounded-4'>Aucun RDV aujourd’hui</div>";
 	
-	            if (desktopBadge) desktopBadge.textContent = data.total;
-	            if (mobileBadge) mobileBadge.textContent = data.total;
+						document.getElementById('notifRdvList').innerHTML = rdvHtml;
+					})
+					.catch(err => console.error(err));
+			}
 	
-	            // --- Clients ---
-	            let cardClient = (c) => `
-	                <div class="notify-card">
-	                    <div class="notify-left">
-	                        <div class="notify-title">
-	                            <i class="bi bi-person-circle text-primary me-1"></i>
-	                            ${c.nom} • ${c.ville}
-	                        </div>
-	                        <div class="notify-sub">
-	                            📞 ${c.telephone}<br>
-	                            🕒 ${c.createdAt}
-	                        </div>
-	                    </div>
-	<a href="/fiche/client/${c.id}" class="btn btn-sm btn-outline-primary fw-bold">Voir</a>
-	
-	
-	                </div>
-	            `;
-	
-	            let clientsHtml = data.newClients && data.newClients.length
-	                ? data.newClients.map(c => cardClient(c)).join('')
-	: "<div class='alert alert-light text-center py-2 mb-0'>Aucun nouveau patient</div>";
-	
-	
-	
-	            document.getElementById('notifClientsList').innerHTML = clientsHtml;
-	
-	            // --- RDV du jour ---
-	            let cardRdv = (r) => `
-	                <div class="notify-card">
-	                    <div class="notify-left">
-	                        <div class="notify-title">
-	                            <i class="bi bi-clock-fill text-success me-1"></i>
-	                            ${r.heure} — ${r.client}
-	                        </div>
-	                        <div class="notify-sub">
-	                            📝 ${r.motif ?? "—"}<br>
-	                            <span class="badge bg-info text-dark badge-status">
-	                                ${r.statut ?? "En attente"}
-	                            </span>
-	                        </div>
-	                    </div>
-	<a href="/rdv" class="btn btn-sm btn-outline-success fw-bold">Ouvrir</a>
-	
-	
-	                </div>
-	            `;
-	
-	            let rdvHtml = data.rdvToday && data.rdvToday.length
-	                ? data.rdvToday.map(r => cardRdv(r)).join('')
-	: "<div class='alert alert-light text-center py-2 mb-0'>Aucun RDV aujourd’hui</div>";
-	
-	
-	
-	            document.getElementById('notifRdvList').innerHTML = rdvHtml;
-	
-	        })
-	        .catch(err => console.error(err));
-	}
-	
-	// Exécution au chargement
-	document.addEventListener('DOMContentLoaded', () => {
-	    majLogo();
-	    loadNotifications();
-	
-	    // Refresh auto toutes les 30s
-	    setInterval(loadNotifications, 30000);
-	});
-	</script>
+			document.addEventListener('DOMContentLoaded', () => {
+				majLogo();
+				loadNotifications();
+				setInterval(loadNotifications, 30000);
+			});
+		</script>
 
+	{# petits styles des cartes notifs (comme tu avais) #}
+		<style>
+.notify-card {
+	border: 1px solid rgba(0, 0, 0, 0.08);
+	border-radius: 16px;
+	background: #fff;
+	padding: 14px 16px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+	transition: 0.18s ease;
+}
+.notify-card:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 12px 30px rgba(0, 0, 0, 0.10);
+	background: #f9fbff;
+}
+.notify-left {
+	max-width: 75%;
+}
+.notify-title {
+	font-weight: 800;
+}
+.notify-sub {
+	font-size: 0.88rem;
+	color: #6b7280;
+}
+.badge-status {
+	font-size: 0.75rem;
+	padding: 4px 10px;
+	border-radius: 999px;
+}
+</style>{% endif %}
 
-{% endif %}
