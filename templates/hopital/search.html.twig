@@ -5,40 +5,23 @@
 
 {% block body %}
 
-	<div
-		class="mt-4">
+<div class="container-fluid mt-4">
 
-		<!-- ⭐⭐ ENTÊTE ⭐⭐ -->
-		<div class="card shadow-lg border-0 rounded-4 mb-4">
-			<div class="card-body py-4 px-4">
+	{% embed '_partials/_page_header.html.twig' with {
+		icon: 'bi bi-hospital',
+		title: 'Recherche des Établissements Hospitaliers',
+		subtitle: "Tapez le nom d'une ville pour afficher les hôpitaux"
+	} %}
 
-				<div class="row align-items-center">
+		{# Pas d’actions métier à gauche #}
+		{% block header_actions_left %}{% endblock %}
 
-					<div class="col-12 col-md-7 d-flex align-items-center mb-3 mb-md-0">
-						<i class="bi bi-hospital text-primary fs-1 me-3"></i>
+		{# On garde le bloc right par défaut : Home + Retour #}
+	{% endembed %}
 
-						<div>
-							<h2 class="fw-bold text-primary mb-1">Recherche des Établissements Hospitaliers</h2>
-							<p class="text-secondary m-0">Tapez le nom d'une ville pour afficher les hôpitaux</p>
-						</div>
-					</div>
-
-					<div class="col-12 col-md-5 d-flex justify-content-md-end">
-<button type="button" onclick="history.back()" class="btn btn-outline-primary btn-lg rounded-pill px-4 shadow-sm d-flex align-items-center gap-2 w-100 w-md-auto">
-	<i class="bi bi-arrow-left"></i>
-	Retour
-
-</button>
+</div>
 
 
-					</div>
-
-				</div>
-
-			</div>
-		</div>
-
-	</div>
 
 	<!-- ⭐⭐ CHAMP DE RECHERCHE ⭐⭐ -->
 	<div class="position-relative my-4">

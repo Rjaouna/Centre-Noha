@@ -2,12 +2,128 @@
 	<a href="{{ link }}" class="resource-link">
 		<div class="resource-card">
 			<i class="bi {{ icon }} {{ color }} resource-icon"></i>
-			<div>
-				<h6>{{ title }}</h6>
-				<small>{{ subtitle }}</small>
+
+			<div class="resource-text">
+				<h6 class="resource-title">{{ title }}</h6>
+				<small class="resource-subtitle">{{ subtitle }}</small>
 			</div>
+
 			<i class="bi {{ icon }} {{ color }} resource-bg-icon"></i>
 		</div>
 	</a>
 </div>
+
+<style>
+	/* Link full clickable + focus */
+	.resource-link {
+		display: block;
+		text-decoration: none;
+		color: inherit;
+	}
+	.resource-link:focus-visible .resource-card {
+		outline: 3px solid rgba(13, 110, 253, .35);
+		outline-offset: 2px;
+	}
+
+	/* Card */
+	.resource-card {
+		position: relative;
+		display: flex;
+		align-items: center;
+		gap: 14px;
+		padding: 16px;
+		border-radius: 18px;
+		background: #fff;
+		border: 1px solid rgba(0, 0, 0, .07);
+		box-shadow: 0 10px 26px rgba(0, 0, 0, .06);
+		overflow: hidden;
+		transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+		min-height: 84px;
+	}
+
+	.resource-card:hover {
+		transform: translateY(-3px);
+		box-shadow: 0 18px 44px rgba(0, 0, 0, .12);
+		border-color: rgba(13, 110, 253, .18);
+	}
+
+	/* Icon left */
+	.resource-icon {
+		width: 46px;
+		height: 46px;
+		border-radius: 16px;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 1.35rem;
+		background: rgba(13, 110, 253, .10); /* fallback */
+		border: 1px solid rgba(13, 110, 253, .14);
+		flex: 0 0 auto;
+	}
+
+	/* Text */
+	.resource-text {
+		position: relative;
+		z-index: 2;
+		min-width: 0;
+	}
+	.resource-title {
+		margin: 0;
+		font-weight: 800;
+		color: #111827;
+		font-size: 1rem;
+		line-height: 1.1;
+	}
+	.resource-subtitle {
+		display: block;
+		margin-top: 3px;
+		color: #6c757d;
+		font-size: 0.85rem;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		max-width: 100%;
+	}
+
+	/* Watermark icon */
+	.resource-bg-icon {
+		position: absolute;
+		right: -6px;
+		bottom: -14px;
+		font-size: 4.6rem;
+		opacity: .08;
+		transform: rotate(-12deg);
+		pointer-events: none;
+	}
+
+	/* Small affordance on hover */
+	.resource-card::after {
+		content: "";
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(90deg, rgba(13,110,253,.06), transparent 55%);
+		opacity: 0;
+		transition: opacity 0.18s ease;
+	}
+	.resource-card:hover::after {
+		opacity: 1;
+	}
+
+	/* Mobile */
+	@media(max-width: 576px) {
+		.resource-card {
+			padding: 14px;
+			border-radius: 16px;
+		}
+		.resource-icon {
+			width: 42px;
+			height: 42px;
+			border-radius: 14px;
+			font-size: 1.25rem;
+		}
+		.resource-bg-icon {
+			font-size: 4.0rem;
+		}
+	}
+</style>
 

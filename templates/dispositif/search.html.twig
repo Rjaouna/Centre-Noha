@@ -4,39 +4,23 @@
 {% endblock %}
 
 {% block body %}
+<div class="container-fluid mt-4">
 
-	<div
-		class="mt-4">
+	{% embed '_partials/_page_header.html.twig' with {
+		icon: 'bi bi-card-text',
+		title: 'Recherche par nom de dispositif',
+		subtitle: 'Recherchez un dispositif ou un acte par son libellé'
+	} %}
 
-		<!-- ⭐⭐ ENTÊTE ⭐⭐ -->
-		<div class="card shadow-lg border-0 rounded-4 mb-4">
-			<div class="card-body py-4 px-4">
+		{# Pas d’actions métier à gauche pour l’instant #}
+		{% block header_actions_left %}{% endblock %}
 
-				<div class="row align-items-center">
+		{# On garde le bloc right par défaut : Home + Retour #}
+	{% endembed %}
 
-					<div class="col-12 col-md-7 d-flex align-items-center mb-3 mb-md-0">
-						<i class="bi bi-card-text text-primary fs-1 me-3"></i>
-						<div>
-<h2 class="fw-bold text-primary mb-1">Recherche par nom de dispositif</h2>
+</div>
 
-							<p class="text-secondary m-0">
-								Recherchez un dispositif ou un acte par son libellé
-							</p>
-						</div>
-					</div>
 
-					<div class="col-12 col-md-5 d-flex justify-content-md-end">
-						<button onclick="history.back()" class="btn btn-outline-primary btn-lg rounded-pill px-4 shadow-sm d-flex align-items-center gap-2 w-100 w-md-auto">
-							<i class="bi bi-arrow-left"></i>
-							Retour
-						</button>
-					</div>
-
-				</div>
-
-			</div>
-		</div>
-	</div>
 
 	<!-- 🔍 CHAMP DE RECHERCHE -->
 	<div class="position-relative my-4">
