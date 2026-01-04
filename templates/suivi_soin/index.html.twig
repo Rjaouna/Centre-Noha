@@ -5,550 +5,365 @@
 {% endblock %}
 
 {% block body %}
-<style>
-.timeline-container {
-    position: relative;
-padding-left: 1px;
 
+	{{ include('suivi_soin/_composant/_modal_ajouter_suivi.html.twig') }}
 
-}
+	<style>
+		/* ===============================
+       ✅ LISTE SUIVI (CARDS)
+    =============================== */
+		.suivi-card {
+			background: #fff;
+			border-radius: 18px;
+			border: 1px solid #eef1f6;
+			box-shadow: 0 8px 18px rgba(0, 0, 0, .06);
+			transition: 0.2s ease;
+			overflow: hidden;
+		}
 
-.timeline-container::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 15px;
-    width: 4px;
-    height: 100%;
-    background: rgba(13, 110, 253, 0.2); /* Bleu Bootstrap */
-    border-radius: 4px;
-}
+		.suivi-card-header {
+			padding: 16px 18px;
+			border-bottom: 1px solid #f1f3f7;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 12px;
+			flex-wrap: wrap;
+		}
 
-.timeline-item {
-    position: relative;
-    margin-bottom: 40px;
-}
+		.suivi-card-title {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+		}
 
-.timeline-marker {
-    position: absolute;
-    left: 7px;
-    width: 18px;
-    height: 18px;
-    background: #0d6efd; /* Bleu Bootstrap */
-    border: 3px solid #fff;
-    border-radius: 50%;
-    z-index: 2;
-    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.3);
-}
+		.suivi-card-title i {
+			font-size: 1.2rem;
+		}
 
-.timeline-content {
-    background: #fff;
-    padding: 20px;
-    border-radius: 12px;
-    margin-left: 25px;
-    transition: 0.2s ease-in-out;
-}
+		.suivi-card-body {
+			padding: 18px;
+		}
 
-.timeline-content:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-}
+		.suivi-card-meta {
+			padding: 14px 18px;
+			border-top: 1px solid #f1f3f7;
+			background: #fbfcff;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			gap: 12px;
+			flex-wrap: wrap;
+		}
 
-.timeline-header {
-    display: flex;
-    align-items: center;
+		.ordonnance-meds .med-item {
+			background: #f8faff;
+			border: 1px solid #e9eefb;
+		}
 
-}
-.fade-in {
-	animation: fadeIn 0.5s ease-in-out;
-}
+		.fade-in {
+			animation: fadeIn 0.5s ease-in-out;
+		}
 
-@keyframes fadeIn {
-	from { opacity: 0; transform: translateY(10px); }
-	to { opacity: 1; transform: translateY(0); }
-}
-.fade-out {
-    opacity: 0;
-    transition: 0.3s ease;
-    transform: translateX(-20px);
-}
+		@keyframes fadeIn {
+			from {
+				opacity: 0;
+				transform: translateY(10px);
+			}
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
 
-</style>
-{{ include('suivi_soin/_composant/_modal_ajouter_suivi.html.twig') }}
-
+		.fade-out {
+			opacity: 0;
+			transition: 0.3s ease;
+			transform: translateX(-20px);
+		}
+	</style>
 
 	<div
-class="mt-4">
+		class="mt-4">
 
+		{# ================= HEADER (même style que ton app) ================= #}
+		<section class="mb-4">
+			<div class="card shadow-lg border-0 rounded-4">
+				<div class="card-body py-4 d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
 
-		<!-- ===== HEADER ===== -->
-		<div class="card shadow-lg border-0 rounded-4 mb-4">
-			<div class="card-body py-4 px-4">
+					<div>
+						<h2 class="fw-bold text-primary mb-1 d-flex align-items-center">
+							<i class="bi bi-journal-medical me-2 fs-1"></i>
+							Suivi médical
+						</h2>
 
-				<div
-					class="row align-items-center">
-
-					<!-- TITRE -->
-					<div class="col-12 col-md-8 d-flex align-items-center mb-3 mb-md-0">
-						<i class="bi bi-journal-medical text-primary fs-1 me-3"></i>
-
-						<div>
-							<h2 class="fw-bold text-primary mb-1">Suivi médical du dossier</h2>
-
-							<p class="text-muted mb-0">
+						<div class="d-flex flex-wrap align-items-center text-muted small gap-3">
+							<span class="d-flex align-items-center">
+								<i class="bi bi-folder2-open me-1 text-warning"></i>
 								Dossier :
-								<strong>{{ dossier.titre }}</strong>
-								— 
-								                            Patient :
-								<strong>{{ patient.nom }}</strong>
-							</p>
+								<strong class="ms-1">{{ dossier.titre }}</strong>
+							</span>
+
+							<span class="d-flex align-items-center">
+								<i class="bi bi-person-fill me-1 text-primary"></i>
+								Patient :
+								<strong class="ms-1">{{ patient.nom }}</strong>
+							</span>
 						</div>
 					</div>
 
-					<!-- BOUTONS -->
-<div
-	class="col-12 col-md-4 d-flex flex-column flex-md-row justify-content-md-end justify-content-center gap-2">
+					<div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+						<div class="d-flex align-items-center gap-3">
 
-	<!-- Bouton Ajouter -->
-<button class="btn btn-outline-primary  rounded-pill px-4 shadow-sm d-flex align-items-center gap-2 w-100 w-md-auto" data-bs-toggle="modal" data-bs-target="#modalAddSuivi">
+							<span class="action-icon bg-primary text-white" data-bs-toggle="modal" data-bs-target="#modalAddSuivi" title="Ajouter un suivi">
+								<i class="bi bi-clipboard-plus"></i>
+							</span>
 
+						</div>
 
-	<i class="bi bi-clipboard-plus"></i>
-	Ajouter un suivi
+						<a href="javascript:void(0);" onclick="history.back()" class="action-icon bg-light" title="Retour">
+							<i class="bi bi-arrow-left"></i>
+						</a>
+					</div>
 
+				</div>
+			</div>
+		</section>
 
+		{# ================= LISTE SUIVI ================= #}
+		<section class="mb-4">
+			<div class="card shadow-sm border-0 rounded-4">
+				<div class="card-body p-4">
 
+					<div id="suiviList" class="row g-4">
+						<div class="col-12 text-center text-muted py-4">
+							<div class="spinner-border text-primary"></div>
+							<div class="mt-2">Chargement des suivis...</div>
+						</div>
+					</div>
 
-	</button>
-
-	<!-- Bouton Retour -->
-<button type="button" onclick="history.back()" class="btn btn-outline-primary  rounded-pill px-4 shadow-sm d-flex align-items-center gap-2 w-100 w-md-auto">
-
-
-	<i class="bi bi-arrow-left"></i>
-	Retour
-
-</button>
-
-
+				</div>
+			</div>
+		</section>
 
 	</div>
+
+	{# ================= MODAL CONFIRM DELETE ================= #}
+	<div class="modal fade" id="modalConfirmDelete" tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content rounded-4 shadow">
+
+				<div class="modal-header bg-danger text-white rounded-top-4">
+					<h5 class="modal-title fw-bold">
+						<i class="bi bi-exclamation-triangle me-2"></i>
+						Confirmer la suppression
+					</h5>
+					<button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+				</div>
+
+				<div class="modal-body">
+					<p class="mb-0">
+						Voulez-vous vraiment supprimer ce suivi ?<br>
+						<strong>Cette action est irréversible.</strong>
+					</p>
+				</div>
+
+				<div class="modal-footer">
+					<button class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Annuler</button>
+					<button id="confirmDeleteBtn" class="btn btn-danger rounded-pill">
+						Supprimer
+					</button>
 				</div>
 
 			</div>
 		</div>
-
 	</div>
 
+	{{ include('suivi_soin/_composant/_modal_ajout_medoc.html.twig') }}
 
-
-<div id="timeline" class="timeline-container">
-	<p class="text-center text-muted">Chargement des suivis...</p>
-</div>
  <script>
-
-	document.addEventListener("DOMContentLoaded", () => {
-
-    const timeline = document.getElementById("timeline");
-
     const apiUrl = `/patient/{{ patient.id }}/dossier/{{ dossier.id }}/suivis/api`;
 
-    fetch(apiUrl)
-    .then(res => res.json())
-    .then(data => {
-
-        timeline.innerHTML = ""; // clear
-
-        if (data.length === 0) {
-timeline.innerHTML = `
-<div id="empty-suivi" class="timeline-item fade-in">
-	<div class="timeline-marker bg-secondary"></div>
-
-	<div class="timeline-content text-center border-0 shadow-sm rounded-4 empty-suivi-card">
-
-		<div class="mb-3">
-			<i class="bi bi-journal-x fs-1 text-primary"></i>
-		</div>
-
-		<h4 class="fw-bold text-primary mb-2">
-			Aucun suivi médical
-		</h4>
-
-		<p class="text-muted mb-4">
-			Ce dossier ne contient encore aucun suivi.<br>
-			Vous pouvez commencer par en créer un dès maintenant.
-		</p>
-
-		<button class="btn btn-primary rounded-pill px-4 shadow-sm" data-bs-toggle="modal" data-bs-target="#modalAddSuivi">
-			<i class="bi bi-clipboard-plus me-2"></i>
-			Ajouter le premier suivi
-		</button>
-
-	</div>
-</div>
-`;
-
-
-            return;
-        }
-
-        data.forEach(suivi => {
-
-            const item = `
-<div class="timeline-item fade-in">
-    <div class="timeline-marker"></div>
-
-    <div class="timeline-content shadow-sm rounded-4">
-
-        <div class="timeline-header">
-            <i class="bi bi-clipboard2-pulse text-primary fs-4 me-2"></i>
-<h5 class="mb-0 fw-bold text-primary">Suivi  N° : ${suivi.id}</h5>
-
-
-
-
-
-        </div>
-
-        <p class="text-secondary mt-3">${suivi.diagnostic}</p>
-
-        ${suivi.medicines.length > 0 ? `
-        <div class="mt-3">
-            <h6 class="fw-bold text-primary mb-2">
-Médicaments prescrits
-
-
-            </h6>
-<div class="ordonnance-meds">
-
-	${suivi.medicines.map(med => `
-
-<div class="med-item mb-3 p-3 rounded-3 shadow-sm border">
-
-	<div class="text-primary fs-5">
-		${med.name} — ${med.dosage} ${med.uniteDosage}
-	</div>
-
-<div class="text-muted mt-1">
-	${med.forme} — ${med.presentation}
-</div></div>`).join('')}</div>
-
-
-        </div>
-        ` : `
-        <p class="text-muted mt-3"><em>Aucun médicament ajouté pour ce suivi.</em></p>
-        `}
-
-        <div class="timeline-meta text-muted small mt-2">
-            <i class="bi bi-clock-history me-1"></i>
-            ${suivi.createdAt}
-        </div>
-<div
-	class="mt-3 text-end d-flex justify-content-end gap-2">
-
-	<!-- SUPPRIMER -->
-<a href="#" onclick="deleteSuivi(${suivi.id}, this.closest('.timeline-item'))" class="btn btn-outline-danger btn-sm">
-
-
-		<i class="bi bi-trash"></i>
-	</a>
-
-	<!-- AJOUTER MÉDICAMENT -->
-<a href="#" class="btn btn-outline-primary btn-sm openMedicModal" data-suivi-id="${suivi.id}" data-bs-toggle="modal" data-bs-target="#modalMedicSearch">
-
-
-		<i class="bi bi-capsule-pill"></i>
-	</a>
-
-	<!-- IMPRIMER LE SUIVI -->
-<a href="/suivi/${suivi.id}/ordonnance?print=1" target="_blank" class="btn btn-outline-secondary btn-sm text-secondary">
-	<i class="bi bi-printer"></i>
-</a>
-
-
-
-<a href="/suivi/${suivi.id}/ordonnance" class="btn btn-danger text-white btn-sm">
-
-
-<i class="bi bi-file-pdf"></i>
-
-</a>
-
-</div>
-
-    </div>
-</div>`;
-
-            timeline.insertAdjacentHTML("beforeend", item);
-        });
-    });
-
-
-});
-
-</script>
- <script>
-function downloadOrdonnance(id) {
-const url = `{{ path('api_ordonnance_pdf', {id : 'replace_id'}) }}`.replace("replace_id", id);
-							
-					fetch(url)
-
-
-        .then(res => res.blob())
-        .then(blob => {
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = `ordonnance-${id}.pdf`;
-            a.click();
-            URL.revokeObjectURL(url);
-        })
-        .catch(err => alert("Erreur lors de la génération du PDF."));
-}
-
-</script>
-
-
-
- <script>
-document.addEventListener("click", function (e) {
-
-    // Si on clique sur un bouton openMedicModal
-    const btn = e.target.closest(".openMedicModal");
-    if (!btn) return;
-
-    const suiviId = btn.dataset.suiviId;
-
-    document.getElementById("currentSuiviId").value = suiviId;
-
-    console.log("➡️ Suivi sélectionné :", suiviId);
-});
-</script>
-
-
-
-<!-- Modal Confirmation Suppression -->
-<div class="modal fade" id="modalConfirmDelete" tabindex="-1">
-	<div class="modal-dialog modal-dialog-centered">
-		<div class="modal-content rounded-4 shadow">
-
-			<div class="modal-header bg-danger text-white rounded-top-4">
-				<h5 class="modal-title fw-bold">
-					<i class="bi bi-exclamation-triangle me-2"></i>
-					Confirmer la suppression
-				</h5>
-				<button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-			</div>
-
-			<div class="modal-body">
-				<p class="mb-0">
-					Voulez-vous vraiment supprimer ce suivi ?<br>
-					<strong>Cette action est irréversible.</strong>
-				</p>
-			</div>
-
-			<div class="modal-footer">
-				<button class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Annuler</button>
-				<button id="confirmDeleteBtn" class="btn btn-danger rounded-pill">
-					Supprimer
-				</button>
-			</div>
-
-		</div>
-	</div>
-</div>
-
-{{ include('suivi_soin/_composant/_modal_ajout_medoc.html.twig') }}
-
-<script>
-let pendingDelete = {
-    id: null,
-    element: null
-};
-
-async function deleteSuivi(id, element) {
-    // On stocke temporairement les infos pour confirmation
-    pendingDelete.id = id;
-    pendingDelete.element = element;
-
-    const modal = new bootstrap.Modal(document.getElementById("modalConfirmDelete"));
-    modal.show();
-}
-
-// Quand l’utilisateur confirme :
-document.getElementById("confirmDeleteBtn").addEventListener("click", async () => {
-
-    const { id, element } = pendingDelete;
-
-    const url = `{{ path('api_suivi_delete', {id : 'replace_id'}) }}`.replace("replace_id", id);
-
-    const res = await fetch(url, {
-        method: "DELETE",
-        headers: {
-            "Authorization": "Bearer " + localStorage.getItem("jwt_token")
-        }
-    });
-
-    const text = await res.text();
-    let data;
-    try {
-        data = JSON.parse(text);
-    } catch (e) {
-        alert("Erreur interne du serveur");
-        return;
-    }
-
-    if (data.success) {
-        // Animation de suppression
-        element.classList.add("fade-out");
-        setTimeout(() => element.remove(), 300);
-
-        bootstrap.Modal.getInstance(document.getElementById("modalConfirmDelete")).hide();
-    } else {
-        alert("Erreur : " + data.message);
-    }
-});
-function reloadTimeline() {
-    const timeline = document.getElementById("timeline");
-
-    fetch(`/patient/{{ patient.id }}/dossier/{{ dossier.id }}/suivis/api`)
-        .then(res => res.json())
-        .then(data => {
-
-            timeline.innerHTML = ""; // On nettoie
-
-            if (data.length === 0) {
-                timeline.innerHTML = `
-<div class="text-center">
-
-
-                        Aucun suivi trouvé pour ce dossier.
+    function renderEmptySuivi() {
+        return `
+            <div class="col-12 fade-in">
+                <div class="p-4 bg-light rounded-4 text-center shadow-sm">
+                    <div class="mb-3">
+                        <i class="bi bi-journal-x fs-1 text-primary"></i>
                     </div>
-                `;
-                return;
-            }
+                    <h4 class="fw-bold text-primary mb-2">Aucun suivi médical</h4>
+                    <p class="text-muted mb-4">
+                        Ce dossier ne contient encore aucun suivi.<br>
+                        Vous pouvez commencer par en créer un dès maintenant.
+                    </p>
+                    <button class="btn btn-primary rounded-pill px-4 shadow-sm"
+                            data-bs-toggle="modal"
+                            data-bs-target="#modalAddSuivi">
+                        <i class="bi bi-clipboard-plus me-2"></i>
+                        Ajouter le premier suivi
+                    </button>
+                </div>
+            </div>
+        `;
+    }
 
-            data.forEach(suivi => {
+    function renderSuiviCard(suivi) {
+        const medsHtml = (suivi.medicines && suivi.medicines.length > 0)
+            ? `
+                <div class="mt-3">
+                    <h6 class="fw-bold text-primary mb-2">Médicaments prescrits</h6>
+                    <div class="ordonnance-meds">
+                        ${suivi.medicines.map(med => `
+                            <div class="med-item mb-3 p-3 rounded-3 shadow-sm">
+                                <div class="text-primary fw-semibold">
+                                    ${med.name} — ${med.dosage} ${med.uniteDosage}
+                                </div>
+                                <div class="text-muted mt-1 small">
+                                    ${med.forme} — ${med.presentation}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+              `
+            : `<p class="text-muted mt-3"><em>Aucun médicament ajouté pour ce suivi.</em></p>`;
 
-                const item = `
-<div class="timeline-item fade-in">
-    <div class="timeline-marker"></div>
+        return `
+            <div class="col-12 fade-in">
+                <div class="suivi-card">
 
-    <div class="timeline-content shadow-sm rounded-4">
+                    <div class="suivi-card-header">
+                        <div class="suivi-card-title">
+                            <i class="bi bi-clipboard2-pulse text-primary"></i>
+                            <div>
+                                <div class="fw-bold text-primary">Suivi N° : ${suivi.id}</div>
+                                <div class="text-muted small">
+                                    <i class="bi bi-clock-history me-1"></i>${suivi.createdAt}
+                                </div>
+                            </div>
+                        </div>
 
-        <div class="timeline-header">
-            <i class="bi bi-clipboard2-pulse text-primary fs-4 me-2"></i>
-<h5 class="mb-0 fw-bold text-primary">Suivi N° : ${suivi.id}</h5>
+                        <div class="d-flex align-items-center gap-2">
+                            <a href="#" onclick="deleteSuivi(${suivi.id}, this.closest('.col-12'))"
+                               class="btn btn-outline-danger btn-sm">
+                                <i class="bi bi-trash"></i>
+                            </a>
 
+                            <a href="#" class="btn btn-outline-primary btn-sm openMedicModal"
+                               data-suivi-id="${suivi.id}"
+                               data-bs-toggle="modal"
+                               data-bs-target="#modalMedicSearch">
+                                <i class="bi bi-capsule-pill"></i>
+                            </a>
 
+                            <a href="/suivi/${suivi.id}/ordonnance?print=1" target="_blank"
+                               class="btn btn-outline-secondary btn-sm text-secondary">
+                                <i class="bi bi-printer"></i>
+                            </a>
 
+                            <a href="/suivi/${suivi.id}/ordonnance"
+                               class="btn btn-danger text-white btn-sm">
+                                <i class="bi bi-file-pdf"></i>
+                            </a>
+                        </div>
+                    </div>
 
+                    <div class="suivi-card-body">
+                        <p class="text-secondary mb-0">${suivi.diagnostic}</p>
+                        ${medsHtml}
+                    </div>
 
+                </div>
+            </div>
+        `;
+    }
 
-        </div>
+    function reloadTimeline() {
+        const container = document.getElementById("suiviList");
 
-<p class="text-secondary mt-3">${suivi.diagnostic}</p>
+        container.innerHTML = `
+            <div class="col-12 text-center text-muted py-4">
+                <div class="spinner-border text-primary"></div>
+                <div class="mt-2">Chargement des suivis...</div>
+            </div>
+        `;
 
+        fetch(apiUrl)
+            .then(res => res.json())
+            .then(data => {
 
+                container.innerHTML = "";
 
-        ${suivi.medicines.length > 0 ? `
-        <div class="mt-3">
-            <h6 class="fw-bold text-primary mb-2">
-Médicaments prescrits
+                if (!data || data.length === 0) {
+                    container.innerHTML = renderEmptySuivi();
+                    return;
+                }
 
-</h6>
-
-<div class="ordonnance-meds">
-
-	${suivi.medicines.map(med => `
-
-<div class="med-item mb-3 p-3 rounded-3 shadow-sm border">
-
-	<div class="text-primary fs-5">
-		${med.name} — ${med.dosage} ${med.uniteDosage}
-	</div>
-
-<div class="text-muted mt-1">
-	${med.forme} — ${med.presentation}
-</div></div>`).join('')}</div></div>` : `<p class="text-muted mt-3"><em>Aucun médicament ajouté pour ce suivi.</em></p>`}
-
-
-
-        <div class="timeline-meta text-muted small mt-2">
-            <i class="bi bi-clock-history me-1"></i>
-            ${suivi.createdAt}
-        </div>
-<div class="suivi-actions mt-4">
-<!-- MOBILE -->
-<div
-	class="d-flex d-md-none justify-content-center gap-2 mt-3">
-
-	<!-- SUPPRIMER -->
-	<a href="#" onclick="deleteSuivi(${suivi.id}, this.closest('.timeline-item'))" class="btn btn-outline-danger btn-sm">
-		<i class="bi bi-trash"></i>
-	</a>
-
-	<!-- AJOUTER MÉDICAMENT -->
-	<a href="#" class="btn btn-outline-primary btn-sm openMedicModal" data-suivi-id="${suivi.id}" data-bs-toggle="modal" data-bs-target="#modalMedicSearch">
-		<i class="bi bi-capsule-pill"></i>
-	</a>
-
-	<!-- IMPRIMER -->
-	<a href="/suivi/${suivi.id}/ordonnance?print=1" target="_blank" class="btn btn-outline-secondary btn-sm text-secondary">
-		<i class="bi bi-printer"></i>
-	</a>
-
-	<!-- PDF -->
-	<a href="/suivi/${suivi.id}/ordonnance" class="btn btn-danger text-white btn-sm">
-		<i class="bi bi-file-pdf"></i>
-	</a>
-
-</div>
-
-<!-- DESKTOP -->
-<div
-	class="d-none d-md-flex justify-content-end gap-2 mt-3">
-
-	<!-- SUPPRIMER -->
-	<a href="#" onclick="deleteSuivi(${suivi.id}, this.closest('.timeline-item'))" class="btn btn-outline-danger btn-sm">
-		<i class="bi bi-trash"></i>
-	</a>
-
-	<!-- AJOUTER MÉDICAMENT -->
-	<a href="#" class="btn btn-outline-primary btn-sm openMedicModal" data-suivi-id="${suivi.id}" data-bs-toggle="modal" data-bs-target="#modalMedicSearch">
-		<i class="bi bi-capsule-pill"></i>
-	</a>
-
-	<!-- IMPRIMER -->
-	<a href="/suivi/${suivi.id}/ordonnance?print=1" target="_blank" class="btn btn-outline-secondary btn-sm text-secondary">
-		<i class="bi bi-printer"></i>
-	</a>
-
-	<!-- PDF -->
-	<a href="/suivi/${suivi.id}/ordonnance" class="btn btn-danger text-white btn-sm">
-		<i class="bi bi-file-pdf"></i>
-	</a>
-
-</div>
-
-
-
-</div>
-
-
-
-
-    </div>
-</div>
-                `;
-
-                timeline.insertAdjacentHTML("beforeend", item);
+                data.forEach(suivi => {
+                    container.insertAdjacentHTML("beforeend", renderSuiviCard(suivi));
+                });
             });
-        });
-}
+    }
 
+    document.addEventListener("DOMContentLoaded", reloadTimeline);
 </script>
 
+	 <script>
+	    document.addEventListener("click", function (e) {
+	        const btn = e.target.closest(".openMedicModal");
+	        if (!btn) return;
+	
+	        const suiviId = btn.dataset.suiviId;
+	        document.getElementById("currentSuiviId").value = suiviId;
+	    });
+	</script>
+
+	 <script>
+	    let pendingDelete = { id: null, element: null };
+	
+	    async function deleteSuivi(id, element) {
+	        pendingDelete.id = id;
+	        pendingDelete.element = element;
+	
+	        const modal = new bootstrap.Modal(document.getElementById("modalConfirmDelete"));
+	        modal.show();
+	    }
+	
+	    document.getElementById("confirmDeleteBtn").addEventListener("click", async () => {
+	
+	        const { id, element } = pendingDelete;
+	
+	        const url = `{{ path('api_suivi_delete', {id : 'replace_id'}) }}`.replace("replace_id", id);
+	
+	        const res = await fetch(url, {
+	            method: "DELETE",
+	            headers: {
+	                "Authorization": "Bearer " + localStorage.getItem("jwt_token")
+	            }
+	        });
+	
+	        const text = await res.text();
+	        let data;
+	        try {
+	            data = JSON.parse(text);
+	        } catch (e) {
+	            alert("Erreur interne du serveur");
+	            return;
+	        }
+	
+	        if (data.success) {
+	            element.classList.add("fade-out");
+	            setTimeout(() => {
+	                element.remove();
+	                reloadTimeline(); // ✅ si plus aucun suivi, on affiche l'empty state
+	            }, 300);
+	
+	            bootstrap.Modal.getInstance(document.getElementById("modalConfirmDelete")).hide();
+	        } else {
+	            alert("Erreur : " + data.message);
+	        }
+	    });
+	</script>
 
 {% endblock %}
 
