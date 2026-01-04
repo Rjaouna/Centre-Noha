@@ -435,6 +435,160 @@
 			</div>
 		</div>
 	</div>
+
+ <script>
+/* =============================
+   CABINET NAME (LOGO)
+============================= */
+async function majLogo() {
+    const el = document.getElementById('logoName');
+    if (!el) return;
+
+    const url = "{{ path('app_nom_cabinet') }}";
+
+    el.textContent = "Chargement…";
+
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            el.textContent = "Erreur serveur";
+            return;
+        }
+
+        const data = await response.json();
+
+        if (!data.nom || data.nom === "null") {
+            el.textContent = "Cabinet non configuré";
+        } else {
+            el.textContent = data.nom;
+        }
+    } catch (e) {
+        console.error(e);
+        el.textContent = "Erreur réseau";
+    }
+}
+
+/* =============================
+   NOTIFICATIONS (CLIENTS + BADGE)
+============================= */
+const NOTIF_URL = "{{ path('api_notifications_feeds') }}";
+
+function renderClientCard(c) {
+    return `
+        <div class="notify-card">
+            <div class="notify-left">
+                <div class="notify-title">
+                    <i class="bi bi-person-circle text-primary me-1"></i>
+                    ${c.nom} • ${c.ville}
+                </div>
+                <div class="notify-sub">
+                    📞 ${c.telephone}<br>
+                    🕒 ${c.createdAt}
+                </div>
+            </div>
+            <a href="/fiche/client/${c.id}"
+               class="btn btn-sm btn-outline-primary fw-bold rounded-pill px-3">
+                Voir
+            </a>
+        </div>
+    `;
+}
+
+async function loadNotifications() {
+    try {
+        const res = await fetch(NOTIF_URL);
+        if (!res.ok) return;
+
+        const data = await res.json();
+
+        // Badge top
+        const topBadge = document.getElementById('notifTopBadge');
+        if (topBadge) topBadge.textContent = data.total ?? 0;
+
+        // Clients
+        const clientsContainer = document.getElementById('notifClientsList');
+        if (clientsContainer) {
+            clientsContainer.innerHTML =
+                data.newClients && data.newClients.length
+                    ? data.newClients.map(renderClientCard).join('')
+                    : `
+                        <div class="alert alert-light text-center py-2 mb-0 rounded-4">
+                            Aucun nouveau patient
+                        </div>
+                    `;
+        }
+
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+/* =============================
+   RDV DU JOUR (BONNE ROUTE)
+============================= */
+const RDV_URL = "{{ path('api_rendezvous_list') }}";
+
+function renderRdvCard(r) {
+    return `
+        <div class="notify-card ${r.isLate ? 'rdv-expired' : ''}">
+            <div class="notify-left">
+                <div class="notify-title">
+                    <i class="bi bi-clock-fill text-success me-1"></i>
+                    ${r.heureDebut} – ${r.heureFin} — ${r.nom}
+                </div>
+                <div class="notify-sub">
+                    📅 ${r.date}<br>
+                    ${
+                        r.isLate
+                            ? `<span class="badge bg-danger badge-status">Rendez-vous raté</span>`
+                            : `<span class="badge bg-success badge-status">À venir</span>`
+                    }
+                </div>
+            </div>
+            
+        </div>
+    `;
+}
+
+async function loadRdvToday() {
+    try {
+        const res = await fetch(RDV_URL);
+        if (!res.ok) return;
+
+        const rdvs = await res.json();
+        const container = document.getElementById('notifRdvList');
+        if (!container) return;
+
+        container.innerHTML = rdvs.length
+            ? rdvs.map(renderRdvCard).join('')
+            : `
+                <div class="alert alert-light text-center py-2 mb-0 rounded-4">
+                    Aucun RDV aujourd’hui
+                </div>
+            `;
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+/* =============================
+   INIT
+============================= */
+document.addEventListener('DOMContentLoaded', () => {
+    majLogo();
+    loadNotifications();
+    loadRdvToday();
+
+    setInterval(() => {
+        loadNotifications();
+        loadRdvToday();
+    }, 30000);
+});
+</script>
+
+
+
+
 <style>
 	/* Container sublinks (petit cadre) */
 	.side-sublinks {
@@ -945,113 +1099,8 @@ background: linear-gradient(90deg, #1d4ed8, #2563eb);
 		.menu-btn{ padding: 12px; }
 		.menu-title{ font-size: .98rem; }
 	}
-	</style>
 
-	{# ===========================
-		   JS : Nom cabinet + notifs
-		=========================== #}
-	 <script>
-			// =============================
-			// CABINET NAME (logo)
-			// =============================
-			async function majLogo() {
-				const el = document.getElementById('logoName');
-				const url = "{{ path('app_nom_cabinet') }}";
-				const urlConfig = "{{ path('app_cabinet_index') }}";
-	
-				el.textContent = "Chargement…";
-	
-				try {
-					const response = await fetch(url);
-					if (!response.ok) {
-						el.textContent = "Erreur serveur";
-						return;
-					}
-	
-					const data = await response.json();
-	
-					if (!data.nom || data.nom === "null") {
-						el.innerHTML = `Cabinet non configuré`;
-					} else {
-						el.textContent = data.nom;
-					}
-	
-				} catch (e) {
-					console.error(e);
-					el.textContent = "Erreur réseau";
-				}
-			}
-	
-			// =============================
-			// NOTIFICATIONS
-			// =============================
-			const NOTIF_URL = "{{ path('api_notifications_feeds') }}";
-	
-			function loadNotifications() {
-				fetch(NOTIF_URL)
-					.then(res => res.json())
-					.then(data => {
-						const topBadge = document.getElementById('notifTopBadge');
-						if (topBadge) topBadge.textContent = data.total ?? 0;
-	
-						// --- Clients ---
-						const cardClient = (c) => `
-							<div class="notify-card">
-								<div class="notify-left">
-									<div class="notify-title">
-										<i class="bi bi-person-circle text-primary me-1"></i>
-										${c.nom} • ${c.ville}
-									</div>
-									<div class="notify-sub">
-										📞 ${c.telephone}<br>
-										🕒 ${c.createdAt}
-									</div>
-								</div>
-								<a href="/fiche/client/${c.id}" class="btn btn-sm btn-outline-primary fw-bold rounded-pill px-3">Voir</a>
-							</div>
-						`;
-	
-						const clientsHtml = (data.newClients && data.newClients.length)
-							? data.newClients.map(c => cardClient(c)).join('')
-							: "<div class='alert alert-light text-center py-2 mb-0 rounded-4'>Aucun nouveau patient</div>";
-	
-						document.getElementById('notifClientsList').innerHTML = clientsHtml;
-	
-						// --- RDV du jour ---
-						const cardRdv = (r) => `
-							<div class="notify-card">
-								<div class="notify-left">
-									<div class="notify-title">
-										<i class="bi bi-clock-fill text-success me-1"></i>
-										${r.heure} — ${r.client}
-									</div>
-									<div class="notify-sub">
-										📝 ${r.motif ?? "—"}<br>
-										<span class="badge bg-info text-dark badge-status">${r.statut ?? "En attente"}</span>
-									</div>
-								</div>
-								<a href="/rdv" class="btn btn-sm btn-outline-success fw-bold rounded-pill px-3">Ouvrir</a>
-							</div>
-						`;
-	
-						const rdvHtml = (data.rdvToday && data.rdvToday.length)
-							? data.rdvToday.map(r => cardRdv(r)).join('')
-							: "<div class='alert alert-light text-center py-2 mb-0 rounded-4'>Aucun RDV aujourd’hui</div>";
-	
-						document.getElementById('notifRdvList').innerHTML = rdvHtml;
-					})
-					.catch(err => console.error(err));
-			}
-	
-			document.addEventListener('DOMContentLoaded', () => {
-				majLogo();
-				loadNotifications();
-				setInterval(loadNotifications, 30000);
-			});
-		</script>
-
-	{# petits styles des cartes notifs (comme tu avais) #}
-		<style>
+		
 .notify-card {
 	border: 1px solid rgba(0, 0, 0, 0.08);
 	border-radius: 16px;

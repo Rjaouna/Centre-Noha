@@ -86,7 +86,7 @@
 	.med-card {
 		background: white;
 		border-radius: 20px;
-		padding: 22px;
+		padding: 10px;
 		margin-bottom: 18px;
 		border: 1px solid rgba(0, 0, 0, 0.08);
 		transition: 0.3s;
@@ -122,9 +122,8 @@ document.addEventListener("DOMContentLoaded", () => {
 	<div class="d-flex justify-content-between">
 
 		<div>
-			<p class="fw-bold text-secondary mb-1">${m.name} - ${m.dosage} ${m.uniteDosage}
+<p class="fw-bold text-dark mb-0">${m.name} - ${m.dosage} ${m.uniteDosage}</p>
 
-			</p>
 
 
 			<p class="text-secondary small mb-1">
@@ -139,7 +138,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		</div>
 
 		
-<button onclick="event.stopPropagation(); addMedicineToSuivi(${m.id})" class="btn btn-success btn-lg">
+<button onclick="event.stopPropagation(); addMedicineToSuivi(${m.id})" class="btn btn-success text-white">
 	<i class="bi bi-plus-lg me-1"></i>
 
 
