@@ -1,105 +1,60 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Ordonnance —
+{% block title %}
+Ordonnance —
+
 	{{ patient.nom }}
 {% endblock %}
 
 {% block body %}
 
-	<style>
-		.pdf-wrapper {
-			display: flex;
-			justify-content: center;
-			margin-top: 30px;
-			margin-bottom: 50px;
-		}
-
-		.pdf-container {
-			width: 100%;
-			max-width: 700px;
-			background: white;
-			padding: 40px 50px;
-			border-radius: 12px;
-			box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
-			font-family: Helvetica, Arial, sans-serif;
-			font-size: 14px;
-			line-height: 1.5;
-		}
-
-		.ord-title {
-			font-size: 22px;
-			font-weight: bold;
-			text-align: center;
-			text-decoration: underline;
-			margin-bottom: 25px;
-		}
-
-		.med-item {
-			border: 1px solid #bbb;
-			padding: 10px 15px;
-			border-radius: 8px;
-			margin-bottom: 15px;
-		}
-
-		.footer {
-			margin-top: 40px;
-			font-size: 12px;
-			text-align: center;
-			color: #555;
-			border-top: 1px solid #ccc;
-			padding-top: 10px;
-		}
-	</style>
-
-	<div class="mt-4">
-		<div class="card shadow-lg border-0 rounded-4 mb-4">
-			<div class="card-body py-4 px-4 d-flex justify-content-between">
-
-				<h2 class="fw-bold text-primary mb-0">
-					Ordonnance —
-					{{ patient.nom }}
-				</h2>
-<div class="col-12 col-md-4 d-flex flex-column flex-md-row justify-content-md-end justify-content-center gap-2">
+<div class="container-fluid mt-4">
 
 
+{# ================= HEADER (style app) ================= #}
+{% embed '_partials/_page_header.html.twig' with {
+		icon: 'bi bi-file-earmark-medical',
+		title: 'Ordonnance — ' ~ patient.nom,
+		subtitle: 'Impression et export PDF'
+	} %}
 
 
-<button onclick="generatePdf()" class="btn btn-outline-danger btn-lg rounded-pill px-4 shadow-sm d-flex align-items-center gap-2 w-100 w-md-auto">
+{% block header_actions_left %}
+<span class="action-icon bg-danger text-white" role="button" onclick="generatePdf()" data-bs-toggle="tooltip" title="Générer le PDF">
+	<i class="bi bi-filetype-pdf"></i>
 
-		<i class="bi bi-filetype-pdf"></i>
-		Générer le PDF
-	</button>
-<!-- Bouton Retour -->
-<button type="button" onclick="history.back()" class="btn btn-outline-primary btn-lg rounded-pill px-4 shadow-sm d-flex align-items-center gap-2 w-100 w-md-auto">
-	<i class="bi bi-arrow-left"></i>
-	Retour
+</span>{% endblock %}
 
-</button>
 
+{# On garde le bloc right par défaut (Home + Retour) #}
+{% endembed %}
+
+
+{# ================= ORDONNANCE (Preview) ================= #}
+<section class="mb-4">
+	<div class="card shadow-sm border-0 rounded-4">
+		<div class="card-body p-0">
+
+
+<div class="pdf-wrapper">
+	<div class="pdf-container">
+
+
+<div class="text-end">
+	<strong>{{ "now"|date("d/m/Y") }}</strong>
 </div>
 
 
-			</div>
-		</div>
-	</div>
-
-	<div class="pdf-wrapper">
-		<div class="pdf-container">
-
-			<div class="text-end">
-				<strong>{{ "now"|date("d/m/Y") }}</strong>
-			</div>
-
-			<div class="ord-title">ORDONNANCE MÉDICALE</div>
+<div class="ord-title">ORDONNANCE MÉDICALE</div>
 
 
-			<!-- Infos Patient -->
-			<p>
-				<strong>Patient :</strong>
-				{{ patient.nom }}
-				{% if patient.agePatient %}
+{# Infos Patient #}
+<p>
+	<strong>Patient :</strong>
+	{{ patient.nom }}
+	{% if patient.agePatient %}
 
-					({{ patient.agePatient }}
+({{ patient.agePatient }}
 
 ans,
 
@@ -107,69 +62,145 @@ ans,
 
 kg)
 
+{% endif %}
 
-				{% endif %}
+<br>
 
-
-				<br>
-				Téléphone :
-				{{ patient.telephone }}<br>
-				Maladie :
-				{{ patient.typeMaladie }}
-			</p>
-
-			<hr>
-
-			<h5 class="fw-bold text-primary mt-4">Médicaments prescrits :</h5>
-
-			<ol class="med-list">
+<strong>Téléphone :</strong>
+{{ patient.telephone ?: '—' }}<br>
+<strong>Maladie :</strong>
+{{ patient.typeMaladie ?: '—' }}</p>
 
 
-				{% for med in medicaments %}
-					<li>
-						<strong>{{ med.name|upper }}</strong>
-						—
-						<strong>{{ med.dosage }}
-							{{ med.uniteDosage }}</strong>
-						{{ med.forme }}
-					</li>
+<hr>
 
 
-					–
-					{{ med.presentation }}</li>
-			{% else %}
-				<li>Aucun médicament trouvé</li>
-			{% endfor %}
-		</ol>
+<h5 class="fw-bold text-primary mt-4">Médicaments prescrits :</h5>
 
 
+<ol class="med-list">
 
-		
+{% for med in medicaments %}
 
-		<p>
-			Signature / Cachet :
-			<br><br><br>
-		</p>
+<li class="med-item-li">
+	<div class="med-top">
+		<div class="med-name">
+			<strong>{{ med.name|upper }}</strong>
+			—
+			<strong>{{ med.dosage }}
+				{{ med.uniteDosage }}</strong>
+			{{ med.forme }}
 
-		<div class="footer">
-			{{ cabinet.nom }}
-			–
-			{{ cabinet.type }}<br>
-			{{ cabinet.adresse }}
-			–
-			{{ cabinet.ville }}<br>
-			Tél :
-			{{ cabinet.telephone }}
-			| Email :
-			{{ cabinet.email }}
-		</div>
-
-	</div>
 </div>
 
- <script>
-	    function generatePdf() {
-	        window.open("/api/ordonnance/{{ suivi.id }}/pdf", "_blank");
-	    }
-	</script>{% endblock %}
+{% if med.presentation %}
+	<div class="med-pres text-muted">
+		{{ med.presentation }}
+	</div>
+{% endif %}</div>
+
+</li>
+
+{% else %}
+
+<li class="text-muted">Aucun médicament trouvé</li>{% endfor %}</ol>
+
+
+<p class="mt-4">
+	<strong>Signature / Cachet :</strong>
+	<br><br><br>
+</p>
+
+
+<div class="footer">
+	{{ cabinet.nom }}
+	–
+	{{ cabinet.type }}<br>
+	{{ cabinet.adresse }}
+	–
+	{{ cabinet.ville }}<br>
+	Tél :
+	{{ cabinet.telephone }}
+	| Email :
+	{{ cabinet.email }}
+</div>
+
+
+</div></div>
+
+
+</div></div></section></div><style>.pdf-wrapper {
+	display: flex;
+	justify-content: center;
+	padding: 22px 18px;
+}
+.pdf-container {
+	width: 100%;
+	max-width: 780px;
+	background: #fff;
+	padding: 40px 44px;
+	border-radius: 18px;
+	box-shadow: 0 10px 26px rgba(0, 0, 0, 0.06);
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 14px;
+	line-height: 1.55;
+	border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.ord-title {
+	font-size: 22px;
+	font-weight: 800;
+	text-align: center;
+	text-decoration: underline;
+	margin: 14px 0 22px;
+}
+
+.med-list {
+	padding-left: 18px;
+	margin-top: 12px;
+}
+.med-item-li {
+	margin-bottom: 10px;
+}
+.med-top {
+	border: 1px solid rgba(0, 0, 0, 0.12);
+	padding: 10px 14px;
+	border-radius: 14px;
+	background: #fafafa;
+}
+.med-name {
+	color: #111827;
+}
+.med-pres {
+	margin-top: 6px;
+	font-size: 0.92rem;
+}
+
+.footer {
+	margin-top: 34px;
+	font-size: 12px;
+	text-align: center;
+	color: #6b7280;
+	border-top: 1px solid rgba(0, 0, 0, 0.10);
+	padding-top: 12px;
+}
+
+@media(max-width: 576px) {
+	.pdf-container {
+		padding: 22px 18px;
+		border-radius: 16px;
+	}
+	.ord-title {
+		font-size: 18px;
+	}
+}</style>
+
+
+<script>
+	function generatePdf() {
+				window.open("/api/ordonnance/{{ suivi.id }}/pdf", "_blank");
+			}
+
+</script>{% endblock %}
+
 
