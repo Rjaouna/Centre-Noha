@@ -503,7 +503,16 @@ async function loadNotifications() {
 
         // Badge top
         const topBadge = document.getElementById('notifTopBadge');
-        if (topBadge) topBadge.textContent = data.total ?? 0;
+if (topBadge) {
+    const clientsCount = data.newClients ? data.newClients.length : 0;
+    const rdvCount = data.rdvToday ? data.rdvToday.length : 0;
+
+    const total = clientsCount + rdvCount;
+
+    topBadge.textContent = total;
+    topBadge.style.display = total > 0 ? 'inline-flex' : 'none';
+}
+
 
         // Clients
         const clientsContainer = document.getElementById('notifClientsList');
