@@ -106,46 +106,69 @@
 					<span>Rendez-vous</span>
 				</a>
 
-				<div class="side-section mt-3">
-					<div class="side-section-title">
-						<i class="bi bi-heart-pulse text-danger"></i>
-						<span>Référentiel</span>
-					</div>
+<div class="side-section mt-3">
 
-					<a class="side-sublink {{ r == 'symptome_index' ? 'active' : '' }}" href="{{ path('symptome_index') }}">
-						<i class="bi bi-activity"></i>
-						<span>Symptômes</span>
-					</a>
+	<div class="side-section-title">
+		<i class="bi bi-heart-pulse text-danger"></i>
+		<span>Référentiel</span>
+		<span class="side-section-badge">Médical</span>
+	</div>
 
-					<a class="side-sublink {{ r == 'maladie_chronique_index' ? 'active' : '' }}" href="{{ path('maladie_chronique_index') }}">
-						<i class="bi bi-heart-pulse"></i>
-						<span>Maladies chroniques</span>
-					</a>
+	<div class="side-sublinks">
+		<a class="side-sublink {{ r == 'symptome_index' ? 'active' : '' }}" href="{{ path('symptome_index') }}">
+			<span class="side-ico">
+				<i class="bi bi-activity"></i>
+			</span>
+			<span>Symptômes</span>
+			<i class="bi bi-chevron-right ms-auto side-chevron"></i>
+		</a>
 
-					<a class="side-sublink {{ r == 'certificats_index' ? 'active' : '' }}" href="{{ path('certificats_index') }}">
-						<i class="bi bi-file-medical"></i>
-						<span>Certificats</span>
-					</a>
+		<a class="side-sublink {{ r == 'maladie_chronique_index' ? 'active' : '' }}" href="{{ path('maladie_chronique_index') }}">
+			<span class="side-ico">
+				<i class="bi bi-heart-pulse"></i>
+			</span>
+			<span>Maladies chroniques</span>
+			<i class="bi bi-chevron-right ms-auto side-chevron"></i>
+		</a>
 
-					<a class="side-sublink {{ r == 'traitement_index' ? 'active' : '' }}" href="{{ path('traitement_index') }}">
-						<i class="bi bi-capsule"></i>
-						<span>Traitements</span>
-					</a>
+		<a class="side-sublink {{ r == 'certificats_index' ? 'active' : '' }}" href="{{ path('certificats_index') }}">
+			<span class="side-ico">
+				<i class="bi bi-file-medical"></i>
+			</span>
+			<span>Certificats</span>
+			<i class="bi bi-chevron-right ms-auto side-chevron"></i>
+		</a>
 
-					<a class="side-sublink {{ r == 'disponibilite_index' ? 'active' : '' }}" href="{{ path('disponibilite_index') }}">
-						<i class="bi bi-calendar-check"></i>
-						<span>Disponibilités</span>
-					</a>
-				</div>
+		<a class="side-sublink {{ r == 'traitement_index' ? 'active' : '' }}" href="{{ path('traitement_index') }}">
+			<span class="side-ico">
+				<i class="bi bi-capsule"></i>
+			</span>
+			<span>Traitements</span>
+			<i class="bi bi-chevron-right ms-auto side-chevron"></i>
+		</a>
+
+		<a class="side-sublink {{ r == 'disponibilite_index' ? 'active' : '' }}" href="{{ path('disponibilite_index') }}">
+			<span class="side-ico">
+				<i class="bi bi-calendar-check"></i>
+			</span>
+			<span>Disponibilités</span>
+			<i class="bi bi-chevron-right ms-auto side-chevron"></i>
+		</a>
+	</div>
+
+</div>
+
 
 			</nav>
 
-			<div class="sidebar-footer">
-			
-				<a class="btn btn-danger w-100 rounded-pill mt-2" href="{{ path('app_logout') }}">
-					<i class="bi bi-box-arrow-right me-2"></i>Déconnexion
-				</a>
-			</div>
+<div class="sidebar-footer mt-4">
+<a href="{{ path('app_logout') }}" class="btn btn-logout w-100  shadow-sm">
+
+		<i class="bi bi-box-arrow-right me-2"></i>
+		Déconnexion
+	</a>
+</div>
+
 
 		</div>
 	</aside>
@@ -250,21 +273,47 @@
 			<span>Compte</span>
 		</div>
 
-		<div class="d-grid gap-2">
-			<a href="{{ path('app_user_profile') }}" class="btn btn-light rounded-pill text-start px-4">
-				<i class="bi bi-person-circle me-2"></i>
-				Profil
-			</a>
-			<a href="{{ path('app_cabinet_index') }}" class="btn btn-light rounded-pill text-start px-4">
-				<i class="bi bi-gear me-2"></i>
-				Paramètres
-			</a>
+<div class="menu-actions">
+	<a href="{{ path('app_user_profile') }}" class="menu-btn">
+		<span class="menu-ico menu-ico-primary">
+			<i class="bi bi-person-circle"></i>
+		</span>
+		<span class="menu-text">
+			<span class="menu-title">Profil</span>
+			<small class="menu-sub">Informations personnelles</small>
+		</span>
+		<span class="menu-arrow">
+			<i class="bi bi-chevron-right"></i>
+		</span>
+	</a>
 
-			<a href="{{ path('app_logout') }}" class="btn btn-danger rounded-pill px-4 mt-1">
-				<i class="bi bi-box-arrow-right me-2"></i>
-				Déconnexion
-			</a>
-		</div>
+	<a href="{{ path('app_cabinet_index') }}" class="menu-btn">
+		<span class="menu-ico menu-ico-dark">
+			<i class="bi bi-gear"></i>
+		</span>
+		<span class="menu-text">
+			<span class="menu-title">Paramètres</span>
+			<small class="menu-sub">Cabinet & configuration</small>
+		</span>
+		<span class="menu-arrow">
+			<i class="bi bi-chevron-right"></i>
+		</span>
+	</a>
+
+	<a href="{{ path('app_logout') }}" class="menu-btn menu-btn-danger mt-1">
+		<span class="menu-ico menu-ico-danger">
+			<i class="bi bi-box-arrow-right"></i>
+		</span>
+		<span class="menu-text">
+			<span class="menu-title">Déconnexion</span>
+			<small class="menu-sub">Fermer la session</small>
+		</span>
+		<span class="menu-arrow">
+			<i class="bi bi-chevron-right"></i>
+		</span>
+	</a>
+</div>
+
 
 	</div>
 </div>
@@ -392,6 +441,111 @@
 			</div>
 		</div>
 	</div>
+<style>
+	/* Container sublinks (petit cadre) */
+	.side-sublinks {
+		display: grid;
+		gap: 10px;
+		padding: 10px;
+		border-radius: 18px;
+		background: rgba(17, 24, 39, 0.02);
+		border: 1px solid rgba(0, 0, 0, .06);
+	}
+
+	/* Titre section + badge */
+	.side-section-badge {
+		margin-left: auto;
+		font-size: 0.72rem;
+		font-weight: 800;
+		padding: 0.22rem 0.55rem;
+		border-radius: 999px;
+		background: rgba(220, 53, 69, .10);
+		color: #dc3545;
+		border: 1px solid rgba(220, 53, 69, .16);
+	}
+
+	/* Lien */
+	.side-sublink {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		padding: 12px;
+		border-radius: 16px;
+		text-decoration: none;
+		color: #111827;
+		font-weight: 800;
+		background: #fff;
+		border: 1px solid rgba(0, 0, 0, .06);
+		box-shadow: 0 10px 22px rgba(0, 0, 0, .05);
+		transition: 0.18s ease;
+	}
+
+	.side-sublink:hover {
+		transform: translateY(-1px);
+		box-shadow: 0 16px 34px rgba(0, 0, 0, .08);
+		border-color: rgba(13, 110, 253, .14);
+		background: rgba(13, 110, 253, .03);
+	}
+
+	/* Petit bloc icône */
+	.side-ico {
+		width: 34px;
+		height: 34px;
+		border-radius: 12px;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		background: rgba(13, 110, 253, .10);
+		color: #0d6efd;
+		box-shadow: inset 0 0 0 1px rgba(13, 110, 253, .12);
+		flex: 0 0 auto;
+	}
+	.side-ico i {
+		font-size: 1.05rem;
+	}
+
+	/* Chevron */
+	.side-chevron {
+		opacity: .55;
+		font-size: 0.95rem;
+	}
+
+	/* Active */
+	.side-sublink.active {
+		background: rgba(13, 110, 253, .10);
+		border-color: rgba(13, 110, 253, .22);
+	}
+	.side-sublink.active .side-ico {
+		background: rgba(13, 110, 253, .16);
+		box-shadow: inset 0 0 0 1px rgba(13, 110, 253, .20);
+	}
+	.side-sublink.active .side-chevron {
+		opacity: 1;
+		color: #0d6efd;
+	}
+
+	/* Option : couleurs différentes par item (si tu veux) */
+	.side-sublink:nth-child(2) .side-ico {
+		background: rgba(220, 53, 69, .10);
+		color: #dc3545;
+		box-shadow: inset 0 0 0 1px rgba(220, 53, 69, .12);
+	}
+	.side-sublink:nth-child(3) .side-ico {
+		background: rgba(108, 117, 125, .10);
+		color: #6c757d;
+		box-shadow: inset 0 0 0 1px rgba(108, 117, 125, .12);
+	}
+	.side-sublink:nth-child(4) .side-ico {
+		background: rgba(25, 135, 84, .10);
+		color: #198754;
+		box-shadow: inset 0 0 0 1px rgba(25, 135, 84, .12);
+	}
+	.side-sublink:nth-child(5) .side-ico {
+		background: rgba(13, 110, 253, .10);
+		color: #0d6efd;
+		box-shadow: inset 0 0 0 1px rgba(13, 110, 253, .12);
+	}
+</style>
 
 	{# ===========================
 		   STYLE (App look)
@@ -550,7 +704,7 @@
 			background: #ffffff;
 			border-right: 1px solid rgba(0, 0, 0, .06);
 			z-index: 1029;
-			padding-top: 64px; /* laisse respirer sous topbar */
+			padding-top: 20px; /* laisse respirer sous topbar */
 		}
 		.sidebar-inner {
 			height: calc(100vh - 64px);
@@ -678,6 +832,112 @@
 			justify-content: center;
 			font-size: 1.2rem;
 		}
+		.btn-logout{
+    border-radius: 999px;
+    padding: 12px 16px;
+    font-weight: 800;
+    letter-spacing: .2px;
+
+    background: rgba(220,53,69,.10);
+    border: 1px solid rgba(220,53,69,.22);
+    color: #dc3545;
+
+    box-shadow: 0 10px 26px rgba(0,0,0,.08);
+    transition: .18s ease;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    text-decoration:none;
+  }
+
+  .btn-logout:hover{
+    background: rgba(220,53,69,.14);
+    border-color: rgba(220,53,69,.30);
+    transform: translateY(-2px);
+    box-shadow: 0 16px 36px rgba(0,0,0,.12);
+    color: #dc3545;
+  }
+
+  .btn-logout:active{
+    transform: translateY(0);
+    box-shadow: 0 10px 26px rgba(0,0,0,.08);
+  }
+
+  .menu-actions{
+		display: grid;
+		gap: 10px;
+	}
+
+	/* Bouton "card" */
+	.menu-btn{
+		width: 100%;
+		border: 1px solid rgba(0,0,0,.06);
+		border-radius: 18px;
+		padding: 12px 14px;
+		background: #fff;
+		text-decoration: none;
+		color: #111827;
+
+		display: flex;
+		align-items: center;
+		gap: 12px;
+
+		box-shadow: 0 10px 26px rgba(0,0,0,.06);
+		transition: .18s ease;
+	}
+
+	.menu-btn:hover{
+		transform: translateY(-2px);
+		box-shadow: 0 16px 36px rgba(0,0,0,.10);
+		background: #f9fbff;
+	}
+
+	.menu-ico{
+		width: 44px;
+		height: 44px;
+		border-radius: 16px;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 1.25rem;
+		flex: 0 0 auto;
+		box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
+	}
+
+	.menu-ico-primary{ background: rgba(13,110,253,.10); color:#0d6efd; }
+	.menu-ico-dark{ background: rgba(17,24,39,.06); color:#111827; }
+	.menu-ico-danger{ background: rgba(220,53,69,.10); color:#dc3545; }
+
+	.menu-text{ flex: 1; min-width: 0; }
+	.menu-title{ font-weight: 900; display:block; line-height: 1.1; }
+	.menu-sub{ color:#6b7280; display:block; margin-top: 2px; }
+
+	.menu-arrow{
+		width: 34px;
+		height: 34px;
+		border-radius: 12px;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		background: rgba(0,0,0,.04);
+		color: #6b7280;
+		flex: 0 0 auto;
+	}
+
+	/* Variante déconnexion */
+	.menu-btn-danger{
+		border-color: rgba(220,53,69,.16);
+	}
+	.menu-btn-danger:hover{
+		background: rgba(220,53,69,.06);
+		border-color: rgba(220,53,69,.26);
+	}
+
+	@media (max-width: 576px){
+		.menu-btn{ padding: 12px; }
+		.menu-title{ font-size: .98rem; }
+	}
 	</style>
 
 	{# ===========================

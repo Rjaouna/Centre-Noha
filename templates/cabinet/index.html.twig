@@ -4,8 +4,21 @@
 {% endblock %}
 
 {% block body %}
+<div
+	class="pt-4">
+	{# ================= HEADER : CABINET ================= #}
+	{% embed '_partials/_page_header.html.twig' with {
+    icon: 'bi bi-gear-fill',
+    title: 'Cabinet médical',
+    subtitle: 'Paramètres et informations du cabinet'
+} %}
 
-	<div class="card shadow-lg border-0 rounded-4 my-5">
+
+{# Actions métier (gauche) : rien pour l’instant #}
+{% block header_actions_left %}{% endblock %}
+
+{# Navigation (droite) : garde Home + Retour par défaut #}{% endembed %}</div><div class="card shadow-lg border-0 rounded-4">
+
 		<div class="card-body p-4">
 
 			<h4 class="fw-bold text-primary mb-4 d-flex align-items-center">
