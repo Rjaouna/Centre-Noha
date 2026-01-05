@@ -117,26 +117,7 @@
 	<div
 		class="side-sublinks">
 
-		{# ===== Parcours médical ===== #}
-		<a class="side-sublink {{ r == 'analyse_index' ? 'active' : '' }}" href="{{ path('analyse_index') }}">
-			<span class="side-ico">
-				<i class="bi bi-clipboard-data"></i>
-			</span>
-			<span>Type analyses</span>
-			<i class="bi bi-chevron-right ms-auto side-chevron"></i>
-		</a>
-{# ===== Parcours médical ===== #}
-<a class="side-sublink {{ r == 'radio_type_index' ? 'active' : '' }}" href="{{ path('radio_type_index') }}">
-
-
-	<span class="side-ico">
-<i class="bi bi-plus-square"></i>
-
-
-	</span>
-	<span>Type radio</span>
-	<i class="bi bi-chevron-right ms-auto side-chevron"></i>
-</a>
+	
 
 
 
@@ -163,13 +144,34 @@
 			<span>Traitements</span>
 			<i class="bi bi-chevron-right ms-auto side-chevron"></i>
 		</a>
+{# ===== Parcours médical ===== #}
+<a class="side-sublink {{ r == 'analyse_index' ? 'active' : '' }}" href="{{ path('analyse_index') }}">
+	<span class="side-ico">
+		<i class="bi bi-clipboard-data"></i>
+	</span>
+	<span>Type analyse</span>
+	<i class="bi bi-chevron-right ms-auto side-chevron"></i>
+</a>
+{# ===== Parcours médical ===== #}
+<a class="side-sublink {{ r == 'radio_type_index' ? 'active' : '' }}" href="{{ path('radio_type_index') }}">
+
+
+	<span class="side-ico">
+		<i class="bi bi-plus-square"></i>
+
+
+	</span>
+	<span>Type radio</span>
+	<i class="bi bi-chevron-right ms-auto side-chevron"></i>
+</a>
 
 		{# ===== Autres référentiels ===== #}
 		<a class="side-sublink {{ r == 'certificats_index' ? 'active' : '' }}" href="{{ path('certificats_index') }}">
 			<span class="side-ico">
 				<i class="bi bi-file-medical"></i>
 			</span>
-			<span>Certificats</span>
+<span>Modèles de certificats</span>
+
 			<i class="bi bi-chevron-right ms-auto side-chevron"></i>
 		</a>
 
@@ -260,16 +262,6 @@
 		</div>
 <div class="mm-list">
 
-	<a class="mm-row {{ r == 'analyse_index' ? 'active' : '' }}" href="{{ path('analyse_index') }}">
-		<i class="bi bi-clipboard-data"></i>
-		<div class="d-flex flex-column">
-			<span class="fw-bold">Programmer les analyses</span>
-			<small class="text-muted">
-				Définir les analyses disponibles lors de la saisie des consultations
-			</small>
-		</div>
-		<i class="bi bi-chevron-right ms-auto"></i>
-	</a>
 
 <div class="mm-card mm-card-pathway">
 
@@ -312,6 +304,27 @@
 
 	</div>
 </div>
+<a class="mm-row {{ r == 'analyse_index' ? 'active' : '' }}" href="{{ path('analyse_index') }}">
+	<i class="bi bi-clipboard-data"></i>
+	<div class="d-flex flex-column">
+		<span class="fw-bold">Type analyse</span>
+		<small class="text-muted">
+			Définir les analyses disponibles lors de la saisie des consultations
+		</small>
+	</div>
+
+	<i class="bi bi-chevron-right ms-auto"></i>
+</a>
+<a class="mm-row {{ r == 'radio_type_index' ? 'active' : '' }}" href="{{ path('radio_type_index') }}">
+	<i class="bi bi-plus-square"></i>
+	<div class="d-flex flex-column">
+		<span class="fw-bold">Type radio</span>
+		<small class="text-muted">
+			Définir les types de radiologie disponibles lors de la saisie des consultations
+		</small>
+	</div>
+	<i class="bi bi-chevron-right ms-auto"></i>
+</a>
 
 
 
