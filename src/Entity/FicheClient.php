@@ -145,6 +145,12 @@ class FicheClient
     #[ORM\OneToMany(targetEntity: RendezVous::class, mappedBy: 'patient')]
     private Collection $rendezVouses;
 
+    /**
+     * @var Collection<int, Radiologie>
+     */
+    #[ORM\OneToMany(targetEntity: Radiologie::class, mappedBy: 'patient')]
+    private Collection $radiologies;
+
     public function __construct()
     {
         $this->paiements = new ArrayCollection();
@@ -155,6 +161,7 @@ class FicheClient
         $this->arretMaladies = new ArrayCollection();
         $this->analysePrescriptions = new ArrayCollection();
         $this->rendezVouses = new ArrayCollection();
+        $this->radiologies = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -574,6 +581,36 @@ class FicheClient
             // set the owning side to null (unless already changed)
             if ($rendezVouse->getPatient() === $this) {
                 $rendezVouse->setPatient(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Radiologie>
+     */
+    public function getRadiologies(): Collection
+    {
+        return $this->radiologies;
+    }
+
+    public function addRadiology(Radiologie $radiology): static
+    {
+        if (!$this->radiologies->contains($radiology)) {
+            $this->radiologies->add($radiology);
+            $radiology->setPatient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRadiology(Radiologie $radiology): static
+    {
+        if ($this->radiologies->removeElement($radiology)) {
+            // set the owning side to null (unless already changed)
+            if ($radiology->getPatient() === $this) {
+                $radiology->setPatient(null);
             }
         }
 

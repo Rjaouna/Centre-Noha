@@ -122,9 +122,23 @@
 			<span class="side-ico">
 				<i class="bi bi-clipboard-data"></i>
 			</span>
-			<span>Analyses</span>
+			<span>Type analyses</span>
 			<i class="bi bi-chevron-right ms-auto side-chevron"></i>
 		</a>
+{# ===== Parcours médical ===== #}
+<a class="side-sublink {{ r == 'radio_type_index' ? 'active' : '' }}" href="{{ path('radio_type_index') }}">
+
+
+	<span class="side-ico">
+<i class="bi bi-plus-square"></i>
+
+
+	</span>
+	<span>Type radio</span>
+	<i class="bi bi-chevron-right ms-auto side-chevron"></i>
+</a>
+
+
 
 		<a class="side-sublink {{ r == 'symptome_index' ? 'active' : '' }}" href="{{ path('symptome_index') }}">
 			<span class="side-ico">
@@ -1009,7 +1023,9 @@ background: linear-gradient(90deg, #1d4ed8, #2563eb);
 			border-radius: 16px;
 			text-decoration: none;
 			color: #111827;
-			font-weight: 700;
+font-weight: 400;
+
+
 			margin-bottom: 5px;
 			transition: 0.18s ease;
 			border: 1px solid transparent;
