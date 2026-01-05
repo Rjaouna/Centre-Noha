@@ -5,30 +5,85 @@ namespace App\Form;
 use App\Entity\FicheClient;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
+
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+
+use Symfony\Component\Validator\Constraints as Assert;
 
 class FicheClientType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('nom', null, [
-                'label' => 'Nom complet',
+
+            // ✅ Nom
+            ->add('nom', TextType::class, [
+                'label' => 'Nom',
                 'attr' => [
-                    'placeholder' => 'Ex : Ahmed El Amrani'
+                'placeholder' => 'Ex : El Amrani',
+                'class' => 'form-control',
                 ],
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'Le nom est obligatoire.']),
                     new Assert\Length(['min' => 2, 'minMessage' => 'Le nom est trop court.']),
-                ]
+            ],
             ])
 
+            // ✅ Prénom (manquant)
+            ->add('prenom', TextType::class, [
+                'label' => 'Prénom',
+                'attr' => [
+                    'placeholder' => 'Ex : Ahmed',
+                    'class' => 'form-control',
+                ],
+                'constraints' => [
+                    new Assert\NotBlank(['message' => 'Le prénom est obligatoire.']),
+                    new Assert\Length(['min' => 2, 'minMessage' => 'Le prénom est trop court.']),
+                    new Assert\Length(['max' => 20, 'maxMessage' => 'Le prénom est trop long.']),
+                ],
+            ])
+
+            // ✅ Âge (non mappé) -> on calcule dateNaissance côté controller
+            ->add('ageYears', IntegerType::class, [
+                'mapped' => false,
+                'label' => 'Âge',
+                'attr' => [
+                    'placeholder' => 'Ex : 34',
+                    'min' => 0,
+                    'max' => 120,
+                    'class' => 'form-control',
+                    'id' => 'ageYearsInput',
+                ],
+                'constraints' => [
+                    new Assert\NotBlank(['message' => 'L’âge est obligatoire.']),
+                    new Assert\Range(min: 0, max: 120, notInRangeMessage: 'Âge invalide.'),
+                ],
+            ])
+
+            // ✅ CIN (manquant, optionnel)
+            ->add('cin', TextType::class, [
+                'label' => 'CIN (optionnel)',
+                'required' => false,
+                'attr' => [
+                    'placeholder' => 'Ex : AB123456',
+                    'class' => 'form-control',
+                ],
+                'constraints' => [
+                    new Assert\Length(['max' => 8, 'maxMessage' => 'CIN trop long (8 max).']),
+                ],
+            ])
+
+            // ✅ Ville
             ->add('ville', ChoiceType::class, [
                 'label' => 'Ville',
                 'placeholder' => 'Sélectionnez une ville',
+            'attr' => [
+                'class' => 'form-select',
+            ],
             'choices' => [
                 'Agadir' => 'Agadir',
                 'Ahfir' => 'Ahfir',
@@ -99,26 +154,20 @@ class FicheClientType extends AbstractType
                 'Tiznit' => 'Tiznit',
                 'Youssoufia' => 'Youssoufia',
                 'Zagora' => 'Zagora',
-                ],
-
+            ],
             'constraints' => [
-                    new Assert\NotBlank(['message' => 'La ville est obligatoire.'])
-                ]
+                new Assert\NotBlank(['message' => 'La ville est obligatoire.']),
+            ],
             ])
 
-            ->add('age', DateType::class, [
-                'widget' => 'single_text',  // évite les selects jour/mois/année
-                'html5' => true,
-                'label' => 'Date de naissance',
-                'required' => false,
-                'attr' => [
-                    'class' => 'form-control',
-                ],
-            ])
-
+            // ✅ Poids (optionnel)
             ->add('poids', ChoiceType::class, [
-                'label' => 'Poids (kg)',
+                'label' => 'Poids (kg) (optionnel)',
+                'required' => false,
             'placeholder' => 'Sélectionnez un poids',
+                'attr' => [
+                'class' => 'form-select',
+            ],
             'choices' => [
                 '6 - 9 kg' => '6-9',
                 '10 - 19 kg' => '10-19',
@@ -137,22 +186,17 @@ class FicheClientType extends AbstractType
                 '140 - 149 kg' => '140-149',
                 '150 kg et +' => '150+',
             ],
-                'constraints' => [
-                new \Symfony\Component\Validator\Constraints\NotBlank([
-                    'message' => 'Veuillez sélectionner une tranche de poids.'
-                    ])
-                ]
             ])
 
-
-            ->add('telephone', null, [
+            // ✅ Téléphone
+            ->add('telephone', TextType::class, [
                 'label' => 'Téléphone',
                 'attr' => [
-                    'placeholder' => 'Ex : 0612345678'
+                'placeholder' => 'Ex : 0612345678',
+                'class' => 'form-control',
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(),
-                // Taille exacte : 10 chiffres
+                new Assert\NotBlank(['message' => 'Le téléphone est obligatoire.']),
                 new Assert\Length([
                     'min' => 10,
                     'max' => 10,
@@ -162,12 +206,17 @@ class FicheClientType extends AbstractType
                         'pattern' => '/^(06|07)[0-9]{8}$/',
                         'message' => 'Numéro marocain invalide.',
                     ]),
-                ]
+            ],
             ])
 
+            // ✅ Durée maladie (optionnel)
             ->add('dureeMaladie', ChoiceType::class, [
-                'label' => 'Durée de la maladie',
+            'label' => 'Durée de la maladie (optionnel)',
+            'required' => false,
                 'placeholder' => 'Sélectionnez une durée',
+            'attr' => [
+                'class' => 'form-select',
+            ],
                 'choices' => [
                     '1 à 5 jours' => '1-5',
                     '6 à 10 jours' => '6-10',
@@ -180,10 +229,13 @@ class FicheClientType extends AbstractType
                 ],
             ])
 
-
+            // ✅ Type maladie
             ->add('typeMaladie', ChoiceType::class, [
                 'label' => 'Type de maladie',
             'placeholder' => 'Sélectionnez un type de maladie',
+            'attr' => [
+                'class' => 'form-select',
+            ],
             'choices' => [
                 'Santé mentale (mal-être, anxiété, stress)' => 'sante_mentale',
                 'Fièvre' => 'fievre',
@@ -198,25 +250,34 @@ class FicheClientType extends AbstractType
                 'Gynécologie' => 'gynecologie',
                 'Problème de peau' => 'probleme_peau',
                 'Maux de tête' => 'maux_tete',
-                'Autre (spécifier)' => 'Autre',
+                'Autre (spécifier)' => 'autre',
             ],
                 'constraints' => [
-                    new Assert\NotBlank(),
+                new Assert\NotBlank(['message' => 'Le type de maladie est obligatoire.']),
             ],
             ])
 
-
-            ->add('traitement', null, [
+            // ✅ Traitement
+            ->add('traitement', TextType::class, [
                 'label' => 'Traitement (si existant)',
-                'attr' => ['placeholder' => 'Décrivez le traitement…'],
-                'required' => false
+            'required' => false,
+            'attr' => [
+                'placeholder' => 'Décrivez le traitement…',
+                'class' => 'form-control',
+            ],
             ])
 
-            ->add('observation', null, [
+            // ✅ Observation
+            ->add('observation', TextareaType::class, [
                 'label' => 'Observation',
-                'attr' => ['placeholder' => 'Notes supplémentaires…'],
-                'required' => false
-            ]);
+                'required' => false,
+                'attr' => [
+                    'placeholder' => 'Notes supplémentaires…',
+                    'class' => 'form-control',
+                    'rows' => 4,
+                ],
+            ])
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

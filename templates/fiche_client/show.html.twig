@@ -86,25 +86,45 @@ Informations patient
 						</button>
 					</div>
 
-					<div class="row g-3 small">
+<div class="row g-3 small">
 
-						{% macro info(label, value, color) %}
-							<div class="col-6 col-md-4">
-								<div class="border-start border-3 border-{{ color }} ps-2 h-100">
-									<div class="text-muted small">{{ label }}</div>
-									<div class="fw-semibold">{{ value ?: '—' }}</div>
-								</div>
-							</div>
-						{% endmacro %}
+	{% macro info(label, value, color) %}
+		<div class="col-6 col-md-4">
+			<div class="border-start border-3 border-{{ color }} ps-2 h-100">
+				<div class="text-muted small">{{ label }}</div>
+				<div class="fw-semibold">{{ value ?: '—' }}</div>
+			</div>
+		</div>
+	{% endmacro %}
 
-						{{ _self.info('Nom', fiche_client.nom, 'primary') }}
-						{{ _self.info('Ville', fiche_client.ville, 'info') }}
-						{{ _self.info('Téléphone', fiche_client.telephone, 'success') }}
-						{{ _self.info('Poids', fiche_client.poids ? fiche_client.poids ~ ' kg' : null, 'danger') }}
-						{{ _self.info('Durée maladie', fiche_client.dureeMaladie ? fiche_client.dureeMaladie ~ ' jours' : null, 'warning') }}
-						{{ _self.info('Type maladie', fiche_client.typeMaladie, 'secondary') }}
-						{{ _self.info('Créé le', fiche_client.createdAt|date('d/m/Y'), 'dark') }}
-					</div>
+	{# ✅ Identité #}
+	{{ _self.info('Nom', fiche_client.nom, 'primary') }}
+	{{ _self.info('Prénom', fiche_client.prenom, 'primary') }}
+	{{ _self.info('CIN', fiche_client.cin, 'secondary') }}
+
+	{# ✅ Localisation / Contact #}
+	{{ _self.info('Ville', fiche_client.ville, 'info') }}
+	{{ _self.info('Téléphone', fiche_client.telephone, 'success') }}
+
+	{# ✅ Naissance / âge #}
+	{{ _self.info('Date de naissance', fiche_client.dateNaissance ? fiche_client.dateNaissance|date('d/m/Y') : null, 'dark') }}
+
+	{# si tu as la méthode getAgePatient() dans l’entité #}
+	{{ _self.info('Âge', fiche_client.agePatient is not null ? fiche_client.agePatient ~ ' ans' : null, 'dark') }}
+
+	{# ✅ Données santé (sans traitement/observation) #}
+	{{ _self.info('Poids', fiche_client.poids ? fiche_client.poids ~ ' kg' : null, 'danger') }}
+	{{ _self.info('Durée maladie', fiche_client.dureeMaladie ? fiche_client.dureeMaladie ~ ' jours' : null, 'warning') }}
+	{{ _self.info('Type maladie', fiche_client.typeMaladie, 'secondary') }}
+
+	
+	{# ✅ Dates système #}
+	{{ _self.info('Créé le', fiche_client.createdAt ? fiche_client.createdAt|date('d/m/Y H:i') : null, 'dark') }}
+	{{ _self.info('Mis à jour le', fiche_client.updatedAt ? fiche_client.updatedAt|date('d/m/Y H:i') : null, 'dark') }}
+
+</div>
+
+
 <hr class="hr-animated">
 
 

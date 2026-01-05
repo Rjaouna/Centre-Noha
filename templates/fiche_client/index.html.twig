@@ -56,62 +56,79 @@
 						{% for fiche_client in fiche_clients %}
 							{% set isNew = not fiche_client.isConsulted %}
 
-							<tr class="{{ isNew ? 'table-success bg-opacity-10' : '' }}">
-								<td class="fw-bold">{{ fiche_client.id }}</td>
+<tr class="{{ isNew ? 'table-success bg-opacity-10' : '' }}">
+	<td class="fw-bold">{{ fiche_client.id }}</td>
 
-								<td>
-									<div class="d-flex align-items-center gap-2">
-										<strong>{{ fiche_client.nom }}</strong>
-										{% if isNew %}
-											<span class="badge bg-success rounded-pill">Nouveau</span>
-										{% endif %}
-									</div>
-								</td>
+	<td>
+		<div class="d-flex flex-column">
+			<div class="d-flex align-items-center gap-2">
+				<strong>{{ fiche_client.nom }}
+					{{ fiche_client.prenom }}</strong>
 
-								<td>{{ fiche_client.ville }}</td>
+				{% if isNew %}
+					<span class="badge bg-success rounded-pill">Nouveau</span>
+				{% endif %}
+			</div>
 
-								<td>
-									<a href="tel:{{ fiche_client.telephone }}" class="text-decoration-none fw-semibold text-primary">
-										{{ fiche_client.telephone }}
-									</a>
-								</td>
+			{% if fiche_client.cin %}
+				<div class="small text-muted mt-1">CIN:
+					{{ fiche_client.cin }}</div>
+			{% endif %}
+		</div>
+	</td>
 
-								<td>
-									{% if fiche_client.agePatient %}
-										<span class="badge bg-light rounded-pill px-3">
-											{{ fiche_client.agePatient }}
-											ans
-										</span>
-									{% else %}
-										<span class="text-muted">—</span>
-									{% endif %}
-								</td>
+	<td>{{ fiche_client.ville }}</td>
 
-								<td>
-									<span class="badge bg-info bg-opacity-75 rounded-pill px-3">
-										{{ fiche_client.typeMaladie }}
-									</span>
-								</td>
+	<td>
+		<a href="tel:{{ fiche_client.telephone }}" class="text-decoration-none fw-semibold text-primary">
+			{{ fiche_client.telephone }}
+		</a>
+	</td>
 
-								<td>
-									{% if fiche_client.isConsulted %}
-										<span class="badge bg-light rounded-pill">
-											Consulté
-										</span>
-									{% else %}
-										<span class="badge bg-success rounded-pill">
-											En attente
-										</span>
-									{% endif %}
-								</td>
+	<td>
+		{% if fiche_client.agePatient %}
+			<span class="badge bg-light rounded-pill px-3">
+				{{ fiche_client.agePatient }}
+				ans
+			</span>
+		{% else %}
+<td>
+	<span class="badge bg-info bg-opacity-75 rounded-pill px-3">
+		{{ fiche_client.typeMaladie }}
+	</span>
+</td>
 
-								<td class="text-center">
-									<a href="{{ path('app_fiche_client_show', {'id': fiche_client.id}) }}" class="btn btn-info text-light btn-sm rounded-pill px-3">
-										<i class="bi bi-eye"></i>
-										Voir
-									</a>
-								</td>
-							</tr>
+
+		{% endif %}
+	</td>
+
+<td>
+	<span class="badge bg-info bg-opacity-75 rounded-pill px-3">
+		{{ fiche_client.typeMaladie }}
+	</span>
+</td>
+
+
+
+	<td>
+		{% if fiche_client.isConsulted %}
+			<span class="badge bg-light rounded-pill">Consulté</span>
+		{% else %}
+			<span class="badge bg-success rounded-pill">En attente</span>
+		{% endif %}
+	</td>
+
+	<td class="text-center">
+<a href="{{ path('app_fiche_client_show', {'id': fiche_client.id}) }}" class="btn btn-sm px-3 py-2 fw-semibold rounded-pill btn-view-outline">
+	<i class="bi bi-eye me-1"></i>
+	Voir
+</a>
+
+
+	</td>
+</tr>
+
+
 						{% endfor %}
 					</tbody>
 				</table>
@@ -120,29 +137,9 @@
 		</div>
 	</div>
 
-	<!-- ================= MODAL AJOUT PATIENT ================= -->
-	<div class="modal fade" id="modalAddClient" tabindex="-1">
-		<div class="modal-dialog modal-xl modal-dialog-centered">
-			<div class="modal-content rounded-4 shadow-lg">
-
-				<div class="modal-header bg-primary text-white">
-					<h5 class="modal-title fw-bold">
-						<i class="bi bi-person-plus me-2"></i>
-						Ajouter un patient
-					</h5>
-					<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-				</div>
-
-				<div class="modal-body p-4">
-					{{ include('fiche_client/_form.html.twig') }}
-				</div>
-
-			</div>
-		</div>
-	</div>
 
 </div>
-
+{% include 'home/_modals/_add_patient.html.twig' %}
 {% endblock %}
 
 {% block javascripts %}
@@ -232,5 +229,21 @@
 		});
 	});
 	</script>
+<style>
+	.btn-view-outline {
+		border: 1px solid rgba(13, 110, 253, .35);
+		background: rgba(13, 110, 253, .06);
+		color: #0d6efd;
+		transition: transform 0.12s ease, background 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+	}
+	.btn-view-outline:hover {
+		background: rgba(13, 110, 253, .10);
+		border-color: rgba(13, 110, 253, .55);
+		box-shadow: 0 10px 22px rgba(13, 110, 253, .12);
+		transform: translateY(-1px);
+	}
+</style>
+
+
 {% endblock %}
 

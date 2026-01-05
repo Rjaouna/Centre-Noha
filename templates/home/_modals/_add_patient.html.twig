@@ -1,22 +1,760 @@
 <!-- ======================= -->
 <!-- 🔹 MODAL AJOUT PATIENT -->
 <!-- ======================= -->
+<div class="modal fade ux-modal" id="modalAddClient" tabindex="-1" aria-labelledby="modalAddClientLabel" aria-hidden="true">
 
-	<div class="modal fade" id="modalAddClient" tabindex="-1"> <div class="modal-dialog modal-xl">
-		<div class="modal-content rounded-4 shadow-sm border">
 
-			<div class="modal-header bg-primary text-white rounded-top-4">
-				<h5 class="modal-title fw-bold d-flex align-items-center">
-					<i class="bi bi-person-plus fs-4 me-2"></i>
-					Ajouter un patient
-				</h5>
-				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+<div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+	<div class="modal-content rounded-4 border-0 shadow-lg overflow-hidden">
+
+
+<!-- Header -->
+<div class="modal-header px-4 py-3 bg-primary text-white">
+	<div class="d-flex align-items-center gap-3">
+		<div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-white bg-opacity-15" style="width:44px;height:44px;">
+			<i class="bi bi-person-plus fs-4"></i>
+		</div>
+
+
+		<div class="lh-1">
+			<h5 class="modal-title fw-bold mb-1" id="modalAddClientLabel">Ajouter un patient</h5>
+			<small class="text-white-50">Renseigne les informations puis valide</small>
+		</div>
+	</div>
+	<button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="modal" aria-label="Fermer"></button>
+</div><!-- mini progress --><div class="px-4 pb-3 bg-primary">
+	<div class="ux-mini-progress">
+		<span id="uxProgressFill"></span>
+	</div>
+
+
 			</div>
 
 			<div class="modal-body p-4">
-				{{ include('fiche_client/new.html.twig') }}
-			</div>
+<form id="addClientForm" autocomplete="off">
+	<div
+		class="row g-4">
 
-		</div>
-	</div>
+		<!-- Col gauche -->
+		<div class="col-12 col-lg-8">
+			<div
+				class="accordion accordion-flush border rounded-4 overflow-hidden" id="patientAccordion">
+
+				<!-- Section 1 -->
+				<div class="accordion-item">
+					<h2 class="accordion-header" id="headingInfoPatient">
+						<button class="accordion-button fw-semibold" data-step="1" type="button" data-bs-toggle="collapse" data-bs-target="#collapseInfoPatient" aria-expanded="true" aria-controls="collapseInfoPatient">
+							<i class="bi bi-person-badge me-2"></i>
+							Informations patient
+						</button>
+					</h2>
+
+					<div id="collapseInfoPatient" class="accordion-collapse collapse show" aria-labelledby="headingInfoPatient" data-bs-parent="#patientAccordion">
+						<div class="accordion-body">
+							<div class="row g-3">
+
+								<div class="col-12 col-md-6">
+									<label class="form-label fw-semibold">Nom</label>
+									<input type="text" class="form-control" name="nom" placeholder="Nom" required>
+								</div>
+
+
+<div class="col-12 col-md-6">
+	<label class="form-label fw-semibold">Prénom</label>
+	<input type="text" class="form-control" name="prenom" placeholder="Prénom" required>
+
+
 </div>
+
+<div class="col-12 col-md-4">
+	<label class="form-label fw-semibold">Âge</label>
+	<input type="number" class="form-control" name="ageYears" id="ageYearsInput" min="0" max="150" placeholder="Ex: 34" required>
+	<div class="form-text" id="ageHint">La date de naissance sera calculée automatiquement.</div>
+
+
+</div>
+
+<div class="col-12 col-md-4">
+	<label class="form-label fw-semibold">CIN (optionnel)</label>
+	<input type="text" class="form-control" name="cin" id="cinInput" placeholder="PA123456" maxlength="8" inputmode="text">
+	<div class="form-text">8 caractères max.</div>
+
+
+</div>
+
+<div class="col-12 col-md-4 position-relative">
+	<label class="form-label fw-semibold">Ville</label>
+
+	<input type="text" class="form-control" name="ville" id="villeInput" placeholder="Commence à taper..." autocomplete="off" required>
+
+	<div class="ux-suggest" id="villeSuggest" hidden></div>
+</div></div></div></div></div><!-- Section 2 --><div class="accordion-item"><h2 class="accordion-header" id="headingContact"><button class="accordion-button collapsed fw-semibold" data-step="2" type="button" data-bs-toggle="collapse" data-bs-target="#collapseContact" aria-expanded="false" aria-controls="collapseContact"><i class="bi bi-telephone me-2"></i>Coordonnées</button></h2><div id="collapseContact" class="accordion-collapse collapse" aria-labelledby="headingContact" data-bs-parent="#patientAccordion"><div class="accordion-body"><div class="row g-3">
+
+<div class="col-12 col-md-6">
+	<label class="form-label fw-semibold">Téléphone</label>
+	<input type="text" class="form-control" name="telephone" id="telephoneInput" placeholder="0665958785" maxlength="10" inputmode="numeric" required>
+	<div class="form-text">10 chiffres, commence par 06 ou 07.</div>
+</div>
+
+<div class="col-12 col-md-6">
+	<label class="form-label fw-semibold">Poids (optionnel)</label>
+	<input type="number" class="form-control" name="poids" id="poidsInput" min="0" max="200" placeholder="Ex: 72" inputmode="numeric">
+	<div class="form-text">Max 200 kg.</div>
+</div></div></div></div></div><!-- Section 3 --><div class="accordion-item"><h2 class="accordion-header" id="headingMedical"><button class="accordion-button collapsed fw-semibold" data-step="3" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMedical" aria-expanded="false" aria-controls="collapseMedical"><i class="bi bi-clipboard2-pulse me-2"></i>Informations médicales</button></h2><div id="collapseMedical" class="accordion-collapse collapse" aria-labelledby="headingMedical" data-bs-parent="#patientAccordion"><div class="accordion-body"><div class="row g-3">
+
+<div class="col-12 col-md-6 position-relative">
+	<label class="form-label fw-semibold">Type de maladie</label>
+
+	<input type="text" class="form-control" name="typeMaladie" id="typeMaladieInput" placeholder="Ex: rhume, fièvre..." autocomplete="off" required>
+
+	<div class="ux-suggest" id="typeSuggest" hidden></div>
+</div>
+
+
+<div class="col-12 col-md-6">
+	<label class="form-label fw-semibold">Durée de maladie (optionnel)</label>
+	<input type="text" class="form-control" name="dureeMaladie" placeholder="Ex: 2 mois, 1 an...">
+</div>
+
+<div class="col-12">
+	<label class="form-label fw-semibold">Traitement (optionnel)</label>
+	<input type="text" name="traitement" class="form-control" placeholder="Traitement actuel...">
+</div>
+
+<div class="col-12">
+	<label class="form-label fw-semibold">Observations (optionnel)</label>
+	<textarea name="observation" class="form-control" rows="4" placeholder="Notes, antécédents, remarques..."></textarea>
+</div></div></div></div></div></div></div><!-- Col droite --><div class="col-12 col-lg-4"><div class="card border-0 shadow-sm rounded-4"><div class="card-body p-4"><div class="d-flex align-items-center gap-2 mb-3"><i class="bi bi-info-circle text-primary fs-5"></i><h6 class="mb-0 fw-bold">Conseils</h6></div><ul class="small text-muted mb-0 ps-3"><li>Commence par Nom / Prénom / Âge.</li><li>Ville + Type maladie se chargent automatiquement.</li><li>Le serveur calcule la date de naissance via l’âge.</li></ul></div></div></div></div></form></div><!-- Footer --><div class="modal-footer px-4 py-3 bg-light"><button type="button" class="btn btn-outline-secondary rounded-3" data-bs-dismiss="modal">Annuler</button><button type="submit" form="addClientForm" class="btn btn-primary rounded-3 px-4"><i class="bi bi-check2-circle me-1"></i>Enregistrer</button></div> </div></div></div> <script>
+	document.addEventListener('DOMContentLoaded', () => {
+	  const modalEl = document.getElementById('modalAddClient');
+	  const form = document.getElementById('addClientForm');
+	  if (!modalEl || !form) return;
+	
+	  // URLs API
+	  const urlCreateClient   = "{{ path('api_fiche_clients_create') }}";
+	  const urlVillesIndex    = "{{ path('api_villes_index') }}";
+	  const urlTypesIndex     = "{{ path('api_type_maladies_index') }}";
+	
+	  const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+	
+	  // Elements
+	  const villeSelect = document.getElementById('villeSelect');
+	  const typeSelect  = document.getElementById('typeMaladieSelect');
+	
+	  const ageInput = document.getElementById('ageYearsInput');
+	  const ageHint  = document.getElementById('ageHint');
+	
+	  const cinInput = document.getElementById('cinInput');
+	  const telInput = document.getElementById('telephoneInput');
+	  const poidsInput = document.getElementById('poidsInput');
+	
+	  // Progress
+	  const fill = document.getElementById('uxProgressFill');
+	  const acc  = document.getElementById('patientAccordion');
+	  const map  = { collapseInfoPatient: '35%', collapseContact: '70%', collapseMedical: '100%' };
+	  if (fill) fill.style.width = map.collapseInfoPatient;
+	  if (fill && acc) {
+	    acc.addEventListener('shown.bs.collapse', (e) => {
+	      const id = e.target.id;
+	      if (map[id]) fill.style.width = map[id];
+	    });
+	  }
+	
+	  // Helpers errors UX
+	  function clearErrors() {
+	    form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+	    form.querySelectorAll('.invalid-feedback').forEach(el => el.remove());
+	  }
+	  function showFieldError(fieldName, message) {
+	    const input = form.querySelector(`[name="${CSS.escape(fieldName)}"]`);
+	    if (!input) return;
+	    input.classList.add('is-invalid');
+	    const fb = document.createElement('div');
+	    fb.className = 'invalid-feedback';
+	    fb.textContent = message;
+	    input.insertAdjacentElement('afterend', fb);
+	  }
+	
+	  // =========================
+	  // Load villes + types (AJAX)
+	  // =========================
+	  async function loadSelect(selectEl, url, placeholder) {
+	    if (!selectEl) return;
+	
+	    selectEl.innerHTML = `<option value="">${placeholder}</option>`;
+	    try {
+	      const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+	      const data = await res.json();
+	
+	      // data attendu: [{id, nom, ...}, ...]
+	      (data || []).forEach(item => {
+	        const opt = document.createElement('option');
+	        opt.value = item.nom;        // ✅ compat avec FicheClient (ville/typeMaladie = string)
+	        opt.textContent = item.nom;
+	        opt.dataset.id = item.id;    // bonus si tu passes en relation plus tard
+	        selectEl.appendChild(opt);
+	      });
+	    } catch (e) {
+	      selectEl.innerHTML = `<option value="">Erreur de chargement</option>`;
+	    }
+	  }
+	
+	  loadSelect(villeSelect, urlVillesIndex, 'Sélectionnez une ville');
+	  loadSelect(typeSelect, urlTypesIndex, 'Sélectionnez un type');
+	
+	  // =========================
+	  // Validations live
+	  // =========================
+	
+	  // Age max 150 + hint
+	  function updateAgeHint() {
+	    if (!ageInput || !ageHint) return;
+	    const age = parseInt(ageInput.value || '', 10);
+	
+	    if (Number.isNaN(age)) {
+	      ageHint.textContent = "La date de naissance sera calculée automatiquement.";
+	      return;
+	    }
+	
+	    if (age > 150) {
+	      ageInput.value = 150;
+	    }
+	
+	    const year = new Date().getFullYear() - parseInt(ageInput.value, 10);
+	    ageHint.textContent = `Date de naissance estimée : année ${year} (calcul côté serveur à la validation).`;
+	  }
+	  if (ageInput) ageInput.addEventListener('input', updateAgeHint);
+	
+	  // CIN: max 8 + alphanum + uppercase
+	  if (cinInput) {
+	    cinInput.addEventListener('input', () => {
+	      let v = cinInput.value || '';
+	      v = v.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+	      if (v.length > 8) v = v.slice(0, 8);
+	      cinInput.value = v;
+	    });
+	  }
+	
+	  // Téléphone: digits only + max 10
+	  if (telInput) {
+	    telInput.addEventListener('input', () => {
+	      let v = telInput.value || '';
+	      v = v.replace(/\D/g, '');
+	      if (v.length > 10) v = v.slice(0, 10);
+	      telInput.value = v;
+	    });
+	  }
+	
+	  // Poids: max 200
+	  if (poidsInput) {
+	    poidsInput.addEventListener('input', () => {
+	      if (poidsInput.value === '') return;
+	      let n = parseInt(poidsInput.value, 10);
+	      if (Number.isNaN(n)) { poidsInput.value = ''; return; }
+	      if (n > 200) n = 200;
+	      if (n < 0) n = 0;
+	      poidsInput.value = n;
+	    });
+	  }
+	
+	  function validateFront(payload) {
+	    clearErrors();
+	
+	    // Nom/prenom/ville/type
+	    if (!payload.nom || payload.nom.trim().length < 2) {
+	      showFieldError('nom', 'Nom obligatoire (min 2 caractères).'); return false;
+	    }
+	    if (!payload.prenom || payload.prenom.trim().length < 2) {
+	      showFieldError('prenom', 'Prénom obligatoire (min 2 caractères).'); return false;
+	    }
+	    if (!payload.ville) {
+	      showFieldError('ville', 'Ville obligatoire.'); return false;
+	    }
+	    if (!payload.typeMaladie) {
+	      showFieldError('typeMaladie', 'Type de maladie obligatoire.'); return false;
+	    }
+	
+	    // Age
+	    const age = Number(payload.ageYears);
+	    if (!Number.isFinite(age) || age < 0 || age > 150) {
+	      showFieldError('ageYears', 'Âge invalide (0 à 150).'); return false;
+	    }
+	
+	    // Telephone
+	    if (!/^(06|07)\d{8}$/.test(payload.telephone || '')) {
+	      showFieldError('telephone', 'Téléphone invalide (06/07 + 8 chiffres).'); return false;
+	    }
+	
+	    // CIN length if present
+	    if (payload.cin && payload.cin.length !== 8) {
+	      showFieldError('cin', 'CIN doit contenir exactement 8 caractères.'); return false;
+	    }
+	
+	    // Poids max 200
+	    if (payload.poids !== undefined && payload.poids !== '') {
+	      const p = Number(payload.poids);
+	      if (!Number.isFinite(p) || p < 0 || p > 200) {
+	        showFieldError('poids', 'Poids invalide (0 à 200).'); return false;
+	      }
+	    }
+	
+	    return true;
+	  }
+	
+	  function setButtonLoading(isLoading) {
+	    const btn = modalEl.querySelector('button[type="submit"][form="addClientForm"]');
+	    if (!btn) return;
+	    if (isLoading) {
+	      btn.disabled = true;
+	      btn.dataset.originalHtml = btn.innerHTML;
+	      btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Enregistrement...`;
+	    } else {
+	      btn.disabled = false;
+	      if (btn.dataset.originalHtml) btn.innerHTML = btn.dataset.originalHtml;
+	    }
+	  }
+	
+	  // =========================
+	  // Submit AJAX
+	  // =========================
+	  form.addEventListener('submit', async (e) => {
+	    e.preventDefault();
+	
+	    const fd = new FormData(form);
+	    const payload = Object.fromEntries(fd.entries());
+	
+	    // trim + conversions
+	    Object.keys(payload).forEach(k => {
+	      if (typeof payload[k] === 'string') payload[k] = payload[k].trim();
+	    });
+	    payload.ageYears = payload.ageYears !== '' ? Number(payload.ageYears) : null;
+	    payload.poids = payload.poids !== '' ? Number(payload.poids) : null;
+	
+	    if (!validateFront(payload)) return;
+	
+	    setButtonLoading(true);
+	    try {
+	      const res = await fetch(urlCreateClient, {
+	        method: 'POST',
+	        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+	        body: JSON.stringify(payload)
+	      });
+	
+	      const raw = await res.text();
+	      let data = null; try { data = raw ? JSON.parse(raw) : null; } catch(e) {}
+	
+	      if (!res.ok) {
+	        // Si ton API renvoie {errors:{field:[...]}}
+	        if (data?.errors) {
+	          Object.entries(data.errors).forEach(([f, msgs]) => {
+	            showFieldError(f, Array.isArray(msgs) ? msgs.join(' ') : String(msgs));
+	          });
+	        } else {
+	          alert(data?.message || "Erreur lors de l'enregistrement.");
+	        }
+	        return;
+	      }
+	
+	      // ✅ success
+	      form.reset();
+	      clearErrors();
+	      if (fill) fill.style.width = map.collapseInfoPatient;
+	      if (ageHint) ageHint.textContent = "La date de naissance sera calculée automatiquement.";
+	      modal.hide();
+	
+	      // option simple
+	      window.location.reload();
+	
+	    } catch (err) {
+	      console.error(err);
+	      alert("Impossible de contacter le serveur.");
+	    } finally {
+	      setButtonLoading(false);
+	    }
+	  });
+	});
+	</script> <script>
+	document.addEventListener('DOMContentLoaded', () => {
+	  // endpoints
+	  const urlVilles = "{{ path('api_villes_index') }}";
+	  const urlTypes  = "{{ path('api_type_maladies_index') }}";
+	
+	  function debounce(fn, delay = 250) {
+	    let t;
+	    return (...args) => {
+	      clearTimeout(t);
+	      t = setTimeout(() => fn(...args), delay);
+	    };
+	  }
+	
+	  function closeSuggest(box){ if (box) box.hidden = true; }
+	  function openSuggest(box){ if (box) box.hidden = false; }
+	
+	  async function search(url, q){
+	    const res = await fetch(url + '?q=' + encodeURIComponent(q), {
+	      headers: { 'Accept': 'application/json' }
+	    });
+	    if (!res.ok) throw new Error('API error');
+	    return await res.json();
+	  }
+	
+	  function renderSuggest(box, items, onPick, opts = {}) {
+	    const { showRegion = false } = opts;
+	
+	    if (!box) return;
+	    box.innerHTML = '';
+	
+	    if (!items || items.length === 0) {
+	      box.innerHTML = `<div class="empty">Aucun résultat</div>`;
+	      openSuggest(box);
+	      return;
+	    }
+	
+	    items.slice(0, 10).forEach(it => {
+	      const div = document.createElement('div');
+	      div.className = 'item';
+	      div.innerHTML = `
+	        <div class="title">${it.nom}</div>
+	        <div class="meta">${showRegion ? (it.region || '') : ''}</div>
+	      `;
+	      div.addEventListener('mousedown', (e) => { // mousedown pour éviter blur
+	        e.preventDefault();
+	        onPick(it);
+	      });
+	      box.appendChild(div);
+	    });
+	
+	    openSuggest(box);
+	  }
+	
+	  function setupAutocomplete({ inputId, boxId, url, showRegion }) {
+	    const input = document.getElementById(inputId);
+	    const box   = document.getElementById(boxId);
+	    if (!input || !box) return;
+	
+	    const doSearch = debounce(async () => {
+	      const q = (input.value || '').trim();
+	      if (q.length < 2) { closeSuggest(box); return; }
+	
+	      try {
+	        const items = await search(url, q);
+	        renderSuggest(box, items, (picked) => {
+	          input.value = picked.nom;     // ✅ on envoie nom (string)
+	          closeSuggest(box);
+	        }, { showRegion });
+	      } catch (e) {
+	        box.innerHTML = `<div class="empty">Erreur de chargement</div>`;
+	        openSuggest(box);
+	      }
+	    }, 250);
+	
+	    input.addEventListener('input', doSearch);
+	
+	    input.addEventListener('focus', () => {
+	      const q = (input.value || '').trim();
+	      if (q.length >= 2) doSearch();
+	    });
+	
+	    input.addEventListener('blur', () => {
+	      setTimeout(() => closeSuggest(box), 150);
+	    });
+	
+	    document.addEventListener('click', (e) => {
+	      if (!box.contains(e.target) && e.target !== input) closeSuggest(box);
+	    });
+	  }
+	
+	  // ✅ Ville
+	  setupAutocomplete({
+	    inputId: 'villeInput',
+	    boxId: 'villeSuggest',
+	    url: urlVilles,
+	    showRegion: true
+	  });
+	
+	  // ✅ Type maladie
+	  setupAutocomplete({
+	    inputId: 'typeMaladieInput',
+	    boxId: 'typeSuggest',
+	    url: urlTypes,
+	    showRegion: false
+	  });
+	});
+	</script> <script>
+		  document.addEventListener('DOMContentLoaded', () => {
+		    // ========= Progress bar =========
+		    const fill = document.getElementById('uxProgressFill');
+		    const acc  = document.getElementById('patientAccordion');
+		
+		    const map = {
+		      collapseInfoPatient: '35%',
+		      collapseContact: '70%',
+		      collapseMedical: '100%'
+		    };
+		
+		    if (fill) fill.style.width = map.collapseInfoPatient;
+		
+		    if (fill && acc) {
+		      acc.addEventListener('shown.bs.collapse', (e) => {
+		        const id = e.target.id;
+		        if (map[id]) fill.style.width = map[id];
+		      });
+		    }
+		
+		    // ========= Age hint =========
+		    const ageInput = document.getElementById('ageYearsInput');
+		    const hint = document.getElementById('ageHint');
+		
+		    function updateHint() {
+		      if (!ageInput || !hint) return;
+		      const age = parseInt(ageInput.value || '', 10);
+		      if (Number.isNaN(age)) {
+		        hint.textContent = "La date de naissance sera calculée automatiquement.";
+		        return;
+		      }
+		      const year = new Date().getFullYear() - age;
+		      hint.textContent = `Date de naissance estimée : année ${year} (calcul côté serveur à la validation).`;
+		    }
+		
+		    if (ageInput && hint) {
+		      ageInput.addEventListener('input', updateHint);
+		      updateHint();
+		    }
+		
+		    // ========= UX submit (si form existe) =========
+		    const modal = document.getElementById('modalAddClient');
+		    if (modal) {
+		      modal.addEventListener('submit', (e) => {
+		        const form = e.target;
+		        if (!(form instanceof HTMLFormElement)) return;
+		
+		        const btn = form.querySelector('button[type="submit"]');
+		        if (!btn) return;
+		
+		        btn.disabled = true;
+		        btn.dataset.originalText = btn.innerHTML;
+		        btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Enregistrement...`;
+		      });
+		    }
+		  });
+		</script> <script>
+		document.addEventListener('DOMContentLoaded', () => {
+		  const modalEl = document.getElementById('modalAddClient');
+		  const form = document.getElementById('addClientForm');
+		  if (!modalEl || !form) return;
+		
+		  // ✅ URL API Symfony
+		  const url = "{{ path('api_fiche_clients_create') }}";
+		
+		  // ✅ Bootstrap modal instance
+		  const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+		
+		  // =========================
+		  // Helpers UX
+		  // =========================
+		  function clearErrors() {
+		    form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+		    form.querySelectorAll('.invalid-feedback').forEach(el => el.remove());
+		  }
+		
+		  function findFieldElement(fieldName) {
+		    // 1) si formulaire Symfony: fiche_client[field]
+		    let el = form.querySelector(`[name="fiche_client[${CSS.escape(fieldName)}]"]`);
+		    if (el) return el;
+		
+		    // 2) sinon: name="field"
+		    el = form.querySelector(`[name="${CSS.escape(fieldName)}"]`);
+		    return el;
+		  }
+		
+		  function showFieldError(fieldName, messages) {
+		    const input = findFieldElement(fieldName);
+		    if (!input) return;
+		
+		    input.classList.add('is-invalid');
+		
+		    // évite doublons
+		    const next = input.nextElementSibling;
+		    if (next && next.classList.contains('invalid-feedback')) next.remove();
+		
+		    const feedback = document.createElement('div');
+		    feedback.className = 'invalid-feedback';
+		    feedback.textContent = Array.isArray(messages) ? messages.join(' ') : String(messages);
+		
+		    input.insertAdjacentElement('afterend', feedback);
+		  }
+		
+		  function showGlobalError(message) {
+		    // zone globale tout en haut du form
+		    let box = form.querySelector('#formGlobalError');
+		    if (!box) {
+		      box = document.createElement('div');
+		      box.id = 'formGlobalError';
+		      box.className = 'alert alert-danger py-2 px-3 mb-3';
+		      form.prepend(box);
+		    }
+		    box.textContent = message;
+		  }
+		
+		  function clearGlobalError() {
+		    const box = form.querySelector('#formGlobalError');
+		    if (box) box.remove();
+		  }
+		
+		  function setButtonLoading(isLoading) {
+		    const btn = modalEl.querySelector('button[type="submit"][form="addClientForm"], #addClientForm button[type="submit"]');
+		    if (!btn) return null;
+		
+		    if (isLoading) {
+		      btn.disabled = true;
+		      btn.dataset.originalHtml = btn.innerHTML;
+		      btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Enregistrement...`;
+		    } else {
+		      btn.disabled = false;
+		      if (btn.dataset.originalHtml) btn.innerHTML = btn.dataset.originalHtml;
+		    }
+		    return btn;
+		  }
+		
+		  // =========================
+		  // Progress bar (mini)
+		  // =========================
+		  const fill = document.getElementById('uxProgressFill');
+		  const acc = document.getElementById('patientAccordion');
+		  const progressMap = { collapseInfoPatient: '35%', collapseContact: '70%', collapseMedical: '100%' };
+		
+		  if (fill) fill.style.width = progressMap.collapseInfoPatient;
+		
+		  if (fill && acc) {
+		    acc.addEventListener('shown.bs.collapse', (e) => {
+		      const id = e.target.id;
+		      if (progressMap[id]) fill.style.width = progressMap[id];
+		    });
+		  }
+		
+		  // =========================
+		  // Age hint
+		  // =========================
+		  const ageInput =
+		    document.getElementById('ageYearsInput')
+		    || form.querySelector('[name="fiche_client[ageYears]"]')
+		    || form.querySelector('[name="ageYears"]');
+		
+		  const hint = document.getElementById('ageHint');
+		
+		  function updateAgeHint() {
+		    if (!ageInput || !hint) return;
+		
+		    const age = parseInt(ageInput.value || '', 10);
+		    if (Number.isNaN(age)) {
+		      hint.textContent = "La date de naissance sera calculée automatiquement.";
+		      return;
+		    }
+		
+		    const year = new Date().getFullYear() - age;
+		    hint.textContent = `Date de naissance estimée : année ${year} (calcul côté serveur à la validation).`;
+		  }
+		
+		  if (ageInput && hint) {
+		    ageInput.addEventListener('input', updateAgeHint);
+		    updateAgeHint();
+		  }
+		
+		  // =========================
+		  // Submit AJAX
+		  // =========================
+		  form.addEventListener('submit', async (e) => {
+		    e.preventDefault();
+		
+		    clearErrors();
+		    clearGlobalError();
+		    setButtonLoading(true);
+		
+		    // Collecte FormData
+		    const fd = new FormData(form);
+		    const payload = {};
+		
+		    for (const [k, v] of fd.entries()) {
+		      // Symfony: fiche_client[nom] -> nom
+		      const m = k.match(/^fiche_client\[(.+)\]$/);
+		      const key = m ? m[1] : k;
+		
+		      if (key === '_token') continue; // ignore csrf
+		      payload[key] = v;
+		    }
+		
+		    // convert types
+		    if (payload.ageYears !== undefined && payload.ageYears !== '') {
+		      payload.ageYears = Number(payload.ageYears);
+		    }
+		
+		    try {
+		      const res = await fetch(url, {
+		        method: 'POST',
+		        headers: {
+		          'Content-Type': 'application/json',
+		          'Accept': 'application/json',
+		        },
+		        body: JSON.stringify(payload),
+		      });
+		
+		      const raw = await res.text();
+		      let data = null;
+		      try { data = raw ? JSON.parse(raw) : null; } catch { data = null; }
+		
+		      if (!res.ok) {
+				if (res.status === 422 && data?.errors) {
+		  // affichage global simple
+		  alert(Object.entries(data.errors).map(([k,v]) => `${k}: ${v.join(' ')}`).join('\n'));
+		}
+		
+		        // erreurs de validation: { errors: { field: ["msg"] } }
+		        if (data && data.errors) {
+		          Object.entries(data.errors).forEach(([field, msgs]) => showFieldError(field, msgs));
+		
+		          // si erreurs globales
+		          if (data.errors._global) {
+		            showGlobalError(Array.isArray(data.errors._global) ? data.errors._global.join(' ') : data.errors._global);
+		          }
+		        } else if (data && data.message) {
+		          showGlobalError(data.message);
+		        } else {
+		          showGlobalError("Erreur lors de l'enregistrement.");
+		        }
+		        return;
+		      }
+		
+		      // ✅ SUCCESS
+		      form.reset();
+		      clearErrors();
+		      clearGlobalError();
+		
+		      if (fill) fill.style.width = progressMap.collapseInfoPatient;
+		      if (hint) hint.textContent = "La date de naissance sera calculée automatiquement.";
+		
+		      modal.hide();
+		
+		      // 🔥 Ici tu peux injecter le nouveau patient dans ta liste sans reload
+		      // addPatientToList(data);
+		
+		    //   console.log('Patient créé:', data);
+		
+		    } catch (err) {
+		      console.error(err);
+		      showGlobalError("Impossible de contacter le serveur.");
+		    } finally {
+		      setButtonLoading(false);
+		    }
+		  });
+		
+		  // Bonus: reset quand on ferme le modal
+		  modalEl.addEventListener('hidden.bs.modal', () => {
+		    form.reset();
+		    clearErrors();
+		    clearGlobalError();
+		    if (fill) fill.style.width = progressMap.collapseInfoPatient;
+		    if (hint) hint.textContent = "La date de naissance sera calculée automatiquement.";
+		  });
+		});
+		</script>
+

@@ -151,6 +151,12 @@ class FicheClient
     #[ORM\OneToMany(targetEntity: Radiologie::class, mappedBy: 'patient')]
     private Collection $radiologies;
 
+    #[ORM\Column(length: 20)]
+    private ?string $prenom = null;
+
+    #[ORM\Column(length: 8, nullable: true)]
+    private ?string $cin = null;
+
     public function __construct()
     {
         $this->paiements = new ArrayCollection();
@@ -613,6 +619,30 @@ class FicheClient
                 $radiology->setPatient(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPrenom(): ?string
+    {
+        return $this->prenom;
+    }
+
+    public function setPrenom(string $prenom): static
+    {
+        $this->prenom = $prenom;
+
+        return $this;
+    }
+
+    public function getCin(): ?string
+    {
+        return $this->cin;
+    }
+
+    public function setCin(?string $cin): static
+    {
+        $this->cin = $cin;
 
         return $this;
     }

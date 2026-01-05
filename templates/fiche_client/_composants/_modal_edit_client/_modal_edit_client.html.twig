@@ -1,108 +1,221 @@
-<div class="modal fade" id="modalEditFiche" tabindex="-1" aria-hidden="true">
-	<div class="modal-dialog modal-lg">
-		<div
-			class="modal-content rounded-4 shadow">
+<!-- ======================= -->
+<!-- 🔹 MODAL EDIT PATIENT -->
+<!-- ======================= -->
+<div class="modal fade ux-modal" id="modalEditFiche" tabindex="-1" aria-hidden="true">
+	<div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
 
-			<!-- HEADER -->
-			<div class="modal-header bg-primary text-white">
-				<h5 class="modal-title fw-bold">
-					<i class="bi bi-pencil-square me-2"></i>
-					Modifier la fiche patient
-				</h5>
-				<button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+		<div
+			class="modal-content rounded-4 border-0 shadow-lg overflow-hidden">
+
+			<!-- Header -->
+			<div class="modal-header px-4 py-3 bg-primary text-white">
+				<div class="d-flex align-items-center gap-3">
+					<div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-white bg-opacity-15" style="width:44px;height:44px;">
+						<i class="bi bi-pencil-square fs-4"></i>
+					</div>
+					<div class="lh-1">
+						<h5 class="modal-title fw-bold mb-1">Modifier la fiche patient</h5>
+						<small class="text-white-50">Modifie les informations puis enregistre</small>
+					</div>
+				</div>
+
+				<button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="modal" aria-label="Fermer"></button>
 			</div>
 
-			<!-- BODY -->
-			<div class="modal-body">
+			<!-- mini progress -->
+			<div class="px-4 pb-3 bg-primary">
+				<div class="ux-mini-progress">
+					<span id="uxEditProgressFill"></span>
+				</div>
+			</div>
+
+			<!-- Body -->
+			<div class="modal-body p-4">
 				<form id="formEditFiche">
 					<div
-						class="row g-3">
+						class="row g-4">
 
-						<!-- NOM -->
-						<div class="col-md-6 form-floating">
-							<input type="text" class="form-control" name="nom" value="{{ fiche_client.nom }}">
-							<label>Nom</label>
+						<!-- Col gauche -->
+						<div class="col-12 col-lg-8">
+							<div
+class="accordion accordion-flush border rounded-4 overflow-hidden ux-accordion" id="editAccordion">
+
+
+								<!-- Section 1: Identité -->
+								<div class="accordion-item">
+									<h2 class="accordion-header" id="editHeadingIdentity">
+										<button class="accordion-button fw-semibold" data-step="1" type="button" data-bs-toggle="collapse" data-bs-target="#editCollapseIdentity" aria-expanded="true" aria-controls="editCollapseIdentity">
+											<i class="bi bi-person-badge me-2"></i>
+											Identité
+										</button>
+									</h2>
+
+									<div id="editCollapseIdentity" class="accordion-collapse collapse show" aria-labelledby="editHeadingIdentity" data-bs-parent="#editAccordion">
+										<div class="accordion-body">
+											<div class="row g-3">
+
+												<div class="col-12 col-md-6">
+													<label class="form-label fw-semibold">Nom</label>
+													<input type="text" class="form-control" name="nom" value="{{ fiche_client.nom }}" required>
+												</div>
+
+												<div class="col-12 col-md-6">
+													<label class="form-label fw-semibold">Prénom</label>
+													<input type="text" class="form-control" name="prenom" value="{{ fiche_client.prenom }}" required>
+												</div>
+
+												<div class="col-12 col-md-4">
+													<label class="form-label fw-semibold">CIN (optionnel)</label>
+													<input type="text" class="form-control" name="cin" id="editCinInput" maxlength="8" value="{{ fiche_client.cin }}">
+													<div class="form-text">8 caractères max.</div>
+												</div>
+
+												<div class="col-12 col-md-4">
+													<label class="form-label fw-semibold">Date de naissance</label>
+													<input type="date" class="form-control" name="dateNaissance" value="{{ fiche_client.dateNaissance ? fiche_client.dateNaissance|date('Y-m-d') : '' }}">
+												</div>
+
+												<div class="col-12 col-md-4">
+													<label class="form-label fw-semibold">Âge (optionnel)</label>
+													<input type="number" class="form-control" name="ageYears" id="editAgeYearsInput" min="0" max="150" placeholder="Ex: 34">
+													<div class="form-text" id="editAgeHint">Si renseigné, la date de naissance pourra être recalculée.</div>
+												</div>
+
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<!-- Section 2: Coordonnées -->
+								<div class="accordion-item">
+									<h2 class="accordion-header" id="editHeadingContact">
+										<button class="accordion-button collapsed fw-semibold" data-step="2" type="button" data-bs-toggle="collapse" data-bs-target="#editCollapseContact" aria-expanded="false" aria-controls="editCollapseContact">
+											<i class="bi bi-telephone me-2"></i>
+											Coordonnées
+										</button>
+									</h2>
+
+									<div id="editCollapseContact" class="accordion-collapse collapse" aria-labelledby="editHeadingContact" data-bs-parent="#editAccordion">
+										<div class="accordion-body">
+											<div
+												class="row g-3">
+
+												<!-- ✅ Ville AUTOCOMPLETE -->
+												<div class="col-12 col-md-6 position-relative">
+													<label class="form-label fw-semibold">Ville</label>
+													<input type="text" class="form-control" name="ville" id="editVilleInput" value="{{ fiche_client.ville }}" placeholder="Commence à taper..." autocomplete="off" required>
+													<div class="ux-suggest" id="editVilleSuggest" hidden></div>
+												</div>
+
+												<!-- ✅ Téléphone limit -->
+												<div class="col-12 col-md-6">
+													<label class="form-label fw-semibold">Téléphone</label>
+													<input type="text" class="form-control" name="telephone" id="editTelephoneInput" value="{{ fiche_client.telephone }}" maxlength="10" inputmode="numeric" placeholder="0665958785" required>
+													<div class="form-text">10 chiffres, commence par 06 ou 07.</div>
+												</div>
+
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<!-- Section 3: Santé -->
+								<div class="accordion-item">
+									<h2 class="accordion-header" id="editHeadingHealth">
+										<button class="accordion-button collapsed fw-semibold" data-step="3" type="button" data-bs-toggle="collapse" data-bs-target="#editCollapseHealth" aria-expanded="false" aria-controls="editCollapseHealth">
+											<i class="bi bi-clipboard2-pulse me-2"></i>
+											Santé
+										</button>
+									</h2>
+
+									<div id="editCollapseHealth" class="accordion-collapse collapse" aria-labelledby="editHeadingHealth" data-bs-parent="#editAccordion">
+										<div class="accordion-body">
+											<div
+												class="row g-3">
+
+												<!-- Poids max 200 -->
+												<div class="col-12 col-md-6">
+													<label class="form-label fw-semibold">Poids (kg)</label>
+													<input type="number" class="form-control" name="poids" id="editPoidsInput" value="{{ fiche_client.poids }}" min="0" max="200" placeholder="Ex: 72">
+													<div class="form-text">Max 200 kg.</div>
+												</div>
+
+												<div class="col-12 col-md-6">
+													<label class="form-label fw-semibold">Durée de maladie</label>
+													<input type="text" class="form-control" name="dureeMaladie" value="{{ fiche_client.dureeMaladie }}">
+												</div>
+
+												<!-- ✅ Type maladie AUTOCOMPLETE -->
+												<div class="col-12 position-relative">
+													<label class="form-label fw-semibold">Type de maladie</label>
+													<input type="text" class="form-control" name="typeMaladie" id="editTypeMaladieInput" value="{{ fiche_client.typeMaladie }}" placeholder="Tape pour chercher..." autocomplete="off" required>
+													<div class="ux-suggest" id="editTypeSuggest" hidden></div>
+												</div>
+
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<!-- Section 4: Notes -->
+								<div class="accordion-item">
+									<h2 class="accordion-header" id="editHeadingNotes">
+										<button class="accordion-button collapsed fw-semibold" data-step="4" type="button" data-bs-toggle="collapse" data-bs-target="#editCollapseNotes" aria-expanded="false" aria-controls="editCollapseNotes">
+											<i class="bi bi-journal-text me-2"></i>
+											Notes
+										</button>
+									</h2>
+
+									<div id="editCollapseNotes" class="accordion-collapse collapse" aria-labelledby="editHeadingNotes" data-bs-parent="#editAccordion">
+										<div class="accordion-body">
+											<div class="row g-3">
+												<div class="col-12">
+													<label class="form-label fw-semibold">Traitement</label>
+													<textarea class="form-control" name="traitement" rows="3">{{ fiche_client.traitement }}</textarea>
+												</div>
+
+												<div class="col-12">
+													<label class="form-label fw-semibold">Observations</label>
+													<textarea class="form-control" name="observation" rows="3">{{ fiche_client.observation }}</textarea>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+
+							</div>
 						</div>
 
-						<!-- VILLE -->
-						<div class="col-md-6 form-floating">
-							<input type="text" class="form-control" name="ville" value="{{ fiche_client.ville }}">
-							<label>Ville</label>
-						</div>
+						<!-- Col droite -->
+						<div class="col-12 col-lg-4">
+							<div class="card border-0 shadow-sm rounded-4">
+								<div class="card-body p-4">
+									<div class="d-flex align-items-center gap-2 mb-3">
+										<i class="bi bi-shield-check text-primary fs-5"></i>
+										<h6 class="mb-0 fw-bold">Rappel</h6>
+									</div>
 
-						<!-- TELEPHONE -->
-						<div class="col-md-6 form-floating">
-							<input type="text" class="form-control" name="telephone" value="{{ fiche_client.telephone }}">
-							<label>Téléphone</label>
-						</div>
-
-						<!-- POIDS -->
-						<div class="col-md-6 form-floating">
-							{% set poidsOptions = {
-                                '6 - 9 kg': '6-9',
-                                '10 - 19 kg': '10-19',
-                                '20 - 29 kg': '20-29',
-                                '30 - 39 kg': '30-39',
-                                '40 - 49 kg': '40-49',
-                                '50 - 59 kg': '50-59',
-                                '60 - 69 kg': '60-69',
-                                '70 - 79 kg': '70-79',
-                                '80 - 89 kg': '80-89',
-                                '90 - 99 kg': '90-99',
-                                '100 - 109 kg': '100-109',
-                                '110 - 119 kg': '110-119',
-                                '120 - 129 kg': '120-129',
-                                '130 - 139 kg': '130-139',
-                                '140 - 149 kg': '140-149',
-                                '150 kg et +': '150+'
-                            } %}
-
-							<select class="form-select" name="poids">
-								<option value="">—</option>
-								{% for label, value in poidsOptions %}
-									<option value="{{ value }}" {% if fiche_client.poids == value %} selected {% endif %}>
-										{{ label }}
-									</option>
-								{% endfor %}
-							</select>
-							<label>Poids</label>
-						</div>
-
-						<!-- DATE NAISSANCE -->
-						<div class="col-md-6 form-floating">
-							<input type="date" class="form-control" name="dateNaissance" value="{{ fiche_client.dateNaissance ? fiche_client.dateNaissance|date('Y-m-d') : '' }}">
-							<label>Date de naissance</label>
-						</div>
-
-						<!-- TYPE MALADIE -->
-						<div class="col-12 form-floating">
-							<input type="text" class="form-control" name="typeMaladie" value="{{ fiche_client.typeMaladie }}">
-							<label>Type de maladie</label>
-						</div>
-
-						<!-- TRAITEMENT -->
-						<div class="col-12 form-floating">
-							<textarea class="form-control" name="traitement" style="height:90px">{{ fiche_client.traitement }}</textarea>
-							<label>Traitement</label>
-						</div>
-
-						<!-- OBSERVATIONS -->
-						<div class="col-12 form-floating">
-							<textarea class="form-control" name="observation" style="height:90px">{{ fiche_client.observation }}</textarea>
-							<label>Observations</label>
+									<ul class="small text-muted mb-0 ps-3">
+										<li>Ville / Type maladie : tape pour chercher.</li>
+										<li>CIN max 8 + Tel 10 chiffres (06/07).</li>
+										<li>Enregistrer déclenche un reload.</li>
+									</ul>
+								</div>
+							</div>
 						</div>
 
 					</div>
 				</form>
 			</div>
 
-			<!-- FOOTER -->
-			<div class="modal-footer">
-				<button class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">
+			<!-- Footer -->
+			<div class="modal-footer px-4 py-3 bg-light">
+				<button type="button" class="btn btn-outline-secondary rounded-3" data-bs-dismiss="modal">
 					Annuler
 				</button>
-				<button class="btn btn-primary rounded-pill" id="btnSaveFiche">
-					<i class="bi bi-check-lg"></i>
+
+				<button type="button" class="btn btn-primary rounded-3 px-4" id="btnSaveFiche">
+					<i class="bi bi-check2-circle me-1"></i>
 					Enregistrer
 				</button>
 			</div>
@@ -113,46 +226,187 @@
 
  <script>
 document.addEventListener("DOMContentLoaded", () => {
+  const btnSave = document.getElementById("btnSaveFiche");
+  const form = document.getElementById("formEditFiche");
+  const modalEl = document.getElementById("modalEditFiche");
+  if (!btnSave || !form || !modalEl) return;
 
-    const btnSave = document.getElementById("btnSaveFiche");
-    const form = document.getElementById("formEditFiche");
+  // APIs (autocomplete)
+  const urlVilles = "{{ path('api_villes_index') }}";
+  const urlTypes  = "{{ path('api_type_maladies_index') }}";
 
-    btnSave.addEventListener("click", async () => {
-
-        btnSave.disabled = true;
-        btnSave.innerHTML = "Enregistrement...";
-
-        const data = Object.fromEntries(new FormData(form));
-
-        try {
-            const response = await fetch(
-                "{{ path('api_fiche_edit', { id: fiche_client.id }) }}",
-                {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(data)
-                }
-            );
-
-            const result = await response.json();
-
-            if (!result.success) {
-                alert(result.message || "Erreur lors de la mise à jour");
-                btnSave.disabled = false;
-                btnSave.innerHTML = "Enregistrer";
-                return;
-            }
-
-            // ✅ Reload complet (logique simple et fiable)
-            window.location.reload();
-
-        } catch (e) {
-            alert("Erreur réseau");
-            btnSave.disabled = false;
-            btnSave.innerHTML = "Enregistrer";
-        }
+  // progress
+  const fill = document.getElementById('uxEditProgressFill');
+  const acc  = document.getElementById('editAccordion');
+  const map  = { editCollapseIdentity: '25%', editCollapseContact: '50%', editCollapseHealth: '75%', editCollapseNotes: '100%' };
+  if (fill) fill.style.width = map.editCollapseIdentity;
+  if (fill && acc) {
+    acc.addEventListener('shown.bs.collapse', (e) => {
+      const id = e.target.id;
+      if (map[id]) fill.style.width = map[id];
     });
+  }
 
+  // ---- Limits ----
+  const cin = document.getElementById('editCinInput');
+  if (cin) {
+    cin.addEventListener('input', () => {
+      let v = cin.value || '';
+      v = v.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+      if (v.length > 8) v = v.slice(0, 8);
+      cin.value = v;
+    });
+  }
+
+  const tel = document.getElementById('editTelephoneInput');
+  if (tel) {
+    tel.addEventListener('input', () => {
+      let v = tel.value || '';
+      v = v.replace(/\D/g, '');
+      if (v.length > 10) v = v.slice(0, 10);
+      tel.value = v;
+    });
+  }
+
+  const poids = document.getElementById('editPoidsInput');
+  if (poids) {
+    poids.addEventListener('input', () => {
+      if (poids.value === '') return;
+      let n = parseInt(poids.value, 10);
+      if (Number.isNaN(n)) { poids.value = ''; return; }
+      if (n > 200) n = 200;
+      if (n < 0) n = 0;
+      poids.value = n;
+    });
+  }
+
+  const age = document.getElementById('editAgeYearsInput');
+  const ageHint = document.getElementById('editAgeHint');
+  function updateAgeHint(){
+    if (!age || !ageHint) return;
+    const a = parseInt(age.value || '', 10);
+    if (Number.isNaN(a)) { ageHint.textContent = "Si renseigné, la date de naissance pourra être recalculée."; return; }
+    if (a > 150) age.value = 150;
+    const year = new Date().getFullYear() - parseInt(age.value, 10);
+    ageHint.textContent = `Date de naissance estimée : année ${year}. (calcul serveur)`;
+  }
+  if (age) age.addEventListener('input', updateAgeHint);
+
+  // ---- Autocomplete ----
+  function debounce(fn, delay=250){
+    let t; return (...args)=>{ clearTimeout(t); t=setTimeout(()=>fn(...args), delay); };
+  }
+
+  async function search(url, q){
+    const res = await fetch(url + '?q=' + encodeURIComponent(q), { headers: { 'Accept': 'application/json' }});
+    if (!res.ok) throw new Error('API error');
+    return await res.json();
+  }
+
+  function closeSuggest(box){ if (box) box.hidden = true; }
+  function openSuggest(box){ if (box) box.hidden = false; }
+
+  function renderSuggest(box, items, onPick, { showRegion=false } = {}){
+    box.innerHTML = '';
+    if (!items || items.length === 0){
+      box.innerHTML = `<div class="empty">Aucun résultat</div>`;
+      openSuggest(box);
+      return;
+    }
+    items.slice(0, 10).forEach(it=>{
+      const div = document.createElement('div');
+      div.className = 'item';
+      div.innerHTML = `
+        <div class="title">${it.nom}</div>
+        <div class="meta">${showRegion ? (it.region || '') : ''}</div>
+      `;
+      div.addEventListener('mousedown', (e)=>{
+        e.preventDefault();
+        onPick(it);
+      });
+      box.appendChild(div);
+    });
+    openSuggest(box);
+  }
+
+  function setupAutocomplete({ inputId, boxId, url, showRegion }){
+    const input = document.getElementById(inputId);
+    const box   = document.getElementById(boxId);
+    if (!input || !box) return;
+
+    const doSearch = debounce(async ()=>{
+      const q = (input.value || '').trim();
+      if (q.length < 2){ closeSuggest(box); return; }
+
+      try{
+        const items = await search(url, q);
+        renderSuggest(box, items, (picked)=>{
+          input.value = picked.nom; // ✅ on envoie le nom (string)
+          closeSuggest(box);
+        }, { showRegion });
+      }catch(e){
+        box.innerHTML = `<div class="empty">Erreur de chargement</div>`;
+        openSuggest(box);
+      }
+    }, 250);
+
+    input.addEventListener('input', doSearch);
+    input.addEventListener('focus', ()=>{ if ((input.value||'').trim().length >= 2) doSearch(); });
+    input.addEventListener('blur', ()=> setTimeout(()=> closeSuggest(box), 150));
+    document.addEventListener('click', (e)=>{ if (!box.contains(e.target) && e.target !== input) closeSuggest(box); });
+  }
+
+  setupAutocomplete({
+    inputId: 'editVilleInput',
+    boxId: 'editVilleSuggest',
+    url: urlVilles,
+    showRegion: true
+  });
+
+  setupAutocomplete({
+    inputId: 'editTypeMaladieInput',
+    boxId: 'editTypeSuggest',
+    url: urlTypes,
+    showRegion: false
+  });
+
+  // ---- Save ----
+  btnSave.addEventListener("click", async () => {
+    btnSave.disabled = true;
+    const original = btnSave.innerHTML;
+    btnSave.innerHTML = `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Enregistrement...`;
+
+    const data = Object.fromEntries(new FormData(form));
+    if (data.ageYears !== undefined && data.ageYears !== '') data.ageYears = Number(data.ageYears);
+
+    try {
+      const response = await fetch(
+        "{{ path('api_fiche_clients_update', { id: fiche_client.id }) }}",
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json", "Accept": "application/json" },
+          body: JSON.stringify(data)
+        }
+      );
+
+      if (!response.ok) {
+        const raw = await response.text();
+        let resJson = null;
+        try { resJson = raw ? JSON.parse(raw) : null; } catch(e) {}
+        alert(resJson?.message || "Erreur lors de la mise à jour");
+        btnSave.disabled = false;
+        btnSave.innerHTML = original;
+        return;
+      }
+
+      window.location.reload();
+
+    } catch (e) {
+      alert("Erreur réseau");
+      btnSave.disabled = false;
+      btnSave.innerHTML = original;
+    }
+  });
 });
 </script>
 
