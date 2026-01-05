@@ -14,14 +14,10 @@
 				</span>
 
 				<span class="brand-text">
-<span class="brand-name d-block lh-1" id="logoName">
+<span class="brand-name d-block lh-4" id="logoName">
   <span class="logo-text">Chargement…</span>
 
-  <!-- Barre UX -->
-  <span class="ux-progress" id="progressWrap" aria-label="Chargement" role="progressbar"
-        aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-    <span class="ux-progress__bar" id="loadingBar"></span>
-  </span>
+
 </span>
 
 <small class="brand-sub text-muted d-block lh-1" id="cabinetType">
@@ -703,95 +699,9 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
- <script>
-  const progressWrap = document.getElementById('progressWrap');
-  const loadingBar   = document.getElementById('loadingBar');
-
-  function setProgress(value) {
-    const v = Math.max(0, Math.min(100, value));
-
-    // applique la largeur via CSS var (ultra fluide)
-    progressWrap.style.setProperty('--p', v + '%');
-    progressWrap.setAttribute('aria-valuenow', String(v));
-
-    if (v >= 100) {
-      // petite pause pour laisser voir "100%"
-      setTimeout(() => {
-        progressWrap.classList.add('is-done');
-      }, 350);
-    } else {
-      // si on remet <100, on la ré-affiche
-      progressWrap.classList.remove('is-done');
-    }
-  }
-
-  // Démo (simulation) : tu peux enlever ça et appeler setProgress(x) depuis ton vrai chargement
-  let p = 0;
-  const t = setInterval(() => {
-    p += (p < 70) ? 7 : (p < 92 ? 2 : 1);
-    if (p >= 100) { p = 100; clearInterval(t); }
-    setProgress(p);
-  }, 120);
-</script>
-
-
 
 
 <style>
-/* Tu gardes ton style .brand-name / .brand-sub, on ajoute juste ça */
-.ux-progress{
-  --p: 0%;
-  --h: 5px;
---c: var(--bs-primary, #1d4ed8);
-
-
-
-  display: block;
-  width: clamp(140px, 18vw, 220px);
-  height: var(--h);
-  margin-top: 6px;
-
-  border-radius: 999px;
-  background: rgba(0,0,0,.12);
-  overflow: hidden;
-  position: relative;
-
-  transform: translateZ(0);
-  transition: opacity .25s ease, height .25s ease, margin-top .25s ease;
-}
-
-/* La barre */
-.ux-progress__bar{
-  position: absolute;
-  inset: 0 auto 0 0;
-  width: var(--p);
-  border-radius: 999px;
-
-  /* gradient + shimmer */
-  background: linear-gradient(90deg,
-    color-mix(in srgb, var(--c) 70%, white),
-    var(--c),
-    color-mix(in srgb, var(--c) 70%, white)
-  );
-  background-size: 200% 100%;
-  animation: uxShimmer 1.1s linear infinite;
-
-  /* glow propre */
-  box-shadow: 0 0 10px color-mix(in srgb, var(--c) 55%, transparent);
-  transition: width .25s ease;
-}
-
-@keyframes uxShimmer{
-  0%{ background-position: 0% 0; }
-  100%{ background-position: 200% 0; }
-}
-
-/* Quand c’est fini : fade + plus d’espace */
-.ux-progress.is-done{
-  opacity: 0;
-  height: 0;
-  margin-top: 0;
-}
 
 /* ===== Carte parcours médical ===== */
 .mm-card-pathway{
