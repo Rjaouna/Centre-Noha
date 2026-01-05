@@ -57,3 +57,85 @@
 		</div>
 	</div>
 
+<style>
+/* ===== Page header actions : UX premium ===== */
+.action-icon{
+  --size: 46px;
+  width: var(--size);
+  height: var(--size);
+  border-radius: 14px;
+
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+
+  text-decoration:none;
+  cursor:pointer;
+
+  border: 1px solid rgba(0,0,0,.06);
+  background: rgba(255,255,255,.85);
+
+  box-shadow: 0 12px 28px rgba(0,0,0,.08);
+  transition: transform .12s ease, box-shadow .18s ease, filter .18s ease, border-color .18s ease;
+  backdrop-filter: blur(10px);
+}
+
+.action-icon i{
+  font-size: 1.1rem;
+  opacity: .92;
+  transition: transform .12s ease, opacity .18s ease;
+}
+
+/* hover */
+.action-icon:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 16px 36px rgba(0,0,0,.10);
+  border-color: rgba(13,110,253,.14);
+  filter: brightness(1.02);
+}
+.action-icon:hover i{
+  transform: scale(1.06);
+  opacity: 1;
+}
+
+/* active */
+.action-icon:active{
+  transform: translateY(0);
+  box-shadow: 0 10px 22px rgba(0,0,0,.07);
+}
+
+/* focus (accessibilité) */
+.action-icon:focus,
+.action-icon:focus-visible{
+  outline: none;
+  box-shadow: 0 0 0 .22rem rgba(99,102,241,.22), 0 12px 28px rgba(0,0,0,.08);
+  border-color: rgba(99,102,241,.28);
+}
+
+/* ===== Couleurs par "bg-*" sans casser Bootstrap ===== */
+/* Bouton principal (ex: bg-primary) -> gradient premium */
+.action-icon.bg-primary{
+  border: 0;
+  color: #fff !important;
+  background: linear-gradient(90deg, rgba(13,110,253,1) 0%, rgba(99,102,241,1) 100%) !important;
+  box-shadow: 0 14px 34px rgba(13,110,253,.22);
+}
+
+/* Bouton light */
+.action-icon.bg-light{
+  background: rgba(255,255,255,.92) !important;
+}
+
+/* Si tu mets bg-light text-dark, on garde bien le contraste */
+.action-icon.bg-light.text-dark i{
+  color: rgba(0,0,0,.80);
+}
+
+/* Petite séparation visuelle quand il y a plusieurs icônes */
+.header-actions-divider{
+  width: 1px;
+  height: 28px;
+  background: rgba(0,0,0,.08);
+  border-radius: 999px;
+}
+</style>
