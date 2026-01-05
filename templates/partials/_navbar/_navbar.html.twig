@@ -15,7 +15,8 @@
 
 				<span class="brand-text">
 					<span class="brand-name" id="logoName">Chargement…</span>
-					<small class="brand-sub text-muted d-none d-sm-block">Cabinet</small>
+<small class="brand-sub text-muted d-none d-sm-block" id="cabinetType">Cabinet</small>
+
 				</span>
 			</a>
 
@@ -509,6 +510,7 @@
 ============================= */
 async function majLogo() {
     const el = document.getElementById('logoName');
+	const cabinetTypeEl = document.getElementById('cabinetType');
     if (!el) return;
 
     const url = "{{ path('app_nom_cabinet') }}";
@@ -529,6 +531,9 @@ async function majLogo() {
         } else {
             el.textContent = data.nom;
         }
+		if (cabinetTypeEl && data.type) {
+			cabinetTypeEl.textContent = data.type;
+		}
     } catch (e) {
         console.error(e);
         el.textContent = "Erreur réseau";

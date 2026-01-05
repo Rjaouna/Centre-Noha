@@ -17,7 +17,7 @@ class GetNameCabinet extends AbstractController
 			return $this->json(['nom' => 'null']);
 		}
 
-		return $this->json(['nom' => $cabinet->getNom()]);
+		return $this->json(['nom' => $cabinet->getNom(), 'type' => $cabinet->getType()]);
 	}
 
 }

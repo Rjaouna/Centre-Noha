@@ -1,11 +1,28 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Comment ça marche !
+{% block title %}Comment ça marche ?
 {% endblock %}
 
 {% block body %}
-	<section class="container my-5">
+	<section
+		class="container my-5">
 
+		<!-- ================= HEADER ================= -->
+		<div class="card shadow-sm border-0 rounded-4 mb-5">
+			<div class="card-body py-4 px-4 d-flex align-items-center gap-3">
+				<div class="icon-circle bg-primary bg-opacity-10 text-primary">
+					<i class="bi bi-diagram-3 fs-3"></i>
+				</div>
+				<div>
+					<h2 class="fw-bold text-primary mb-1">Comment fonctionne l’application ?</h2>
+					<p class="text-muted mb-0">
+						De l’accueil du patient jusqu’au suivi médical et administratif
+					</p>
+				</div>
+			</div>
+		</div>
+
+		<!-- ================= TIMELINE ================= -->
 		<div
 			class="timeline">
 
@@ -16,9 +33,11 @@
 				</div>
 				<div class="timeline-content">
 					<h4 class="fw-bold">1. Accueil du patient</h4>
-					<p class="mb-0 text-muted">
-						Le patient est accueilli au centre. Vous vérifiez s’il existe déjà dans le système 
-						                    ou s’il s’agit d’une nouvelle admission.
+					<p class="text-muted mb-0">
+						Le patient est accueilli au cabinet ou au centre médical.
+											Vous vérifiez s’il est déjà enregistré dans le système ou s’il s’agit
+											d’une
+						<strong>nouvelle admission</strong>.
 					</p>
 				</div>
 			</div>
@@ -30,19 +49,19 @@
 				</div>
 				<div class="timeline-content">
 					<h4 class="fw-bold">2. Création ou mise à jour de la fiche patient</h4>
-					<p class="mb-0 text-muted">
-						Lors d’une nouvelle admission, une
-						<strong>fiche patient complète</strong>
-						est créée 
-						                    (informations générales, historique médical, symptômes, antécédents…).
+					<p class="text-muted mb-0">
+						Pour un nouveau patient, une
+						<strong>fiche médicale complète</strong>
+						est créée :
 						<br><br>
-						Les nouvelles admissions apparaissent en
-						<strong>surbrillance verte</strong>
-						tant que la fiche n’a pas été consultée.
+						• Informations personnelles<br>
+						• Antécédents médicaux<br>
+						• Symptômes déclarés<br>
+						• Historique de suivi
 						<br><br>
-						Une
-						<strong>notification de confirmation</strong>
-						apparaît automatiquement après l’enregistrement.
+						Les nouvelles fiches apparaissent en
+						<strong>surbrillance</strong>
+						jusqu’à leur première consultation.
 					</p>
 				</div>
 			</div>
@@ -53,87 +72,101 @@
 					<i class="bi bi-activity"></i>
 				</div>
 				<div class="timeline-content">
-					<h4 class="fw-bold">3. Consultation</h4>
-					<p class="mb-0 text-muted">
-						Le praticien réalise l’examen médical, ajoute des observations, met à jour l’état du patient
-						                    et analyse les symptômes ou antécédents.
+					<h4 class="fw-bold">3. Consultation médicale</h4>
+					<p class="text-muted mb-0">
+						Le praticien réalise la consultation :
 						<br><br>
-						Il peut ensuite décider de créer une
-						<strong>ordonnance associée à cette consultation</strong>.
+						• Observation clinique<br>
+						• Analyse des symptômes<br>
+						• Mise à jour de l’état du patient
+						<br><br>
+						Cette consultation sert de base à la décision médicale
+											(ordonnance, suivi, orientation).
 					</p>
 				</div>
 			</div>
 
-			<!-- Étape 4 - Ordonnance -->
+			<!-- Étape 4 -->
 			<div class="timeline-item">
-				<div class="timeline-icon bg-purple text-white" style="background:#6f42c1;">
+				<div class="timeline-icon text-white" style="background:#6f42c1;">
 					<i class="bi bi-file-medical"></i>
 				</div>
 				<div class="timeline-content">
 					<h4 class="fw-bold">4. Création d’une ordonnance</h4>
-					<p class="mb-0 text-muted">
-						Dans chaque dossier, vous pouvez créer une
+					<p class="text-muted mb-0">
+						À partir de la consultation, vous pouvez générer une
 						<strong>ordonnance médicale</strong>
 						comprenant :
 						<br><br>
-						• Un
-						<strong>diagnostic</strong>
-						détaillé<br>
-						• Un ou plusieurs
-						<strong>médicaments</strong>
-						issus de la base des médicaments<br>
-						
+						• Un diagnostic<br>
+						• Un ou plusieurs médicaments<br>
+						• Des recommandations éventuelles
 						<br><br>
-						L’ordonnance peut être imprimée, consultée ou modifiée ultérieurement.
+						L’ordonnance peut être
+						<strong>imprimée, consultée ou modifiée</strong>
+						à tout moment.
 					</p>
 				</div>
 			</div>
 
-			<!-- Étape 5 - Base des médicaments -->
+			<!-- Étape 5 -->
 			<div class="timeline-item">
 				<div class="timeline-icon bg-secondary text-white">
-					<i class="bi bi-capsule"></i>
+					<i class="bi bi-database"></i>
 				</div>
 				<div class="timeline-content">
-					<h4 class="fw-bold">5. Liste des médicaments</h4>
-					<p class="mb-0 text-muted">
-						Vous disposez d'une page dédiée contenant
-						<strong>tous les médicaments</strong>
-						enregistrés : 
-						                    code, nom, DCI, dosage, unité, forme, présentation, PPV, PH, générique ou non.
+					<h4 class="fw-bold">5. Référentiels médicaux</h4>
+					<p class="text-muted mb-0">
+						L’application repose sur des référentiels configurables :
 						<br><br>
-						Cette base est utilisée lors de la création d’une ordonnance afin de
-						<strong>sélectionner rapidement les médicaments</strong>
-						à prescrire.
+						• Symptômes<br>
+						• Maladies chroniques<br>
+						• Analyses médicales<br>
+						• Médicaments et traitements
+						<br><br>
+						Ces données sont utilisées automatiquement dans les formulaires
+											de consultation et d’ordonnance.
 					</p>
 				</div>
 			</div>
 
-			<!-- Étape 6 - Paiement -->
+			<!-- Étape 6 -->
 			<div class="timeline-item">
 				<div class="timeline-icon bg-warning text-white">
 					<i class="bi bi-credit-card"></i>
 				</div>
 				<div class="timeline-content">
 					<h4 class="fw-bold">6. Paiement de la séance</h4>
-					<p class="mb-0 text-muted">
-						Le paiement est enregistré (montant total, payé, reste dû, mode de paiement).
-						                    Cela clôture administrativement la séance.
+					<p class="text-muted mb-0">
+						Le règlement de la consultation est enregistré :
+						<br><br>
+						• Montant total<br>
+						• Montant payé<br>
+						• Reste à payer<br>
+						• Mode de paiement
+						<br><br>
+						Cette étape clôture la séance sur le plan administratif.
 					</p>
 				</div>
 			</div>
 
-			<!-- Étape 7 - Rendez-vous -->
+			<!-- Étape 7 -->
 			<div class="timeline-item">
 				<div class="timeline-icon bg-dark text-white">
 					<i class="bi bi-calendar-plus"></i>
 				</div>
 				<div class="timeline-content">
-					<h4 class="fw-bold">7. Programmation du prochain rendez-vous</h4>
-					<p class="mb-0 text-muted">
-						Le bouton
-						<strong>“Donner un rendez-vous”</strong>
-						permet de planifier la prochaine visite : date, heure, motif, statut.
+					<h4 class="fw-bold">7. Programmation du suivi</h4>
+					<p class="text-muted mb-0">
+						Enfin, vous pouvez planifier un
+						<strong>prochain rendez-vous</strong>
+						:
+						<br><br>
+						• Date et heure<br>
+						• Motif<br>
+						• Statut du rendez-vous
+						<br><br>
+						Le suivi du patient est ainsi parfaitement organisé.
 					</p>
 				</div>
 			</div>
@@ -142,10 +175,10 @@
 
 	</section>
 
+	<!-- ================= STYLE ================= -->
 	<style>
 		.timeline {
 			position: relative;
-			margin-bottom: 5rem;
 			padding-left: 2rem;
 		}
 		.timeline::before {
@@ -155,18 +188,18 @@
 			left: 1rem;
 			width: 3px;
 			height: 100%;
-			background: rgba(0, 0, 0, 0.08);
+			background: rgba(0, 0, 0, .08);
 		}
 		.timeline-item {
 			position: relative;
-			margin-bottom: 2rem;
+			margin-bottom: 2.5rem;
 		}
 		.timeline-icon {
 			position: absolute;
 			left: -0.1rem;
 			top: 0;
-			width: 2.3rem;
-			height: 2.3rem;
+			width: 2.4rem;
+			height: 2.4rem;
 			border-radius: 50%;
 			display: flex;
 			align-items: center;
@@ -175,27 +208,20 @@
 			font-size: 1.2rem;
 		}
 		.timeline-content {
-			margin-left: 3.5rem;
-			padding: 0.75rem 1rem;
-			border-radius: 0.75rem;
-			background-color: #ffffff;
-			box-shadow: 0 5px 15px rgba(0, 0, 0, 0.04);
+			margin-left: 3.6rem;
+			padding: 1rem 1.2rem;
+			border-radius: 1rem;
+			background: #fff;
+			box-shadow: 0 8px 22px rgba(0, 0, 0, .05);
 		}
-		@media(max-width: 576px) {
-			.timeline {
-				padding-left: 1.5rem;
-			}
-			.timeline::before {
-				left: 0.8rem;
-			}
-			.timeline-icon {
-				left: -0.3rem;
-			}
-			.timeline-content {
-				margin-left: 3.1rem;
-			}
+		.icon-circle {
+			width: 56px;
+			height: 56px;
+			border-radius: 16px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
 		}
 	</style>
-
 {% endblock %}
 
