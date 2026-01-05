@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="UTF-8">
+		<style>
+			body {
+				font-family: Helvetica, Arial, sans-serif;
+				line-height: 1.6;
+				font-size: 13px;
+				margin: 0;
+				padding: 0;
+			}
+
+			.pdf-container {
+				width: 100%;
+				padding: 20px;
+			}
+
+			.header {
+				text-align: right;
+				font-size: 12px;
+				margin-bottom: 20px;
+			}
+
+			.title {
+				text-align: center;
+				font-size: 22px;
+				font-weight: bold;
+				text-decoration: underline;
+				margin-bottom: 25px;
+			}
+
+			.bloc {
+				margin-bottom: 20px;
+			}
+
+			.footer {
+				width: 100%;
+				margin-top: 40px;
+				padding-top: 10px;
+				border-top: 1px solid #ccc;
+				font-size: 12px;
+				text-align: center;
+				color: #555;
+			}
+		</style>
+	</head>
+	<body>
+
+		<div
+			class="pdf-container">
+
+			<!-- DATE -->
+			<div class="header">
+				<strong>{{ radiologie.prescriptionAt|date('d/m/Y') }}</strong>
+			</div>
+
+			<!-- TITRE -->
+			<div class="title">Prescription de Radiologie</div>
+
+			<p>
+				Je soussigné(e),
+				<strong>{{ cabinet.nom }}</strong>,
+				{{ cabinet.type }},
+						professionnel de santé, prescris les examens radiologiques suivants pour :
+			</p>
+
+			<!-- PATIENT -->
+			<div class="bloc">
+				<strong>{{ patient.nom }}</strong><br>
+
+				Né(e) le :
+				<strong>{{ patient.age ? patient.age|date('d/m/Y') : '—' }}</strong><br>
+
+				{% if patient.age %}
+					{% set diff = date().diff(patient.age) %}
+					Âge :
+					<strong>
+						{% if diff.y >= 1 %}
+							{{ diff.y }}
+							ans
+						{% elseif diff.m >= 1 %}
+							{{ diff.m }}
+							mois
+						{% else %}
+							{{ diff.d }}
+							jours
+						{% endif %}
+					</strong><br>
+				{% endif %}
+
+				Téléphone :
+				{{ patient.telephone ?? '—' }}
+			</div>
+
+			<!-- MOTIF -->
+			<div class="bloc">
+				<strong>Motif de prescription :</strong><br>
+				{{ radiologie.motif|nl2br }}
+			</div>
+
+			<!-- EXAMENS -->
+			<div class="bloc">
+				<strong>Examens radiologiques prescrits :</strong>
+				<ul>
+					{% for type in radiologie.radioType %}
+						<li>
+							{{ type.nom }}
+							—
+							{{ type.zoneCorps }}
+							{% if type.description %}
+								<br><small>{{ type.description }}</small>
+							{% endif %}
+						</li>
+					{% endfor %}
+				</ul>
+			</div>
+
+			<!-- COMPTE RENDU SI EXISTANT -->
+			{% if radiologie.compteRendu %}
+				<div class="bloc">
+					<strong>Compte-rendu :</strong><br>
+					{{ radiologie.compteRendu|nl2br }}
+				</div>
+			{% endif %}
+
+			<br>
+
+			<!-- SIGNATURE -->
+			<p>
+				Fait le :
+				<strong>{{ "now"|date("d/m/Y") }}</strong>
+			</p>
+
+			<br>
+
+			<p>
+				Cordialement,<br>
+				<strong>{{ user.prenom }}
+					{{ user.nom }}</strong><br>
+				{{ cabinet.type }}<br>
+				<strong>{{ cabinet.nom }}</strong>
+			</p>
+
+			<!-- FOOTER CABINET -->
+			<div class="footer">
+				<strong>{{ cabinet.nom }}</strong>
+				—
+				{{ cabinet.type }}<br>
+				Adresse :
+				{{ cabinet.adresse ?? '—' }}
+				{{ cabinet.ville ?? '—' }}<br>
+				Téléphone :
+				{{ cabinet.telephone ?? '—' }}
+				{% if cabinet.email %}
+					| Email :
+					{{ cabinet.email }}
+				{% endif %}
+				
+			</div>
+
+		</div>
+
+	</body>
+</html>
+

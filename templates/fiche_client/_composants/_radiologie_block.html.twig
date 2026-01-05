@@ -1,0 +1,534 @@
+<div class="card shadow-sm border-0 rounded-4 my-4">
+	<div class="card-body p-3 p-md-4">
+
+		<div class="d-flex align-items-center justify-content-between mb-3">
+			<div class="d-flex align-items-center gap-2">
+				<span class="icon-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center" style="width:44px;height:44px;border-radius:16px;">
+					<i class="bi bi-x-ray fs-5"></i>
+				</span>
+				<div>
+					<div class="fw-bold">Radiologie</div>
+					<small class="text-muted">Historique des prescriptions et résultats</small>
+				</div>
+			</div>
+
+			<button class="btn btn-primary rounded-pill px-4 d-flex align-items-center gap-2" id="btnAddRadiologie">
+				<i class="bi bi-plus-circle"></i>
+				Prescrire
+			</button>
+		</div>
+
+		<div id="radiologieEmpty" class="alert alert-light rounded-4 text-center py-4 d-none">
+			<div class="fw-bold mb-1">Aucune radiologie enregistrée</div>
+			<div class="text-muted mb-3">Prescris une radiologie pour l’ajouter à l’historique du patient.</div>
+			<button class="btn btn-outline-primary rounded-pill px-4" id="btnAddRadiologieEmpty">
+				<i class="bi bi-x-ray me-1"></i>
+				Prescrire une radiologie
+			</button>
+		</div>
+
+		<div id="radiologieList" class="vstack gap-3"></div>
+
+	</div>
+</div>
+
+{# =================== MODAL WIZARD: PRESCRIPTION =================== #}
+<div class="modal fade" id="radiologieWizard" tabindex="-1">
+	<div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+		<div class="modal-content rounded-4 shadow">
+
+			<div class="modal-header bg-primary text-white rounded-top-4">
+				<h5 class="modal-title fw-bold d-flex align-items-center gap-2">
+					<i class="bi bi-x-ray"></i>
+					Prescrire une radiologie
+				</h5>
+				<button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+			</div>
+
+			<div
+				class="modal-body p-3 p-md-4">
+
+				{# STEP 1 #}
+				<div id="radStep1">
+					<div class="card border-0 shadow-sm rounded-4 mb-3">
+						<div class="card-header bg-light fw-bold rounded-top-4 d-flex align-items-center gap-2">
+							<i class="bi bi-chat-left-text text-primary"></i>
+							Motif (obligatoire)
+						</div>
+						<div class="card-body">
+							<textarea id="radMotif" class="form-control rounded-3" rows="3" placeholder="Ex : douleur thoracique, traumatisme, suspicion fracture…"></textarea>
+						</div>
+					</div>
+
+					<div class="card border-0 shadow-sm rounded-4">
+						<div class="card-header bg-light fw-bold rounded-top-4 d-flex align-items-center gap-2">
+							<i class="bi bi-search text-primary"></i>
+							Types d’examens (obligatoire)
+						</div>
+						<div class="card-body">
+							<input id="radTypeSearch" class="form-control rounded-3 mb-2" placeholder="Tapez au moins 2 caractères… (radio, scanner, IRM, écho…)">
+							<div id="radTypeResults" class="list-group rounded-4 mb-3"></div>
+
+							<div class="fw-bold mb-2">Sélection</div>
+							<div id="radSelectedTypes" class="d-flex flex-wrap gap-2"></div>
+
+							<small class="text-muted d-block mt-2">
+								Astuce : clique sur la ✕ d’un type pour le retirer.
+							</small>
+						</div>
+					</div>
+				</div>
+
+				{# STEP 2 #}
+				<div id="radStep2" class="d-none">
+					<div class="alert alert-light rounded-4">
+						<div class="fw-bold">Dernière étape</div>
+						<div class="text-muted">
+							Télécharge le PDF (enregistrer en PDF) ou imprime directement.
+							              Dans les deux cas, la prescription sera enregistrée dans l’historique.
+						</div>
+					</div>
+
+					<div class="d-grid gap-2 d-md-flex">
+						<button class="btn btn-outline-danger rounded-pill px-4 flex-fill" id="btnRadDownload">
+							<i class="bi bi-filetype-pdf me-1"></i>
+							Télécharger / Enregistrer PDF
+						</button>
+
+						<button class="btn btn-primary rounded-pill px-4 flex-fill" id="btnRadPrint">
+							<i class="bi bi-printer me-1"></i>
+							Imprimer
+						</button>
+					</div>
+				</div>
+
+				<div id="radAlert" class="mt-3"></div>
+
+			</div>
+
+			<div class="modal-footer border-0 px-4 pb-4 pt-0">
+				<button class="btn btn-light rounded-pill px-4" id="btnRadBack" type="button">Retour</button>
+				<button class="btn btn-primary rounded-pill px-4" id="btnRadNext" type="button">
+					Suivant
+					<i class="bi bi-arrow-right ms-1"></i>
+				</button>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+{# =================== MODAL RESULTAT =================== #}
+<div class="modal fade" id="radResultModal" tabindex="-1">
+	<div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+		<div class="modal-content rounded-4 shadow">
+
+			<div class="modal-header bg-success text-white rounded-top-4">
+				<h5 class="modal-title fw-bold d-flex align-items-center gap-2">
+					<i class="bi bi-clipboard-check"></i>
+					Ajouter un résultat
+				</h5>
+				<button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+			</div>
+
+			<div class="modal-body p-3 p-md-4">
+				<input type="hidden" id="radResultId">
+
+				<div class="mb-3">
+					<label class="fw-bold mb-1">Compte-rendu (obligatoire)</label>
+					<textarea id="radCompteRendu" class="form-control rounded-3" rows="4" placeholder="Résumé du résultat / conclusion radiologique…"></textarea>
+				</div>
+
+				<div class="mb-2">
+					<label class="fw-bold mb-1">Fichier (optionnel)</label>
+					<input id="radFile" type="file" class="form-control rounded-3">
+					<small class="text-muted">PDF, image, scan…</small>
+				</div>
+<div id="radExistingFile" class="d-none mt-2">
+	<div class="d-flex align-items-center gap-2">
+		<a href="#" target="_blank" id="radExistingFileLink" class="btn btn-sm btn-outline-primary rounded-pill">
+			<i class="bi bi-eye me-1"></i>Voir le fichier actuel
+		</a>
+
+		<button class="btn btn-sm btn-outline-danger rounded-pill" id="btnRemoveFile">
+			<i class="bi bi-trash me-1"></i>Supprimer
+		</button>
+	</div>
+</div>
+
+
+
+				<div id="radResultAlert" class="mt-3"></div>
+			</div>
+
+			<div class="modal-footer border-0 px-4 pb-4 pt-0">
+				<button class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Annuler</button>
+				<button class="btn btn-success rounded-pill px-4" id="btnRadSaveResult">
+					<i class="bi bi-check2-circle me-1"></i>
+					Enregistrer
+				</button>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+<style>
+	.rad-card {
+		border: 1px solid rgba(0, 0, 0, .08);
+		border-radius: 16px;
+		background: #fff;
+		padding: 14px 16px;
+		box-shadow: 0 6px 18px rgba(0, 0, 0, .06);
+		transition: 0.18s ease;
+	}
+	.rad-card:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 12px 30px rgba(0, 0, 0, .10);
+	}
+	.rad-badge {
+		font-size: 0.75rem;
+		padding: 4px 10px;
+		border-radius: 999px;
+		font-weight: 800;
+	}
+	.pill {
+		display: inline-flex;
+		align-items: center;
+		gap: 10px;
+		padding: 8px 12px;
+		border-radius: 999px;
+		background: rgba(13, 110, 253, .06);
+		border: 1px solid rgba(13, 110, 253, .16);
+		font-weight: 800;
+	}
+	.pill .x {
+		width: 26px;
+		height: 26px;
+		border-radius: 10px;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		background: #fff;
+		border: 1px solid rgba(0, 0, 0, .08);
+		cursor: pointer;
+	}
+	.table-actions {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.35rem;
+		border-radius: 999px;
+		background: rgba(13, 110, 253, 0.06);
+		border: 1px solid rgba(13, 110, 253, 0.10);
+	}
+	.btn-action {
+		width: 36px;
+		height: 36px;
+		padding: 0;
+		border-radius: 12px;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		box-shadow: 0 6px 16px rgba(0, 0, 0, .06);
+		background: #fff;
+	}
+	.btn-action-primary {
+		border: 1px solid rgba(13, 110, 253, .25);
+		color: #0d6efd;
+	}
+	.btn-action-success {
+		border: 1px solid rgba(25, 135, 84, .25);
+		color: #198754;
+	}
+</style>
+ <script>
+    const API_SEARCH_TYPES = "{{ path('api_radio_type_search') }}?q=";
+</script>
+
+ <script>
+let removeExistingFile = false;
+
+document.addEventListener('DOMContentLoaded', () => {
+
+  const patientId = {{ patient.id }};
+  const API_LIST   = `/api/patients/${patientId}/radiologies`;
+  const API_CREATE = `/api/patients/${patientId}/radiologies`;
+  const API_RESULT = (id) => `/api/radiologies/${id}/resultat`;
+  const VIEW_PRESCRIPTION = (id) => `/radiologie/prescription/${id}`;
+
+  const el = (id) => document.getElementById(id);
+
+  const wizard = new bootstrap.Modal(el('radiologieWizard'));
+  const resultModal = new bootstrap.Modal(el('radResultModal'));
+
+  let step = 1;
+  let selectedTypes = [];
+
+  /* ================= UTIL ================= */
+
+  function escapeHtml(str){
+    return (str ?? '').toString()
+      .replaceAll('&','&amp;')
+      .replaceAll('<','&lt;')
+      .replaceAll('>','&gt;')
+      .replaceAll('"','&quot;')
+      .replaceAll("'","&#039;");
+  }
+
+  function setAlert(targetId, html){
+    const box = el(targetId);
+    if (box) box.innerHTML = html || '';
+  }
+
+  function badgeStatut(statut){
+    if (statut === 'realisee') return `<span class="rad-badge bg-success">Réalisée</span>`;
+    if (statut === 'annulee')  return `<span class="rad-badge bg-secondary">Annulée</span>`;
+    return `<span class="rad-badge bg-info text-dark">Prescrite</span>`;
+  }
+
+  /* ================= LISTE ================= */
+
+  async function load(){
+    const res = await fetch(API_LIST);
+    const data = await res.json();
+    renderList(data);
+  }
+
+  function renderList(items){
+    const list  = el('radiologieList');
+    const empty = el('radiologieEmpty');
+
+    if (!items || items.length === 0){
+      list.innerHTML = '';
+      empty.classList.remove('d-none');
+      return;
+    }
+    empty.classList.add('d-none');
+
+    list.innerHTML = items.map(r => `
+      <div class="rad-card">
+        <div class="d-flex justify-content-between align-items-start gap-2">
+          <div class="flex-grow-1">
+            <div class="d-flex align-items-center gap-2 mb-1">
+              <div class="fw-bold"><i class="bi bi-x-ray text-primary me-1"></i>Radiologie</div>
+              ${badgeStatut(r.statut)}
+              <span class="text-muted small ms-auto">${r.prescriptionAt || ''}</span>
+            </div>
+
+            <div class="text-muted small mb-2">
+              <strong>Motif :</strong> ${escapeHtml(r.motif || '—')}
+            </div>
+
+            ${(r.types || []).map(t =>
+              `<span class="badge bg-primary-subtle text-primary me-1 mb-1">${t.nom} • ${t.zone}</span>`
+            ).join('')}
+
+            ${r.compteRendu ? `
+              <div class="text-muted small mt-2">
+                <i class="bi bi-clipboard-check me-1"></i>${escapeHtml(r.compteRendu)}
+              </div>` : ''}
+          </div>
+
+          <div class="d-flex flex-column align-items-end gap-2">
+            <div class="table-actions">
+              <button class="btn btn-action btn-action-primary"
+                      title="Voir la prescription"
+                      onclick="window.open('${VIEW_PRESCRIPTION(r.id)}','_blank')">
+                <i class="bi bi-file-earmark-text"></i>
+              </button>
+
+              <button class="btn btn-action ${r.compteRendu ? 'btn-action-primary' : 'btn-action-success'}"
+                      data-action="result"
+                      data-id="${r.id}"
+                      data-cr="${escapeHtml(r.compteRendu || '')}"
+                      data-file="${r.fichier || ''}"
+                      title="${r.compteRendu ? 'Modifier le résultat' : 'Ajouter un résultat'}">
+                <i class="bi ${r.compteRendu ? 'bi-pencil-square' : 'bi-clipboard-plus'}"></i>
+              </button>
+            </div>
+
+            ${r.fichier ? `
+              <a class="btn btn-sm btn-outline-primary rounded-pill px-3"
+                 href="/${r.fichier}" target="_blank">
+                <i class="bi bi-eye me-1"></i>Voir fichier
+              </a>` : ''}
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  /* ================= WIZARD ================= */
+
+  function resetWizard(){
+    step = 1;
+    selectedTypes = [];
+    el('radMotif').value = '';
+    el('radTypeSearch').value = '';
+    el('radTypeResults').innerHTML = '';
+    el('radSelectedTypes').innerHTML = '';
+    setAlert('radAlert','');
+    updateStepUI();
+  }
+
+  function updateStepUI(){
+    el('radStep1').classList.toggle('d-none', step !== 1);
+    el('radStep2').classList.toggle('d-none', step !== 2);
+    el('btnRadBack').classList.toggle('d-none', step === 1);
+    el('btnRadNext').classList.toggle('d-none', step === 2);
+  }
+
+  el('btnAddRadiologie').addEventListener('click', () => {
+    resetWizard();
+    wizard.show();
+  });
+
+  el('btnAddRadiologieEmpty')?.addEventListener('click', () => {
+    resetWizard();
+    wizard.show();
+  });
+
+  el('btnRadBack').addEventListener('click', () => {
+    step = 1;
+    updateStepUI();
+  });
+
+  el('btnRadNext').addEventListener('click', () => {
+    if (!el('radMotif').value.trim())
+      return setAlert('radAlert', `<div class="alert alert-warning">Motif obligatoire</div>`);
+    if (selectedTypes.length === 0)
+      return setAlert('radAlert', `<div class="alert alert-warning">Choisis au moins un type</div>`);
+
+    step = 2;
+    updateStepUI();
+  });
+
+  /* ================= AUTOCOMPLETE ================= */
+
+  let tmr = null;
+  el('radTypeSearch').addEventListener('keyup', () => {
+    const q = el('radTypeSearch').value.trim();
+    if (q.length < 2) return;
+
+    clearTimeout(tmr);
+    tmr = setTimeout(async () => {
+      const res = await fetch(API_SEARCH_TYPES + encodeURIComponent(q));
+      const data = await res.json();
+
+      el('radTypeResults').innerHTML = data.map(r => `
+        <button type="button"
+                class="list-group-item list-group-item-action"
+                data-id="${r.id}"
+                data-nom="${escapeHtml(r.nom)}"
+                data-zone="${escapeHtml(r.zone_corps)}">
+          <strong>${escapeHtml(r.nom)}</strong><br>
+          <small class="text-muted">${escapeHtml(r.zone_corps)}</small>
+        </button>
+      `).join('');
+
+      el('radTypeResults').querySelectorAll('[data-id]').forEach(b => {
+        b.addEventListener('click', () => {
+          const id = Number(b.dataset.id);
+          if (selectedTypes.some(t => t.id === id)) return;
+
+          selectedTypes.push({
+            id,
+            nom: b.dataset.nom,
+            zone_corps: b.dataset.zone
+          });
+
+          el('radSelectedTypes').innerHTML = selectedTypes.map(t => `
+            <span class="pill">
+              ${t.nom} • ${t.zone_corps}
+              <span class="x" data-x="${t.id}"><i class="bi bi-x-lg"></i></span>
+            </span>
+          `).join('');
+
+          el('radSelectedTypes').querySelectorAll('[data-x]').forEach(x => {
+            x.onclick = () => {
+              selectedTypes = selectedTypes.filter(t => t.id !== Number(x.dataset.x));
+              x.parentElement.remove();
+            };
+          });
+
+          el('radTypeResults').innerHTML = '';
+          el('radTypeSearch').value = '';
+        });
+      });
+    }, 250);
+  });
+
+  /* ================= CREATE ================= */
+
+  async function createRadiologie(){
+    const res = await fetch(API_CREATE, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        motif: el('radMotif').value.trim(),
+        typeIds: selectedTypes.map(t => t.id)
+      })
+    });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.message);
+    return data.id;
+  }
+
+  el('btnRadDownload').addEventListener('click', async () => {
+    const id = await createRadiologie();
+    wizard.hide();
+    await load();
+    window.open(VIEW_PRESCRIPTION(id),'_blank');
+  });
+
+  el('btnRadPrint').addEventListener('click', async () => {
+    const id = await createRadiologie();
+    wizard.hide();
+    await load();
+    window.open(VIEW_PRESCRIPTION(id),'_blank');
+  });
+
+  /* ================= RESULT ================= */
+
+  el('btnRemoveFile').addEventListener('click', () => {
+    removeExistingFile = true;
+    el('radExistingFile').classList.add('d-none');
+  });
+
+  el('radiologieList').addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-action="result"]');
+    if (!btn) return;
+
+    removeExistingFile = false;
+
+    el('radResultId').value = btn.dataset.id;
+    el('radCompteRendu').value = btn.dataset.cr || '';
+    el('radFile').value = '';
+
+    if (btn.dataset.file){
+      el('radExistingFile').classList.remove('d-none');
+      el('radExistingFileLink').href = '/' + btn.dataset.file;
+    } else {
+      el('radExistingFile').classList.add('d-none');
+    }
+
+    setAlert('radResultAlert','');
+    resultModal.show();
+  });
+
+  el('btnRadSaveResult').addEventListener('click', async () => {
+    const fd = new FormData();
+    fd.append('compteRendu', el('radCompteRendu').value.trim());
+    fd.append('removeFile', removeExistingFile ? '1' : '0');
+    if (el('radFile').files[0]) fd.append('fichier', el('radFile').files[0]);
+
+    await fetch(API_RESULT(el('radResultId').value), { method:'POST', body:fd });
+    resultModal.hide();
+    load();
+  });
+
+  load();
+});
+</script>
+

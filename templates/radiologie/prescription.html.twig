@@ -1,0 +1,199 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	Prescription de radiologie —
+	{{ patient.nom }}
+{% endblock %}
+
+{% block body %}
+
+	<div
+		class="container-fluid mt-4">
+
+		{# ================= HEADER APP UNIFIÉ ================= #}
+		{% embed '_partials/_page_header.html.twig' with {
+		icon: 'bi bi-x-ray',
+		title: 'Prescription de radiologie',
+		subtitle: patient.nom
+	} %}
+			{% block header_actions_left %}
+<span class="action-icon bg-outline" onclick="downloadPdf()" data-bs-toggle="tooltip" title="Générer le PDF">
+
+					<i class="bi bi-filetype-pdf"></i>
+				</span>
+
+				<span class="action-icon bg-outline" onclick="printDocument()" data-bs-toggle="tooltip" title="Imprimer">
+					<i class="bi bi-printer"></i>
+				</span>
+
+				<a href="{{ path('app_home') }}" class="action-icon bg-outline" data-bs-toggle="tooltip" title="Retour">
+					<i class="bi bi-arrow-left"></i>
+				</a>
+			{% endblock %}
+		{% endembed %}
+
+		{# ================= APERÇU DOCUMENT ================= #}
+		<div class="pdf-wrapper">
+			<div class="pdf-container">
+
+				<div class="header">
+					<strong>{{ radiologie.prescriptionAt|date('d/m/Y') }}</strong>
+				</div>
+
+				<div class="title">Prescription de radiologie</div>
+
+				<p>
+					Je soussigné(e),
+					<strong>{{ cabinet.nom }}</strong>,
+										professionnel de santé, prescris les examens radiologiques suivants pour :
+				</p>
+
+				<div class="bloc">
+					<strong>{{ patient.nom }}</strong><br>
+					Né(e) le :
+					<strong>{{ patient.age ? patient.age|date('d/m/Y') : '—' }}</strong><br>
+					Téléphone :
+					{{ patient.telephone ?? '—' }}
+				</div>
+
+				<div class="bloc">
+					<strong>Motif de prescription :</strong><br>
+					{{ radiologie.motif|nl2br }}
+				</div>
+
+				<div class="bloc">
+					<strong>Examens prescrits :</strong>
+					<ul>
+						{% for type in radiologie.radioType %}
+							<li>
+								{{ type.nom }}
+								<span class="text-muted">—
+									{{ type.zoneCorps }}</span>
+							</li>
+						{% endfor %}
+					</ul>
+				</div>
+
+				{% if radiologie.compteRendu %}
+					<div class="bloc">
+						<strong>Compte-rendu :</strong><br>
+						{{ radiologie.compteRendu|nl2br }}
+					</div>
+				{% endif %}
+
+				<br>
+
+				<p>
+					Fait le :
+					<strong>{{ "now"|date("d/m/Y") }}</strong>
+				</p>
+
+				<br>
+
+				<p>
+					Cordialement,<br>
+					<strong>{{ app.user.prenom }}
+						{{ app.user.nom }}</strong><br>
+					{{ cabinet.type }}<br>
+					<strong>{{ cabinet.nom }}</strong>
+				</p>
+
+				<div class="footer">
+					{{ cabinet.nom }}
+					—
+					{{ cabinet.type }}<br>
+					Adresse :
+					{{ cabinet.adresse ?? '—' }}
+					{{ cabinet.ville ?? '—' }}<br>
+					Téléphone :
+					{{ cabinet.telephone ?? '—' }}
+					|
+									Email :
+					{{ cabinet.email ?? '—' }}
+				</div>
+
+			</div>
+		</div>
+
+	</div>
+
+	{# ================= PDF SCRIPT ================= #}
+ <script>
+function downloadPdf() {
+	const id = {{ radiologie.id }};
+	window.location.href = `/radiologie/${id}/pdf`;
+}
+</script>
+
+
+
+	{# ================= STYLES (ISOLÉS PDF) ================= #}
+		<style>
+.pdf-wrapper {
+	display: flex;
+	justify-content: center;
+	margin: 30px 0 50px;
+}
+.pdf-container {
+	max-width: 650px;
+	background: #fff;
+	padding: 40px 50px;
+	border-radius: 12px;
+	box-shadow: 0 5px 25px rgba(0, 0, 0, .12);
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 13px;
+	line-height: 1.6;
+}
+.header {
+	text-align: right;
+	margin-bottom: 40px;
+}
+.title {
+	font-size: 22px;
+	font-weight: bold;
+	text-align: center;
+	margin-bottom: 25px;
+	text-decoration: underline;
+}
+.bloc {
+	margin-bottom: 20px;
+}
+.footer {
+	margin-top: 40px;
+	padding-top: 12px;
+	border-top: 1px solid #ccc;
+	text-align: center;
+	font-size: 12px;
+	color: #555;
+}
+</style>
+
+	{# ================= PRINT SCRIPT ================= #}
+	 <script>
+	function printDocument() {
+		const content = document.querySelector('.pdf-container').innerHTML;
+	
+		const w = window.open('', '', 'width=800,height=600');
+		w.document.write(`
+			<html>
+			<head>
+				<title>Impression</title>
+				<style>
+					body { font-family: Helvetica, Arial, sans-serif; font-size: 13px; line-height: 1.6; padding: 30px; }
+					.title { font-size: 22px; font-weight: bold; text-align: center; margin-bottom: 25px; text-decoration: underline; }
+					.bloc { margin-bottom: 20px; }
+					.footer { margin-top: 40px; padding-top: 12px; border-top: 1px solid #ccc; text-align: center; font-size: 12px; color: #555; }
+				</style>
+			</head>
+			<body>${content}</body>
+			</html>
+		`);
+		w.document.close();
+		w.focus();
+		w.print();
+		w.close();
+	}
+	</script>
+
+{% endblock %}
+
