@@ -3,18 +3,20 @@
 
 		<div class="d-flex align-items-center justify-content-between mb-3">
 			<div class="d-flex align-items-center gap-2">
-				<span class="icon-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center" style="width:44px;height:44px;border-radius:16px;">
-					<i class="bi bi-x-ray fs-5"></i>
+<span class="bi bi-plus-square text-info  me-1">
+
+
+
 				</span>
 				<div>
-					<div class="fw-bold">Radiologie</div>
-					<small class="text-muted">Historique des prescriptions et résultats</small>
+<h5 class="fw-bold text-primary mb-0 d-flex align-items-center gap-2">Radiologie</h5>
+
 				</div>
 			</div>
 
-			<button class="btn btn-primary rounded-pill px-4 d-flex align-items-center gap-2" id="btnAddRadiologie">
+			<button class="btn btn-info text-white rounded-pill d-flex align-items-center gap-2" id="btnAddRadiologie">
 				<i class="bi bi-plus-circle"></i>
-				Prescrire
+				
 			</button>
 		</div>
 
@@ -313,8 +315,9 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="d-flex align-items-center gap-2 mb-1">
               <div class="fw-bold"><i class="bi bi-x-ray text-primary me-1"></i>Radiologie</div>
               ${badgeStatut(r.statut)}
-              <span class="text-muted small ms-auto">${r.prescriptionAt || ''}</span>
             </div>
+<span class="text-muted small ms-auto">${r.prescriptionAt || ''}</span>
+
 
             <div class="text-muted small mb-2">
               <strong>Motif :</strong> ${escapeHtml(r.motif || '—')}

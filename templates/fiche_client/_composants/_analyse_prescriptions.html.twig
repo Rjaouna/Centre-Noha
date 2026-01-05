@@ -23,14 +23,21 @@
 								'recue': 'success'
 							} %}
 
-							<span class="rad-badge bg-{{ statusMap[p.status]|default('secondary') }}">
-								{{ p.status|capitalize }}
-							</span>
+							
 
-							<span class="text-muted small ms-auto">
-								{{ p.prescribedAt|date('d/m/Y') }}
-							</span>
-						</div>
+</div>
+
+
+<span class="rad-badge bg-{{ statusMap[p.status]|default('secondary') }} mx-1">
+	{{ p.status|capitalize }}
+</span>
+ <span class="text-muted small ms-auto">
+	{{ p.prescribedAt|date('d/m/Y') }}
+</span>
+
+
+
+
 
 						<div class="mb-2">
 							{% for a in p.analyses %}
