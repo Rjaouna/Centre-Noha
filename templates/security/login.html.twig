@@ -56,11 +56,16 @@
 
 /* Admin info box plus clean */
 .admin-box{
-  display:none;
   background: rgba(13,110,253,.06);
   border: 1px solid rgba(13,110,253,.12);
   padding: 14px;
   border-radius: 14px;
+}
+.admin-link .bi-chevron-down{
+  transition: transform .18s ease;
+}
+.admin-link[aria-expanded="true"] .bi-chevron-down{
+  transform: rotate(180deg);
 }
 
 /* ===== LOADER FULLSCREEN UX ===== */
@@ -194,28 +199,35 @@
 
 					{{ form_end(form) }}
 
-					<!-- Admin -->
-					<p class="text-muted small admin-link mt-3">
-						<i class="bi bi-info-circle"></i>
-						Vous n’avez pas de compte ?
-						<span class="text-primary fw-semibold">Contacter l’administrateur</span>
-					</p>
+{# Admin #}
+<p class="text-muted small mt-3 mb-2">
+	<i class="bi bi-info-circle"></i>
+	Vous n’avez pas de compte ?
+</p>
 
-					<div id="adminInfo" class="admin-box mt-2">
-						<p class="small mb-1">
-							<i class="bi bi-person-badge-fill text-primary"></i>
-							<strong>Administrateur :</strong>
-							We Digit All
-						</p>
-						<p class="small mb-1">
-							<i class="bi bi-telephone-fill text-primary"></i>
-							+33 6 59 22 10 04
-						</p>
-						<p class="small mb-0">
-							<i class="bi bi-envelope-fill text-primary"></i>
-							contact@wedigitall.com
-						</p>
-					</div>
+</p>
+
+
+</p></p><a class="admin-link text-primary fw-semibold text-decoration-none" data-bs-toggle="collapse" href="#adminInfo" role="button" aria-expanded="false" aria-controls="adminInfo">
+Contacter l’administrateur
+<i class="bi bi-chevron-down ms-1"></i></a></p><div id="adminInfo" class="collapse"><div class="admin-box">
+<p class="small mb-1">
+	<i class="bi bi-person-badge-fill text-primary"></i>
+	<strong>Administrateur :</strong>
+	We Digit All
+</p>
+<p class="small mb-1">
+	<i class="bi bi-telephone-fill text-primary"></i>
+	+33 6 59 22 10 04
+</p>
+<p class="small mb-0">
+	<i class="bi bi-envelope-fill text-primary"></i>
+	contact@wedigitall.com
+</p></div>
+
+
+</div>
+
 
 					<p class="text-center text-muted small mt-4">
 						🔐 Accès réservé au personnel autorisé du Centre Noha.
