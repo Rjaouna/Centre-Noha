@@ -1,98 +1,126 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
+	Nouvelle recommandation —
 	{{ hopital.etablissement }}
-	- Établissement hospitalier
 {% endblock %}
 
 {% block body %}
 
-	<style>
-		body {
-			font-family: Helvetica, Arial, sans-serif;
-			line-height: 1.6;
-			font-size: 13px;
-		}
+	<div
+		class="container-fluid mt-4">
 
-		/* Conteneur centré */
-		.pdf-wrapper {
-			display: flex;
-			justify-content: center;
-			margin-top: 30px;
-			margin-bottom: 50px;
-		}
+		{# ================= HEADER APP UNIFIÉ ================= #}
+		{% embed '_partials/_page_header.html.twig' with {
+		icon: 'bi bi-pen',
+		title: 'Nouvelle recommandation',
+		subtitle: hopital.etablissement
+	} %}
+{% block header_actions_left %}
+	<span class="action-icon bg-outline" onclick="generatePdf()" data-bs-toggle="tooltip" title="Générer le PDF">
+		<i class="bi bi-filetype-pdf"></i>
+	</span>
 
-		.pdf-container {
-			width: 100%;
-			max-width: 650px; /* 👈 plus étroit et centré */
-			background: white;
-			padding: 40px 50px;
-			border-radius: 12px;
-			box-shadow: 0 5px 25px rgba(0, 0, 0, 0.12);
-		}
+	<span class="action-icon bg-outline" onclick="printLetter()" data-bs-toggle="tooltip" title="Imprimer">
+		<i class="bi bi-printer"></i>
+	</span>
 
-		.header {
-			text-align: right;
-			margin-bottom: 40px;
-		}
+	<a href="{{ path('app_home') }}" class="action-icon bg-outline" data-bs-toggle="tooltip" title="Retour">
+		<i class="bi bi-arrow-left"></i>
+	</a>
+{% endblock %}
 
-		.title {
-			font-size: 22px;
-			font-weight: bold;
-			text-align: center;
-			margin-bottom: 25px;
-			text-decoration: underline;
-		}
+		{% endembed %}
 
-		.bloc {
-			margin-bottom: 20px;
-		}
+		{# ================= APERÇU DOCUMENT ================= #}
+		<div class="pdf-wrapper">
+			<div class="pdf-container">
 
-		/* Bas de page */
-		.footer {
-			margin-top: 40px;
-			padding-top: 12px;
-			border-top: 1px solid #ccc;
-			text-align: center;
-			font-size: 12px;
-			color: #555;
-			line-height: 1.4;
-		}
-	</style>
+				<div class="header">
+					<strong>{{ "now"|date("d/m/Y") }}</strong>
+				</div>
 
+				<div class="title">Lettre de recommandation</div>
 
-	<div class="mt-4">
+				<p>
+					Je soussigné(e),
+					<strong>{{ cabinet.nom }}</strong>,
+										professionnel de santé, recommande vivement mon patient :
+				</p>
 
-		<div class="card shadow-lg border-0 rounded-4 mb-4">
-			<div class="card-body py-4 px-4">
+				<div class="bloc">
+					<strong>{{ patient.nom }}</strong><br>
 
-				<div
-					class="row align-items-center">
+					Né(e) le :
+					<strong>{{ patient.age ? patient.age|date("d/m/Y") : "—" }}</strong><br>
 
-					<!-- TITRE -->
-					<div class="col-12 col-md-7 d-flex align-items-center mb-3 mb-md-0">
-						<i class="bi bi-pen text-primary fs-1 me-3"></i>
+					{% if patient.age %}
+						{% set diff = date().diff(patient.age) %}
+						Âge :
+						<strong>
+							{% if diff.y >= 1 %}
+								{{ diff.y }}
+								ans
+							{% elseif diff.m >= 1 %}
+								{{ diff.m }}
+								mois
+							{% else %}
+								{{ diff.d }}
+								jours
+							{% endif %}
+						</strong><br>
+					{% endif %}
 
-						<div>
-							<h2 class="fw-bold text-primary mb-1">Nouvelle recommandation</h2>
-						</div>
-					</div>
+					Téléphone :
+					{{ patient.telephone ?? '—' }}
+				</div>
 
-					<!-- BOUTONS -->
-					<div class="col-12 col-md-5 d-flex flex-column flex-md-row gap-2">
+				<p>Pour une prise en charge au sein de l’établissement :</p>
 
-						<button onclick="generatePdf(this)" class="btn btn-outline-danger btn-lg rounded-pill clic px-4 shadow-sm d-flex align-items-center gap-2 w-100 w-md-auto">
-							<i class="bi bi-filetype-pdf"></i>
-							Générer le PDF
-						</button>
+				<div class="bloc">
+					<strong>{{ hopital.etablissement }}</strong><br>
+					Commune :
+					{{ hopital.commune }}<br>
+					Délégation :
+					{{ hopital.delegation }}<br>
+					Région :
+					{{ hopital.region }}
+				</div>
 
-						<a id="returnButtonShow" href="{{ path('app_home') }}" class="btn btn-outline-secondary btn-lg rounded-pill clic px-4 shadow-sm d-flex align-items-center gap-2 w-100 w-md-auto">
-							<i class="bi bi-arrow-left"></i>
-							Retour
-						</a>
+				<div class="bloc">
+					<strong>Motif de recommandation :</strong><br>
+					{{ motif|nl2br }}
+				</div>
 
-					</div>
+				<br>
 
+				<p>
+					Fait le :
+					<strong>{{ "now"|date("d/m/Y") }}</strong>
+				</p>
+
+				<br>
+
+				<p>
+					Cordialement,<br>
+					<strong>{{ app.user.prenom }}
+						{{ app.user.nom }}</strong><br>
+					{{ cabinet.type }}<br>
+					<strong>{{ cabinet.nom }}</strong>
+				</p>
+
+				<div class="footer">
+					{{ cabinet.nom }}
+					—
+					{{ cabinet.type }}<br>
+					Adresse :
+					{{ cabinet.adresse ?? '—' }}
+					{{ cabinet.ville ?? '—' }}<br>
+					Téléphone :
+					{{ cabinet.telephone ?? '—' }}
+					|
+									Email :
+					{{ cabinet.email ?? '—' }}
 				</div>
 
 			</div>
@@ -100,133 +128,110 @@
 
 	</div>
 
+	{# ================= PDF SCRIPT ================= #}
+	 <script>
+	function generatePdf() {
+		const patientId = "{{ patient.id }}";
+		const hopitalId = "{{ hopital.id }}";
+		const motif = `{{ motif|e('js') }}`;
+		const encodedMotif = encodeURIComponent(motif);
+	
+		const iframe = document.createElement('iframe');
+		iframe.style.display = 'none';
+		iframe.src = `/recommendation/pdf/${patientId}/${hopitalId}?motif=${encodedMotif}`;
+		document.body.appendChild(iframe);
+	}
+	</script>
 
-	<div class="pdf-wrapper">
-		<div
-			class="pdf-container">
-
-			<!-- DATE DU JOUR -->
-			<div class="header">
-				<strong>{{ "now"|date("d/m/Y") }}</strong>
-			</div>
-
-			<!-- TITRE -->
-			<div class="title">Lettre de Recommandation</div>
-
-			<p>
-				Je soussigné(e),
-				<strong>{{ cabinet.nom }}</strong>,
-					            professionnel de santé, recommande vivement mon patient :
-			</p>
-
-			<!-- PATIENT -->
-			<div class="bloc">
-				<strong>{{ patient.nom }}</strong><br>
-
-				Né(e) le :
-<strong>{{ patient.age ? patient.age|date("d/m/Y") : "—" }}</strong><br>
-
-
-{% if patient.age %}
-
-{% set diff = date().diff(patient.age) %}
-
-					Âge :
-					<strong>
-						{% if diff.y >= 1 %}
-							{{ diff.y }}
-							ans
-						{% elseif diff.m >= 1 %}
-							{{ diff.m }}
-							mois
-						{% else %}
-							{{ diff.d }}
-							jours
-						{% endif %}
-					</strong><br>
-				{% endif %}
-
-				Téléphone :
-				{{ patient.telephone ?? '-' }}
-			</div>
-
-			<!-- HÔPITAL -->
-			<p>Pour une prise en charge au sein de l’établissement :</p>
-
-			<div class="bloc">
-				<strong>{{ hopital.etablissement }}</strong><br>
-				Commune :
-				{{ hopital.commune }}<br>
-				Délégation :
-				{{ hopital.delegation }}<br>
-				Région :
-				{{ hopital.region }}
-			</div>
-
-			<!-- MOTIF -->
-			<div class="bloc">
-				<strong>Motif de recommandation :</strong><br>
-				{{ motif|nl2br }}
-			</div>
-
-			<br>
-
-			<!-- SIGNATURE -->
-			<p>
-				Fait le :
-				<strong>{{ "now"|date("d/m/Y") }}</strong>
-			</p>
-
-			<br>
-
-			<p>
-				Cordialement,<br>
-				<strong>{{ app.user.prenom }}
-					{{ app.user.nom }}</strong><br>
-				{{ cabinet.type }}<br>
-				<strong>{{ cabinet.nom }}</strong>
-			</p>
-
-			<!-- BAS DE PAGE -->
-			<div class="footer">
-				{{ cabinet.nom }}
-				—
-				{{ cabinet.type }}<br>
-				Adresse :
-{{ cabinet.adresse ?? '—' }}
-{{ cabinet.ville ?? '—' }}<br>
-
-				Téléphone :
-				{{ cabinet.telephone ?? '—' }}
-				&nbsp;|&nbsp;
-				            Email :
-				{{ cabinet.email ?? '—' }}
-			</div>
-
-		</div>
-	</div>
+	{# ================= STYLES (ISOLÉS PDF) ================= #}
+		<style>
+.pdf-wrapper {
+	display: flex;
+	justify-content: center;
+	margin: 30px 0 50px;
+}
+.pdf-container {
+	max-width: 650px;
+	background: #fff;
+	padding: 40px 50px;
+	border-radius: 12px;
+	box-shadow: 0 5px 25px rgba(0, 0, 0, .12);
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 13px;
+	line-height: 1.6;
+}
+.header {
+	text-align: right;
+	margin-bottom: 40px
+}
+.title {
+	font-size: 22px;
+	font-weight: bold;
+	text-align: center;
+	margin-bottom: 25px;
+	text-decoration: underline;
+}
+.bloc {
+	margin-bottom: 20px
+}
+.footer {
+	margin-top: 40px;
+	padding-top: 12px;
+	border-top: 1px solid #ccc;
+	text-align: center;
+	font-size: 12px;
+	color: #555;
+}
+</style>
 
 
  <script>
-function generatePdf(button) {
-    const patientId = "{{ patient.id }}";
-    const hopitalId = "{{ hopital.id }}";
-    const motif = `{{ motif|e('js') }}`;
-    const encodedMotif = encodeURIComponent(motif);
+function printLetter() {
+	const content = document.querySelector('.pdf-container').innerHTML;
 
-    const pdfUrl = `/recommendation/pdf/${patientId}/${hopitalId}?motif=${encodedMotif}`;
+	const printWindow = window.open('', '', 'width=800,height=600');
+	printWindow.document.write(`
+		<html>
+			<head>
+				<title>Impression</title>
+				<style>
+					body {
+						font-family: Helvetica, Arial, sans-serif;
+						font-size: 13px;
+						line-height: 1.6;
+						padding: 30px;
+					}
+					.title {
+						font-size: 22px;
+						font-weight: bold;
+						text-align: center;
+						margin-bottom: 25px;
+						text-decoration: underline;
+					}
+					.bloc { margin-bottom: 20px; }
+					.footer {
+						margin-top: 40px;
+						padding-top: 12px;
+						border-top: 1px solid #ccc;
+						text-align: center;
+						font-size: 12px;
+						color: #555;
+					}
+				</style>
+			</head>
+			<body>
+				${content}
+			</body>
+		</html>
+	`);
 
-    // Iframe caché
-    const iframe = document.createElement("iframe");
-    iframe.style.display = "none";
-    iframe.src = pdfUrl;
-    document.body.appendChild(iframe);
-
-    
+	printWindow.document.close();
+	printWindow.focus();
+	printWindow.print();
+	printWindow.close();
 }
+</script>
 
-
-	</script>
 
 
 {% endblock %}

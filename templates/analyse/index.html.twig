@@ -1,98 +1,124 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Analyses prédéfinies
+{% block title %}Analyses médicales
 {% endblock %}
 
 {% block body %}
 
 	<div
-		class="mt-4">
+		class="container-fluid mt-4">
 
-		<!-- ⭐ ENTÊTE -->
-		<div class="card shadow-lg border-0 rounded-4 mb-4">
-			<div class="card-body py-4 px-4">
-				<div class="row align-items-center">
+		{# ================= HEADER (STYLE APP – IDENTIQUE TRAITEMENTS) ================= #}
+		{% embed '_partials/_page_header.html.twig' with {
+		icon: 'bi bi-clipboard-data',
+		title: 'Analyses médicales',
+		subtitle: 'Référentiel des analyses utilisables dans les formulaires patients'
+	} %}
 
-					<div class="col-md-7 d-flex align-items-center">
-						<i class="bi bi-clipboard-pulse text-primary fs-1 me-3"></i>
-						<div>
-							<h2 class="fw-bold text-primary mb-1">Analyses prédéfinies</h2>
-							<p class="text-secondary m-0">
-								Référentiel des analyses disponibles pour prescription médicale
-							</p>
+			{% block header_actions_left %}
+				<span class="action-icon bg-primary text-white" role="button" id="btnAddAnalyse" data-bs-toggle="tooltip" title="Nouvelle analyse">
+					<i class="bi bi-plus-circle"></i>
+				</span>
+
+				<a href="{{ path('traitement_index') }}" class="action-icon bg-outline" data-bs-toggle="tooltip" title="Gestion des traitements">
+					<i class="bi bi-capsule"></i>
+				</a>
+			{% endblock %}
+
+		{% endembed %}
+
+		{# ================= LISTE DES ANALYSES ================= #}
+		<section class="mb-4">
+			<div class="row g-4" id="analyseList">
+
+				{% for analyse in analyses %}
+					<div class="col-md-6 col-lg-4 analyse-item" data-id="{{ analyse.id }}" data-token="{{ csrf_token('analyse_delete' ~ analyse.id) }}">
+
+						<div class="analyse-card h-100">
+							<div class="d-flex justify-content-between align-items-start gap-3">
+
+								<div>
+									<h5 class="fw-bold text-primary mb-1">
+										{{ analyse.name }}
+									</h5>
+									<p class="text-secondary small mb-0">
+										{{ analyse.description ?: 'Aucune description fournie' }}
+									</p>
+								</div>
+
+								{# === ACTIONS (STYLE TRAITEMENTS) === #}
+								<div class="table-actions">
+									<button type="button" class="btn btn-action btn-action-primary btnEdit" title="Modifier">
+										<i class="bi bi-pencil"></i>
+									</button>
+
+									<button type="button" class="btn btn-action btn-action-danger btnDelete" title="Supprimer">
+										<i class="bi bi-trash"></i>
+									</button>
+								</div>
+
+							</div>
 						</div>
 					</div>
 
-					<div class="col-md-5 d-flex justify-content-end gap-2 mt-3 mt-md-0">
-						<button id="btnAddAnalyse" class="btn btn-primary btn-lg rounded-pill px-4 shadow-sm d-flex align-items-center gap-2">
-							<i class="bi bi-plus-circle"></i>
-							Nouvelle analyse
-						</button>
-
-						<button onclick="history.back()" class="btn btn-outline-primary btn-lg rounded-pill px-4 shadow-sm d-flex align-items-center gap-2">
-							<i class="bi bi-arrow-left"></i>
-							Retour
-						</button>
+				{% else %}
+					<div class="col-12">
+						<div class="alert alert-info text-center rounded-4 py-4">
+							Aucune analyse prédéfinie enregistrée.
+						</div>
 					</div>
+				{% endfor %}
 
-				</div>
 			</div>
-		</div>
-
-		<!-- 📦 LISTE -->
-		<div class="row g-4" id="analyseList">
-
-			{% for analyse in analyses %}
-<div class="col-md-6 col-lg-4 analyse-item" data-id="{{ analyse.id }}" data-token="{{ csrf_token('analyse_delete' ~ analyse.id) }}">
-
-
-					<div class="analyse-card h-100">
-						<div class="d-flex justify-content-between align-items-start">
-
-							<div>
-								<h5 class="fw-bold text-primary mb-1">{{ analyse.name }}</h5>
-								<p class="text-secondary small mb-0">
-									{{ analyse.description ?: 'Aucune description fournie' }}
-								</p>
-							</div>
-
-							<div class="d-flex gap-2">
-								<button class="btn btn-sm btn-outline-warning btnEdit" title="Modifier">
-									<i class="bi bi-pencil"></i>
-								</button>
-								<button class="btn btn-sm btn-outline-danger btnDelete" title="Supprimer">
-									<i class="bi bi-trash"></i>
-								</button>
-							</div>
-
-						</div>
-					</div>
-				</div>
-			{% else %}
-				<div class="col-12">
-					<div class="alert alert-info text-center rounded-4 py-4">
-						Aucune analyse prédéfinie enregistrée.
-					</div>
-				</div>
-			{% endfor %}
-
-		</div>
+		</section>
 
 	</div>
 
 	{% include 'analyse/modal.html.twig' %}
 
+	{# ================= STYLES ================= #}
 	<style>
 		.analyse-card {
-			background: white;
+			background: #fff;
 			border-radius: 20px;
 			padding: 22px;
 			border: 1px solid rgba(0, 0, 0, .08);
-			transition: 0.3s ease;
+			transition: 0.25s ease;
 		}
 		.analyse-card:hover {
-			transform: translateY(-6px);
+			transform: translateY(-4px);
 			box-shadow: 0 18px 40px rgba(0, 0, 0, .12);
+		}
+
+		/* EXACTEMENT COMME TRAITEMENTS */
+		.table-actions {
+			display: inline-flex;
+			align-items: center;
+			gap: 0.5rem;
+			padding: 0.35rem;
+			border-radius: 999px;
+			background: rgba(13, 110, 253, .06);
+			border: 1px solid rgba(13, 110, 253, .10);
+		}
+		.btn-action {
+			width: 36px;
+			height: 36px;
+			padding: 0;
+			border-radius: 12px;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 1rem;
+			background: #fff;
+			box-shadow: 0 6px 16px rgba(0, 0, 0, .06);
+		}
+		.btn-action-primary {
+			border: 1px solid rgba(13, 110, 253, .25);
+			color: #0d6efd;
+		}
+		.btn-action-danger {
+			border: 1px solid rgba(220, 53, 69, .25);
+			color: #dc3545;
 		}
 	</style>
 
@@ -100,121 +126,102 @@
 
 {% block javascripts %}
 	{{ parent() }}
+
 	 <script>
-	document.addEventListener('DOMContentLoaded', function () {
+	document.addEventListener('DOMContentLoaded', () => {
 	
-	    const analyseModal = new bootstrap.Modal(
-	        document.getElementById('analyseModal')
-	    );
+		const analyseModal = new bootstrap.Modal(
+			document.getElementById('analyseModal')
+		);
 	
-	    const routes = {
-	        save: "{{ path('analyse_save') }}",
-	        get:  "{{ path('analyse_get', {id: 0}) }}".replace('/0',''),
-	        del:  "{{ path('analyse_delete', {id: 0}) }}".replace('/0','')
-	    };
+		const routes = {
+			save: "{{ path('analyse_save') }}",
+			get:  "{{ path('analyse_get', {id: 0}) }}".replace('/0',''),
+			del:  "{{ path('analyse_delete', {id: 0}) }}".replace('/0','')
+		};
 	
-	    // ADD
-	    document.getElementById('btnAddAnalyse').addEventListener('click', () => {
-	        document.getElementById('analyseForm').reset();
-	        document.getElementById('analyse_id').value = '';
-	        analyseModal.show();
-	    });
+		/* ================= ADD ================= */
+		document.getElementById('btnAddAnalyse').addEventListener('click', () => {
+			document.getElementById('analyseForm').reset();
+			document.getElementById('analyse_id').value = '';
+			analyseModal.show();
+		});
 	
-	    // EDIT
-	    $('#analyseList').on('click', '.btnEdit', function () {
-	        const card = $(this).closest('[data-id]');
-	        const id = card.data('id');
+		/* ================= EDIT ================= */
+		$('#analyseList').on('click', '.btnEdit', function () {
+			const card = $(this).closest('[data-id]');
+			const id = card.data('id');
 	
-	        $.get(routes.get + '/' + id, data => {
-	            $('#analyse_id').val(data.id);
-	            $('#name').val(data.name);
-	            $('#description').val(data.description);
-	            analyseModal.show();
-	        });
-	    });
+			$.get(routes.get + '/' + id, data => {
+				$('#analyse_id').val(data.id);
+				$('#name').val(data.name);
+				$('#description').val(data.description);
+				analyseModal.show();
+			});
+		});
 	
-	    // SAVE
-	    $('#analyseForm').on('submit', function (e) {
-	        e.preventDefault();
+		/* ================= SAVE ================= */
+		$('#analyseForm').on('submit', function (e) {
+			e.preventDefault();
 	
-	        $.post(routes.save, $(this).serialize(), function (res) {
+			$.post(routes.save, $(this).serialize(), res => {
+				const a = res.analyse;
 	
-	            const a = res.analyse;
-	            const cardHtml = `
-	            <div class="col-md-6 col-lg-4 analyse-item" data-id="${a.id}">
-	                <div class="analyse-card h-100">
-	                    <div class="d-flex justify-content-between align-items-start">
-	                        <div>
-	                            <h5 class="fw-bold text-primary mb-1">${escapeHtml(a.name)}</h5>
-	                            <p class="text-secondary small mb-0">
-	                                ${escapeHtml(a.description || 'Aucune description fournie')}
-	                            </p>
-	                        </div>
-	                        <div class="d-flex gap-2">
-	                            <button class="btn btn-sm btn-outline-warning btnEdit">
-	                                <i class="bi bi-pencil"></i>
-	                            </button>
-	                            <button class="btn btn-sm btn-outline-danger btnDelete">
-	                                <i class="bi bi-trash"></i>
-	                            </button>
-	                        </div>
-	                    </div>
-	                </div>
-	            </div>`;
+				const html = `
+				<div class="col-md-6 col-lg-4 analyse-item"
+					 data-id="${a.id}"
+					 data-token="${res.token}">
+					<div class="analyse-card h-100">
+						<div class="d-flex justify-content-between align-items-start gap-3">
+							<div>
+								<h5 class="fw-bold text-primary mb-1">${escapeHtml(a.name)}</h5>
+								<p class="text-secondary small mb-0">
+									${escapeHtml(a.description || 'Aucune description fournie')}
+								</p>
+							</div>
+							<div class="table-actions">
+								<button class="btn btn-action btn-action-primary btnEdit">
+									<i class="bi bi-pencil"></i>
+								</button>
+								<button class="btn btn-action btn-action-danger btnDelete">
+									<i class="bi bi-trash"></i>
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>`;
 	
-	            const existing = $('#analyseList').find(`[data-id="${a.id}"]`);
-	            if (existing.length) {
-	                existing.replaceWith(cardHtml);
-	            } else {
-	                $('#analyseList').prepend(cardHtml);
-	            }
+				const existing = $('#analyseList').find(`[data-id="${a.id}"]`);
+				existing.length ? existing.replaceWith(html) : $('#analyseList').prepend(html);
 	
-	            analyseModal.hide();
-	        });
-	    });
+				analyseModal.hide();
+			});
+		});
 	
-	    // DELETE
-	   // DELETE
-$('#analyseList').on('click', '.btnDelete', function () {
-    if (!confirm('Supprimer cette analyse ?')) return;
-
-    const $card = $(this).closest('[data-id]');
-    const id = $card.data('id');
-    const token = $card.data('token');
-
-    console.log('DELETE id=', id, 'token=', token);
-
-    $.ajax({
-        url: routes.del + '/' + id,
-        method: 'POST',
-        data: { _token: token },
-        success: function (res) {
-            console.log('DELETE response', res);
-
-            if (res.success) {
-                $card.remove();
-            } else {
-                alert(res.message || 'Erreur suppression');
-            }
-        },
-        error: function (xhr) {
-            console.log('DELETE ERROR', xhr.status, xhr.responseText);
-            alert('Erreur serveur DELETE: ' + xhr.status);
-        }
-    });
-});
-
+		/* ================= DELETE ================= */
+		$('#analyseList').on('click', '.btnDelete', function () {
+			if (!confirm('Supprimer cette analyse ?')) return;
 	
-	    function escapeHtml(str) {
-	        return (str ?? '').toString()
-	            .replaceAll('&','&amp;')
-	            .replaceAll('<','&lt;')
-	            .replaceAll('>','&gt;')
-	            .replaceAll('"','&quot;')
-	            .replaceAll("'","&#039;");
-	    }
+			const card = $(this).closest('[data-id]');
+			const id = card.data('id');
+			const token = card.data('token');
 	
+			$.post(routes.del + '/' + id, { _token: token }, res => {
+				if (res.success) card.remove();
+				else alert(res.message || 'Erreur suppression');
+			});
+		});
+	
+		function escapeHtml(str){
+			return (str ?? '').toString()
+				.replaceAll('&','&amp;')
+				.replaceAll('<','&lt;')
+				.replaceAll('>','&gt;')
+				.replaceAll('"','&quot;')
+				.replaceAll("'","&#039;");
+		}
 	});
 	</script>
+
 {% endblock %}
 

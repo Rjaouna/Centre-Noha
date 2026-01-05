@@ -105,16 +105,26 @@
 					<i class="bi bi-calendar3"></i>
 					<span>Rendez-vous</span>
 				</a>
-
 <div class="side-section mt-3">
 
 	<div class="side-section-title">
 		<i class="bi bi-heart-pulse text-danger"></i>
-		<span>Référentiel</span>
-		<span class="side-section-badge">Médical</span>
+		<span>Réf médical</span>
+		<span class="side-section-badge">Configuration</span>
 	</div>
 
-	<div class="side-sublinks">
+	<div
+		class="side-sublinks">
+
+		{# ===== Parcours médical ===== #}
+		<a class="side-sublink {{ r == 'analyse_index' ? 'active' : '' }}" href="{{ path('analyse_index') }}">
+			<span class="side-ico">
+				<i class="bi bi-clipboard-data"></i>
+			</span>
+			<span>Analyses</span>
+			<i class="bi bi-chevron-right ms-auto side-chevron"></i>
+		</a>
+
 		<a class="side-sublink {{ r == 'symptome_index' ? 'active' : '' }}" href="{{ path('symptome_index') }}">
 			<span class="side-ico">
 				<i class="bi bi-activity"></i>
@@ -131,19 +141,20 @@
 			<i class="bi bi-chevron-right ms-auto side-chevron"></i>
 		</a>
 
-		<a class="side-sublink {{ r == 'certificats_index' ? 'active' : '' }}" href="{{ path('certificats_index') }}">
-			<span class="side-ico">
-				<i class="bi bi-file-medical"></i>
-			</span>
-			<span>Certificats</span>
-			<i class="bi bi-chevron-right ms-auto side-chevron"></i>
-		</a>
-
 		<a class="side-sublink {{ r == 'traitement_index' ? 'active' : '' }}" href="{{ path('traitement_index') }}">
 			<span class="side-ico">
 				<i class="bi bi-capsule"></i>
 			</span>
 			<span>Traitements</span>
+			<i class="bi bi-chevron-right ms-auto side-chevron"></i>
+		</a>
+
+		{# ===== Autres référentiels ===== #}
+		<a class="side-sublink {{ r == 'certificats_index' ? 'active' : '' }}" href="{{ path('certificats_index') }}">
+			<span class="side-ico">
+				<i class="bi bi-file-medical"></i>
+			</span>
+			<span>Certificats</span>
 			<i class="bi bi-chevron-right ms-auto side-chevron"></i>
 		</a>
 
@@ -154,9 +165,12 @@
 			<span>Disponibilités</span>
 			<i class="bi bi-chevron-right ms-auto side-chevron"></i>
 		</a>
+
 	</div>
 
 </div>
+
+
 
 
 			</nav>
@@ -229,34 +243,87 @@
 			<i class="bi bi-heart-pulse text-danger"></i>
 			<span>Référentiel médical</span>
 		</div>
+<div class="mm-list">
 
-		<div class="mm-list">
-			<a class="mm-row {{ r == 'symptome_index' ? 'active' : '' }}" href="{{ path('symptome_index') }}">
-				<i class="bi bi-activity"></i>
-				<span>Symptômes</span>
-				<i class="bi bi-chevron-right ms-auto"></i>
-			</a>
-			<a class="mm-row {{ r == 'traitement_index' ? 'active' : '' }}" href="{{ path('traitement_index') }}">
-				<i class="bi bi-capsule"></i>
-				<span>Traitements</span>
-				<i class="bi bi-chevron-right ms-auto"></i>
-			</a>
-			<a class="mm-row {{ r == 'maladie_chronique_index' ? 'active' : '' }}" href="{{ path('maladie_chronique_index') }}">
-				<i class="bi bi-heart-pulse"></i>
-				<span>Maladies chroniques</span>
-				<i class="bi bi-chevron-right ms-auto"></i>
-			</a>
-			<a class="mm-row {{ r == 'certificats_index' ? 'active' : '' }}" href="{{ path('certificats_index') }}">
-				<i class="bi bi-file-medical"></i>
-				<span>Certificats</span>
-				<i class="bi bi-chevron-right ms-auto"></i>
-			</a>
-			<a class="mm-row {{ r == 'disponibilite_index' ? 'active' : '' }}" href="{{ path('disponibilite_index') }}">
-				<i class="bi bi-calendar-check"></i>
-				<span>Disponibilités</span>
-				<i class="bi bi-chevron-right ms-auto"></i>
-			</a>
+	<a class="mm-row {{ r == 'analyse_index' ? 'active' : '' }}" href="{{ path('analyse_index') }}">
+		<i class="bi bi-clipboard-data"></i>
+		<div class="d-flex flex-column">
+			<span class="fw-bold">Programmer les analyses</span>
+			<small class="text-muted">
+				Définir les analyses disponibles lors de la saisie des consultations
+			</small>
 		</div>
+		<i class="bi bi-chevron-right ms-auto"></i>
+	</a>
+
+<div class="mm-card mm-card-pathway">
+
+	<div class="mm-card-header">
+		<i class="bi bi-diagram-3"></i>
+		<span>Parcours médical</span>
+	</div>
+
+	
+
+	<div class="mm-list">
+
+		<a class="mm-row {{ r == 'symptome_index' ? 'active' : '' }}" href="{{ path('symptome_index') }}">
+			<i class="bi bi-activity"></i>
+			<div class="d-flex flex-column">
+				<span class="fw-bold">1. Déclarer les symptômes</span>
+				<small class="text-muted">Identifier ce que le patient ressent</small>
+			</div>
+			<i class="bi bi-arrow-down-short ms-auto text-muted"></i>
+		</a>
+
+		<a class="mm-row {{ r == 'maladie_chronique_index' ? 'active' : '' }}" href="{{ path('maladie_chronique_index') }}">
+			<i class="bi bi-heart-pulse"></i>
+			<div class="d-flex flex-column">
+<span class="fw-bold">2. Déclarer une maladie chronique</span>
+
+				<small class="text-muted">Relier les symptômes à une pathologie</small>
+			</div>
+			<i class="bi bi-arrow-down-short ms-auto text-muted"></i>
+		</a>
+
+		<a class="mm-row {{ r == 'traitement_index' ? 'active' : '' }}" href="{{ path('traitement_index') }}">
+			<i class="bi bi-capsule"></i>
+			<div class="d-flex flex-column">
+				<span class="fw-bold">3. Définir le traitement</span>
+				<small class="text-muted">Attribuer un médicament adapté</small>
+			</div>
+			<i class="bi bi-chevron-right ms-auto"></i>
+		</a>
+
+	</div>
+</div>
+
+
+
+	<a class="mm-row {{ r == 'certificats_index' ? 'active' : '' }}" href="{{ path('certificats_index') }}">
+		<i class="bi bi-file-medical"></i>
+		<div class="d-flex flex-column">
+			<span class="fw-bold">Modèles de certificats</span>
+			<small class="text-muted">
+				Préparer les certificats médicaux générés automatiquement
+			</small>
+		</div>
+		<i class="bi bi-chevron-right ms-auto"></i>
+	</a>
+
+	<a class="mm-row {{ r == 'disponibilite_index' ? 'active' : '' }}" href="{{ path('disponibilite_index') }}">
+		<i class="bi bi-calendar-check"></i>
+		<div class="d-flex flex-column">
+			<span class="fw-bold">Définir les disponibilités</span>
+			<small class="text-muted">
+				Gérer les créneaux de rendez-vous proposés aux patients
+			</small>
+		</div>
+		<i class="bi bi-chevron-right ms-auto"></i>
+	</a>
+
+</div>
+
 
 		<hr
 		class="my-3">
@@ -599,6 +666,44 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 <style>
+/* ===== Carte parcours médical ===== */
+.mm-card-pathway{
+	border: 1px solid rgba(13,110,253,.16);
+	background: rgba(13,110,253,.04);
+	border-radius: 20px;
+	padding: 14px;
+	box-shadow: 0 12px 28px rgba(13,110,253,.08);
+	margin-bottom: 18px;
+}
+
+.mm-card-header{
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	font-weight: 900;
+	color: #0d6efd;
+	margin-bottom: 6px;
+}
+
+.mm-card-header i{
+	font-size: 1.2rem;
+}
+
+.mm-card-desc{
+	font-size: .82rem;
+	color: #6b7280;
+	margin-bottom: 12px;
+}
+
+/* Séparation visuelle interne */
+.mm-card-pathway .mm-row{
+	background: #fff;
+}
+
+.mm-card-pathway .mm-row + .mm-row{
+	margin-top: 6px;
+}
+
 	/* Container sublinks (petit cadre) */
 	.side-sublinks {
 		display: grid;
@@ -874,7 +979,6 @@ background: linear-gradient(90deg, #1d4ed8, #2563eb);
 			background: #ffffff;
 			border-right: 1px solid rgba(0, 0, 0, .06);
 			z-index: 1029;
-			padding-top: 20px; /* laisse respirer sous topbar */
 		}
 		.sidebar-inner {
 			height: calc(100vh - 64px);
@@ -896,12 +1000,12 @@ background: linear-gradient(90deg, #1d4ed8, #2563eb);
 			display: flex;
 			align-items: center;
 			gap: 12px;
-			padding: 12px 14px;
+			padding: 8px 5px;
 			border-radius: 16px;
 			text-decoration: none;
 			color: #111827;
 			font-weight: 700;
-			margin-bottom: 8px;
+			margin-bottom: 5px;
 			transition: 0.18s ease;
 			border: 1px solid transparent;
 		}
