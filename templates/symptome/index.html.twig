@@ -5,46 +5,47 @@
 
 {% block body %}
 <style>
-/* Actions DataTable : rendu pro */
-.table-actions{
-  display: inline-flex;
-  align-items: center;
-  gap: .5rem;
-  padding: .35rem;
-  border-radius: 999px;
-  background: rgba(13,110,253,.06);
-  border: 1px solid rgba(13,110,253,.10);
-}
+	/* Actions DataTable : rendu pro */
+	.table-actions {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.35rem;
+		border-radius: 999px;
+		background: rgba(13, 110, 253, .06);
+		border: 1px solid rgba(13, 110, 253, .10);
+	}
 
-.btn-action{
-  width: 36px;
-  height: 36px;
-  padding: 0;
-  border-radius: 12px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1rem;
-  box-shadow: 0 6px 16px rgba(0,0,0,.06);
-}
+	.btn-action {
+		width: 36px;
+		height: 36px;
+		padding: 0;
+		border-radius: 12px;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 1rem;
+		box-shadow: 0 6px 16px rgba(0, 0, 0, .06);
+	}
 
-.btn-action-primary{
-  background: #fff;
-  border: 1px solid rgba(13,110,253,.25);
-  color: #0d6efd;
-}
+	.btn-action-primary {
+		background: #fff;
+		border: 1px solid rgba(13, 110, 253, .25);
+		color: #0d6efd;
+	}
 
-.btn-action-danger{
-  background: #fff;
-  border: 1px solid rgba(220,53,69,.25);
-  color: #dc3545;
-}
+	.btn-action-danger {
+		background: #fff;
+		border: 1px solid rgba(220, 53, 69, .25);
+		color: #dc3545;
+	}
 
-/* Hover simple (pas de “move”) */
-.btn-action:hover{
-  filter: brightness(.98);
-}
+	/* Hover simple (pas de “move”) */
+	.btn-action:hover {
+		filter: brightness(0.98);
+	}
 </style>
+
 	{# ================= DATATABLES CSS ================= #}
 	<link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css">
 
@@ -168,133 +169,202 @@
 
 {% endblock %}
 
-
 {% block javascripts %}
 	{{ parent() }}
 
-{# ================= DATATABLES JS ================= #}
+	{# ⚠️ Mets ces CDN ici seulement si tu ne les as PAS déjà dans base.html.twig #}
 	 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 	 <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
 	 <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
 
+	{# Si tu veux Responsive VRAIMENT stable, il faut aussi inclure Responsive JS+CSS #}
+	{# <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css"> #}
+	{#  <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+	#}
+	{#  <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
+#}
+
 	 <script>
-			$(document).ready(function () {
+	  (function () {
+	    let dt;
+	    let editId = null;
 	
-				const modal = new bootstrap.Modal(document.getElementById("modalSymptome"));
-				const form  = document.getElementById("symptomeForm");
-				let editId  = null;
+	    function init() {
+	      const modalEl = document.getElementById("modalSymptome");
+	      const form = document.getElementById("symptomeForm");
+	      const tableEl = $('#symptomesTable');
 	
-				// ✅ DATATABLE
-				const table = $('#symptomesTable').DataTable({
-					ajax: {
-						url: '/api/symptomes',
-						dataSrc: ''
-					},
-					columns: [
-						{ data: 'name', className: 'fw-semibold' },
-						{
-							data: 'category',
-							render: d => `<span class="badge bg-success rounded-pill px-3">${d}</span>`
-						},
-						{
-							data: 'description',
-							render: d => d ?? '<span class="text-muted">—</span>'
-						},
-						{
-							data: 'hasTraitement',
-							className: 'text-center',
-							render: (has, type, row) => {
-								if (has) {
-									return `
-										<span class="badge bg-success rounded-pill px-3">
-											<i class="bi bi-check2-circle me-1"></i>${row.traitementCount}
-										</span>
-									`;
-								}
-								return `
-									<a href="{{ path('traitement_index') }}"
-									   class="badge bg-warning text-dark rounded-pill px-3 text-decoration-none">
-										<i class="bi bi-plus-circle me-1"></i>Ajouter
-									</a>
-								`;
-							}
-						},
-						{
-							data: 'id',
-							orderable: false,
-							className: 'text-center',
-render: id => `
-<div class="table-actions">
-	<button type="button" class="btn btn-action btn-action-primary" onclick="editSymptome(${id})" title="Modifier">
-		<i class="bi bi-pencil"></i>
-	</button>
-
-	<button type="button" class="btn btn-action btn-action-danger" onclick="deleteSymptome(${id})" title="Supprimer">
-		<i class="bi bi-trash"></i>
-	</button>
-</div>
-`
-
-
-						}
-					],
-					language: {
-						url: '//cdn.datatables.net/plug-ins/1.13.8/i18n/fr-FR.json'
-					},
-					pageLength: 10,
-					responsive: true
-				});
+	      if (!modalEl || !form || !tableEl.length) return;
 	
-				// ✨ Reset état modal quand on ferme
-				document.getElementById("modalSymptome").addEventListener("hidden.bs.modal", () => {
-					editId = null;
-					form.reset();
-				});
+	      // ✅ sécurité: DataTables chargé ?
+	      if (!$.fn.DataTable) {
+	        console.error("DataTables non chargé.");
+	        return;
+	      }
 	
-				// ✏️ EDIT
-				window.editSymptome = async (id) => {
-					const s = await fetch(`/api/symptomes/${id}`).then(r => r.json());
-					editId = id;
-					form.name.value        = s.name;
-					form.category.value    = s.category;
-					form.description.value = s.description ?? '';
-					modal.show();
-				};
+	      // ✅ destroy si déjà initialisé (évite doublons si navigation turbo/pjax etc.)
+	      if ($.fn.DataTable.isDataTable(tableEl)) {
+	        tableEl.DataTable().clear().destroy();
+	      }
 	
-				// 🗑 DELETE
-				window.deleteSymptome = async (id) => {
-					if (!confirm("Supprimer ce symptôme ?")) return;
-					await fetch(`/api/symptomes/${id}`, { method: 'DELETE' });
-					table.ajax.reload(null, false);
-				};
+	      const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
 	
-				// 💾 SUBMIT
-				form.addEventListener("submit", async (e) => {
-					e.preventDefault();
+	      dt = tableEl.DataTable({
+	        processing: true,
+	        responsive: true,   // ⚠️ marche vraiment uniquement si plugin Responsive est chargé
+	        autoWidth: false,
 	
-					const payload = {
-						name: form.name.value,
-						category: form.category.value,
-						description: form.description.value
-					};
+	        ajax: {
+	          url: '/api/symptomes',
+	          dataSrc: ''
+	        },
 	
-					const url    = editId ? `/api/symptomes/${editId}` : `/api/symptomes`;
-					const method = editId ? 'PUT' : 'POST';
+	        columns: [
+	          { data: 'name', className: 'fw-semibold' },
 	
-					await fetch(url, {
-						method,
-						headers: { 'Content-Type': 'application/json' },
-						body: JSON.stringify(payload)
-					});
+	          {
+	            data: 'category',
+	            render: d => `<span class="badge bg-success rounded-pill px-3">${d ?? '—'}</span>`
+	          },
 	
-					editId = null;
-					form.reset();
-					modal.hide();
-					table.ajax.reload(null, false);
-				});
+	          {
+	            data: 'description',
+	            render: d => d ? d : `<span class="text-muted">—</span>`
+	          },
 	
-			});
-		</script>
-
+	          {
+	            data: 'hasTraitement',
+	            className: 'text-center',
+	            render: (has, type, row) => {
+	              if (has) {
+	                return `
+	                  <span class="badge bg-success rounded-pill px-3">
+	                    <i class="bi bi-check2-circle me-1"></i>${row.traitementCount ?? 0}
+	                  </span>
+	                `;
+	              }
+	              return `
+	                <a href="{{ path('traitement_index') }}"
+	                   class="badge bg-warning text-dark rounded-pill px-3 text-decoration-none">
+	                  <i class="bi bi-plus-circle me-1"></i>Ajouter
+	                </a>
+	              `;
+	            }
+	          },
+	
+	          {
+	            data: 'id',
+	            orderable: false,
+	            className: 'text-center',
+	            render: id => `
+	              <div class="table-actions">
+	                <button type="button"
+	                        class="btn btn-action btn-action-primary"
+	                        data-action="edit"
+	                        data-id="${id}"
+	                        title="Modifier">
+	                  <i class="bi bi-pencil"></i>
+	                </button>
+	
+	                <button type="button"
+	                        class="btn btn-action btn-action-danger"
+	                        data-action="delete"
+	                        data-id="${id}"
+	                        title="Supprimer">
+	                  <i class="bi bi-trash"></i>
+	                </button>
+	              </div>
+	            `
+	          }
+	        ],
+	
+	        language: {
+	          url: '//cdn.datatables.net/plug-ins/1.13.8/i18n/fr-FR.json'
+	        },
+	
+	        pageLength: 10
+	      });
+	
+	      // ✅ reset modal
+	      modalEl.addEventListener("hidden.bs.modal", () => {
+	        editId = null;
+	        form.reset();
+	      });
+	
+	      // ✅ delegation click actions (pas de onclick inline)
+	      document.addEventListener('click', async (e) => {
+	        const btn = e.target.closest('[data-action]');
+	        if (!btn) return;
+	
+	        const action = btn.dataset.action;
+	        const id = Number(btn.dataset.id);
+	
+	        if (action === 'edit') {
+	          const res = await fetch(`/api/symptomes/${id}`);
+	          if (!res.ok) return alert("Erreur chargement symptôme");
+	
+	          const s = await res.json();
+	          editId = id;
+	          form.name.value = s.name ?? '';
+	          form.category.value = s.category ?? '';
+	          form.description.value = s.description ?? '';
+	          modal.show();
+	        }
+	
+	        if (action === 'delete') {
+	          if (!confirm("Supprimer ce symptôme ?")) return;
+	
+	          const res = await fetch(`/api/symptomes/${id}`, { method: 'DELETE' });
+	          if (!res.ok) return alert("Erreur suppression");
+	
+	          dt.ajax.reload(null, false);
+	        }
+	      });
+	
+	      // ✅ submit create/update
+	      form.addEventListener("submit", async (e) => {
+	        e.preventDefault();
+	
+	        const payload = {
+	          name: form.name.value.trim(),
+	          category: form.category.value,
+	          description: form.description.value.trim()
+	        };
+	
+	        const url = editId ? `/api/symptomes/${editId}` : `/api/symptomes`;
+	        const method = editId ? 'PUT' : 'POST';
+	
+	        const res = await fetch(url, {
+	          method,
+	          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+	          body: JSON.stringify(payload)
+	        });
+	
+	        if (!res.ok) {
+	          const t = await res.text();
+	          console.error(t);
+	          alert("Erreur lors de l'enregistrement.");
+	          return;
+	        }
+	
+	        editId = null;
+	        form.reset();
+	        modal.hide();
+	        dt.ajax.reload(null, false);
+	      });
+	
+	      // ✅ petit fix responsive (si plugin chargé)
+	      setTimeout(() => {
+	        if (dt) {
+	          dt.columns.adjust();
+	          if (dt.responsive) dt.responsive.recalc();
+	        }
+	      }, 200);
+	    }
+	
+	    // ✅ stable: attendre que tout soit prêt
+	    window.addEventListener('load', init);
+	  })();
+	  </script>
 {% endblock %}
 

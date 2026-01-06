@@ -135,112 +135,173 @@
 	 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 	 <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
 	 <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
+ <script>
+(function () {
+  let dt;
+  let editId = null;
 
-	 <script>
-	document.addEventListener('DOMContentLoaded', () => {
-	
-		let editId = null;
-	
-		const modalEl = document.getElementById('modalMaladie');
-		const modal = new bootstrap.Modal(modalEl);
-		const form = document.getElementById('formMaladie');
-		const btnAdd = document.getElementById('btnAdd');
-	
-		// ✅ DATATABLE
-		const table = $('#tableMaladies').DataTable({
-			ajax: {
-				url: '/api/referentiel/maladies-chroniques',
-				dataSrc: ''
-			},
-			columns: [
-				{ data: 'nom', className: 'fw-semibold' },
-				{
-					data: 'description',
-					render: d => d ? d : '<span class="text-muted">—</span>'
-				},
-				{
-					data: 'id',
-					orderable: false,
-					className: 'text-end',
-					render: id => `
-						<div class="table-actions">
-							<button type="button"
-									class="btn btn-action btn-action-primary"
-									onclick="editMaladie(${id})"
-									title="Modifier">
-								<i class="bi bi-pencil"></i>
-							</button>
-							<button type="button"
-									class="btn btn-action btn-action-danger"
-									onclick="deleteMaladie(${id})"
-									title="Supprimer">
-								<i class="bi bi-trash"></i>
-							</button>
-						</div>
-					`
-				}
-			],
-			language: { url: '//cdn.datatables.net/plug-ins/1.13.8/i18n/fr-FR.json' },
-			pageLength: 10,
-			responsive: true
-		});
-	
-		// ➕ Nouveau
-		btnAdd.addEventListener('click', () => {
-			editId = null;
-			form.reset();
-			modal.show();
-		});
-	
-		// Reset propre à la fermeture
-		modalEl.addEventListener('hidden.bs.modal', () => {
-			editId = null;
-			form.reset();
-		});
-	
-		// ✏️ EDIT
-		window.editMaladie = async (id) => {
-			const res = await fetch(`/api/referentiel/maladies-chroniques/${id}`);
-			const m = await res.json();
-	
-			editId = id;
-			form.nom.value = m.nom ?? '';
-			form.description.value = m.description ?? '';
-			modal.show();
-		};
-	
-		// 🗑 DELETE
-		window.deleteMaladie = async (id) => {
-			if (!confirm('Supprimer cette maladie chronique ?')) return;
-	
-			await fetch(`/api/referentiel/maladies-chroniques/${id}`, { method: 'DELETE' });
-			table.ajax.reload(null, false);
-		};
-	
-		// 💾 SUBMIT
-		form.addEventListener('submit', async (e) => {
-			e.preventDefault();
-	
-			const payload = {
-				nom: form.nom.value,
-				description: form.description.value
-			};
-	
-			const url = editId
-				? `/api/referentiel/maladies-chroniques/${editId}`
-				: `/api/referentiel/maladies-chroniques`;
-	
-			await fetch(url, {
-				method: editId ? 'PUT' : 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(payload)
-			});
-	
-			modal.hide();
-			table.ajax.reload(null, false);
-		});
-	
-	});
-	</script>
+  function init() {
+    const modalEl = document.getElementById('modalMaladie');
+    const form = document.getElementById('formMaladie');
+    const btnAdd = document.getElementById('btnAdd');
+    const tableEl = $('#tableMaladies');
+
+    if (!modalEl || !form || !btnAdd || !tableEl.length) return;
+
+    // ✅ sécurité: DataTables chargé ?
+    if (!$.fn.DataTable) {
+      console.error("DataTables non chargé.");
+      return;
+    }
+
+    // ✅ destroy si déjà initialisée (évite bugs en navigation / reload partiel)
+    if ($.fn.DataTable.isDataTable(tableEl)) {
+      tableEl.DataTable().clear().destroy();
+    }
+
+    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+
+    dt = tableEl.DataTable({
+      processing: true,
+      responsive: true,   // ⚠️ fonctionne vraiment si plugin Responsive est chargé
+      autoWidth: false,
+
+      ajax: {
+        url: '/api/referentiel/maladies-chroniques',
+        dataSrc: ''
+      },
+
+      columns: [
+        { data: 'nom', className: 'fw-semibold' },
+        {
+          data: 'description',
+          render: d => d ? d : '<span class="text-muted">—</span>'
+        },
+        {
+          data: 'id',
+          orderable: false,
+          className: 'text-end',
+          render: id => `
+            <div class="table-actions">
+              <button type="button"
+                      class="btn btn-action btn-action-primary"
+                      data-action="edit"
+                      data-id="${id}"
+                      title="Modifier">
+                <i class="bi bi-pencil"></i>
+              </button>
+
+              <button type="button"
+                      class="btn btn-action btn-action-danger"
+                      data-action="delete"
+                      data-id="${id}"
+                      title="Supprimer">
+                <i class="bi bi-trash"></i>
+              </button>
+            </div>
+          `
+        }
+      ],
+
+      language: { url: '//cdn.datatables.net/plug-ins/1.13.8/i18n/fr-FR.json' },
+      pageLength: 10
+    });
+
+    // ➕ Nouveau
+    btnAdd.addEventListener('click', () => {
+      editId = null;
+      form.reset();
+      modal.show();
+    });
+
+    // reset quand on ferme
+    modalEl.addEventListener('hidden.bs.modal', () => {
+      editId = null;
+      form.reset();
+    });
+
+    // ✅ actions table (edit/delete) sans onclick inline
+    document.addEventListener('click', async (e) => {
+      const btn = e.target.closest('[data-action]');
+      if (!btn) return;
+
+      const action = btn.dataset.action;
+      const id = Number(btn.dataset.id);
+
+      if (action === 'edit') {
+        const res = await fetch(`/api/referentiel/maladies-chroniques/${id}`, {
+          headers: { 'Accept': 'application/json' }
+        });
+
+        if (!res.ok) return alert("Erreur chargement maladie.");
+
+        const m = await res.json();
+        editId = id;
+        form.nom.value = m.nom ?? '';
+        form.description.value = m.description ?? '';
+        modal.show();
+      }
+
+      if (action === 'delete') {
+        if (!confirm('Supprimer cette maladie chronique ?')) return;
+
+        const res = await fetch(`/api/referentiel/maladies-chroniques/${id}`, {
+          method: 'DELETE',
+          headers: { 'Accept': 'application/json' }
+        });
+
+        if (!res.ok) return alert("Erreur suppression.");
+
+        dt.ajax.reload(null, false);
+      }
+    });
+
+    // 💾 submit create/update
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const payload = {
+        nom: form.nom.value.trim(),
+        description: (form.description.value || '').trim()
+      };
+
+      const url = editId
+        ? `/api/referentiel/maladies-chroniques/${editId}`
+        : `/api/referentiel/maladies-chroniques`;
+
+      const method = editId ? 'PUT' : 'POST';
+
+      const res = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (!res.ok) {
+        const t = await res.text();
+        console.error(t);
+        alert("Erreur lors de l'enregistrement.");
+        return;
+      }
+
+      modal.hide();
+      dt.ajax.reload(null, false);
+    });
+
+    // ✅ mini fix “responsive pas prêt”
+    setTimeout(() => {
+      if (dt) {
+        dt.columns.adjust();
+        if (dt.responsive) dt.responsive.recalc();
+      }
+    }, 200);
+  }
+
+  // ✅ plus stable que DOMContentLoaded si tu as des soucis “responsive en retard”
+  window.addEventListener('load', init);
+})();
+</script>
+
+
 {% endblock %}
 

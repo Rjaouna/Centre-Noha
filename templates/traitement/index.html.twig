@@ -5,8 +5,49 @@
 
 {% block body %}
 
+	{# ================= PAGE LOADER ================= #}
+	<style>
+		.ux-page-loader {
+			position: fixed;
+			inset: 0;
+			background: rgba(255, 255, 255, 0.92);
+			backdrop-filter: blur(8px);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			z-index: 9999;
+		}
+
+		.ux-loader-card {
+			background: #fff;
+			border: 1px solid rgba(0, 0, 0, 0.06);
+			border-radius: 18px;
+			padding: 18px 20px;
+			box-shadow: 0 18px 45px rgba(0, 0, 0, 0.10);
+			text-align: center;
+			min-width: 260px;
+		}
+
+		.ux-loader-title {
+			margin-top: 10px;
+			font-weight: 800;
+			color: #0d6efd;
+		}
+
+		.ux-loader-sub {
+			font-size: 0.9rem;
+			color: #6c757d;
+			margin-bottom: 0;
+		}
+	</style>
+
+
+
 	{# ================= DATATABLES CSS ================= #}
-	<link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css">
+	<link
+	rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css">
+	{# ✅ Responsive extension (indispensable si tu veux le vrai responsive) #}
+	<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
 
 	<div
 		class="container-fluid mt-4">
@@ -18,9 +59,8 @@
 			subtitle: 'Base de traitements par symptôme et contre-indications'
 		} %}
 
-			{# Actions métier (mobile à gauche) #}
 			{% block header_actions_left %}
-				<span class="action-icon bg-primary text-white" role="button" onclick="openModal()" data-bs-toggle="tooltip" title="Nouveau traitement">
+				<span class="action-icon bg-primary text-white" role="button" id="btnAddTraitement" data-bs-toggle="tooltip" title="Nouveau traitement">
 					<i class="bi bi-plus-circle"></i>
 				</span>
 
@@ -29,8 +69,6 @@
 				</a>
 			{% endblock %}
 
-			{# Navigation (mobile à droite) #}
-			{# -> on garde le bloc par défaut (Home + Retour) du partial #}
 		{% endembed %}
 
 		{# ================= TABLE ================= #}
@@ -68,7 +106,6 @@
 				</div>
 
 				<div class="modal-body p-3 p-md-4">
-
 					<div
 						class="row g-3">
 
@@ -81,12 +118,8 @@
 								</div>
 								<div class="card-body">
 									<input id="medicineSearch" class="form-control rounded-3 mb-2" placeholder="Rechercher un médicament…">
-
 									<select id="medicine" class="form-select rounded-3" size="8"></select>
-
-									<small class="text-muted d-block mt-2">
-										⚡ Astuce : tapez au moins 2 caractères
-									</small>
+									<small class="text-muted d-block mt-2">⚡ Astuce : tapez au moins 2 caractères</small>
 								</div>
 							</div>
 						</div>
@@ -100,12 +133,8 @@
 								</div>
 								<div class="card-body">
 									<input id="symptomeSearch" class="form-control rounded-3 mb-2" placeholder="Rechercher un symptôme…">
-
 									<select id="symptome" class="form-select rounded-3" size="8"></select>
-
-									<small class="text-muted d-block mt-2">
-										⚡ Astuce : tapez au moins 2 caractères
-									</small>
+									<small class="text-muted d-block mt-2">⚡ Astuce : tapez au moins 2 caractères</small>
 								</div>
 							</div>
 						</div>
@@ -137,14 +166,13 @@
 						</div>
 
 					</div>
-
 				</div>
 
 				<div class="modal-footer border-0 pt-0 pb-4 px-4">
 					<button class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">
 						Annuler
 					</button>
-					<button class="btn btn-primary rounded-pill px-4" onclick="saveTraitement()">
+					<button class="btn btn-primary rounded-pill px-4" type="button" id="btnSaveTraitement">
 						<i class="bi bi-check2-circle me-1"></i>
 						Enregistrer
 					</button>
@@ -162,8 +190,8 @@
 			gap: 0.5rem;
 			padding: 0.35rem;
 			border-radius: 999px;
-			background: rgba(13, 110, 253, .06);
-			border: 1px solid rgba(13, 110, 253, .10);
+			background: rgba(13, 110, 253, 0.06);
+			border: 1px solid rgba(13, 110, 253, 0.10);
 		}
 		.btn-action {
 			width: 36px;
@@ -174,19 +202,19 @@
 			align-items: center;
 			justify-content: center;
 			font-size: 1rem;
-			box-shadow: 0 6px 16px rgba(0, 0, 0, .06);
+			box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
 			background: #fff;
 		}
 		.btn-action-primary {
-			border: 1px solid rgba(13, 110, 253, .25);
+			border: 1px solid rgba(13, 110, 253, 0.25);
 			color: #0d6efd;
 		}
 		.btn-action-danger {
-			border: 1px solid rgba(220, 53, 69, .25);
+			border: 1px solid rgba(220, 53, 69, 0.25);
 			color: #dc3545;
 		}
 		.btn-action:hover {
-			filter:brightness(0.98);
+			filter: brightness(0.98);
 		}
 
 		/* CI list */
@@ -199,7 +227,7 @@
 			padding: 0.45rem 0.75rem;
 			border-radius: 12px;
 			background: #fff;
-			border: 1px solid rgba(0, 0, 0, .06);
+			border: 1px solid rgba(0, 0, 0, 0.06);
 			margin-bottom: 0.5rem;
 		}
 	</style>
@@ -214,19 +242,200 @@
 	 <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
 	 <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
 
+	{# ✅ Responsive extension (indispensable si tu veux le vrai responsive) #}
+	 <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+	 <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
+
 	 <script>
-			let table;
+		(function () {
+			let table = null;
 			let currentId = null;
-			let modalInstance = null;
+			let modal = null;
 	
-			function el(id){ return document.getElementById(id); }
+			const $ = window.jQuery;
+			const el = (id) => document.getElementById(id);
 	
-			document.addEventListener('DOMContentLoaded', () => {
-				modalInstance = new bootstrap.Modal(el('traitementModal'));
+			function showLoader() {
+				const loader = el('pageLoader');
+				if (loader) loader.style.display = 'flex';
+			}
+			function hideLoader() {
+				const loader = el('pageLoader');
+				if (loader) loader.style.display = 'none';
+			}
 	
-				// ✅ DATATABLE
-				table = $('#traitementTable').DataTable({
+			function debounce(fn, wait = 250) {
+				let t;
+				return (...args) => {
+					clearTimeout(t);
+					t = setTimeout(() => fn(...args), wait);
+				};
+			}
+	
+			async function fetchJson(url) {
+				const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+				if (!res.ok) {
+					const txt = await res.text().catch(() => '');
+					throw new Error(`HTTP ${res.status} ${txt}`);
+				}
+				return res.json();
+			}
+	
+			function resetForm() {
+				currentId = null;
+	
+				el('description').value = '';
+				el('medicineSearch').value = '';
+				el('symptomeSearch').value = '';
+	
+				el('medicine').innerHTML = '';
+				el('symptome').innerHTML = '';
+	
+				document.querySelectorAll('#ciList input[type="checkbox"]').forEach(i => i.checked = false);
+			}
+	
+			async function loadMaladiesChroniques(selectedIds = []) {
+				try {
+					const data = await fetchJson('/api/referentiel/maladies-chroniques');
+					const box = el('ciList');
+					box.innerHTML = '';
+	
+					data.forEach(m => {
+						const id = Number(m.id);
+						const checked = selectedIds.includes(id) ? 'checked' : '';
+						box.insertAdjacentHTML('beforeend', `
+							<div class="form-check">
+								<input class="form-check-input"
+									   type="checkbox"
+									   value="${id}"
+									   id="ci_${id}"
+									   ${checked}>
+								<label class="form-check-label" for="ci_${id}">
+									${m.nom}
+								</label>
+							</div>
+						`);
+					});
+				} catch (e) {
+					console.error(e);
+					el('ciList').innerHTML = `<div class="text-muted">Impossible de charger les contre-indications.</div>`;
+				}
+			}
+	
+			async function fillForm(t) {
+				el('description').value = t.description ?? '';
+	
+				el('medicine').innerHTML = t.medicine?.id
+					? `<option value="${t.medicine.id}" selected>${t.medicine.label}</option>`
+					: '';
+	
+				el('symptome').innerHTML = t.symptome?.id
+					? `<option value="${t.symptome.id}" selected>${t.symptome.label}</option>`
+					: '';
+	
+				const selected = Array.isArray(t.contreIndications) ? t.contreIndications.map(Number) : [];
+				await loadMaladiesChroniques(selected);
+			}
+	
+			async function openModal(id = null) {
+				resetForm();
+				currentId = id;
+	
+				await loadMaladiesChroniques([]);
+	
+				if (id) {
+					try {
+						const t = await fetchJson(`/api/traitements/${id}`);
+						await fillForm(t);
+					} catch (e) {
+						console.error(e);
+						alert("Erreur lors du chargement du traitement.");
+						return;
+					}
+				}
+	
+				modal.show();
+			}
+	
+			async function saveTraitement() {
+				const medicineId = el('medicine').value;
+				const symptomeId = el('symptome').value;
+	
+				if (!medicineId || !symptomeId) {
+					alert('Veuillez sélectionner un médicament et un symptôme');
+					return;
+				}
+	
+				const payload = {
+					description: el('description').value,
+					medicine: medicineId,
+					symptome: symptomeId,
+					contreIndications: [...document.querySelectorAll('#ciList input:checked')].map(i => i.value)
+				};
+	
+				const url = `/api/traitements${currentId ? '/' + currentId : ''}`;
+				const method = currentId ? 'PUT' : 'POST';
+	
+				try {
+					const res = await fetch(url, {
+						method,
+						headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+						body: JSON.stringify(payload)
+					});
+	
+					if (!res.ok) {
+						const raw = await res.text().catch(() => '');
+						console.error(raw);
+						alert("Erreur lors de l'enregistrement.");
+						return;
+					}
+	
+					modal.hide();
+					table.ajax.reload(null, false);
+				} catch (e) {
+					console.error(e);
+					alert("Erreur réseau.");
+				}
+			}
+	
+			async function deleteTraitement(id) {
+				if (!confirm('Supprimer ce traitement ?')) return;
+	
+				try {
+					const res = await fetch(`/api/traitements/${id}`, {
+						method: 'DELETE',
+						headers: { 'Accept': 'application/json' }
+					});
+	
+					if (!res.ok) {
+						alert("Erreur suppression.");
+						return;
+					}
+	
+					table.ajax.reload(null, false);
+				} catch (e) {
+					console.error(e);
+					alert("Erreur réseau.");
+				}
+			}
+	
+			function initDataTable() {
+				const tableEl = $('#traitementTable');
+				if (!tableEl.length || !$.fn.DataTable) {
+					hideLoader();
+					return;
+				}
+	
+				// ✅ destroy si déjà init
+				if ($.fn.DataTable.isDataTable(tableEl)) {
+					tableEl.DataTable().clear().destroy();
+				}
+	
+				table = tableEl.DataTable({
+					processing: true,
 					responsive: true,
+					autoWidth: false,
+	
 					dom: `
 						<"row mb-3"
 							<"col-md-6" l>
@@ -238,10 +447,9 @@
 							<"col-md-7 text-end" p>
 						>
 					`,
-					ajax: {
-						url: '/api/traitements',
-						dataSrc: ''
-					},
+	
+					ajax: { url: '/api/traitements', dataSrc: '' },
+	
 					columns: [
 						{ data: 'symptome', defaultContent: '-' },
 						{ data: 'medicine', defaultContent: '-' },
@@ -263,14 +471,16 @@
 								<div class="table-actions">
 									<button type="button"
 											class="btn btn-action btn-action-primary"
-											onclick="openModal(${id})"
+											data-action="edit"
+											data-id="${id}"
 											title="Modifier">
 										<i class="bi bi-pencil"></i>
 									</button>
 	
 									<button type="button"
 											class="btn btn-action btn-action-danger"
-											onclick="deleteTraitement(${id})"
+											data-action="delete"
+											data-id="${id}"
 											title="Supprimer">
 										<i class="bi bi-trash"></i>
 									</button>
@@ -278,175 +488,128 @@
 							`
 						}
 					],
-					language: {
-						search: "🔍 Rechercher :",
-						lengthMenu: "Afficher _MENU_",
-						info: "_TOTAL_ traitements",
-						paginate: { next: "Suivant", previous: "Précédent" }
+	
+					language: { url: '//cdn.datatables.net/plug-ins/1.13.8/i18n/fr-FR.json' },
+	
+					pageLength: 10,
+	
+					initComplete: function () {
+						const api = this.api();
+						// ✅ recalcul responsive + colonnes
+						setTimeout(() => {
+							api.columns.adjust();
+							if (api.responsive) api.responsive.recalc();
+						}, 200);
 					}
 				});
 	
-				loadMaladiesChroniques();
+				// ✅ cacher le loader au premier draw réel
+				table.one('draw.dt', () => {
+					setTimeout(() => {
+						table.columns.adjust();
+						if (table.responsive) table.responsive.recalc();
+						hideLoader();
+					}, 80);
+				});
 	
-				// SEARCH MEDICINE
-				el('medicineSearch').addEventListener('keyup', () => {
+				// ✅ délégation actions edit/delete
+				document.addEventListener('click', (e) => {
+					const btn = e.target.closest('[data-action]');
+					if (!btn) return;
+	
+					const action = btn.dataset.action;
+					const id = Number(btn.dataset.id);
+	
+					if (action === 'edit') openModal(id);
+					if (action === 'delete') deleteTraitement(id);
+				});
+	
+				// ✅ resize/orientation => recalc
+				window.addEventListener('resize', () => {
+					if (!table) return;
+					clearTimeout(window.__dtResizeTimer);
+					window.__dtResizeTimer = setTimeout(() => {
+						table.columns.adjust();
+						if (table.responsive) table.responsive.recalc();
+					}, 120);
+				});
+			}
+	
+			function initSearch() {
+				const medicineSelect = el('medicine');
+				const symptomeSelect = el('symptome');
+	
+				const doMedicine = debounce(async () => {
 					const q = el('medicineSearch').value.trim();
-					if (q.length < 2) return;
+					if (q.length < 2) { medicineSelect.innerHTML = ''; return; }
 	
-					fetch(`/medicine/search/api?search=${encodeURIComponent(q)}`)
-						.then(r => r.json())
-						.then(data => {
-							const select = el('medicine');
-							select.innerHTML = '';
-							data.forEach(m => {
-								select.insertAdjacentHTML('beforeend', `
-									<option value="${m.id}">
-										${m.name} ${m.dosage ?? ''} ${m.uniteDosage ?? ''}
-									</option>
-								`);
-							});
-						});
-				});
-	
-				// SEARCH SYMPTOME
-				el('symptomeSearch').addEventListener('keyup', () => {
-					const q = el('symptomeSearch').value.trim();
-					if (q.length < 2) return;
-	
-					fetch(`/api/symptomes/search?q=${encodeURIComponent(q)}`)
-						.then(r => r.json())
-						.then(data => {
-							const select = el('symptome');
-							select.innerHTML = '';
-							data.forEach(s => {
-								select.insertAdjacentHTML('beforeend', `
-									<option value="${s.id}">
-										${s.name} — ${s.category}
-									</option>
-								`);
-							});
-						});
-				});
-			});
-	
-			/* ============================
-			   MODAL
-			============================ */
-			function openModal(id = null) {
-				resetForm();
-				currentId = id;
-	
-				if (id) {
-					fetch(`/api/traitements/${id}`)
-						.then(r => r.json())
-						.then(fillForm);
-				}
-	
-				modalInstance.show();
-			}
-			window.openModal = openModal;
-	
-			function resetForm() {
-				currentId = null;
-				el('description').value = '';
-				el('medicine').innerHTML = '';
-				el('symptome').innerHTML = '';
-	
-				el('medicineSearch').value = '';
-				el('symptomeSearch').value = '';
-	
-				document.querySelectorAll('#ciList input').forEach(i => i.checked = false);
-			}
-	
-			/* ============================
-			   MALADIES CHRONIQUES
-			============================ */
-			function loadMaladiesChroniques(selected = []) {
-				fetch('/api/referentiel/maladies-chroniques')
-					.then(r => r.json())
-					.then(data => {
-						const box = el('ciList');
-						box.innerHTML = '';
-	
+					try {
+						const data = await fetchJson(`/medicine/search/api?search=${encodeURIComponent(q)}`);
+						medicineSelect.innerHTML = '';
 						data.forEach(m => {
-							const checked = selected.includes(Number(m.id)) ? 'checked' : '';
-							box.insertAdjacentHTML('beforeend', `
-								<div class="form-check">
-									<input class="form-check-input"
-										   type="checkbox"
-										   value="${m.id}"
-										   id="ci_${m.id}"
-										   ${checked}>
-									<label class="form-check-label" for="ci_${m.id}">
-										${m.nom}
-									</label>
-								</div>
+							medicineSelect.insertAdjacentHTML('beforeend', `
+								<option value="${m.id}">
+									${m.name} ${m.dosage ?? ''} ${m.uniteDosage ?? ''}
+								</option>
 							`);
 						});
-					});
+					} catch (e) {
+						console.error(e);
+						medicineSelect.innerHTML = '';
+					}
+				}, 250);
+	
+				const doSymptome = debounce(async () => {
+					const q = el('symptomeSearch').value.trim();
+					if (q.length < 2) { symptomeSelect.innerHTML = ''; return; }
+	
+					try {
+						const data = await fetchJson(`/api/symptomes/search?q=${encodeURIComponent(q)}`);
+						symptomeSelect.innerHTML = '';
+						data.forEach(s => {
+							symptomeSelect.insertAdjacentHTML('beforeend', `
+								<option value="${s.id}">
+									${s.name} — ${s.category}
+								</option>
+							`);
+						});
+					} catch (e) {
+						console.error(e);
+						symptomeSelect.innerHTML = '';
+					}
+				}, 250);
+	
+				el('medicineSearch').addEventListener('input', doMedicine);
+				el('symptomeSearch').addEventListener('input', doSymptome);
 			}
 	
-			/* ============================
-			   FILL FORM
-			============================ */
-			function fillForm(t) {
-				el('description').value = t.description ?? '';
+			function init() {
+				showLoader();
 	
-				el('medicine').innerHTML = `
-					<option value="${t.medicine.id}" selected>
-						${t.medicine.label}
-					</option>
-				`;
+				// Bootstrap modal instance
+				const modalEl = el('traitementModal');
+				modal = bootstrap.Modal.getOrCreateInstance(modalEl);
 	
-				el('symptome').innerHTML = `
-					<option value="${t.symptome.id}" selected>
-						${t.symptome.label}
-					</option>
-				`;
+				// bouton add
+				el('btnAddTraitement').addEventListener('click', () => openModal(null));
 	
-				loadMaladiesChroniques((t.contreIndications || []).map(Number));
-			}
+				// bouton save
+				el('btnSaveTraitement').addEventListener('click', saveTraitement);
 	
-			/* ============================
-			   SAVE
-			============================ */
-			function saveTraitement() {
-				const medicineId = el('medicine').value;
-				const symptomeId = el('symptome').value;
-	
-				if (!medicineId || !symptomeId) {
-					alert('Veuillez sélectionner un médicament et un symptôme');
-					return;
-				}
-	
-				const payload = {
-					description: el('description').value,
-					medicine: medicineId,
-					symptome: symptomeId,
-					contreIndications: [...document.querySelectorAll('#ciList input:checked')].map(i => i.value)
-				};
-	
-				fetch(`/api/traitements${currentId ? '/' + currentId : ''}`, {
-					method: currentId ? 'PUT' : 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify(payload)
-				}).then(() => {
-					modalInstance.hide();
-					table.ajax.reload(null, false);
+				// reset modal
+				modalEl.addEventListener('hidden.bs.modal', () => {
+					currentId = null;
+					resetForm();
 				});
-			}
-			window.saveTraitement = saveTraitement;
 	
-			/* ============================
-			   DELETE
-			============================ */
-			function deleteTraitement(id) {
-				if (!confirm('Supprimer ce traitement ?')) return;
-	
-				fetch(`/api/traitements/${id}`, { method: 'DELETE' })
-					.then(() => table.ajax.reload(null, false));
+				initDataTable();
+				initSearch();
 			}
-			window.deleteTraitement = deleteTraitement;
+	
+			// ✅ attendre window.load (css + layout) => responsive OK
+			window.addEventListener('load', init);
+		})();
 		</script>
+
 {% endblock %}
 
