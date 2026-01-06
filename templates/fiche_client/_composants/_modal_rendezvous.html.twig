@@ -149,20 +149,15 @@
 	</div>
 
 	<!-- ACTIONS -->
-<div class="rdv-actions d-flex justify-content-between gap-2">
-	<button class="btn rdv-btn rdv-btn-back" id="btnBackRecap" type="button">
+<div class="d-flex justify-content-between gap-2 rdv-actions">
+	<button class="btn btn-outline-secondary rdv-btn-back" id="btnBackRecap" type="button">
 		<i class="bi bi-arrow-left"></i>
-
-Modifier
-
-
+		Modifier
 	</button>
 
-<button class="btn rdv-btn rdv-btn-confirm" id="btnConfirmFinal" type="button">
-	<i class="bi bi-check-circle me-1"></i>
-	Valider 
-
-
+	<button class="btn btn-success btn-lg shadow-sm rdv-btn-confirm" id="btnConfirmFinal" type="button">
+		<i class="bi bi-check-circle me-1"></i>
+		Valider le rendez-vous
 	</button>
 </div>
 
@@ -173,67 +168,43 @@ Modifier
 
 
 </div></div></div></div><style>
-
-/* Zone actions */
-.rdv-actions{
-  margin-top: 6px;
-  flex-wrap: wrap;
-}
-
-/* Base bouton (style “app” comme tes pills) */
-.rdv-btn{
+/* Base: arrondi + hover propre, sans changer les couleurs bootstrap */
+.rdv-actions .btn{
   border-radius: 999px;
-  padding: 12px 18px;
-  font-weight: 800;
+  font-weight: 700;
+  transition: .2s ease;
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  border: 1px solid rgba(0,0,0,.08);
-  box-shadow: 0 8px 18px rgba(0,0,0,.08);
-  transition: .2s ease;
-  color: #fff !important;      /* ✅ texte blanc */
+  gap: .5rem;
 }
 
-/* Hover: même vibe que day-pill */
-.rdv-btn:hover{
-  transform: translateY(-2px);
-  box-shadow: 0 14px 28px rgba(13,110,253,.14);
-  filter: brightness(1.02);
-}
-
-/* Bouton Retour : gris “soft” mais texte blanc */
+/* ✅ Retour: reste outline-secondary mais “plus classe” */
 .rdv-btn-back{
-  background: linear-gradient(180deg, #6c757d, #5a6268);
-  border-color: rgba(108,117,125,.25);
+  background: #fff;                 /* garde le style bootstrap */
+  border-color: #3b3b3bff;            /* un poil plus doux */
 }
 .rdv-btn-back:hover{
-  box-shadow: 0 14px 28px rgba(108,117,125,.18);
+  background: #f8f9fa;
+  border-color: #6a6a6aff;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(0,0,0,.08);
 }
 
-/* Bouton Valider : vert “soft” comme tes badges */
+/* ✅ Valider: reste btn-success, mais plus “premium” */
 .rdv-btn-confirm{
-  background: linear-gradient(180deg, #198754, #157347);
-  border-color: rgba(25,135,84,.25);
+  color: #fff !important;           /* texte blanc */
 }
 .rdv-btn-confirm:hover{
-  box-shadow: 0 14px 28px rgba(25,135,84,.18);
+  transform: translateY(-1px);
+  box-shadow: 0 12px 26px rgba(25,135,84,.25);
 }
 
-/* Icônes légèrement “pill” */
-.rdv-btn i{
-  width: 34px;
-  height: 34px;
-  border-radius: 12px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255,255,255,.18);
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,.16);
-}
-
-/* Mobile: 2 boutons full width */
+/* Petit confort mobile */
 @media (max-width: 576px){
-  .rdv-btn{
+  .rdv-actions{
+    flex-direction: column;
+  }
+  .rdv-actions .btn{
     width: 100%;
     justify-content: center;
   }
