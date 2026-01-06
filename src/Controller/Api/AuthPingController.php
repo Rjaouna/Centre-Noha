@@ -2,6 +2,8 @@
 
 namespace App\Controller\Api;
 
+use App\Controller\CabinetController;
+use App\Repository\CabinetRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -11,10 +13,12 @@ use Symfony\Component\Routing\Attribute\Route;
 class AuthPingController extends AbstractController
 {
 	#[Route('/ping', name: 'ping', methods: ['GET'])]
-	public function ping(RequestStack $requestStack): JsonResponse
+	public function ping(RequestStack $requestStack, CabinetRepository $cabinetController): JsonResponse
 	{
 		/** @var \App\Entity\User|null $user */
 		$user = $this->getUser();
+
+
 
 		if (!$user) {
 			return new JsonResponse([
@@ -33,7 +37,7 @@ class AuthPingController extends AbstractController
 		}
 
 		// (optionnel) cabinet si tu l'ajoutes plus tard
-		$cabinetPayload = null;
+		$cabinetPayload = $cabinetController->findOneBy([]);
 		// $cabinet = $user->getCabinet(); ...
 
 		return new JsonResponse([
