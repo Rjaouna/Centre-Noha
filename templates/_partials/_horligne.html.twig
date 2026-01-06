@@ -5,7 +5,9 @@
 				<i class="bi bi-shield-lock"></i>
 			</div>
 			<div class="auth-title">
-				<div class="app-name" id="overlayAppName">Mon application</div>
+<div class="app-name" id="overlayAppName">Created by : We Digit All</div>
+
+
 				<div class="cabinet-name" id="overlayCabinetName">—</div>
 			</div>
 		</div>
@@ -36,7 +38,9 @@
 (function(){
   // ✅ Mets ta route ping ici (symfony path conseillé)
   const PING_URL = "/api/auth/ping"; // à créer
-  const APP_NAME = "SoinBoard"; // ou injecte depuis Twig
+const APP_NAME = "Created by : We Digit All"; // ou injecte depuis Twig
+
+
 
   const overlay = document.getElementById("authOverlay");
   const appNameEl = document.getElementById("overlayAppName");
@@ -54,8 +58,10 @@
   const typeVal = cab?.type || (localStorage.getItem("cabinet_type") || "");
   const type = typeVal ? ` • ${typeVal}` : "";
 
-  cabinetNameEl.textContent = name + type;
-  appNameEl.textContent = APP_NAME; // ✅ garde le nom de l’app
+ appNameEl.textContent = name + type;
+
+cabinetNameEl.textContent = APP_NAME; // ✅ garde le nom de l’app
+
 }
 
 
