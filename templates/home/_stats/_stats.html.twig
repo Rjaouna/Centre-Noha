@@ -1024,12 +1024,18 @@ Vous n’avez actuellement aucun rendez-vous confirmé.
                     </div>
 
                     <!-- ACTION -->
-                    <button
-                        class="btn btn-sm ${isExpired ? 'btn-danger' : 'btn-success'} w-100 mt-3"
-                        onclick="validerRDV(${rdv.id})">
-                        <i class="bi bi-check-circle"></i>
-                        ${isExpired ? 'Archiver' : 'Valider'}
-                    </button>
+<button class="rdv-action-btn ${isExpired ? 'rdv-danger' : 'rdv-success'}" onclick="validerRDV(${rdv.id})">
+
+	<span class="rdv-icon">
+		<i class="bi bi-check-circle"></i>
+	</span>
+
+	<span class="rdv-label">
+		${isExpired ? 'Archiver le rendez-vous' : 'Valider le rendez-vous'}
+	</span>
+</button>
+
+
                 </div>
             </div>
         `);
