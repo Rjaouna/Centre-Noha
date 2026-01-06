@@ -1,6 +1,8 @@
 /**
  * Import de ton CSS principal
  */
+
+
 import "./styles/app.css";
 /**
  * Import de ton CSS principal
@@ -235,3 +237,4 @@ document.addEventListener("click", (e) => {
     const loader = document.getElementById("global-loader");
     if (loader) loader.classList.remove("hidden");
 });
+import "./styles/layout.css";

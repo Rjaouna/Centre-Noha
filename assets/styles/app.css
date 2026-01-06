@@ -1,3 +1,4 @@
+
 /* Animation vibration côté ultra rapide */
 .shake {
     animation: shake-fast 3s linear both;
@@ -70,6 +71,8 @@
         transform: scale(1);
     }
 }
+
+
 
 .clock-card {
     min-width: 260px;
@@ -530,3 +533,13 @@
   .ux-dark::before{ background: rgba(33,37,41,.25); }
   .ux-dark .ux-info-icon{ background: rgba(33,37,41,.08); border-color: rgba(33,37,41,.12); }
   .ux-dark .ux-info-icon i{ color:#212529; }
+
+  @media(min-width: 992px) {
+			body {
+				padding-left: 270px;
+			}
+		}
+		@media(max-width: 991.98px) {
+	body { padding-bottom: 0; } /* ✅ plus de menu bottom */
+}
+

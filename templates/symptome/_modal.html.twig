@@ -1,58 +1,91 @@
-<div class="modal fade" id="modalSymptome" tabindex="-1">
-	<div class="modal-dialog modal-lg">
+<div class="modal fade ux-modal" id="modalSymptome" tabindex="-1">
+	<div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+
 		<div class="modal-content rounded-4 shadow">
 
-			<form id="symptomeForm">
+<form id="symptomeForm">
 
-				<div class="modal-header bg-primary text-white">
-					<h5 class="modal-title fw-bold">
-						<i class="bi bi-activity me-2"></i>
-						Symptôme
-					</h5>
+
+<!-- HEADER -->
+<div class="modal-header bg-primary text-white rounded-top-4">
+	<div class="d-flex align-items-center gap-2">
+		<span class="icon-circle bg-white bg-opacity-25 text-white d-flex align-items-center justify-content-center" style="width:42px;height:42px;border-radius:14px;">
+			<i class="bi bi-activity fs-5"></i>
+		</span>
+		<div>
+			<div class="fw-bold">Symptôme</div>
+			<small class="opacity-75">Ajouter ou modifier un symptôme</small>
+		</div>
+	</div>
+
 					<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
 				</div>
 
-				<div class="modal-body">
+<!-- BODY -->
+<div class="modal-body p-3 p-md-4">
 
-					<div class="mb-3">
-						<label class="form-label">Nom</label>
-						<input name="name" class="form-control" required>
+
+<!-- Nom -->
+<div class="card border-0 shadow-sm rounded-4 mb-3">
+	<div class="card-header bg-light fw-bold rounded-top-4 d-flex align-items-center gap-2">
+		<i class="bi bi-tag text-primary"></i>
+		Nom du symptôme
+	</div>
+	<div class="card-body">
+		<input name="name" class="form-control rounded-3" placeholder="Ex : Douleur abdominale" required>
+	</div>
+
 					</div>
 
-<div class="mb-3">
-	<label class="form-label">Catégorie</label>
-	<select name="category" class="form-select" required>
-		<option value="" disabled selected>— Choisir une catégorie —</option>
+<!-- Catégorie -->
+<div class="card border-0 shadow-sm rounded-4 mb-3">
+	<div class="card-header bg-light fw-bold rounded-top-4 d-flex align-items-center gap-2">
+		<i class="bi bi-grid text-primary"></i>
+		Catégorie
+	</div>
+	<div class="card-body">
+		<select name="category" class="form-select rounded-3" required>
+			<option value="" disabled selected>— Choisir une catégorie —</option>
 
-		<option value="Abdomen & système digestif">Abdomen & système digestif</option>
-		<option value="Appareil génito-urinaire">Appareil génito-urinaire</option>
-		<option value="Articulations & muscles">Articulations & muscles</option>
-		<option value="Cerveau & système nerveux">Cerveau & système nerveux</option>
-		<option value="Thorax & système respiratoire">Thorax & système respiratoire</option>
-		<option value="ORL">ORL</option>
-		<option value="Œil">Œil</option>
-		<option value="Peau & cheveux">Peau & cheveux</option>
-		<option value="Saignements">Saignements</option>
-		<option value="Symptômes généraux">Symptômes généraux</option>
-		<option value="Gynécologie & obstétrique">Gynécologie & obstétrique</option>
-		<option value="Symptômes chez l’enfant">Symptômes chez l’enfant</option>
-	</select>
+<option value="Abdomen & système digestif">Abdomen & système digestif</option>
+<option value="Appareil génito-urinaire">Appareil génito-urinaire</option>
+<option value="Articulations & muscles">Articulations & muscles</option>
+<option value="Cerveau & système nerveux">Cerveau & système nerveux</option>
+<option value="Thorax & système respiratoire">Thorax & système respiratoire</option>
+<option value="ORL">ORL</option>
+<option value="Œil">Œil</option>
+<option value="Peau & cheveux">Peau & cheveux</option>
+<option value="Saignements">Saignements</option>
+<option value="Symptômes généraux">Symptômes généraux</option>
+<option value="Gynécologie & obstétrique">Gynécologie & obstétrique</option>
+<option value="Symptômes chez l’enfant">Symptômes chez l’enfant</option></select></div>
+
 </div>
 
 
+<!-- Description -->
+<div class="card border-0 shadow-sm rounded-4">
+	<div class="card-header bg-light fw-bold rounded-top-4 d-flex align-items-center gap-2">
+		<i class="bi bi-chat-left-text text-primary"></i>
+		Description
+	</div>
+	<div class="card-body">
+		<textarea name="description" class="form-control rounded-3" rows="3" placeholder="Description clinique, contexte, remarques…"></textarea>
+	</div>
 
-					<div class="mb-3">
-						<label class="form-label">Description</label>
-						<textarea name="description" class="form-control" rows="3"></textarea>
 					</div>
 
 				</div>
 
-				<div class="modal-footer">
-					<button class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">
+<!-- FOOTER -->
+<div class="modal-footer border-0 px-4 pb-4 pt-0 d-flex gap-2">
+	<button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">
+
 						Annuler
 					</button>
-					<button class="btn btn-primary rounded-pill">
+<button type="submit" class="btn btn-primary rounded-pill px-4 d-flex align-items-center gap-2">
+	<i class="bi bi-check2-circle"></i>
+
 						Enregistrer
 					</button>
 				</div>
