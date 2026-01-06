@@ -13,12 +13,11 @@ use Symfony\Component\Routing\Attribute\Route;
 class AuthPingController extends AbstractController
 {
 	#[Route('/ping', name: 'ping', methods: ['GET'])]
-	public function ping(RequestStack $requestStack, CabinetRepository $cabinetController): JsonResponse
-	{
-		/** @var \App\Entity\User|null $user */
+	public function ping(
+		RequestStack $requestStack,
+		CabinetRepository $cabinetRepository
+	): JsonResponse {
 		$user = $this->getUser();
-
-
 
 		if (!$user) {
 			return new JsonResponse([
@@ -31,14 +30,24 @@ class AuthPingController extends AbstractController
 		$prenom = $user->getPrenom() ?? '';
 		$fullName = trim($prenom . ' ' . $nom);
 
-		// fallback si nom/prenom vide
 		if ($fullName === '') {
-			$fullName = $user->getUserIdentifier(); // email
+			$fullName = $user->getUserIdentifier();
 		}
 
-		// (optionnel) cabinet si tu l'ajoutes plus tard
-		$cabinetPayload = $cabinetController->findOneBy([]);
-		// $cabinet = $user->getCabinet(); ...
+		$cabinet = $cabinetRepository->findOneBy([]);
+
+		$cabinetData = null;
+		if ($cabinet) {
+			$cabinetData = [
+				'id'        => $cabinet->getId(),
+				'nom'       => $cabinet->getNom(),
+				'type'      => $cabinet->getType(),
+				'adresse'   => $cabinet->getAdresse(),
+				'ville'     => $cabinet->getVille(),
+				'telephone' => $cabinet->getTelephone(),
+				'email'     => $cabinet->getEmail(),
+			];
+		}
 
 		return new JsonResponse([
 			'ok' => true,
@@ -48,7 +57,7 @@ class AuthPingController extends AbstractController
 				'fullName' => $fullName,
 				'email' => $user->getEmail(),
 			],
-			'cabinet' => $cabinetPayload,
+			'cabinet' => $cabinetData,
 		]);
 	}
 }
