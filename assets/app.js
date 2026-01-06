@@ -31,20 +31,7 @@ import "datatables.net-responsive-bs5/css/responsive.bootstrap5.css";
  * Initialisation DataTables
  * (avec ES Modules, DOIT être fait ainsi — pas avec $(...).DataTable)
  */
-document.addEventListener("DOMContentLoaded", () => {
-    const table = document.querySelector("#patientsTable");
 
-    if (table) {
-        new DataTable(table, {
-            responsive: true,
-            pageLength: 10,
-            order: [[0, "desc"]],
-            language: {
-                url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/fr-FR.json",
-            },
-        });
-    }
-});
 
 /**
  * Debug

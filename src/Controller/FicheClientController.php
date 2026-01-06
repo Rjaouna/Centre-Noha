@@ -12,25 +12,54 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 #[Route('/fiche/client')]
 final class FicheClientController extends AbstractController
 {
-    #[Route(name: 'app_fiche_client_index', methods: ['GET'])]
-    public function index(FicheClientRepository $ficheClientRepository): Response
-    {
+    #[Route('/', name: 'app_fiche_client_index', methods: ['GET'])]
+    public function index(
+        FicheClientRepository $ficheClientRepository
+    ): Response {
         $fiche = new FicheClient();
         $paiement = new Paiement();
+
         $form = $this->createForm(FicheClientType::class, $fiche);
         $formPaiement = $this->createForm(PaiementType::class, $paiement);
 
-
         return $this->render('fiche_client/index.html.twig', [
+            // ⚠️ utile si tu veux fallback non-AJAX
             'fiche_clients' => $ficheClientRepository->findAll(),
-            'form' => $form->createView(),   // 🔥 clé "form" envoyée au Twig
-            'formPaiement' => $formPaiement->createView(), // 🔥 important
 
+            // 🔥 forms pour modals
+            'form' => $form->createView(),
+            'formPaiement' => $formPaiement->createView(),
+        ]);
+    }
+    #[Route('/ajax', name: 'app_fiche_client_ajax', methods: ['GET'])]
+    public function ajax(FicheClientRepository $repo): JsonResponse
+    {
+        $data = [];
 
+        foreach ($repo->findAll() as $fiche) {
+            $isNew = !$fiche->isConsulted();
+
+            $data[] = [
+                'id' => $fiche->getId(),
+                'nom' => $fiche->getNom(),
+                'prenom' => $fiche->getPrenom(),
+                'cin' => $fiche->getCin(),
+                'ville' => $fiche->getVille(),
+                'telephone' => $fiche->getTelephone(),
+                'age' => $fiche->getAgePatient(),
+                'maladie' => $fiche->getTypeMaladie(),
+                'statut' => $fiche->isConsulted() ? 'Consulté' : 'En attente',
+                'isNew' => $isNew,
+            ];
+        }
+
+        return new JsonResponse([
+            'data' => $data
         ]);
     }
 
