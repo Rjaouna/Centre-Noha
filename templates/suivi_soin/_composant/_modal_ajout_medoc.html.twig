@@ -1,243 +1,623 @@
 <!-- 🔵 MODAL RECHERCHE MÉDICAMENTS -->
-<div class="modal fade" id="modalMedicSearch" tabindex="-1">
-	<div class="modal-dialog modal-xl">
-		<div
-			class="modal-content rounded-4 shadow-lg">
-<input type="hidden" id="currentSuiviId">
+<div class="modal fade" id="modalMedicSearch" tabindex="-1" aria-hidden="true">
+	<div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+		<div class="modal-content ux-med-modal">
 
-
+			<input
+			type="hidden" id="currentSuiviId" value="">
 
 			<!-- HEADER -->
-			<div class="modal-header bg-danger text-white rounded-top-4">
-				<h5 class="modal-title fw-bold d-flex align-items-center">
-					<i class="bi bi-capsule-pill fs-4 me-2"></i>
-					Recherche des Médicaments
-				</h5>
-				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+			<div class="modal-header ux-med-header">
+				<div class="d-flex align-items-center gap-3">
+					<div class="ux-ico">
+						<i class="bi bi-capsule-pill"></i>
+					</div>
+					<div class="lh-1">
+						<h5 class="modal-title fw-bold mb-1">Recherche des médicaments</h5>
+						<small class="text-white-50">Tape au moins 2 caractères puis ajoute au suivi</small>
+					</div>
+				</div>
+				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
 			</div>
 
 			<!-- BODY -->
 			<div
 				class="modal-body p-4">
 
-				<!-- ⭐⭐ CHAMP DE RECHERCHE ⭐⭐ -->
-				<div class="position-relative my-4">
-					<i class="bi bi-search text-secondary position-absolute top-50 start-3 translate-middle-y"></i>
+				<!-- SEARCH BAR -->
+				<div class="ux-search-wrap">
+					<i class="bi bi-search ux-search-ico"></i>
 
-					<input type="text" id="medicineSearch" class="form-control-lg shadow-sm form-control rounded-pill ps-5" placeholder="Rechercher un médicament...">
+					<input type="text" id="medicineSearch" class="form-control ux-search-input" placeholder="Ex: Doliprane, amoxicilline, paracétamol…" autocomplete="off">
+
+					<button type="button" id="btnClearMedSearch" class="btn ux-clear-btn" title="Effacer" aria-label="Effacer">
+						<i class="bi bi-x-lg"></i>
+					</button>
 				</div>
 
-				<style>
-					.start-3 {
-						left: 16px
-					}
-				</style>
+				<!-- mini info -->
+				<div class="d-flex flex-wrap align-items-center justify-content-between mt-2 mb-3">
+					<small class="text-muted">
+						<i class="bi bi-lightning-charge-fill text-warning me-1"></i>
+						Astuce : tu peux rechercher par nom ou dosage
+					</small>
 
-				<!-- ⭐⭐ CONTENU STATIQUE ⭐⭐ -->
-				<div id="staticIntro" class="mb-4">
+					<small class="text-muted">
+						<span id="medCount" class="badge bg-light text-dark rounded-pill px-3">0 résultat</span>
+					</small>
+				</div>
 
-					<div class="row g-4">
-
-						<div class="col-md-4">
-							<div class="card med-info shadow-sm border-0 rounded-4 p-4 h-100">
-								<i class="bi bi-capsule text-danger fs-2 mb-3"></i>
-								<h5 class="fw-bold">Vue d’ensemble rapide</h5>
-								<p class="text-secondary small">
-									Accédez en un coup d’œil aux médicaments les plus courants.
-								</p>
+				<!-- INTRO -->
+				<div id="staticIntro" class="ux-intro">
+					<div class="row g-3">
+						<div class="col-12 col-md-4">
+							<div class="ux-intro-card">
+								<i class="bi bi-capsule text-danger"></i>
+								<div>
+									<div class="fw-bold">Rapide</div>
+									<div class="text-muted small">Recherche instantanée + ajout en 1 clic.</div>
+								</div>
 							</div>
 						</div>
 
-						<div class="col-md-4">
-							<div class="card med-info shadow-sm border-0 rounded-4 p-4 h-100">
-								<i class="bi bi-search text-danger fs-2 mb-3"></i>
-								<h5 class="fw-bold">Recherche intelligente</h5>
-								<p class="text-secondary small">
-									Tapez quelques lettres pour filtrer instantanément.
-								</p>
+						<div class="col-12 col-md-4">
+							<div class="ux-intro-card">
+								<i class="bi bi-search text-danger"></i>
+								<div>
+									<div class="fw-bold">Intelligente</div>
+									<div class="text-muted small">Affichage clair (dosage, forme, présentation).</div>
+								</div>
 							</div>
 						</div>
 
-						<div class="col-md-4">
-							<div class="card med-info shadow-sm border-0 rounded-4 p-4 h-100">
-								<i class="bi bi-shield-check text-danger fs-2 mb-3"></i>
-								<h5 class="fw-bold">Sécurité</h5>
-								<p class="text-secondary small">
-									Chaque fiche est liée au suivi médical.
-								</p>
+						<div class="col-12 col-md-4">
+							<div class="ux-intro-card">
+								<i class="bi bi-shield-check text-danger"></i>
+								<div>
+									<div class="fw-bold">Sécurisée</div>
+									<div class="text-muted small">Chaque ajout est lié au suivi sélectionné.</div>
+								</div>
 							</div>
 						</div>
-
 					</div>
-
 				</div>
 
-				<!-- ⭐⭐ RÉSULTATS API ⭐⭐ -->
-				<div id="results"></div>
+				<!-- STATES -->
+				<div id="medState" class="mt-3"></div>
 
+				<!-- RESULTS -->
+				<div id="results" class="ux-med-grid mt-3"></div>
+
+			</div>
+
+			<!-- FOOTER -->
+			<div class="modal-footer ux-med-footer">
+				<button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">
+					Fermer
+				</button>
 			</div>
 
 		</div>
 	</div>
 </div>
 
-<!-- ⭐⭐ STYLES + SCRIPT ⭐⭐ -->
 <style>
-	.med-card {
-		background: white;
-		border-radius: 20px;
-		padding: 10px;
-		margin-bottom: 18px;
-		border: 1px solid rgba(0, 0, 0, 0.08);
-		transition: 0.3s;
+	/* ===== Modal look ===== */
+	.ux-med-modal {
+		border-radius: 22px;
+		overflow: hidden;
+		border: 1px solid rgba(0, 0, 0, .06);
+		box-shadow: 0 22px 60px rgba(0, 0, 0, .18);
+	}
+
+	.ux-med-header {
+		background: linear-gradient(90deg, rgba(220,53,69,1) 0%, rgba(255,99,132,1) 100%);
+		color: #fff;
+		padding: 18px 20px;
+		border: 0;
+	}
+
+	.ux-ico {
+		width: 46px;
+		height: 46px;
+		border-radius: 16px;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		background: rgba(255, 255, 255, .16);
+		box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .18);
+	}
+	.ux-ico i {
+		font-size: 1.25rem;
+	}
+
+	/* ===== Search ===== */
+	.ux-search-wrap {
+		position: relative;
+		background: #fff;
+		border: 1px solid rgba(0, 0, 0, .08);
+		border-radius: 999px;
+		padding: 6px 44px;
+		box-shadow: 0 12px 30px rgba(0, 0, 0, .08);
+	}
+	.ux-search-ico {
+		position: absolute;
+		left: 16px;
+		top: 50%;
+		transform: translateY(-50%);
+		color: rgba(0, 0, 0, .45);
+		font-size: 1.05rem;
+	}
+	.ux-search-input {
+		border: 0 !important;
+		outline: none !important;
+		box-shadow: none !important;
+		border-radius: 999px !important;
+		padding: 12px 4px;
+		font-weight: 600;
+	}
+	.ux-search-input::placeholder {
+		color: rgba(0, 0, 0, .45);
+		font-weight: 500;
+	}
+
+	.ux-clear-btn {
+		position: absolute;
+		right: 10px;
+		top: 50%;
+		transform: translateY(-50%);
+		width: 34px;
+		height: 34px;
+		border-radius: 999px;
+		border: 1px solid rgba(0, 0, 0, .08);
+		background: rgba(0, 0, 0, .03);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+	.ux-clear-btn:hover {
+		background: rgba(0, 0, 0, .06);
+	}
+
+	/* ===== Intro cards ===== */
+	.ux-intro {
+		margin-top: 8px;
+	}
+	.ux-intro-card {
+		background: #fff;
+		border: 1px solid rgba(0, 0, 0, .06);
+		border-radius: 18px;
+		padding: 14px;
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		box-shadow: 0 12px 26px rgba(0, 0, 0, .06);
+	}
+	.ux-intro-card i {
+		font-size: 1.35rem;
+	}
+
+	/* ===== Results grid ===== */
+	.ux-med-grid {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 12px;
+	}
+	@media(min-width: 992px) {
+		.ux-med-grid {
+			grid-template-columns: 1fr 1fr;
+		}
+	}
+
+	/* ===== Medicine card ===== */
+	.ux-med-card {
+		background: #fff;
+		border: 1px solid rgba(0, 0, 0, .06);
+		border-radius: 18px;
+		padding: 14px;
+		box-shadow: 0 14px 34px rgba(0, 0, 0, .08);
+		transition: 0.18s ease;
 		cursor: pointer;
 	}
-	.med-card:hover {
-		transform: translateY(-6px);
-		box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
+	.ux-med-card:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 18px 44px rgba(0, 0, 0, .12);
 	}
-	.med-info {
-		transition: 0.3s;
+
+	.ux-med-title {
+		font-weight: 900;
+		color: #111827;
+		line-height: 1.2;
 	}
-	.med-info:hover {
-		transform: translateY(-5px);
-		box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+	.ux-med-sub {
+		color: #6b7280;
+		font-size: 0.88rem;
+		margin-top: 4px;
+	}
+
+	.ux-badges {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 6px;
+		margin-top: 10px;
+	}
+	.ux-badge {
+		font-size: 0.78rem;
+		font-weight: 800;
+		padding: 0.30rem 0.60rem;
+		border-radius: 999px;
+		border: 1px solid rgba(0, 0, 0, .06);
+		background: rgba(0, 0, 0, .03);
+	}
+	.ux-badge.ok {
+		background: rgba(25, 135, 84, .08);
+		border-color: rgba(25, 135, 84, .18);
+		color: #198754;
+	}
+	.ux-badge.no {
+		background: rgba(220, 53, 69, .08);
+		border-color: rgba(220, 53, 69, .18);
+		color: #dc3545;
+	}
+
+	.ux-med-actions {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		gap: 10px;
+		margin-top: 12px;
+	}
+
+	/* ===== Your “btn-action” style ===== */
+	.table-actions {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.35rem;
+		border-radius: 999px;
+		background: rgba(13, 110, 253, .06);
+		border: 1px solid rgba(13, 110, 253, .10);
+	}
+
+	.btn-action {
+		width: 36px;
+		height: 36px;
+		padding: 0;
+		border-radius: 12px;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 1rem;
+		box-shadow: 0 6px 16px rgba(0, 0, 0, .06);
+		background: #fff;
+	}
+	.btn-action:hover {
+		filter:brightness(0.98);
+	}
+
+	.btn-action-primary {
+		border: 1px solid rgba(13, 110, 253, .25);
+		color: #0d6efd;
+	}
+	.btn-action-success {
+		border: 1px solid rgba(25, 135, 84, .25);
+		color: #198754;
+	}
+	.btn-action-secondary {
+		border: 1px solid rgba(108, 117, 125, .25);
+		color: #6c757d;
+	}
+
+	/* ===== State blocks ===== */
+	.ux-state {
+		border: 1px dashed rgba(0, 0, 0, .12);
+		border-radius: 18px;
+		padding: 18px;
+		text-align: center;
+		color: #6b7280;
+		background: rgba(0, 0, 0, .02);
+	}
+	.ux-skeleton {
+		border-radius: 18px;
+		border: 1px solid rgba(0, 0, 0, .06);
+		background: #fff;
+		padding: 14px;
+		box-shadow: 0 14px 34px rgba(0, 0, 0, .06);
+	}
+	.ux-skel-line {
+		height: 10px;
+		border-radius: 999px;
+		background: rgba(0, 0, 0, .07);
+		overflow: hidden;
+		position: relative;
+	}
+	.ux-skel-line::after {
+		content: "";
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(90deg, transparent, rgba(255,255,255,.7), transparent);
+		transform: translateX(-100%);
+		animation: shimmer 1.0s infinite;
+	}
+	@keyframes shimmer {
+		100% {
+			transform: translateX(100%);
+		}
+	}
+
+	.ux-med-footer {
+		border-top: 1px solid rgba(0, 0, 0, .06);
+		background: rgba(248, 249, 250, .92);
+		backdrop-filter: blur(8px);
 	}
 </style>
 
  <script>
-document.addEventListener("DOMContentLoaded", () => {
+(() => {
+  const modalEl   = document.getElementById('modalMedicSearch');
+  const input     = document.getElementById('medicineSearch');
+  const resultsEl = document.getElementById('results');
+  const introEl   = document.getElementById('staticIntro');
+  const stateEl   = document.getElementById('medState');
+  const countEl   = document.getElementById('medCount');
+  const btnClear  = document.getElementById('btnClearMedSearch');
+  const hiddenSuiviId = document.getElementById('currentSuiviId');
 
-    const input = document.getElementById("medicineSearch");
-    const results = document.getElementById("results");
-    const staticIntro = document.getElementById("staticIntro");
-    let timer = null;
+  if (!modalEl || !input || !resultsEl || !introEl || !stateEl || !countEl || !btnClear || !hiddenSuiviId) return;
 
-    function renderResults(data) {
-        results.innerHTML = "";
+  let timer = null;
+  let aborter = null;
 
-        data.forEach(m => {
-            const card = `
-<div class="med-card shadow-sm" onclick="window.location='/medicine/${m.id}'">
-	<div class="d-flex justify-content-between">
+  // ===== helpers =====
+  const setCount = (n) => {
+    countEl.textContent = `${n} résultat${n > 1 ? 's' : ''}`;
+  };
 
-		<div>
-<p class="fw-bold text-dark mb-0">${m.name} - ${m.dosage} ${m.uniteDosage}</p>
+  const showState = (html) => {
+    stateEl.innerHTML = html || '';
+  };
 
+  const showSkeleton = () => {
+    showState('');
+    resultsEl.innerHTML = `
+      <div class="ux-skeleton">
+        <div class="ux-skel-line" style="width:70%"></div>
+        <div class="ux-skel-line mt-2" style="width:55%"></div>
+        <div class="ux-skel-line mt-3" style="width:40%"></div>
+      </div>
+      <div class="ux-skeleton">
+        <div class="ux-skel-line" style="width:66%"></div>
+        <div class="ux-skel-line mt-2" style="width:52%"></div>
+        <div class="ux-skel-line mt-3" style="width:38%"></div>
+      </div>
+      <div class="ux-skeleton d-none d-lg-block">
+        <div class="ux-skel-line" style="width:72%"></div>
+        <div class="ux-skel-line mt-2" style="width:58%"></div>
+        <div class="ux-skel-line mt-3" style="width:42%"></div>
+      </div>
+      <div class="ux-skeleton d-none d-lg-block">
+        <div class="ux-skel-line" style="width:62%"></div>
+        <div class="ux-skel-line mt-2" style="width:50%"></div>
+        <div class="ux-skel-line mt-3" style="width:35%"></div>
+      </div>
+    `;
+  };
 
+  const clearResults = () => {
+    resultsEl.innerHTML = '';
+    showState('');
+    setCount(0);
+    introEl.style.display = 'block';
+  };
 
-			<p class="text-secondary small mb-1">
-				${m.forme} - ${m.presentation}
+  function esc(str){
+    return String(str ?? '').replace(/[&<>"']/g, s => ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'
+    }[s]));
+  }
 
+  function renderResults(data){
+    resultsEl.innerHTML = '';
+    showState('');
 
-				<span class="text-${m.tauxRembourssement != 0 ? 'success' : 'danger'}">
-					${m.tauxRembourssement != 0 ? '(Taux de rembourssement : 70%)' : '(Non Rembourssable)'}</span>
-
-
-			</p>
-		</div>
-
-		
-<button onclick="event.stopPropagation(); addMedicineToSuivi(${m.id})" class="btn btn-success text-white">
-	<i class="bi bi-plus-lg me-1"></i>
-
-
-</button>
-
-
-
-	</div>
-</div>`;
-            results.insertAdjacentHTML("beforeend", card);
-        });
+    if (!Array.isArray(data) || data.length === 0){
+      setCount(0);
+      showState(`
+        <div class="ux-state">
+          <div class="fw-bold text-dark mb-1"><i class="bi bi-emoji-frown me-1"></i>Aucun médicament trouvé</div>
+          <div class="small">Essaie avec un autre mot (ex: “para”, “amoxi”, “dolip”…)</div>
+        </div>
+      `);
+      return;
     }
 
-    // Recherche
-    input.addEventListener("keyup", () => {
+    setCount(data.length);
 
-        clearTimeout(timer);
+    data.forEach(m => {
+      const rembOk = Number(m.tauxRembourssement || 0) !== 0;
 
-        timer = setTimeout(() => {
+      const dosage = [m.dosage, m.uniteDosage].filter(Boolean).join(' ');
+      const title  = `${esc(m.name)}${dosage ? ' — ' + esc(dosage) : ''}`;
+      const sub    = [m.forme, m.presentation].filter(Boolean).map(esc).join(' — ');
 
-            const q = input.value.trim();
+      const rembTxt = rembOk ? `Remboursé (${esc(m.tauxRembourssement)}%)` : 'Non remboursable';
 
-            if (q.length < 2) {
-                staticIntro.style.display = "block";
-                results.innerHTML = "";
-                return;
-            }
+      const card = document.createElement('div');
+      card.className = 'ux-med-card';
+      card.setAttribute('role', 'button');
+      card.tabIndex = 0;
 
-            staticIntro.style.display = "none";
+      // clique sur la carte -> fiche médicament
+      card.addEventListener('click', () => {
+        window.location = `/medicine/${m.id}`;
+      });
 
-            fetch(`/medicine/search/api?search=${encodeURIComponent(q)}`)
-                .then(res => res.json())
-                .then(data => {
+      // enter -> ouvrir aussi
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') window.location = `/medicine/${m.id}`;
+      });
 
-                    if (data.length === 0) {
-                        results.innerHTML = `
-                            <div class="alert alert-warning text-center rounded-4 py-3">
-                                Aucun médicament trouvé.
-                            </div>`;
-                        return;
-                    }
+      card.innerHTML = `
+        <div class="ux-med-title">${title}</div>
+        <div class="ux-med-sub">${sub || '<span class="text-muted">—</span>'}</div>
 
-                    renderResults(data);
-                });
+        <div class="ux-badges">
+          <span class="ux-badge ${rembOk ? 'ok' : 'no'}">
+            <i class="bi ${rembOk ? 'bi-shield-check' : 'bi-x-circle'} me-1"></i>
+            ${rembTxt}
+          </span>
+          ${m.forme ? `<span class="ux-badge"><i class="bi bi-tag me-1"></i>${esc(m.forme)}</span>` : ''}
+        </div>
 
-        }, 250);
+        <div class="ux-med-actions">
+          <small class="text-muted">
+            <i class="bi bi-box-arrow-up-right me-1"></i>Ouvrir la fiche
+          </small>
+
+          <div class="table-actions">
+            <button type="button"
+                    class="btn btn-action btn-action-success"
+                    title="Ajouter au suivi"
+                    data-med-id="${m.id}">
+              <i class="bi bi-plus-lg"></i>
+            </button>
+
+            <a class="btn btn-action btn-action-secondary"
+               href="/medicine/${m.id}"
+               title="Voir"
+               onclick="event.stopPropagation();"
+               target="_blank">
+              <i class="bi bi-eye"></i>
+            </a>
+          </div>
+        </div>
+      `;
+
+      // bouton ajouter (stop propagation)
+      card.querySelector('[data-med-id]').addEventListener('click', (e) => {
+        e.stopPropagation();
+        addMedicineToSuivi(Number(m.id));
+      });
+
+      resultsEl.appendChild(card);
+    });
+  }
+
+  async function doSearch(q){
+    if (aborter) aborter.abort();
+    aborter = new AbortController();
+
+    showSkeleton();
+
+    const res = await fetch(`/medicine/search/api?search=${encodeURIComponent(q)}`, {
+      headers: { 'Accept': 'application/json' },
+      signal: aborter.signal
     });
 
-});
-// recupere le suivi id
-let currentSuiviId = null;
+    if (!res.ok){
+      const txt = await res.text().catch(() => '');
+      throw new Error(`HTTP ${res.status} ${txt}`);
+    }
 
-// Quand on clique sur un bouton pour ouvrir le modal
-document.querySelectorAll(".openMedicModal").forEach(btn => {
+    return res.json();
+  }
 
-    btn.addEventListener("click", () => {
-        currentSuiviId = btn.getAttribute("data-suivi-id");
-        console.log("Suivi sélectionné :", currentSuiviId);
-    });
+  // ===== search listener =====
+  input.addEventListener('input', () => {
+    const q = input.value.trim();
 
-});
+    clearTimeout(timer);
 
-// ajouter un medicine a un suivi de soin
-function addMedicineToSuivi(medicineId) {
-    const suiviId = document.getElementById("currentSuiviId").value;
+    if (q.length < 2){
+      clearResults();
+      return;
+    }
+
+    introEl.style.display = 'none';
+
+    timer = setTimeout(async () => {
+      try {
+        const data = await doSearch(q);
+        renderResults(data);
+      } catch (e) {
+        if (e.name === 'AbortError') return;
+        console.error(e);
+        resultsEl.innerHTML = '';
+        setCount(0);
+        showState(`
+          <div class="ux-state">
+            <div class="fw-bold text-dark mb-1"><i class="bi bi-wifi-off me-1"></i>Erreur de chargement</div>
+            <div class="small">Impossible de récupérer les résultats. Vérifie la route API.</div>
+          </div>
+        `);
+      }
+    }, 260);
+  });
+
+  // clear
+  btnClear.addEventListener('click', () => {
+    input.value = '';
+    clearResults();
+    input.focus();
+  });
+
+  // focus & reset when modal opens
+  modalEl.addEventListener('shown.bs.modal', () => {
+    setTimeout(() => input.focus(), 120);
+  });
+
+  modalEl.addEventListener('hidden.bs.modal', () => {
+    // reset à la fermeture
+    input.value = '';
+    clearResults();
+  });
+
+  // ✅ Délégation : récupère le suiviId quand on clique sur un bouton “ajouter médicament”
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.openMedicModal');
+    if (!btn) return;
+
+    const suiviId = btn.dataset.suiviId;
+    hiddenSuiviId.value = suiviId || '';
+  });
+
+  // ✅ AJOUT MEDICAMENT AU SUIVI (garde ta route)
+  window.addMedicineToSuivi = function(medicineId){
+    const suiviId = hiddenSuiviId.value;
 
     if (!suiviId) {
-        alert("❌ Impossible de déterminer le suivi !");
-        return;
-    }
-
-    if (!confirm("Voulez-vous vraiment ajouter ce médicament ?")) {
-        return; // Annulé par l’utilisateur
+      alert("❌ Impossible de déterminer le suivi (suiviId manquant).");
+      return;
     }
 
     fetch(`/suivi/${suiviId}/medicine/add`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "X-Requested-With": "XMLHttpRequest"
-        },
-        body: JSON.stringify({ medicine_id: medicineId })
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Requested-With": "XMLHttpRequest",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify({ medicine_id: medicineId })
     })
-    .then(res => res.json())
+    .then(r => r.json())
     .then(data => {
-        if (data.error) {
-            alert("❌ " + data.error);
-            return;
-        }
+      if (data.error) {
+        alert("❌ " + data.error);
+        return;
+      }
 
-        reloadTimeline();
+      // ✅ refresh de ta timeline
+      if (typeof reloadTimeline === 'function') reloadTimeline();
+
+      // Option UX: petit feedback
+      // alert("✅ Médicament ajouté !");
     })
     .catch(err => {
-        alert("Erreur réseau");
-        console.error(err);
+      console.error(err);
+      alert("Erreur réseau");
     });
-}
+  };
 
-
-
+})();
 </script>
 

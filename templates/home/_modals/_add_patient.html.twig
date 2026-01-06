@@ -105,7 +105,9 @@ class="accordion accordion-flush border rounded-4 overflow-hidden ux-accordion" 
 </div></div></div></div></div><!-- Section 3 --><div class="accordion-item"><h2 class="accordion-header" id="headingMedical"><button class="accordion-button collapsed fw-semibold" data-step="3" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMedical" aria-expanded="false" aria-controls="collapseMedical"><i class="bi bi-clipboard2-pulse me-2"></i>Informations médicales</button></h2><div id="collapseMedical" class="accordion-collapse collapse" aria-labelledby="headingMedical" data-bs-parent="#patientAccordion"><div class="accordion-body"><div class="row g-3">
 
 <div class="col-12 col-md-6 position-relative">
-	<label class="form-label fw-semibold">Type de maladie</label>
+<label class="form-label fw-semibold">Raison de consultation</label>
+
+
 
 	<input type="text" class="form-control" name="typeMaladie" id="typeMaladieInput" placeholder="Ex: rhume, fièvre..." autocomplete="off" required>
 
@@ -114,13 +116,19 @@ class="accordion accordion-flush border rounded-4 overflow-hidden ux-accordion" 
 
 
 <div class="col-12 col-md-6">
-	<label class="form-label fw-semibold">Durée de maladie (optionnel)</label>
-	<input type="text" class="form-control" name="dureeMaladie" placeholder="Ex: 2 mois, 1 an...">
+<label class="form-label fw-semibold">Durée de maladie (jours)</label>
+<input type="text" class="form-control" name="dureeMaladie" placeholder="Ex: 2 jours, 12 jours...">
+
+
 </div>
 
 <div class="col-12">
-	<label class="form-label fw-semibold">Traitement (optionnel)</label>
-	<input type="text" name="traitement" class="form-control" placeholder="Traitement actuel...">
+<label class="form-label fw-semibold">Traitement en cours (autre maladie)
+</label>
+
+<input type="text" name="traitement" class="form-control" placeholder="Ex : Oui — Metformine 850mg (diabète) / Amlodipine (HTA) …">
+
+
 </div>
 
 <div class="col-12">
