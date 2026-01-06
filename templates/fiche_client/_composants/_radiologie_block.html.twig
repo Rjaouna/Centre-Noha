@@ -92,10 +92,11 @@
 					</div>
 
 					<div class="d-grid gap-2 d-md-flex">
-						<button class="btn btn-outline-danger rounded-pill px-4 flex-fill" id="btnRadDownload">
-							<i class="bi bi-filetype-pdf me-1"></i>
-							Télécharger / Enregistrer PDF
-						</button>
+<button class="btn btn-success rounded-pill px-4 flex-fill" id="btnRadValidate">
+	<i class="bi bi-check2-circle me-1"></i>
+	Valider
+</button>
+
 
 						<button class="btn btn-primary rounded-pill px-4 flex-fill" id="btnRadPrint">
 							<i class="bi bi-printer me-1"></i>
@@ -478,12 +479,26 @@ document.addEventListener('DOMContentLoaded', () => {
     return data.id;
   }
 
-  el('btnRadDownload').addEventListener('click', async () => {
-    const id = await createRadiologie();
+  el('btnRadValidate').addEventListener('click', async () => {
+  const btn = el('btnRadValidate');
+  const original = btn.innerHTML;
+
+  btn.disabled = true;
+  btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Enregistrement...`;
+
+  try {
+    await createRadiologie();   // ✅ enregistre côté API
     wizard.hide();
-    await load();
-    window.open(VIEW_PRESCRIPTION(id),'_blank');
-  });
+    await load();               // ✅ refresh liste
+  } catch (e) {
+    console.error(e);
+    setAlert('radAlert', `<div class="alert alert-danger">Erreur : ${escapeHtml(e.message || "Impossible d'enregistrer")}</div>`);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = original;
+  }
+});
+
 
   el('btnRadPrint').addEventListener('click', async () => {
     const id = await createRadiologie();
