@@ -32,3 +32,135 @@
 	</div>
 </div>
 
+ <script>
+(function(){
+  // ✅ Mets ta route ping ici (symfony path conseillé)
+  const PING_URL = "/api/auth/ping"; // à créer
+  const APP_NAME = "Mon application"; // ou injecte depuis Twig
+
+  const overlay = document.getElementById("authOverlay");
+  const appNameEl = document.getElementById("overlayAppName");
+  const cabinetNameEl = document.getElementById("overlayCabinetName");
+  const msgEl = document.getElementById("overlayMessage");
+  const hintEl = document.getElementById("overlayHint");
+  const btnReconnect = document.getElementById("btnReconnect");
+  const btnRetry = document.getElementById("btnRetry");
+
+  let failCount = 0;
+  let lastCabinet = null;
+
+  function setCabinetDisplay(cab){
+    const name = cab?.nom ? cab.nom : (localStorage.getItem("cabinet_nom") || "—");
+    const type = cab?.type ? ` • ${cab.type}` : (localStorage.getItem("cabinet_type") ? ` • ${localStorage.getItem("cabinet_type")}` : "");
+    cabinetNameEl.textContent = name + type;
+  }
+
+  function showOverlay(mode){
+    // mode: "auth" | "network"
+    document.body.classList.add("auth-locked");
+    overlay.classList.remove("d-none");
+    overlay.setAttribute("aria-hidden","false");
+
+    appNameEl.textContent = APP_NAME;
+
+    if(mode === "network"){
+      msgEl.textContent = "Connexion perdue. Impossible de joindre le serveur.";
+      hintEl.textContent = "Vérifiez votre connexion (Wi-Fi / 4G), puis réessayez.";
+      btnRetry.classList.remove("d-none");
+      btnReconnect.classList.add("d-none");
+    }else{
+      msgEl.textContent = "Votre session a expiré. Veuillez vous reconnecter.";
+      hintEl.textContent = "Vous serez redirigé vers la page de connexion.";
+      btnRetry.classList.add("d-none");
+      btnReconnect.classList.remove("d-none");
+    }
+
+    setCabinetDisplay(lastCabinet);
+  }
+
+  function hideOverlay(){
+    document.body.classList.remove("auth-locked");
+    overlay.classList.add("d-none");
+    overlay.setAttribute("aria-hidden","true");
+  }
+
+  // ✅ fetch avec timeout
+  async function fetchWithTimeout(url, opts={}, timeoutMs=8000){
+    const controller = new AbortController();
+    const t = setTimeout(()=>controller.abort(), timeoutMs);
+    try{
+      const res = await fetch(url, { ...opts, signal: controller.signal, headers: { "Accept":"application/json", ...(opts.headers||{}) } });
+      return res;
+    } finally {
+      clearTimeout(t);
+    }
+  }
+
+  async function ping(){
+    try{
+      const res = await fetchWithTimeout(PING_URL, {
+        method: "GET",
+        headers: {
+          "X-Requested-With": "XMLHttpRequest",
+          // si tu utilises JWT :
+          ...(localStorage.getItem("jwt_token") ? {"Authorization": "Bearer " + localStorage.getItem("jwt_token")} : {})
+        }
+      }, 8000);
+
+      if(res.status === 401 || res.status === 403){
+        failCount = 0;
+        showOverlay("auth");
+        return;
+      }
+
+      if(!res.ok){
+        failCount++;
+        if(failCount >= 2) showOverlay("network");
+        return;
+      }
+
+      // ✅ OK
+      const data = await res.json().catch(()=>null);
+      failCount = 0;
+
+      if(data?.cabinet){
+        lastCabinet = data.cabinet;
+        localStorage.setItem("cabinet_nom", data.cabinet.nom || "");
+        localStorage.setItem("cabinet_type", data.cabinet.type || "");
+      }
+
+      hideOverlay();
+    } catch(e){
+      // timeout / offline
+      failCount++;
+      if(failCount >= 2) showOverlay("network");
+    }
+  }
+
+  // boutons
+  btnReconnect?.addEventListener("click", () => {
+    // ✅ redirection login (à adapter)
+    window.location.href = "/login";
+  });
+
+  btnRetry?.addEventListener("click", async () => {
+    failCount = 0;
+    await ping();
+  });
+
+  // démarrage
+  document.addEventListener("DOMContentLoaded", () => {
+    setCabinetDisplay(null);
+    ping(); // premier ping direct
+    setInterval(ping, 60000); // toutes les 60s
+
+    // quand l'utilisateur revient sur l'app
+    document.addEventListener("visibilitychange", () => {
+      if(!document.hidden) ping();
+    });
+  });
+
+})();
+</script>
+
+
