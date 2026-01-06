@@ -60,6 +60,25 @@
 			background: #f8faff;
 			border: 1px solid #e9eefb;
 		}
+.med-item {
+  position: relative;
+}
+
+.btn-del-med {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+}
 
 		.fade-in {
 			animation: fadeIn 0.5s ease-in-out;
@@ -106,7 +125,14 @@
 }
 .btn-del-med {
   flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
+
 
 /* variantes */
 .btn-action-primary{ border:1px solid rgba(13,110,253,.25); color:#0d6efd; }
@@ -280,7 +306,8 @@
 
         <div class="ordonnance-meds">
           ${suivi.medicines.map(med => `
-            <div class="med-item mb-2 p-3 rounded-4 shadow-sm">
+<div class="med-item mb-2 p-3 rounded-4 shadow-sm position-relative">
+
               <div class="d-flex align-items-start justify-content-between gap-3">
                 <div class="min-w-0">
                   <div class="fw-semibold text-primary text-truncate">
