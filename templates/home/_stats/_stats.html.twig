@@ -916,12 +916,13 @@ async function loadClientsPerDayChart() {
 
 /* ================= INIT ================= */
 document.addEventListener('DOMContentLoaded', () => {
-    loadPaiementsChart();
-    loadMaladiesChart();
-    loadSymptomesChart();
-    loadClientsPerDayChart();
-    loadNextRDV();
+  loadPaiementsChart();
+  loadMaladiesChart();
+  loadSymptomesChart();
+  loadClientsPerDayChart();
+  loadAllRDV(); // ✅ une seule fonction
 });
+
 </script>
 
  <script>
@@ -1041,7 +1042,6 @@ async function validerRDV(id) {
     loadAllRDV();
 }
 
-document.addEventListener('DOMContentLoaded', loadAllRDV);
 </script>
 
 

@@ -43,7 +43,7 @@ class RendezVousCalendarApiController extends AbstractController
 
 			$events[] = [
 				'id'    => $rdv->getId(),
-				'title' => $rdv->getPatient()->getNom() . ' ' . $rdv->getPatient()->getNom(),
+				'title' => $rdv->getPatient()->getNom() . ' ' . $rdv->getPatient()->getPrenom(),
 				'start' => $startDt->format(\DateTimeInterface::ATOM),
 				'end'   => $endDt->format(\DateTimeInterface::ATOM),
 				'extendedProps' => [
