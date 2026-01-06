@@ -4,6 +4,34 @@
 {% endblock %}
 
 {% block body %}
+<style>
+	.ux-page-loader {
+		position: fixed;
+		inset: 0;
+		background: rgba(255, 255, 255, .92);
+		backdrop-filter: blur(8px);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		z-index: 9999;
+	}
+	.ux-loader-card {
+		background: #fff;
+		border: 1px solid rgba(0, 0, 0, .06);
+		border-radius: 18px;
+		padding: 18px 20px;
+		box-shadow: 0 18px 45px rgba(0, 0, 0, .10);
+		text-align: center;
+		min-width: 260px;
+	}
+</style>
+
+<div id="pageLoader" class="ux-page-loader">
+	<div class="ux-loader-card">
+		<div class="spinner-border" role="status" aria-hidden="true"></div>
+	</div>
+</div>
+
 
 	<div
 		class="container-fluid mt-4">
@@ -50,135 +78,161 @@
 	{% include 'home/_modals/_add_patient.html.twig' %}
 
 {% endblock %}
-
 {% block javascripts %}
 	{{ parent() }}
 
 	 <script>
-	let patientsDT;
+	  let patientsDT;
 	
-	document.addEventListener('DOMContentLoaded', () => {
+	  function hideLoader() {
+	    const loader = document.getElementById('pageLoader');
+	    if (loader) loader.style.display = 'none';
+	  }
+	  function showLoader() {
+	    const loader = document.getElementById('pageLoader');
+	    if (loader) loader.style.display = 'flex';
+	  }
 	
+	  function initPatientsTable() {
 	    const tableEl = $('#patientsTable');
 	
-	    // sécurité
-	    if (!tableEl.length || !$.fn.DataTable) return;
+	    if (!tableEl.length || !$.fn.DataTable) {
+	      console.error("DataTables n'est pas chargé.");
+	      hideLoader();
+	      return;
+	    }
+	
+	    // ⚠️ check responsive plugin
+	    if (!$.fn.dataTable.Responsive) {
+	      console.error("DataTables Responsive n'est pas chargé (js/css).");
+	      hideLoader();
+	      return;
+	    }
+	
+	    if ($.fn.DataTable.isDataTable(tableEl)) {
+	      tableEl.DataTable().clear().destroy();
+	    }
 	
 	    patientsDT = tableEl.DataTable({
-	        ajax: {
-	            url: "{{ path('app_fiche_client_ajax') }}",
-	            dataSrc: 'data'
+	      processing: true,
+	      responsive: true,
+	      autoWidth: false,
+	
+	      ajax: {
+	        url: "{{ path('app_fiche_client_ajax') }}",
+	        dataSrc: 'data'
+	      },
+	
+	      language: {
+	        url: '//cdn.datatables.net/plug-ins/1.13.8/i18n/fr-FR.json',
+	        processing: "Chargement..."
+	      },
+	
+	      pageLength: 10,
+	      lengthChange: false,
+	      order: [[0, 'desc']],
+	
+	      columns: [
+	        { data: 'id', className: 'fw-bold' },
+	
+	        {
+	          data: null,
+	          render: row => `
+	            <div class="d-flex flex-column">
+	              <div class="d-flex align-items-center gap-2">
+	                <strong>${row.nom} ${row.prenom}</strong>
+	                ${row.isNew ? '<span class="badge bg-success rounded-pill">Nouveau</span>' : ''}
+	              </div>
+	              ${row.cin ? `<div class="small text-muted mt-1">CIN: ${row.cin}</div>` : ''}
+	            </div>
+	          `
 	        },
 	
-	        language: {
-	            url: '//cdn.datatables.net/plug-ins/1.13.8/i18n/fr-FR.json'
+	        { data: 'ville' },
+	
+	        {
+	          data: 'telephone',
+	          render: tel => `<a href="tel:${tel}" class="fw-semibold text-primary text-decoration-none">${tel}</a>`
 	        },
 	
-	        pageLength: 10,
-	        lengthChange: false,
-	        order: [[0, 'desc']],
-	        responsive: true,
-	        autoWidth: false,
+	        {
+	          data: 'age',
+	          render: age => age ? `<span class="badge bg-light rounded-pill px-3">${age} ans</span>` : '—'
+	        },
 	
-	        columns: [
-	            {
-	                data: 'id',
-	                className: 'fw-bold'
-	            },
+	        {
+	          data: 'maladie',
+	          render: m => `<span class="badge bg-info bg-opacity-75 rounded-pill px-3">${m ?? '—'}</span>`
+	        },
 	
-	            {
-	                data: null,
-	                render: row => `
-	                    <div class="d-flex flex-column">
-	                        <div class="d-flex align-items-center gap-2">
-	                            <strong>${row.nom} ${row.prenom}</strong>
-	                            ${row.isNew ? '<span class="badge bg-success rounded-pill">Nouveau</span>' : ''}
-	                        </div>
-	                        ${row.cin ? `<div class="small text-muted mt-1">CIN: ${row.cin}</div>` : ''}
-	                    </div>
-	                `
-	            },
+	        {
+	          data: 'statut',
+	          render: s => s === 'Consulté'
+	            ? `<span class="badge bg-light rounded-pill">Consulté</span>`
+	            : `<span class="badge bg-success rounded-pill">En attente</span>`
+	        },
 	
-	            { data: 'ville' },
-	
-	            {
-	                data: 'telephone',
-	                render: tel => `
-	                    <a href="tel:${tel}" class="fw-semibold text-primary text-decoration-none">
-	                        ${tel}
-	                    </a>
-	                `
-	            },
-	
-	            {
-	                data: 'age',
-	                render: age =>
-	                    age
-	                        ? `<span class="badge bg-light rounded-pill px-3">${age} ans</span>`
-	                        : '—'
-	            },
-	
-	            {
-	                data: 'maladie',
-	                render: m => `
-	                    <span class="badge bg-info bg-opacity-75 rounded-pill px-3">
-	                        ${m ?? '—'}
-	                    </span>
-	                `
-	            },
-	
-	            {
-	                data: 'statut',
-	                render: s =>
-	                    s === 'Consulté'
-	                        ? `<span class="badge bg-light rounded-pill">Consulté</span>`
-	                        : `<span class="badge bg-success rounded-pill">En attente</span>`
-	            },
-	
-	            {
-	                data: 'id',
-	                orderable: false,
-	                className: 'text-center',
-	                render: id => {
-    const url = "{{ path('app_fiche_client_show', {'id': 'ID'}) }}".replace('ID', id);
-
-    return `
-        <a href="${url}"
-           class="btn btn-sm px-3 py-2 fw-semibold rounded-pill btn-view-outline">
-            <i class="bi bi-eye me-1"></i> Voir
-        </a>
-    `;
-}
-
-	            }
-	        ],
-	
-	        createdRow: (row, data) => {
-	            if (data.isNew) {
-	                row.classList.add('table-success', 'bg-opacity-10');
-	            }
+	        {
+	          data: 'id',
+	          orderable: false,
+	          className: 'text-center',
+	          render: id => {
+	            const url = "{{ path('app_fiche_client_show', {'id': 'ID'}) }}".replace('ID', id);
+	            return `
+	              <a href="${url}" class="btn btn-sm px-3 py-2 fw-semibold rounded-pill btn-view-outline">
+	                <i class="bi bi-eye me-1"></i> Voir
+	              </a>
+	            `;
+	          }
 	        }
-	    });
+	      ],
 	
-	    // 🔥 Highlight du premier patient après reload AJAX
-	    patientsDT.on('xhr', () => {
+	      createdRow: (row, data) => {
+	        if (data.isNew) row.classList.add('table-success', 'bg-opacity-10');
+	      },
+	
+	      initComplete: function() {
+	        const api = this.api();
+	        requestAnimationFrame(() => {
+	          api.columns.adjust();
+	          api.responsive.recalc();
+	        });
 	        setTimeout(() => {
-	            $('#patientsTable tbody tr:first')
-	                .addClass('table-success', 'bg-opacity-25');
-	        }, 150);
+	          api.columns.adjust();
+	          api.responsive.recalc();
+	        }, 250);
+	      }
 	    });
 	
-	    // 🌍 Fonction globale (appelée depuis le modal)
+	    // hide loader on first draw
+	    patientsDT.one('draw.dt', () => {
+	      setTimeout(() => {
+	        patientsDT.columns.adjust().responsive.recalc();
+	        hideLoader();
+	      }, 80);
+	    });
+	
+	    // refresh function
 	    window.refreshPatientsTable = () => {
-	        if (patientsDT) {
-	            patientsDT.ajax.reload(null, false);
-	        }
+	      if (patientsDT) patientsDT.ajax.reload(null, false);
 	    };
 	
-	});
-	</script>
-
-
-
+	    // resize/orientation fix
+	    window.addEventListener('resize', () => {
+	      if (!patientsDT) return;
+	      clearTimeout(window.__dtResizeTimer);
+	      window.__dtResizeTimer = setTimeout(() => {
+	        patientsDT.columns.adjust().responsive.recalc();
+	      }, 120);
+	    });
+	
+	    // ✅ failsafe: au cas où draw ne vient pas (ajax error)
+	    setTimeout(() => hideLoader(), 6000);
+	  }
+	
+	  // ✅ meilleur timing
+	  showLoader();
+	  window.addEventListener('load', initPatientsTable);
+	  </script>
 {% endblock %}
 
