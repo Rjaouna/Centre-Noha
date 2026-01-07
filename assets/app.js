@@ -225,3 +225,4 @@ document.addEventListener("click", (e) => {
     if (loader) loader.classList.remove("hidden");
 });
 import "./styles/layout.css";
+import "./styles/patient.css";
