@@ -172,30 +172,51 @@ Informations patient
 
 
 
-<hr class="hr-animated">
 
 
+{# ===== Traitement & Observations (UX luxe) ===== #}
 
-					<h6 class="fw-bold text-warning d-flex align-items-center mb-3">
-						<i class="bi bi-journal-medical me-2"></i>
-						Traitement & observations
-					</h6>
+<div class="ux-block mt-4" data-theme="warning">
 
-					<div class="row g-3 small">
-						<div class="col-12 col-md-6">
-							<div class="p-3 bg-light rounded-3 h-100">
-								<div class="fw-semibold text-muted mb-1">Traitement</div>
-								{{ fiche_client.traitement ?: '—' }}
-							</div>
-						</div>
+	<div class="d-flex align-items-center gap-2 mb-3">
+		<span class="ux-badge-icon">
+			<i class="bi bi-journal-medical"></i>
+		</span>
+		<div>
+			<h6 class="mb-0 fw-bold">Traitement & observations</h6>
+<small class="text-muted">Infos saisies lors de l’admission</small>
 
-						<div class="col-12 col-md-6">
-							<div class="p-3 bg-light rounded-3 h-100">
-								<div class="fw-semibold text-muted mb-1">Observations</div>
-								{{ fiche_client.observation ?: '—' }}
-							</div>
-						</div>
-					</div>
+
+		</div>
+	</div>
+
+	<div class="row g-3">
+		<div class="col-12 col-md-6">
+			<div class="ux-note-card h-100">
+				<div class="ux-note-head">
+					<span class="ux-note-label">Traitement</span>
+				</div>
+				<div class="ux-note-value">
+					{{ fiche_client.traitement ?: '—' }}
+				</div>
+			</div>
+		</div>
+
+		<div class="col-12 col-md-6">
+			<div class="ux-note-card h-100">
+				<div class="ux-note-head">
+					<span class="ux-note-label">Observations</span>
+				</div>
+				<div class="ux-note-value">
+					{{ fiche_client.observation ?: '—' }}
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+					
 
 				</div>
 			</div>
@@ -581,7 +602,57 @@ Analyses
   letter-spacing:.2px;
   color:#0b1220;
 }
+.ux-block{
+    border: 1px solid rgba(15,23,42,.08);
+    border-radius: 18px;
+    padding: 16px;
+    background: #fff;
+    box-shadow: 0 10px 24px rgba(2,6,23,.06);
+  }
 
+  .ux-badge-icon{
+    width: 42px;height:42px;
+    border-radius: 14px;
+    display:inline-flex;align-items:center;justify-content:center;
+    color:#fff;
+    box-shadow: 0 12px 28px rgba(2,6,23,.12);
+    flex: 0 0 auto;
+  }
+
+  /* thème warning (comme ton bloc) */
+  .ux-block[data-theme="warning"] .ux-badge-icon{
+    background: linear-gradient(135deg,#f59e0b,#fbbf24);
+  }
+
+  .ux-note-card{
+    border-radius: 16px;
+    background: linear-gradient(180deg, rgba(15,23,42,.03), rgba(15,23,42,0));
+    border: 1px solid rgba(15,23,42,.08);
+    padding: 14px;
+    box-shadow: 0 10px 22px rgba(2,6,23,.05);
+  }
+
+  .ux-note-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom: 8px;
+  }
+
+  .ux-note-label{
+    font-weight: 900;
+    letter-spacing: .2px;
+    color: rgba(15,23,42,.75);
+    font-size: .92rem;
+  }
+
+  .ux-note-value{
+    font-weight: 700;
+    color: #0b1220;
+    font-size: .98rem;
+    line-height: 1.45;
+    white-space: pre-line; /* garde les retours ligne si texte long */
+  }
 /* responsive */
 @media (max-width: 768px){
   .ux-info-card{ grid-column:span 12; } /* 1 par ligne mobile */
