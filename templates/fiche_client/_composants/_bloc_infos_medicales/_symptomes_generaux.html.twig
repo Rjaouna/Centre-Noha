@@ -1,0 +1,266 @@
+{# --------------------------------------------- #}
+{#  Symptômes généraux - fiche patient (Lux)     #}
+{# --------------------------------------------- #}
+
+	{% macro radio_pills(theme, name, options) %}
+		<div class="d-flex flex-wrap gap-2"> {% for opt in options %}
+			{% set id = name ~ '_' ~ loop.index %}
+			<input class="btn-check" type="radio" name="{{ name }}" id="{{ id }}" value="{{ opt }}" autocomplete="off">
+			<label class="btn btn-outline-{{ theme }} rounded-pill px-3 py-2" for="{{ id }}">
+				{{ opt }}
+			</label>
+		{% endfor %}
+	</div>
+{% endmacro %}
+
+{% macro bloc(theme, icon, title, name, options) %}
+	<div class="p-3 p-md-4 rounded-4 border bg-light shadow-sm mb-3">
+		<div class="d-flex align-items-center gap-2 mb-2">
+			<i class="bi {{ icon }} text-{{ theme }} fs-5"></i>
+			<h6 class="fw-bold mb-0">{{ title }}</h6>
+		</div>
+		{{ _self.radio_pills(theme, name, options) }}
+	</div>
+{% endmacro %}
+
+{# ===== MODAL ADD / EDIT ===== #}
+<div class="modal fade" id="modalAddSymptomesGeneraux" tabindex="-1" aria-hidden="true">
+	<div class="modal-dialog modal-lg modal-dialog-centered">
+		<div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+
+			<div class="modal-header bg-primary text-white border-0 px-4 py-3">
+				<div class="d-flex align-items-center gap-3">
+					<div class="rounded-3 d-inline-flex align-items-center justify-content-center bg-white text-primary" style="width:42px;height:42px;">
+						<i class="bi bi-heart-pulse fs-5"></i>
+					</div>
+					<div class="lh-sm">
+						<h5 class="modal-title mb-0 fw-semibold">Symptômes généraux</h5>
+						<small class="opacity-75">Ajouter / modifier</small>
+					</div>
+				</div>
+				<button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+			</div>
+
+			<div class="modal-body px-4 py-4">
+				<form id="symptomesForm">
+					{{ _self.bloc('primary','bi-emoji-dizzy','Maux de tête','mauxTete',['Jamais','Parfois','Souvent']) }}
+					{{ _self.bloc('primary','bi-person-arms-up','Maux de nuque','mauxNuque',['Jamais','Parfois','Souvent']) }}
+					{{ _self.bloc('primary','bi-moon-stars','Insomnie','insomnie',['Jamais',"Difficultés d’endormissement",'Réveils nocturnes','Insomnie sévère']) }}
+					{{ _self.bloc('primary','bi-emoji-frown','Hémorroïdes','hemorroides',['Jamais','Occasionnelles','Fréquentes']) }}
+					{{ _self.bloc('primary','bi-droplet-half','Énurésie','enuresie',['Jamais','Rare','Parfois','Souvent']) }}
+				</form>
+			</div>
+
+			<div class="modal-footer border-0 px-4 pb-4 pt-0 d-flex gap-2 justify-content-end">
+				<button class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Annuler</button>
+				<button class="btn btn-primary rounded-pill px-4" id="btnSaveSymptomes">
+					<i class="bi bi-check2-circle me-1"></i>
+					Enregistrer
+				</button>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+{# ===== MODAL VIEW ===== #}
+<div class="modal fade" id="modalSymptomesGeneraux" tabindex="-1" aria-hidden="true">
+	<div class="modal-dialog modal-lg modal-dialog-centered">
+		<div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+
+			<div class="modal-header bg-primary text-white border-0 px-4 py-3">
+				<h5 class="modal-title fw-semibold d-flex align-items-center gap-2 mb-0">
+					<i class="bi bi-heart-pulse fs-5"></i>
+					Symptômes généraux
+				</h5>
+				<button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+			</div>
+
+			<div class="modal-body px-4 py-4">
+
+				<div id="symptomesContent" class="d-none">
+					<div class="row g-3">
+
+						<div class="col-md-4">
+							<div class="p-3 rounded-4 bg-light border-start border-4 border-primary shadow-sm h-100">
+								<div class="text-muted small fw-semibold">Maux de tête</div>
+								<div class="fs-5 fw-bold" id="view-mauxTete">-</div>
+							</div>
+						</div>
+
+						<div class="col-md-4">
+							<div class="p-3 rounded-4 bg-light border-start border-4 border-success shadow-sm h-100">
+								<div class="text-muted small fw-semibold">Maux de nuque</div>
+								<div class="fs-5 fw-bold" id="view-mauxNuque">-</div>
+							</div>
+						</div>
+
+						<div class="col-md-4">
+							<div class="p-3 rounded-4 bg-light border-start border-4 border-warning shadow-sm h-100">
+								<div class="text-muted small fw-semibold">Insomnie</div>
+								<div class="fs-5 fw-bold" id="view-insomnie">-</div>
+							</div>
+						</div>
+
+						<div class="col-md-4">
+							<div class="p-3 rounded-4 bg-light border-start border-4 border-danger shadow-sm h-100">
+								<div class="text-muted small fw-semibold">Hémorroïdes</div>
+								<div class="fs-5 fw-bold" id="view-hemorroides">-</div>
+							</div>
+						</div>
+
+						<div class="col-md-4">
+							<div class="p-3 rounded-4 bg-light border-start border-4 border-info shadow-sm h-100">
+								<div class="text-muted small fw-semibold">Énurésie</div>
+								<div class="fs-5 fw-bold" id="view-enuresie">-</div>
+							</div>
+						</div>
+
+					</div>
+
+					<div class="text-end mt-4">
+						<button class="btn btn-primary rounded-pill px-4" id="btnEditSymptomes" data-bs-target="#modalAddSymptomesGeneraux" data-bs-toggle="modal" data-bs-dismiss="modal">
+							<i class="bi bi-pencil-square me-1"></i>
+							Modifier
+						</button>
+					</div>
+				</div>
+
+				<div id="symptomesEmpty" class="text-center text-muted py-4">
+					<i class="bi bi-info-circle me-1"></i>
+					Aucun symptôme renseigné.
+					<div class="mt-3">
+						<button class="btn btn-outline-primary rounded-pill px-4" data-bs-target="#modalAddSymptomesGeneraux" data-bs-toggle="modal" data-bs-dismiss="modal">
+							<i class="bi bi-plus-circle me-1"></i>
+							Ajouter
+						</button>
+					</div>
+				</div>
+
+			</div>
+
+		</div>
+	</div>
+</div>
+
+ <script>
+(function () {
+  const SHOW_URL = "{{ path('api_symptomes_show', {idClient: fiche_client.id}) }}";
+  const ADD_URL  = "{{ path('api_symptomes_add',  {id: fiche_client.id}) }}";
+  const EDIT_URL = "{{ path('api_symptomes_edit', {id: fiche_client.id}) }}";
+
+  let exists = false;
+
+  const modalView = document.getElementById('modalSymptomesGeneraux');
+  const modalAdd  = document.getElementById('modalAddSymptomesGeneraux');
+  const btnEdit   = document.getElementById('btnEditSymptomes');
+  const btnSave   = document.getElementById('btnSaveSymptomes');
+  const form      = document.getElementById('symptomesForm');
+
+  const content = document.getElementById('symptomesContent');
+  const empty   = document.getElementById('symptomesEmpty');
+
+  if (!form || !btnSave) return;
+
+  async function fetchData() {
+    const r = await fetch(SHOW_URL);
+    return await r.json();
+  }
+
+  function setView(data) {
+    const fields = ['mauxTete','mauxNuque','insomnie','hemorroides','enuresie'];
+    fields.forEach(f => {
+      const el = document.getElementById('view-' + f);
+      if (el) el.textContent = (data && data[f] != null && data[f] !== '') ? data[f] : '-';
+    });
+  }
+
+  function fillForm(data) {
+    form.reset();
+    if (!data) return;
+    Object.keys(data).forEach((key) => {
+      const value = data[key];
+      if (!value) return;
+      const radio = document.querySelector(`input[name="${key}"][value="${value}"]`);
+      if (radio) radio.checked = true;
+    });
+  }
+
+  async function refreshStateAndUI() {
+    try {
+      const res = await fetchData();
+      exists = !!(res.exists && res.data);
+
+      window.medicalBlocks = window.medicalBlocks || {};
+      window.medicalBlocks.symptomes = { exists };
+
+      if (!exists) {
+        content.classList.add('d-none');
+        empty.classList.remove('d-none');
+        return;
+      }
+
+      empty.classList.add('d-none');
+      content.classList.remove('d-none');
+      setView(res.data);
+
+    } catch (e) {
+      console.error('Symptomes: erreur chargement', e);
+    }
+  }
+
+  modalView?.addEventListener('show.bs.modal', refreshStateAndUI);
+
+  btnEdit?.addEventListener('click', async () => {
+    const res = await fetchData();
+    exists = !!(res.exists && res.data);
+    fillForm(res.data);
+  });
+
+  modalAdd?.addEventListener('show.bs.modal', async () => {
+    try {
+      const res = await fetchData();
+      exists = !!(res.exists && res.data);
+      fillForm(res.data);
+    } catch (e) {
+      exists = false;
+      form.reset();
+    }
+  });
+
+  btnSave.addEventListener('click', async () => {
+    const payload = Object.fromEntries(new FormData(form));
+    const url = exists ? EDIT_URL : ADD_URL;
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(payload)
+    });
+
+    const result = await response.json();
+
+    if (!result.success) {
+      buttonSoundError?.('btnSaveSymptomes');
+      alert('Erreur : ' + (result.message ?? 'Erreur serveur'));
+      return;
+    }
+
+    exists = true;
+
+    buttonSoundSuccess?.('btnSaveSymptomes');
+
+    const inst = bootstrap.Modal.getInstance(modalAdd);
+    inst?.hide();
+
+    await refreshStateAndUI();
+
+    document.dispatchEvent(new CustomEvent('medical:updated', {
+      detail: { section: 'symptomes' }
+    }));
+  });
+
+  refreshStateAndUI();
+})();
+</script>
+
