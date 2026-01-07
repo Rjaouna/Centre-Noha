@@ -26,53 +26,90 @@ class="mt-4">
 
 	</div>
 
-	{# ================= MODAL ================= #}
-	<div class="modal fade" id="radioTypeModal" tabindex="-1">
-		<div class="modal-dialog modal-lg modal-dialog-centered">
-			<div class="modal-content rounded-4 shadow">
+{# ================= MODAL ================= #}
+<div class="modal fade" id="radioTypeModal" tabindex="-1" aria-labelledby="radioTypeModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg modal-dialog-centered">
+		<div
+			class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
 
-				<div class="modal-header bg-primary text-white rounded-top-4">
-					<h5 class="modal-title fw-bold d-flex align-items-center gap-2">
-						<i class="bi bi-clipboard-data"></i>
-						Type de radiologie
-					</h5>
-					<button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-				</div>
-
-				<div class="modal-body p-4">
-					<div id="formAlert"></div>
-
-					<input type="hidden" id="radioTypeId">
-
-					<div class="mb-3">
-						<label class="form-label fw-bold">Nom *</label>
-						<input type="text" id="nom" class="form-control rounded-3">
+			{# Header #}
+			<div class="modal-header bg-light border-0 px-4 py-3">
+				<div class="d-flex align-items-center gap-3">
+					<div class="rounded-3 d-inline-flex align-items-center justify-content-center bg-primary text-white" style="width:42px;height:42px;">
+						<i class="bi bi-clipboard-data fs-5"></i>
 					</div>
 
-					<div class="mb-3">
-						<label class="form-label fw-bold">Zone du corps *</label>
-						<input type="text" id="zone_corps" class="form-control rounded-3">
-					</div>
-
-					<div class="mb-3">
-						<label class="form-label fw-bold">Description *</label>
-						<textarea id="description" class="form-control rounded-3" rows="3"></textarea>
+					<div class="lh-sm">
+						<h5 class="modal-title mb-0 fw-semibold" id="radioTypeModalLabel">Type de radiologie</h5>
+						<small class="text-muted">Ajout / modification d’un type</small>
 					</div>
 				</div>
 
-				<div class="modal-footer border-0 px-4 pb-4">
-					<button class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">
-						Annuler
-					</button>
-					<button class="btn btn-primary rounded-pill px-4" onclick="saveRadioType()">
-						<i class="bi bi-check2-circle me-1"></i>
-						Enregistrer
-					</button>
-				</div>
-
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
 			</div>
+
+			{# Body #}
+			<div class="modal-body px-4 py-4">
+				<div id="formAlert" class="mb-3"></div>
+
+				<input type="hidden" id="radioTypeId">
+
+				<div class="row g-3">
+					<div class="col-md-6">
+						<label class="form-label fw-medium" for="nom">Nom
+							<span class="text-danger">*</span>
+						</label>
+						<div class="input-group">
+							<span class="input-group-text bg-white">
+								<i class="bi bi-type"></i>
+							</span>
+							<input type="text" id="nom" class="form-control" placeholder="Ex: Radiographie">
+						</div>
+					</div>
+
+					<div class="col-md-6">
+						<label class="form-label fw-medium" for="zone_corps">Zone du corps
+							<span class="text-danger">*</span>
+						</label>
+						<div class="input-group">
+							<span class="input-group-text bg-white">
+								<i class="bi bi-bounding-box"></i>
+							</span>
+							<input type="text" id="zone_corps" class="form-control" placeholder="Ex: Thorax">
+						</div>
+					</div>
+
+					<div class="col-12">
+						<label class="form-label fw-medium" for="description">Description
+							<span class="text-danger">*</span>
+						</label>
+						<div class="input-group">
+							<span class="input-group-text bg-white align-items-start pt-2">
+								<i class="bi bi-card-text"></i>
+							</span>
+							<textarea id="description" class="form-control" rows="4" style="resize:none;" placeholder="Détails, indications, remarques..."></textarea>
+						</div>
+						<div class="form-text">Tu peux mettre une description courte et claire.</div>
+					</div>
+				</div>
+			</div>
+
+			{# Footer #}
+			<div class="modal-footer border-0 px-4 pb-4 pt-0 d-flex gap-2 justify-content-end">
+				<button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">
+					Annuler
+				</button>
+
+				<button type="button" class="btn btn-primary rounded-pill px-4" onclick="saveRadioType()">
+					<i class="bi bi-check2-circle me-1"></i>
+					Enregistrer
+				</button>
+			</div>
+
 		</div>
 	</div>
+</div>
+
 
 	{# ================= STYLES ================= #}
 	<style>

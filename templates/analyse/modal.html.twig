@@ -1,34 +1,65 @@
-<div class="modal fade" id="analyseModal" tabindex="-1">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<form id="analyseForm">
-				<div class="modal-header">
-					<h5 class="modal-title">Analyse</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+<div class="modal fade" id="analyseModal" tabindex="-1" aria-labelledby="analyseModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+		<div
+			class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+
+			<!-- Header -->
+			<div class="modal-header bg-light border-0 py-3 px-4">
+				<div class="d-flex align-items-center gap-2">
+					<span class="d-inline-flex align-items-center justify-content-center rounded-3 bg-white border" style="width:40px;height:40px;">
+						<i class="bi bi-clipboard2-pulse"></i>
+					</span>
+					<div>
+						<h5 class="modal-title mb-0 fw-semibold" id="analyseModalLabel">Analyse</h5>
+						<small class="text-muted">Créer ou modifier une analyse</small>
+					</div>
 				</div>
 
-				<div class="modal-body">
-					<input type="hidden" name="id" id="analyse_id">
-					<input type="hidden" name="_token" value="{{ csrf_token('analyse_crud') }}">
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+			</div>
 
-					<div class="mb-3">
-						<label class="form-label">Nom</label>
-						<input type="text" name="name" id="name" class="form-control" required>
+			<form id="analyseForm" class="px-4 py-4">
+				<input type="hidden" name="id" id="analyse_id">
+				<input
+				type="hidden" name="_token" value="{{ csrf_token('analyse_crud') }}">
+
+				<!-- Body -->
+				<div class="mb-3">
+					<label class="form-label fw-medium" for="name">Nom</label>
+					<div class="input-group">
+						<span class="input-group-text bg-white">
+							<i class="bi bi-type"></i>
+						</span>
+						<input type="text" name="name" id="name" class="form-control" placeholder="Ex: Analyse sanguine" required>
 					</div>
-
-					<div class="mb-3">
-						<label class="form-label">Description</label>
-						<textarea name="description" id="description" class="form-control"></textarea>
-					</div>
-
-					<div class="alert alert-danger d-none" id="analyseError"></div>
+					<div class="form-text">Choisis un nom clair et court.</div>
 				</div>
 
-				<div class="modal-footer">
-					<button type="submit" class="btn btn-success">💾 Enregistrer</button>
-					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+				<div class="mb-3">
+					<label class="form-label fw-medium" for="description">Description</label>
+					<div class="input-group">
+						<span class="input-group-text bg-white align-items-start pt-2">
+							<i class="bi bi-card-text"></i>
+						</span>
+						<textarea name="description" id="description" class="form-control" placeholder="Détails, remarques, informations utiles..." rows="4" style="resize: none;"></textarea>
+					</div>
+				</div>
+
+				<div class="alert alert-danger d-none mb-0" id="analyseError" role="alert"></div>
+
+				<!-- Footer -->
+				<div class="d-flex flex-column flex-sm-row gap-2 justify-content-end mt-4">
+					<button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">
+						Annuler
+					</button>
+
+					<button type="submit" class="btn btn-success rounded-pill px-4 text-light">
+						<i class="bi bi-check2-circle me-1"></i>
+						Enregistrer
+					</button>
 				</div>
 			</form>
+
 		</div>
 	</div>
 </div>

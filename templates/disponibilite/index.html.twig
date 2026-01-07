@@ -34,26 +34,44 @@ title: 'Gestion disponibilités',
 
 	</div>
 
-	{# ================= MODAL ================= #}
-	<div class="modal fade" id="modalDispo" tabindex="-1">
-		<div class="modal-dialog modal-lg modal-dialog-centered">
-			<div class="modal-content rounded-4 shadow">
+{# ================= MODAL ================= #}
 
-				<form id="dispoForm">
+<div class="modal fade" id="modalDispo" tabindex="-1" aria-labelledby="modalDispoLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg modal-dialog-centered">
 
-					<div class="modal-header bg-primary text-white rounded-top-4">
-						<h5 class="modal-title fw-bold d-flex align-items-center gap-2">
-							<i class="bi bi-calendar-check"></i>
-							Disponibilité
-						</h5>
-						<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+<div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+
+
+<form id="dispoForm">
+
+
+{# Header #}
+<div class="modal-header bg-light border-0 px-4 py-3">
+	<div class="d-flex align-items-center gap-3">
+		<div class="rounded-3 d-inline-flex align-items-center justify-content-center bg-primary text-white" style="width:42px;height:42px;">
+			<i class="bi bi-calendar-check fs-5"></i>
+		</div>
+		<div class="lh-sm">
+			<h5 class="modal-title mb-0 fw-semibold" id="modalDispoLabel">Disponibilité</h5>
+			<small class="text-muted">Définir un créneau hebdomadaire</small>
+		</div>
+
 					</div>
 
-					<div class="modal-body p-3 p-md-4">
-						<div class="row g-3">
+<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button></div>{# Body #}<div class="modal-body px-4 py-4">
+<div class="row g-3">
 
-							<div class="col-md-6">
-								<label class="form-label">Jour</label>
+
+<div class="col-md-6">
+
+<label class="form-label fw-medium">Jour
+	<span class="text-danger">*</span>
+</label>
+<div class="input-group">
+	<span class="input-group-text bg-white">
+		<i class="bi bi-calendar-week"></i>
+	</span>
+
 								<select name="jourSemaine" class="form-select" required>
 									<option value="">— Choisir —</option>
 									<option value="1">Lundi</option>
@@ -65,47 +83,82 @@ title: 'Gestion disponibilités',
 									<option value="7">Dimanche</option>
 								</select>
 							</div>
+</div>
 
-							<div class="col-md-3">
-								<label class="form-label">Début</label>
+
+<div class="col-md-3">
+
+<label class="form-label fw-medium">Début
+	<span class="text-danger">*</span>
+</label>
+<div class="input-group">
+	<span class="input-group-text bg-white">
+		<i class="bi bi-clock"></i>
+	</span>
+
 								<input type="time" name="heureDebut" class="form-control" required>
 							</div>
+</div>
 
-							<div class="col-md-3">
-								<label class="form-label">Fin</label>
+
+<div class="col-md-3">
+
+<label class="form-label fw-medium">Fin
+	<span class="text-danger">*</span>
+</label>
+<div class="input-group">
+	<span class="input-group-text bg-white">
+		<i class="bi bi-clock-history"></i>
+	</span>
+
 								<input type="time" name="heureFin" class="form-control" required>
 							</div>
+</div>
 
-							<div class="col-md-6">
-								<label class="form-label">Durée du créneau (min)</label>
-								<input type="number" name="dureeCreneau" class="form-control" required>
-							</div>
 
-							<div class="col-md-6 d-flex align-items-end">
-								<div class="form-check">
-									<input class="form-check-input" type="checkbox" name="actif" checked>
-									<label class="form-check-label">Actif</label>
-								</div>
-							</div>
+<div class="col-md-6">
 
-						</div>
-					</div>
+<label class="form-label fw-medium">Durée du créneau (min)
+	<span class="text-danger">*</span>
+</label>
+<div class="input-group">
+	<span class="input-group-text bg-white">
+		<i class="bi bi-hourglass-split"></i>
+	</span>
+	<input type="number" name="dureeCreneau" class="form-control" min="1" placeholder="Ex: 15" required>
+</div>
+<div class="form-text">Exemple : 10, 15, 20 ou 30 minutes.</div></div>
 
-					<div class="modal-footer border-0 pt-0 pb-4 px-4">
-						<button class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">
-							Annuler
-						</button>
-						<button class="btn btn-primary rounded-pill px-4">
-							<i class="bi bi-check2-circle me-1"></i>
-							Enregistrer
-						</button>
-					</div>
 
-				</form>
+<div class="col-md-6 d-flex align-items-end">
 
-			</div>
-		</div>
-	</div>
+<div class="form-check form-switch">
+	<input class="form-check-input" type="checkbox" role="switch" name="actif" checked>
+	<label class="form-check-label fw-medium">Actif</label>
+</div></div>
+
+
+</div></div>
+
+
+{# Footer #}
+<div class="modal-footer border-0 px-4 pb-4 pt-0 d-flex gap-2 justify-content-end">
+	<button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">
+		Annuler
+	</button>
+
+<button type="submit" class="btn btn-primary rounded-pill px-4">
+	<i class="bi bi-check2-circle me-1"></i>
+	Enregistrer
+</button></div>
+
+
+</form>
+
+
+</div></div></div>
+
+
 
 	{# ✅ Style actions (comme Traitements) #}
 	<style>
@@ -147,182 +200,313 @@ title: 'Gestion disponibilités',
 
 {% block javascripts %}
 	{{ parent() }}
+ <script>
+document.addEventListener('DOMContentLoaded', () => {
 
-	 <script>
-	document.addEventListener('DOMContentLoaded', () => {
-	
-		const jours = {
-			1: 'Lundi',
-			2: 'Mardi',
-			3: 'Mercredi',
-			4: 'Jeudi',
-			5: 'Vendredi',
-			6: 'Samedi',
-			7: 'Dimanche'
-		};
-	
-		const container = document.getElementById('dispoContainer');
-		const modalEl = document.getElementById('modalDispo');
-		const modal = new bootstrap.Modal(modalEl);
-		const form = document.getElementById('dispoForm');
-	
-		let editId = null;
-	
-		// Évite le bug JSON.stringify(d) dans onclick (quotes, caractères spéciaux, etc.)
-		// => on passe via data-id et un tableau en mémoire.
-		let cacheById = {};
-	
-		function badgeActif(isActif) {
-			return isActif
-				? `<span class="badge bg-success-subtle text-success rounded-pill">Actif</span>`
-				: `<span class="badge bg-secondary-subtle text-secondary rounded-pill">Inactif</span>`;
-		}
-	
-		function dispoRow(d) {
-			return `
-				<div class="d-flex justify-content-between align-items-center mb-2 p-2 border rounded-3">
-					<div class="pe-2">
-						<div class="d-flex align-items-center gap-2 flex-wrap">
-							<span class="d-flex align-items-center">
-								<i class="bi bi-clock me-1"></i>
-								<strong>${d.heureDebut}</strong> → <strong>${d.heureFin}</strong>
-							</span>
-							<span class="text-muted">(${d.dureeCreneau} min)</span>
-							${badgeActif(!!d.actif)}
-						</div>
-					</div>
-	
-					<div class="table-actions">
-						<button type="button"
-								class="btn btn-action btn-action-primary js-edit"
-								data-id="${d.id}"
-								title="Modifier">
-							<i class="bi bi-pencil"></i>
-						</button>
-	
-						<button type="button"
-								class="btn btn-action btn-action-danger js-delete"
-								data-id="${d.id}"
-								title="Supprimer">
-							<i class="bi bi-trash"></i>
-						</button>
-					</div>
-				</div>
-			`;
-		}
-	
-		function dayCard(jourNumber, items) {
-			const content = items.length === 0
-				? `<p class="text-muted fst-italic mb-0">Aucune disponibilité</p>`
-				: items.map(dispoRow).join('');
-	
-			return `
-				<div class="col-md-6 col-lg-4">
-					<div class="card shadow-sm rounded-4 h-100 border-0">
-						<div class="card-header bg-primary text-white rounded-top-4">
-							<h5 class="mb-0">${jours[jourNumber]}</h5>
-						</div>
-						<div class="card-body">
-							${content}
-						</div>
-					</div>
-				</div>
-			`;
-		}
-	
-		// 🔄 Chargement
-		async function loadDispos() {
-			container.innerHTML = `
-				<div class="col-12 text-center py-4">
-					<div class="spinner-border text-primary"></div>
-				</div>
-			`;
-	
-			const dispos = await fetch('/api/disponibilites').then(r => r.json());
-	
-			cacheById = {};
-			dispos.forEach(d => { cacheById[d.id] = d; });
-	
-			const grouped = {};
-			dispos.forEach(d => {
-				const key = String(d.jourSemaine);
-				if (!grouped[key]) grouped[key] = [];
-				grouped[key].push(d);
-			});
-	
-			container.innerHTML = '';
-	
-			Object.keys(jours).forEach(j => {
-				const items = grouped[String(j)] ?? [];
-				container.insertAdjacentHTML('beforeend', dayCard(j, items));
-			});
-		}
-	
-		// ⚡ Delegation events (edit/delete)
-		container.addEventListener('click', async (e) => {
-			const btnEdit = e.target.closest('.js-edit');
-			const btnDel  = e.target.closest('.js-delete');
-	
-			if (btnEdit) {
-				const id = Number(btnEdit.dataset.id);
-				const d = cacheById[id];
-				if (!d) return;
-	
-				editId = d.id;
-				form.jourSemaine.value = d.jourSemaine;
-				form.heureDebut.value = d.heureDebut;
-				form.heureFin.value = d.heureFin;
-				form.dureeCreneau.value = d.dureeCreneau;
-				form.actif.checked = !!d.actif;
-	
-				modal.show();
-				return;
-			}
-	
-			if (btnDel) {
-				const id = Number(btnDel.dataset.id);
-				if (!confirm('Supprimer cette disponibilité ?')) return;
-	
-				await fetch(`/api/disponibilites/${id}`, { method: 'DELETE' });
-				await loadDispos();
-				return;
-			}
-		});
-	
-		// Reset propre quand on ferme le modal
-		modalEl.addEventListener('hidden.bs.modal', () => {
-			editId = null;
-			form.reset();
-			// checkbox "actif" doit revenir à checked si tu veux par défaut actif
-			form.actif.checked = true;
-		});
-	
-		// 💾 Enregistrement
-		form.addEventListener('submit', async (e) => {
-			e.preventDefault();
-	
-			const payload = {
-				jourSemaine: form.jourSemaine.value,
-				heureDebut: form.heureDebut.value,
-				heureFin: form.heureFin.value,
-				dureeCreneau: form.dureeCreneau.value,
-				actif: form.actif.checked
-			};
-	
-			const url = editId ? `/api/disponibilites/${editId}` : `/api/disponibilites`;
-	
-			await fetch(url, {
-				method: editId ? 'PUT' : 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(payload)
-			});
-	
-			modal.hide();
-			await loadDispos();
-		});
-	
-		loadDispos();
-	});
-	</script>
+  const jours = {
+    1: 'Lundi',
+    2: 'Mardi',
+    3: 'Mercredi',
+    4: 'Jeudi',
+    5: 'Vendredi',
+    6: 'Samedi',
+    7: 'Dimanche'
+  };
+
+  const container = document.getElementById('dispoContainer');
+  const modalEl   = document.getElementById('modalDispo');
+  const modal     = new bootstrap.Modal(modalEl);
+  const form      = document.getElementById('dispoForm');
+
+  // Champs
+  const selJour = form.querySelector('select[name="jourSemaine"]');
+  const debut   = form.querySelector('input[name="heureDebut"]');
+  const fin     = form.querySelector('input[name="heureFin"]');
+  const duree   = form.querySelector('input[name="dureeCreneau"]');
+  const actif   = form.querySelector('input[name="actif"]');
+
+  let editId = null;
+  let cacheById = {};
+
+  /* ---------------------------
+     Helpers UI / Validation
+  --------------------------- */
+
+  function setDisabledFields(isDisabled) {
+    debut.disabled = isDisabled;
+    fin.disabled   = isDisabled;
+    duree.disabled = isDisabled;
+    actif.disabled = isDisabled;
+  }
+
+  function markDureeRed(isRed) {
+    duree.classList.toggle('border-danger', !!isRed);
+    duree.classList.toggle('border-2', !!isRed);
+  }
+
+  // 1) Si jour pas choisi => on désactive les champs heure + durée + actif
+  function syncDayState() {
+    const hasDay = !!selJour.value;
+    setDisabledFields(!hasDay);
+
+    if (!hasDay) {
+      debut.value = '';
+      fin.value = '';
+      fin.removeAttribute('min');
+      markDureeRed(false);
+    }
+  }
+
+  // 2) Empêche fin < debut (désactive les heures antérieures)
+  function syncEndConstraints() {
+    if (debut.disabled) return;
+
+    if (!debut.value) {
+      fin.removeAttribute('min');
+      // si pas de début, on ne force rien
+      return;
+    }
+
+    // Empêche de choisir une fin avant le début
+    fin.min = debut.value;
+
+    // Si fin vide ou fin < début -> corriger
+    if (!fin.value || fin.value < debut.value) {
+      fin.value = debut.value;
+    }
+  }
+
+  // 3) Bordure rouge sur durée dès que début+fin sont remplis
+  function syncDureeBorder() {
+    const bothFilled = !!debut.value && !!fin.value;
+    markDureeRed(bothFilled);
+  }
+
+  /* ---------------------------
+     Events (form controls)
+  --------------------------- */
+
+  selJour.addEventListener('change', () => {
+    syncDayState();
+    syncEndConstraints();
+    syncDureeBorder();
+  });
+
+  debut.addEventListener('input', () => {
+    syncEndConstraints();
+    syncDureeBorder();
+  });
+  debut.addEventListener('change', () => {
+    syncEndConstraints();
+    syncDureeBorder();
+  });
+
+  fin.addEventListener('input', () => {
+    if (debut.value && fin.value < debut.value) fin.value = debut.value;
+    syncDureeBorder();
+  });
+  fin.addEventListener('change', () => {
+    if (debut.value && fin.value < debut.value) fin.value = debut.value;
+    syncDureeBorder();
+  });
+
+  /* ---------------------------
+     Render
+  --------------------------- */
+
+  function badgeActif(isActif) {
+    return isActif
+      ? `<span class="badge bg-success-subtle text-success rounded-pill">Actif</span>`
+      : `<span class="badge bg-secondary-subtle text-secondary rounded-pill">Inactif</span>`;
+  }
+
+  function dispoRow(d) {
+    return `
+      <div class="d-flex justify-content-between align-items-center mb-2 p-2 border rounded-3">
+        <div class="pe-2">
+          <div class="d-flex align-items-center gap-2 flex-wrap">
+            <span class="d-flex align-items-center">
+              <i class="bi bi-clock me-1"></i>
+              <strong>${d.heureDebut}</strong> → <strong>${d.heureFin}</strong>
+            </span>
+            <span class="text-muted">(${d.dureeCreneau} min)</span>
+            ${badgeActif(!!d.actif)}
+          </div>
+        </div>
+
+        <div class="table-actions">
+          <button type="button"
+                  class="btn btn-action btn-action-primary js-edit"
+                  data-id="${d.id}"
+                  title="Modifier">
+            <i class="bi bi-pencil"></i>
+          </button>
+
+          <button type="button"
+                  class="btn btn-action btn-action-danger js-delete"
+                  data-id="${d.id}"
+                  title="Supprimer">
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
+      </div>
+    `;
+  }
+
+  function dayCard(jourNumber, items) {
+    const content = items.length === 0
+      ? `<p class="text-muted fst-italic mb-0">Aucune disponibilité</p>`
+      : items.map(dispoRow).join('');
+
+    return `
+      <div class="col-md-6 col-lg-4">
+        <div class="card shadow-sm rounded-4 h-100 border-0">
+          <div class="card-header bg-primary text-white rounded-top-4">
+            <h5 class="mb-0">${jours[jourNumber]}</h5>
+          </div>
+          <div class="card-body">
+            ${content}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  async function loadDispos() {
+    container.innerHTML = `
+      <div class="col-12 text-center py-4">
+        <div class="spinner-border text-primary"></div>
+      </div>
+    `;
+
+    const dispos = await fetch('/api/disponibilites').then(r => r.json());
+
+    cacheById = {};
+    dispos.forEach(d => { cacheById[d.id] = d; });
+
+    const grouped = {};
+    dispos.forEach(d => {
+      const key = String(d.jourSemaine);
+      if (!grouped[key]) grouped[key] = [];
+      grouped[key].push(d);
+    });
+
+    container.innerHTML = '';
+    Object.keys(jours).forEach(j => {
+      const items = grouped[String(j)] ?? [];
+      container.insertAdjacentHTML('beforeend', dayCard(j, items));
+    });
+  }
+
+  /* ---------------------------
+     Delegation edit/delete
+  --------------------------- */
+
+  container.addEventListener('click', async (e) => {
+    const btnEdit = e.target.closest('.js-edit');
+    const btnDel  = e.target.closest('.js-delete');
+
+    if (btnEdit) {
+      const id = Number(btnEdit.dataset.id);
+      const d = cacheById[id];
+      if (!d) return;
+
+      editId = d.id;
+
+      form.jourSemaine.value = d.jourSemaine;
+      form.heureDebut.value  = d.heureDebut;
+      form.heureFin.value    = d.heureFin;
+      form.dureeCreneau.value = d.dureeCreneau;
+      form.actif.checked     = !!d.actif;
+
+      // Appliquer contraintes UI
+      syncDayState();
+      syncEndConstraints();
+      syncDureeBorder();
+
+      modal.show();
+      return;
+    }
+
+    if (btnDel) {
+      const id = Number(btnDel.dataset.id);
+      if (!confirm('Supprimer cette disponibilité ?')) return;
+
+      await fetch(`/api/disponibilites/${id}`, { method: 'DELETE' });
+      await loadDispos();
+      return;
+    }
+  });
+
+  /* ---------------------------
+     Modal lifecycle
+  --------------------------- */
+
+  // Au moment où le modal s'ouvre, on applique l'état des champs
+  modalEl.addEventListener('shown.bs.modal', () => {
+    syncDayState();
+    syncEndConstraints();
+    syncDureeBorder();
+  });
+
+  modalEl.addEventListener('hidden.bs.modal', () => {
+    editId = null;
+    form.reset();
+    form.actif.checked = true;
+
+    fin.removeAttribute('min');
+    markDureeRed(false);
+
+    // jour vide => on re-désactive les heures
+    syncDayState();
+  });
+
+  /* ---------------------------
+     Save
+  --------------------------- */
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    // Sécurité: vérifier jour + heures
+    if (!selJour.value) {
+      alert("Veuillez choisir un jour.");
+      selJour.focus();
+      return;
+    }
+
+    if (debut.value && fin.value && fin.value < debut.value) {
+      alert("L'heure de fin doit être supérieure ou égale à l'heure de début.");
+      fin.focus();
+      return;
+    }
+
+    const payload = {
+      jourSemaine: selJour.value,
+      heureDebut: debut.value,
+      heureFin: fin.value,
+      dureeCreneau: duree.value,
+      actif: actif.checked
+    };
+
+    const url = editId ? `/api/disponibilites/${editId}` : `/api/disponibilites`;
+
+    await fetch(url, {
+      method: editId ? 'PUT' : 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    modal.hide();
+    await loadDispos();
+  });
+
+  // Init page
+  syncDayState();
+  loadDispos();
+});
+</script>
+
+
 {% endblock %}
 

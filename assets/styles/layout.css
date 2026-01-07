@@ -738,3 +738,30 @@ font-weight: 400;
 body.auth-locked{
   overflow: hidden;
 }
+#analyseModal .form-control:focus,
+#analyseModal .form-select:focus {
+  box-shadow: 0 0 0 .2rem rgba(25,135,84,.15);
+  border-color: rgba(25,135,84,.4);
+}
+#analyseModal .input-group-text {
+  border-right: 0;
+}
+#analyseModal .input-group .form-control {
+  border-left: 0;
+}
+
+#modalDispo .form-control:focus,
+#modalDispo .form-select:focus{
+  box-shadow: 0 0 0 .2rem rgba(13,110,253,.15);
+  border-color: rgba(13,110,253,.45);
+}
+#modalDispo .input-group-text{ border-right: 0; }
+#modalDispo .input-group .form-control,
+#modalDispo .input-group .form-select{ border-left: 0; }
+#certificatModal .form-control:focus,
+#certificatModal textarea:focus{
+  box-shadow: 0 0 0 .2rem rgba(25,135,84,.15);
+  border-color: rgba(25,135,84,.45);
+}
+#certificatModal .input-group-text{ border-right: 0; }
+#certificatModal .input-group .form-control{ border-left: 0; }
