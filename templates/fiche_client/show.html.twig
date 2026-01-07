@@ -604,6 +604,23 @@ Analyses
 	    });
 	});
 	</script>
+ <script>
+document.addEventListener("DOMContentLoaded", () => {
+  // Ferme tous les accordions au chargement
+  document.querySelectorAll(".accordion .accordion-collapse").forEach((el) => {
+    // ferme via Bootstrap (si déjà initialisé ou non)
+    bootstrap.Collapse.getOrCreateInstance(el, { toggle: false }).hide();
+  });
+
+  // optionnel : remet l'état visuel des boutons (flèche / aria)
+  document.querySelectorAll(".accordion .accordion-button").forEach((btn) => {
+    btn.classList.add("collapsed");
+    btn.setAttribute("aria-expanded", "false");
+  });
+});
+</script>
+
+
 
 {% endblock %}
 
