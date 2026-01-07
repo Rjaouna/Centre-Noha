@@ -1,361 +1,752 @@
-{# --------------------------------------------- #}
-{#  Troubles digestifs - fiche patient (Lux)     #}
-{# --------------------------------------------- #}
+{# ========================================================= #}
+{#  HUB INFOS MÉDICALES - UX Moderne (1 modal, tabs, live UI) #}
+{# ========================================================= #}
 
-{# ====== BLOC 3 CARTES (regroupement) ====== #}
-	<div class="card shadow-sm border-0 rounded-4 mb-4"> <div class="card-body p-3 p-md-4">
-		<div
-			class="row g-3">
-
-			{# Digestif #}
-			<div class="col-md-4">
-				<div class="p-4 rounded-4 border shadow-sm h-100 clickable-alert" id="card-digestif" style="cursor:pointer;" data-bs-toggle="modal">
-					<div class="d-flex justify-content-between gap-3">
-						<div>
-							<h5 class="fw-bold mb-1 d-flex align-items-center gap-2" id="digestifTitle">
-								<i class="bi bi-bandaid"></i>
-								Troubles digestifs
-							</h5>
-							<p class="mb-0 small opacity-75" id="digestifText">
-								Charger...
-							</p>
-						</div>
-						<i class="bi bi-chevron-right fs-4 opacity-50"></i>
+	<section class="medical-hub mt-3"> <div class="medical-hub__header">
+		<div class="d-flex align-items-start gap-3">
+			<div class="medical-hub__icon">
+				<i class="bi bi-clipboard2-pulse"></i>
+			</div>
+			<div class="flex-grow-1">
+				<div class="d-flex align-items-center justify-content-between gap-3 flex-wrap">
+					<div>
+						<h4 class="medical-hub__title mb-1">Informations médicales</h4>
+						<div class="medical-hub__subtitle">Renseigne rapidement les infos clés, sans recharger la page.</div>
 					</div>
-				</div>
-			</div>
 
-			{# Symptomes #}
-			<div class="col-md-4">
-				<div class="p-4 rounded-4 border shadow-sm h-100 clickable-alert" id="card-symptomes" style="cursor:pointer;" data-bs-toggle="modal">
-					<div class="d-flex justify-content-between gap-3">
-						<div>
-							<h5 class="fw-bold mb-1 d-flex align-items-center gap-2" id="symptomesTitle">
-								<i class="bi bi-heart-pulse"></i>
-								Symptômes & douleurs
-							</h5>
-							<p class="mb-0 small opacity-75" id="symptomesText">
-								Charger...
-							</p>
-						</div>
-						<i class="bi bi-chevron-right fs-4 opacity-50"></i>
-					</div>
-				</div>
-			</div>
-
-			{# Maladies #}
-			<div class="col-md-4">
-				<div class="p-4 rounded-4 border shadow-sm h-100 clickable-alert" id="card-maladies" style="cursor:pointer;" data-bs-toggle="modal">
-					<div class="d-flex justify-content-between gap-3">
-						<div>
-							<h5 class="fw-bold mb-1 d-flex align-items-center gap-2" id="maladiesTitle">
-								<i class="bi bi-activity"></i>
-								Maladies chroniques
-							</h5>
-							<p class="mb-0 small opacity-75" id="maladiesText">
-								Charger...
-							</p>
-						</div>
-						<i class="bi bi-chevron-right fs-4 opacity-50"></i>
-					</div>
-				</div>
-			</div>
-
-		</div>
-	</div>
-</div>
-
-{# ===== MODAL ADD / EDIT DIGESTIF ===== #}
-<div class="modal fade" id="modalAddDigestif" tabindex="-1" aria-hidden="true">
-	<div class="modal-dialog modal-lg modal-dialog-centered">
-		<div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
-
-			<div class="modal-header bg-success text-white border-0 px-4 py-3">
-				<div class="d-flex align-items-center gap-3">
-					<div class="rounded-3 d-inline-flex align-items-center justify-content-center bg-white text-success" style="width:42px;height:42px;">
-						<i class="bi bi-bandaid fs-5"></i>
-					</div>
-					<div class="lh-sm">
-						<h5 class="modal-title mb-0 fw-semibold">Troubles digestifs</h5>
-						<small class="opacity-75">Ajouter / modifier</small>
-					</div>
-				</div>
-				<button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-			</div>
-
-			<div class="modal-body px-4 py-4">
-				<form id="digestifForm">
-					{% macro pills(theme, name, options) %}
-						<div class="d-flex flex-wrap gap-2">
-							{% for opt in options %}
-								{% set id = name ~ '_' ~ loop.index %}
-								<input class="btn-check" type="radio" name="{{ name }}" id="{{ id }}" value="{{ opt }}" autocomplete="off">
-								<label class="btn btn-outline-{{ theme }} rounded-pill px-3 py-2" for="{{ id }}">{{ opt }}</label>
-							{% endfor %}
-						</div>
-					{% endmacro %}
-
-					{% macro bloc(theme, icon, title, name, options) %}
-						<div class="p-3 p-md-4 rounded-4 border bg-light shadow-sm mb-3">
-							<div class="d-flex align-items-center gap-2 mb-2">
-								<i class="bi {{ icon }} text-{{ theme }} fs-5"></i>
-								<h6 class="fw-bold mb-0">{{ title }}</h6>
-							</div>
-							{{ _self.pills(theme, name, options) }}
-						</div>
-					{% endmacro %}
-
-					{{ _self.bloc('success','bi-fire','Acidité gastrique','aciditeGastrique',['Jamais','Parfois','Souvent']) }}
-					{{ _self.bloc('success','bi-exclamation-octagon','Constipation','constipation',['Jamais','Parfois','Souvent']) }}
-					{{ _self.bloc('success','bi-droplet-half','Diarrhée','diarrhee',['Jamais','Occasionnelle','Souvent']) }}
-					{{ _self.bloc('success','bi-wind','Gaz','gaz',['Rarement','Parfois','Fréquents']) }}
-					{{ _self.bloc('success','bi-cloud','Éructation','eructation',['Rarement','Parfois','Souvent']) }}
-					{{ _self.bloc('success','bi-droplet','Aspect des selles','aspectSelles',['Minces','Épaisses','Discontinues']) }}
-
-				</form>
-			</div>
-
-			<div class="modal-footer border-0 px-4 pb-4 pt-0 d-flex gap-2 justify-content-end">
-				<button class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Annuler</button>
-				<button class="btn btn-success rounded-pill px-4" id="btnSaveDigestif">
-					<i class="bi bi-check2-circle me-1"></i>
-					Enregistrer
-				</button>
-			</div>
-
-		</div>
-	</div>
-</div>
-
-{# ===== MODAL VIEW DIGESTIF ===== #}
-<div class="modal fade" id="modalDigestif" tabindex="-1" aria-hidden="true">
-	<div class="modal-dialog modal-lg modal-dialog-centered">
-		<div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
-
-			<div class="modal-header bg-warning text-white border-0 px-4 py-3">
-				<h5 class="modal-title fw-semibold d-flex align-items-center gap-2 mb-0">
-					<i class="bi bi-bandaid-fill fs-5"></i>
-					Troubles digestifs
-				</h5>
-				<button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-			</div>
-
-			<div class="modal-body px-4 py-4">
-				<div class="row g-3">
-					{% set boxes = [
-            ['Acidité gastrique','aciditeGastrique','danger','bi-fire'],
-            ['Constipation','constipation','warning','bi-dash-circle'],
-            ['Diarrhée','diarrhee','primary','bi-droplet-half'],
-            ['Gaz','gaz','success','bi-wind'],
-            ['Éructation','eructation','info','bi-chat-dots'],
-            ['Aspect des selles','aspectSelles','secondary','bi-droplet']
-          ] %}
-
-					{% for b in boxes %}
-						<div class="col-md-4">
-							<div class="p-3 rounded-4 bg-light border-start border-4 border-{{ b[2] }} shadow-sm h-100">
-								<div class="text-muted small fw-semibold">
-									<i class="bi {{ b[3] }} me-1 text-{{ b[2] }}"></i>
-									{{ b[0] }}
-								</div>
-								<div class="fs-5 fw-bold" id="view-{{ b[1] }}">-</div>
-							</div>
-						</div>
-					{% endfor %}
-				</div>
-
-				<div class="text-end mt-4">
-					<button class="btn btn-warning rounded-pill px-4 fw-semibold" id="btnEditDigestif" data-bs-target="#modalAddDigestif" data-bs-toggle="modal" data-bs-dismiss="modal">
-						<i class="bi bi-pencil-square me-1"></i>
-						Modifier
+					<button class="btn btn-dark rounded-pill px-4 medical-hub__open" data-bs-toggle="modal" data-bs-target="#medicalHubModal">
+						<i class="bi bi-window-sidebar me-1"></i>
+						Ouvrir le hub
 					</button>
 				</div>
+
+				<div class="mt-3">
+					<div class="d-flex align-items-center justify-content-between small text-muted mb-1">
+						<span>Complétude</span>
+						<span id="medicalCompletionText">—</span>
+					</div>
+					<div class="progress medical-progress">
+						<div class="progress-bar" id="medicalCompletionBar" role="progressbar" style="width:0%"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	{# Tiles #}
+	<div class="medical-tiles mt-3">
+		<button type="button" class="medical-tile" id="tile-digestif" data-open-tab="digestif" data-bs-toggle="modal" data-bs-target="#medicalHubModal">
+			<div class="medical-tile__stripe stripe-success"></div>
+			<div class="medical-tile__top">
+				<div class="medical-tile__badge" id="badge-digestif">—</div>
+				<div class="medical-tile__chev">
+					<i class="bi bi-chevron-right"></i>
+				</div>
+			</div>
+			<div class="medical-tile__title">
+				<span class="tile-icon bg-success-subtle text-success">
+					<i class="bi bi-bandaid"></i>
+				</span>
+				Troubles digestifs
+			</div>
+			<div class="medical-tile__desc" id="desc-digestif">Chargement…</div>
+			<div class="medical-tile__mini" id="mini-digestif"></div>
+		</button>
+
+		<button type="button" class="medical-tile" id="tile-symptomes" data-open-tab="symptomes" data-bs-toggle="modal" data-bs-target="#medicalHubModal">
+			<div class="medical-tile__stripe stripe-primary"></div>
+			<div class="medical-tile__top">
+				<div class="medical-tile__badge" id="badge-symptomes">—</div>
+				<div class="medical-tile__chev">
+					<i class="bi bi-chevron-right"></i>
+				</div>
+			</div>
+			<div class="medical-tile__title">
+				<span class="tile-icon bg-primary-subtle text-primary">
+					<i class="bi bi-heart-pulse"></i>
+				</span>
+				Symptômes généraux
+			</div>
+			<div class="medical-tile__desc" id="desc-symptomes">Chargement…</div>
+			<div class="medical-tile__mini" id="mini-symptomes"></div>
+		</button>
+
+		<button type="button" class="medical-tile" id="tile-maladies" data-open-tab="maladies" data-bs-toggle="modal" data-bs-target="#medicalHubModal">
+			<div class="medical-tile__stripe stripe-danger"></div>
+			<div class="medical-tile__top">
+				<div class="medical-tile__badge" id="badge-maladies">—</div>
+				<div class="medical-tile__chev">
+					<i class="bi bi-chevron-right"></i>
+				</div>
+			</div>
+			<div class="medical-tile__title">
+				<span class="tile-icon bg-danger-subtle text-danger">
+					<i class="bi bi-activity"></i>
+				</span>
+				Maladies chroniques
+			</div>
+			<div class="medical-tile__desc" id="desc-maladies">Chargement…</div>
+			<div class="medical-tile__mini" id="mini-maladies"></div>
+		</button>
+	</div>
+</section>
+
+{# ========================= MODAL HUB ========================= #}
+<div class="modal fade" id="medicalHubModal" tabindex="-1" aria-hidden="true">
+	<div class="modal-dialog modal-xl modal-dialog-centered">
+		<div class="modal-content medical-modal border-0 shadow-lg rounded-4 overflow-hidden">
+
+			<div class="medical-modal__header">
+				<div class="d-flex align-items-center gap-3">
+					<div class="medical-modal__icon">
+						<i class="bi bi-clipboard2-pulse"></i>
+					</div>
+					<div class="flex-grow-1">
+						<div class="d-flex align-items-center justify-content-between gap-3 flex-wrap">
+							<div>
+								<h5 class="mb-0 fw-bold">Hub médical</h5>
+								<div class="small opacity-75">Consulter + modifier sans recharger.</div>
+							</div>
+							<button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+						</div>
+
+						<div class="medical-tabs mt-3">
+							<ul class="nav nav-pills" id="medicalTabs" role="tablist">
+								<li class="nav-item" role="presentation">
+									<button class="nav-link active" id="tab-btn-digestif" data-bs-toggle="pill" data-bs-target="#tab-digestif" type="button" role="tab">
+										<i class="bi bi-bandaid me-1"></i>
+										Digestif
+									</button>
+								</li>
+								<li class="nav-item" role="presentation">
+									<button class="nav-link" id="tab-btn-symptomes" data-bs-toggle="pill" data-bs-target="#tab-symptomes" type="button" role="tab">
+										<i class="bi bi-heart-pulse me-1"></i>
+										Symptômes
+									</button>
+								</li>
+								<li class="nav-item" role="presentation">
+									<button class="nav-link" id="tab-btn-maladies" data-bs-toggle="pill" data-bs-target="#tab-maladies" type="button" role="tab">
+										<i class="bi bi-activity me-1"></i>
+										Maladies
+									</button>
+								</li>
+							</ul>
+						</div>
+
+					</div>
+				</div>
+			</div>
+
+			<div class="modal-body p-0">
+				<div
+					class="tab-content p-4">
+
+					{# -------- TAB DIGESTIF (dans ce fichier) -------- #}
+					<div class="tab-pane fade show active" id="tab-digestif" role="tabpanel">
+
+						<div class="section-head">
+							<div>
+								<div class="section-kicker text-success">Section</div>
+								<h5 class="section-title mb-0">Troubles digestifs</h5>
+							</div>
+
+							<div class="d-flex gap-2">
+								<button class="btn btn-outline-light rounded-pill px-3" type="button" id="btnEdit-digestif">
+									<i class="bi bi-pencil-square me-1"></i>
+									Modifier
+								</button>
+							</div>
+						</div>
+
+						<div class="section-card">
+							<div class="row g-3 align-items-start">
+								<div class="col-lg-8">
+									<div class="fw-semibold mb-2">Résumé</div>
+									<div class="chips" id="chips-digestif"></div>
+									<div class="text-muted small mt-2" id="empty-digestif" style="display:none;">
+										Aucune donnée. Clique sur “Modifier” pour compléter.
+									</div>
+								</div>
+
+								<div class="col-lg-4">
+									<div class="mini-panel">
+										<div class="mini-panel__title">Conseil UX</div>
+										<div class="mini-panel__text">
+											Mets “Jamais / Parfois / Souvent” au feeling, tu pourras affiner plus tard.
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="edit-drawer" id="drawer-digestif" style="display:none;">
+							<form id="form-digestif" class="edit-form">
+								<div class="row g-3">
+									{% set dig = [
+                    ['aciditeGastrique','Acidité gastrique','bi-fire', ['Jamais','Parfois','Souvent']],
+                    ['constipation','Constipation','bi-exclamation-octagon', ['Jamais','Parfois','Souvent']],
+                    ['diarrhee','Diarrhée','bi-droplet-half', ['Jamais','Occasionnelle','Souvent']],
+                    ['gaz','Gaz','bi-wind', ['Rarement','Parfois','Fréquents']],
+                    ['eructation','Éructation','bi-cloud', ['Rarement','Parfois','Souvent']],
+                    ['aspectSelles','Aspect des selles','bi-droplet', ['Minces','Épaisses','Discontinues']]
+                  ] %}
+									{% for f in dig %}
+										<div class="col-md-6">
+											<div class="choice-card">
+												<div class="choice-card__title">
+													<i class="bi {{ f[2] }} text-success me-1"></i>
+													{{ f[1] }}
+												</div>
+												<div class="choice-row">
+													{% for opt in f[3] %}
+														{% set id = 'digestif_' ~ f[0] ~ '_' ~ loop.index %}
+														<input class="btn-check" type="radio" name="{{ f[0] }}" id="{{ id }}" value="{{ opt }}" autocomplete="off">
+														<label class="btn btn-outline-success rounded-pill px-3 py-2" for="{{ id }}">{{ opt }}</label>
+													{% endfor %}
+												</div>
+											</div>
+										</div>
+									{% endfor %}
+								</div>
+
+								<div class="edit-actions">
+									<button type="button" class="btn btn-light rounded-pill px-4" id="btnCancel-digestif">
+										Annuler
+									</button>
+									<button type="button" class="btn btn-success rounded-pill px-4" id="btnSave-digestif">
+										<i class="bi bi-check2-circle me-1"></i>
+										Enregistrer
+									</button>
+								</div>
+							</form>
+						</div>
+
+					</div>
+
+					{# -------- TAB SYMPTOMES + MALADIES (dans leurs fichiers) -------- #}
+					{{ include('fiche_client/_composants/_bloc_infos_medicales/_symptomes_generaux.html.twig') }}
+					{{ include('fiche_client/_composants/_bloc_infos_medicales/_maladies_chroniques.html.twig') }}
+
+				</div>
 			</div>
 
 		</div>
 	</div>
 </div>
 
+{# ========================= STYLE (UX) ========================= #}
+<style>
+	.medical-hub {
+		border-radius: 24px;
+		border: 1px solid rgba(0, 0, 0, .08);
+		background: linear-gradient(180deg, rgba(13,110,253,.06), rgba(255,255,255,.85));
+		box-shadow: 0 18px 50px rgba(0, 0, 0, .08);
+		overflow: hidden;
+	}
+	.medical-hub__header {
+		padding: 20px 20px 16px;
+	}
+	.medical-hub__icon {
+		width: 48px;
+		height: 48px;
+		border-radius: 16px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: rgba(13, 110, 253, .12);
+		color: #0d6efd;
+		box-shadow: 0 10px 26px rgba(0, 0, 0, .08);
+		flex: 0 0 auto;
+		font-size: 22px;
+	}
+	.medical-hub__title {
+		font-weight: 900;
+		letter-spacing: 0.2px;
+	}
+	.medical-hub__subtitle {
+		color: rgba(0, 0, 0, .55);
+		font-size: 0.95rem;
+	}
+	.medical-hub__open {
+		box-shadow: 0 12px 26px rgba(0, 0, 0, .14);
+	}
+
+	.medical-progress {
+		height: 10px;
+		border-radius: 999px;
+		overflow: hidden;
+		background: rgba(0, 0, 0, .06);
+	}
+	.medical-progress .progress-bar {
+		border-radius: 999px;
+	}
+
+	.medical-tiles {
+		padding: 0 20px 20px;
+		display: grid;
+		grid-template-columns: repeat(12, 1fr);
+		gap: 14px;
+	}
+	.medical-tile {
+		grid-column: span 4;
+		border: 1px solid rgba(0, 0, 0, .08);
+		border-radius: 22px;
+		background: rgba(255, 255, 255, .85);
+		box-shadow: 0 10px 30px rgba(0, 0, 0, .06);
+		padding: 16px 16px 14px;
+		text-align: left;
+		position: relative;
+		overflow: hidden;
+		transition: 0.18s ease;
+	}
+	.medical-tile:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 18px 46px rgba(0, 0, 0, .10);
+	}
+	.medical-tile__stripe {
+		position: absolute;
+		left: 0;
+		top: 0;
+		bottom: 0;
+		width: 7px;
+		border-radius: 20px 0 0 20px;
+	}
+	.stripe-success {
+		background: linear-gradient(180deg, #20c997, #198754);
+	}
+	.stripe-primary {
+		background: linear-gradient(180deg, #4dabf7, #0d6efd);
+	}
+	.stripe-danger {
+		background: linear-gradient(180deg, #ff6b6b, #dc3545);
+	}
+
+	.medical-tile__top {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 10px;
+	}
+	.medical-tile__badge {
+		font-size: 0.78rem;
+		padding: 6px 10px;
+		border-radius: 999px;
+		font-weight: 800;
+		letter-spacing: 0.2px;
+		border: 1px solid rgba(0, 0, 0, .10);
+		background: rgba(0, 0, 0, .03);
+	}
+	.medical-tile__chev {
+		opacity: .55;
+	}
+	.medical-tile__title {
+		font-weight: 900;
+		display: flex;
+		align-items: center;
+		gap: 10px;
+	}
+	.tile-icon {
+		width: 34px;
+		height: 34px;
+		border-radius: 12px;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+	}
+	.medical-tile__desc {
+		color: rgba(0, 0, 0, .58);
+		margin-top: 8px;
+		font-size: 0.92rem;
+	}
+	.medical-tile__mini {
+		margin-top: 10px;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 6px;
+	}
+	.mini-chip {
+		font-size: 0.78rem;
+		padding: 6px 10px;
+		border-radius: 999px;
+		background: rgba(13, 110, 253, .08);
+		border: 1px solid rgba(13, 110, 253, .14);
+		color: #0d6efd;
+		font-weight: 700;
+	}
+
+	@media(max-width: 992px) {
+		.medical-tile {
+			grid-column: span 12;
+		}
+	}
+
+	.medical-modal__header {
+		padding: 18px 18px 14px;
+		background: linear-gradient(135deg, #111827, #0b1220);
+		color: white;
+	}
+	.medical-modal__icon {
+		width: 44px;
+		height: 44px;
+		border-radius: 16px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: rgba(255, 255, 255, .12);
+		box-shadow: 0 12px 28px rgba(0, 0, 0, .25);
+		font-size: 20px;
+	}
+	.medical-tabs .nav-link {
+		border-radius: 999px;
+		font-weight: 900;
+		letter-spacing: 0.2px;
+		padding: 10px 14px;
+		color: rgba(255, 255, 255, .78);
+		background: rgba(255, 255, 255, .08);
+	}
+	.medical-tabs .nav-link.active {
+		background: rgba(255, 255, 255, .20);
+		color: #fff;
+	}
+
+	.section-head {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 14px;
+		flex-wrap: wrap;
+		margin-bottom: 14px;
+	}
+	.section-kicker {
+		font-size: 0.78rem;
+		font-weight: 900;
+		letter-spacing: 0.2px;
+		text-transform: uppercase;
+		opacity: .75;
+	}
+	.section-title {
+		font-weight: 950;
+		letter-spacing: 0.2px;
+	}
+	.section-card {
+		border-radius: 22px;
+		border: 1px solid rgba(0, 0, 0, .08);
+		background: rgba(255, 255, 255, .92);
+		box-shadow: 0 12px 34px rgba(0, 0, 0, .06);
+		padding: 16px;
+	}
+	.chips {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+	}
+	.chip {
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
+		border-radius: 999px;
+		padding: 8px 12px;
+		font-weight: 800;
+		font-size: 0.86rem;
+		border: 1px solid rgba(0, 0, 0, .10);
+		background: rgba(0, 0, 0, .03);
+	}
+	.chip i {
+		opacity: .75;
+	}
+
+	.mini-panel {
+		border-radius: 20px;
+		background: linear-gradient(180deg, rgba(13,110,253,.08), rgba(13,110,253,.04));
+		border: 1px solid rgba(13, 110, 253, .18);
+		padding: 14px;
+	}
+	.mini-panel__title {
+		font-weight: 950;
+		letter-spacing: 0.2px;
+	}
+	.mini-panel__text {
+		color: rgba(0, 0, 0, .58);
+		font-size: 0.92rem;
+		margin-top: 6px;
+	}
+
+	.edit-drawer {
+		margin-top: 14px;
+		border-radius: 22px;
+		border: 1px solid rgba(0, 0, 0, .08);
+		background: rgba(255, 255, 255, .92);
+		box-shadow: 0 12px 34px rgba(0, 0, 0, .06);
+		padding: 16px;
+	}
+	.choice-card {
+		border-radius: 18px;
+		border: 1px solid rgba(0, 0, 0, .08);
+		background: rgba(0, 0, 0, .02);
+		padding: 12px;
+	}
+	.choice-card__title {
+		font-weight: 900;
+		margin-bottom: 10px;
+	}
+	.choice-row {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+	}
+	.edit-actions {
+		display: flex;
+		justify-content: flex-end;
+		gap: 10px;
+		margin-top: 14px;
+	}
+</style>
+
+{# ========================= JS (Live UI) ========================= #}
  <script>
 (function () {
-  const clientId = {{ fiche_client.id }};
+  const URLS = {
+    digestif: {
+      show: "{{ path('api_troubles_digestifs_show', {idClient: fiche_client.id}) }}",
+      add:  "{{ path('api_digestifs_add', {id: fiche_client.id}) }}",
+      edit: "{{ path('api_digestifs_edit', {id: fiche_client.id}) }}"
+    },
+    symptomes: {
+      show: "{{ path('api_symptomes_show', {idClient: fiche_client.id}) }}",
+      add:  "{{ path('api_symptomes_add', {id: fiche_client.id}) }}",
+      edit: "{{ path('api_symptomes_edit', {id: fiche_client.id}) }}"
+    },
+    maladies: {
+      show: "{{ path('api_maladies_show', {idClient: fiche_client.id}) }}",
+      add:  "{{ path('api_maladies_add', {id: fiche_client.id}) }}",
+      edit: "{{ path('api_maladies_edit', {id: fiche_client.id}) }}"
+    }
+  };
 
-  // URLs
-  const DIG_SHOW = "{{ path('api_troubles_digestifs_show', {idClient: fiche_client.id}) }}";
-  const DIG_ADD  = "{{ path('api_digestifs_add',  {id: fiche_client.id}) }}";
-  const DIG_EDIT = "{{ path('api_digestifs_edit', {id: fiche_client.id}) }}";
+  const FIELDS = {
+    digestif: [
+      ['aciditeGastrique','Acidité', 'bi-fire'],
+      ['constipation','Constipation', 'bi-exclamation-octagon'],
+      ['diarrhee','Diarrhée', 'bi-droplet-half'],
+      ['gaz','Gaz', 'bi-wind'],
+      ['eructation','Éructation', 'bi-cloud'],
+      ['aspectSelles','Selles', 'bi-droplet']
+    ],
+    symptomes: [
+      ['mauxTete','Maux tête', 'bi-emoji-dizzy'],
+      ['mauxNuque','Nuque', 'bi-person-arms-up'],
+      ['insomnie','Insomnie', 'bi-moon-stars'],
+      ['hemorroides','Hémorroïdes', 'bi-emoji-frown'],
+      ['enuresie','Énurésie', 'bi-droplet-half']
+    ],
+    maladies: [
+      ['diabetique','Diabète', 'bi-capsule'],
+      ['hypertendu','Hypertension', 'bi-heart-pulse'],
+      ['cholesterol','Cholestérol', 'bi-droplet'],
+      ['allergieNasale','Allergies', 'bi-wind'],
+      ['autreMaladie','Autre', 'bi-three-dots']
+    ]
+  };
 
-  const SYM_SHOW = "{{ path('api_symptomes_show', {idClient: fiche_client.id}) }}";
-  const MAL_SHOW = "{{ path('api_maladies_show', {idClient: fiche_client.id}) }}";
+  const state = {
+    digestif: { exists:false, data:null },
+    symptomes:{ exists:false, data:null },
+    maladies: { exists:false, data:null }
+  };
 
-  let digExists = false;
-
-  // Cards elements
-  const cardDigestif  = document.getElementById('card-digestif');
-  const cardSymptomes = document.getElementById('card-symptomes');
-  const cardMaladies  = document.getElementById('card-maladies');
-
-  // Titles/texts
-  const digestifTitle = document.getElementById('digestifTitle');
-  const digestifText  = document.getElementById('digestifText');
-  const symptomesText = document.getElementById('symptomesText');
-  const maladiesText  = document.getElementById('maladiesText');
-
-  // Modals
-  const modalDigestifView = document.getElementById('modalDigestif');
-  const modalDigestifAdd  = document.getElementById('modalAddDigestif');
-
-  const btnEditDigestif = document.getElementById('btnEditDigestif');
-  const btnSaveDigestif = document.getElementById('btnSaveDigestif');
-  const formDigestif    = document.getElementById('digestifForm');
-
-  if (!cardDigestif || !btnSaveDigestif || !formDigestif) return;
+  const $ = (id) => document.getElementById(id);
 
   async function fetchJSON(url) {
     const r = await fetch(url);
     return await r.json();
   }
 
-  function setCardStyle(el, theme) {
-    // reset
-    el.classList.remove('border-success','border-warning','border-danger','bg-success-subtle','bg-warning-subtle','bg-danger-subtle');
-    el.classList.add('border');
+  function isFilled(section){
+    return !!(state[section].exists && state[section].data);
+  }
 
-    if (theme === 'success') {
-      el.classList.add('border-success','bg-success-subtle');
-    } else if (theme === 'warning') {
-      el.classList.add('border-warning','bg-warning-subtle');
-    } else {
-      el.classList.add('border-danger','bg-danger-subtle');
+  function computeCompletion(){
+    const total = 3;
+    const done = ['digestif','symptomes','maladies'].filter(isFilled).length;
+    const pct = Math.round((done/total)*100);
+
+    if ($('medicalCompletionText')) $('medicalCompletionText').textContent = `${done}/${total} sections`;
+    if ($('medicalCompletionBar')) $('medicalCompletionBar').style.width = `${pct}%`;
+  }
+
+  function badgeHTML(exists){
+    return exists
+      ? `<span class="text-warning-emphasis">Renseigné</span>`
+      : `<span class="text-success-emphasis">À compléter</span>`;
+  }
+
+  function renderTile(section){
+    const exists = isFilled(section);
+
+    const badge = $('badge-'+section);
+    if (badge) badge.innerHTML = badgeHTML(exists);
+
+    const desc = $('desc-'+section);
+    if (desc) desc.textContent = exists
+      ? "Ouvre pour consulter / modifier."
+      : "Clique pour compléter rapidement.";
+
+    const mini = $('mini-'+section);
+    if (!mini) return;
+
+    mini.innerHTML = '';
+    if (!exists) return;
+
+    const data = state[section].data || {};
+    const chips = [];
+
+    for (const [key,label] of FIELDS[section]) {
+      const v = data[key];
+      if (v && String(v).trim() !== '') chips.push(`${label}: ${v}`);
+      if (chips.length >= 3) break;
     }
-  }
 
-  function setDigestifTargets() {
-    cardDigestif.setAttribute('data-bs-target', digExists ? '#modalDigestif' : '#modalAddDigestif');
-  }
-
-  async function refreshCards() {
-    // Digestif
-    try {
-      const dig = await fetchJSON(DIG_SHOW);
-      digExists = !!(dig.exists && dig.data);
-
-      setCardStyle(cardDigestif, digExists ? 'warning' : 'success');
-      digestifTitle.innerHTML = digExists
-        ? `<i class="bi bi-pencil-square"></i> Troubles digestifs`
-        : `<i class="bi bi-plus-circle"></i> Troubles digestifs`;
-      digestifText.textContent = digExists
-        ? 'Modifier les troubles digestifs du patient.'
-        : 'Ajouter les troubles digestifs du patient.';
-      setDigestifTargets();
-
-      // expose
-      window.medicalBlocks = window.medicalBlocks || {};
-      window.medicalBlocks.digestif = { exists: digExists };
-
-      // si la modal view est ouverte, on remplit
-      if (digExists && modalDigestifView?.classList.contains('show')) {
-        setDigestifView(dig.data);
-      }
-
-    } catch (e) {
-      console.error('Digestif: refreshCards error', e);
-    }
-
-    // Symptomes (carte seulement)
-    try {
-      const s = await fetchJSON(SYM_SHOW);
-      const symExists = !!(s.exists && s.data);
-      setCardStyle(cardSymptomes, symExists ? 'warning' : 'primary');
-      symptomesText.textContent = symExists
-        ? 'Modifier les symptômes du patient.'
-        : 'Ajouter les symptômes du patient.';
-      cardSymptomes.setAttribute('data-bs-target', symExists ? '#modalSymptomesGeneraux' : '#modalAddSymptomesGeneraux');
-    } catch (e) {}
-
-    // Maladies (carte seulement)
-    try {
-      const m = await fetchJSON(MAL_SHOW);
-      const malExists = !!(m.exists && m.data);
-      setCardStyle(cardMaladies, malExists ? 'warning' : 'danger');
-      maladiesText.textContent = malExists
-        ? 'Modifier les maladies chroniques.'
-        : 'Ajouter les maladies chroniques.';
-      cardMaladies.setAttribute('data-bs-target', malExists ? '#modalMaladiesChroniques' : '#modalAddMaladiesChroniques');
-    } catch (e) {}
-  }
-
-  function setDigestifView(d) {
-    const fields = ['aciditeGastrique','constipation','diarrhee','gaz','eructation','aspectSelles'];
-    fields.forEach(f => {
-      const el = document.getElementById('view-' + f);
-      if (el) el.textContent = d && d[f] ? d[f] : '-';
+    chips.forEach(t => {
+      const span = document.createElement('span');
+      span.className = 'mini-chip';
+      span.textContent = t;
+      mini.appendChild(span);
     });
   }
 
-  function fillDigestifForm(d) {
-    formDigestif.reset();
-    if (!d) return;
-    Object.keys(d).forEach((key) => {
-      const value = d[key];
-      if (!value) return;
-      const radio = document.querySelector(`input[name="${key}"][value="${value}"]`);
+  function renderChips(section){
+    const chipsBox = $('chips-'+section);
+    const emptyBox = $('empty-'+section);
+    if (!chipsBox) return;
+
+    chipsBox.innerHTML = '';
+
+    if (!isFilled(section)) {
+      if (emptyBox) emptyBox.style.display = 'block';
+      return;
+    }
+    if (emptyBox) emptyBox.style.display = 'none';
+
+    const data = state[section].data || {};
+    FIELDS[section].forEach(([key,label,icon]) => {
+      const v = data[key];
+      if (!v || String(v).trim() === '') return;
+
+      const div = document.createElement('div');
+      div.className = 'chip';
+      div.innerHTML = `<i class="bi ${icon}"></i><span>${label} :</span><strong>${v}</strong>`;
+      chipsBox.appendChild(div);
+    });
+
+    if (!chipsBox.children.length && emptyBox) emptyBox.style.display = 'block';
+  }
+
+  function openDrawer(section, open){
+    const drawer = $('drawer-'+section);
+    if (!drawer) return;
+    drawer.style.display = open ? 'block' : 'none';
+  }
+
+  function fillForm(section){
+    const form = $('form-'+section);
+    if (!form) return;
+
+    form.reset();
+    if (!isFilled(section)) {
+      // textarea "autreMaladie" doit être vidé si add
+      const ta = form.querySelector('textarea[name="autreMaladie"]');
+      if (ta) ta.value = '';
+      return;
+    }
+
+    const data = state[section].data || {};
+    Object.keys(data).forEach((k) => {
+      const v = data[k];
+      if (v == null || v === '') return;
+
+      const radio = form.querySelector(`input[name="${k}"][value="${CSS.escape(String(v))}"]`);
       if (radio) radio.checked = true;
+
+      const ta = form.querySelector(`textarea[name="${k}"]`);
+      if (ta) ta.value = v;
     });
   }
 
-  // Open view -> fetch
-  modalDigestifView?.addEventListener('show.bs.modal', async () => {
-    const dig = await fetchJSON(DIG_SHOW);
-    digExists = !!(dig.exists && dig.data);
-    if (digExists) setDigestifView(dig.data);
-  });
+  async function refreshSection(section){
+    const res = await fetchJSON(URLS[section].show);
 
-  // Edit -> prefill
-  btnEditDigestif?.addEventListener('click', async () => {
-    const dig = await fetchJSON(DIG_SHOW);
-    digExists = !!(dig.exists && dig.data);
-    fillDigestifForm(dig.data);
-  });
+    state[section].exists = !!(res.exists && res.data);
+    state[section].data = (res.exists && res.data) ? res.data : null;
 
-  // Save
-  btnSaveDigestif.addEventListener('click', async () => {
-    const payload = Object.fromEntries(new FormData(formDigestif));
-    const url = digExists ? DIG_EDIT : DIG_ADD;
+    renderTile(section);
+    renderChips(section);
+    computeCompletion();
+  }
+
+  async function refreshAll(){
+    await Promise.all([
+      refreshSection('digestif'),
+      refreshSection('symptomes'),
+      refreshSection('maladies')
+    ]);
+  }
+
+  async function saveSection(section){
+    const form = $('form-'+section);
+    if (!form) return;
+
+    const payload = Object.fromEntries(new FormData(form));
+    const url = isFilled(section) ? URLS[section].edit : URLS[section].add;
 
     const response = await fetch(url, {
       method: 'POST',
-      headers: {'Content-Type': 'application/json'},
+      headers: {'Content-Type':'application/json'},
       body: JSON.stringify(payload)
     });
 
     const result = await response.json();
 
     if (!result.success) {
-      buttonSoundError?.('btnSaveDigestif');
+      window.buttonSoundError?.('btnSave-'+section);
       alert('Erreur : ' + (result.message ?? 'Erreur serveur'));
       return;
     }
 
-    buttonSoundSuccess?.('btnSaveDigestif');
-    digExists = true;
+    window.buttonSoundSuccess?.('btnSave-'+section);
 
-    const inst = bootstrap.Modal.getInstance(modalDigestifAdd);
-    inst?.hide();
+    await refreshSection(section);
+    openDrawer(section, false);
+  }
 
-    // refresh cards + view values
-    await refreshCards();
+  // ✅ Câblage des 3 sections (EDIT / CANCEL / SAVE)
+  ['digestif','symptomes','maladies'].forEach((section) => {
+    const btnEdit = $('btnEdit-'+section);
+    const btnCancel = $('btnCancel-'+section);
+    const btnSave = $('btnSave-'+section);
 
-    document.dispatchEvent(new CustomEvent('medical:updated', {
-      detail: { section: 'digestif' }
-    }));
+    btnEdit?.addEventListener('click', async () => {
+      await refreshSection(section);
+      fillForm(section);
+      openDrawer(section, true);
+    });
+
+    btnCancel?.addEventListener('click', () => openDrawer(section, false));
+    btnSave?.addEventListener('click', () => saveSection(section));
   });
 
-  // Quand un autre module sauvegarde, on refresh les cartes (pas besoin reload)
-  document.addEventListener('medical:updated', () => refreshCards());
+  // Tiles -> open tab
+  document.querySelectorAll('[data-open-tab]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tab = btn.getAttribute('data-open-tab');
+      const map = { digestif:'tab-btn-digestif', symptomes:'tab-btn-symptomes', maladies:'tab-btn-maladies' };
+      $(map[tab])?.click();
+    });
+  });
 
-  // init
-  refreshCards();
+  // modal open => refresh all
+  $('medicalHubModal')?.addEventListener('show.bs.modal', refreshAll);
+
+  document.addEventListener('DOMContentLoaded', refreshAll);
 })();
 </script>
 

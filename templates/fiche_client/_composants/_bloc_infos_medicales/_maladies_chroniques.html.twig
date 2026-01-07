@@ -1,288 +1,87 @@
-{# --------------------------------------------- #}
-{#  Maladies Chroniques - fiche patient (Lux)     #}
-{# --------------------------------------------- #}
+<div class="tab-pane fade" id="tab-maladies" role="tabpanel">
 
-	{% macro radio_pills(theme, name, options) %}
-		<div class="d-flex flex-wrap gap-2"> {% for opt in options %}
-			{% set id = name ~ '_' ~ loop.index %}
-			<input class="btn-check" type="radio" name="{{ name }}" id="{{ id }}" value="{{ opt }}" autocomplete="off">
-			<label class="btn btn-outline-{{ theme }} rounded-pill px-3 py-2" for="{{ id }}">
-				{{ opt }}
-			</label>
-		{% endfor %}
-	</div>
-{% endmacro %}
-
-{% macro bloc(theme, icon, title, name, options) %}
-	<div class="p-3 p-md-4 rounded-4 border bg-light shadow-sm mb-3">
-		<div class="d-flex align-items-center gap-2 mb-2">
-			<i class="bi {{ icon }} text-{{ theme }} fs-5"></i>
-			<h6 class="fw-bold mb-0">{{ title }}</h6>
+	<div class="section-head">
+		<div>
+			<div class="section-kicker text-danger">Section</div>
+			<h5 class="section-title mb-0">Maladies chroniques</h5>
 		</div>
-		{{ _self.radio_pills(theme, name, options) }}
+
+		<div class="d-flex gap-2">
+			<button class="btn btn-outline-danger rounded-pill px-3" type="button" id="btnEdit-maladies">
+				<i class="bi bi-pencil-square me-1"></i>
+				Modifier
+			</button>
+		</div>
 	</div>
-{% endmacro %}
 
-{# ===== MODAL ADD / EDIT ===== #}
-<div class="modal fade" id="modalAddMaladiesChroniques" tabindex="-1" aria-hidden="true">
-	<div class="modal-dialog modal-lg modal-dialog-centered">
-		<div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+	<div class="section-card">
+		<div class="fw-semibold mb-2">Résumé</div>
+		<div class="chips" id="chips-maladies"></div>
+		<div class="text-muted small mt-2" id="empty-maladies" style="display:none;">
+			Aucune donnée. Clique sur “Modifier” pour compléter.
+		</div>
+	</div>
 
-			<div class="modal-header bg-danger text-white border-0 px-4 py-3">
-				<div class="d-flex align-items-center gap-3">
-					<div class="rounded-3 d-inline-flex align-items-center justify-content-center bg-white text-danger" style="width:42px;height:42px;">
-						<i class="bi bi-activity fs-5"></i>
+	<div class="edit-drawer" id="drawer-maladies" style="display:none;">
+		<form id="form-maladies" class="edit-form">
+			<div class="row g-3">
+				{% set m = [
+          ['diabetique','Diabète','bi-capsule', ['Oui','Non']],
+          ['hypertendu','Hypertension','bi-heart-pulse', ['Oui','Non']],
+          ['cholesterol','Cholestérol','bi-droplet', ['Oui','Non']],
+          ['allergieNasale','Allergies nasales','bi-wind', ['Jamais','Parfois','Souvent']]
+        ] %}
+
+				{% for f in m %}
+					<div class="col-md-6">
+						<div class="choice-card">
+							<div class="choice-card__title">
+								<i class="bi {{ f[2] }} text-danger me-1"></i>
+								{{ f[1] }}
+							</div>
+							<div class="choice-row">
+								{% for opt in f[3] %}
+									{% set id = 'maladies_' ~ f[0] ~ '_' ~ loop.index %}
+									<input class="btn-check" type="radio" name="{{ f[0] }}" id="{{ id }}" value="{{ opt }}" autocomplete="off">
+									<label class="btn btn-outline-danger rounded-pill px-3 py-2" for="{{ id }}">{{ opt }}</label>
+								{% endfor %}
+							</div>
+						</div>
 					</div>
-					<div class="lh-sm">
-						<h5 class="modal-title mb-0 fw-semibold">Maladies chroniques</h5>
-						<small class="opacity-75">Ajouter / modifier</small>
+				{% endfor %}
+
+				<div class="col-12">
+					<div class="choice-card">
+						<div class="choice-card__title">
+							<i class="bi bi-three-dots text-danger me-1"></i>
+							Autre maladie
+						</div>
+						<textarea class="form-control rounded-4" name="autreMaladie" rows="3" placeholder="Ex: Asthme, etc..."></textarea>
 					</div>
 				</div>
-				<button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+
 			</div>
 
-			<div class="modal-body px-4 py-4">
-				<form id="maladiesForm">
-
-					{{ _self.bloc('danger','bi-capsule','Diabète', 'diabetique', ['Oui','Non']) }}
-					{{ _self.bloc('danger','bi-heart-pulse','Hypertension', 'hypertendu', ['Oui','Non']) }}
-					{{ _self.bloc('danger','bi-droplet','Cholestérol', 'cholesterol', ['Oui','Non']) }}
-					{{ _self.bloc('danger','bi-wind','Allergies nasales', 'allergieNasale', ['Jamais','Parfois','Souvent']) }}
-
-					<div class="mt-3">
-						<label class="form-label fw-medium">Autre maladie</label>
-						<textarea name="autreMaladie" class="form-control rounded-4" rows="3" placeholder="Ex : Asthme, etc..."></textarea>
-					</div>
-
-				</form>
-			</div>
-
-			<div class="modal-footer border-0 px-4 pb-4 pt-0 d-flex gap-2 justify-content-end">
-				<button class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Annuler</button>
-				<button class="btn btn-danger rounded-pill px-4" id="btnSaveMaladies">
+			<div class="edit-actions">
+				<button type="button" class="btn btn-light rounded-pill px-4" id="btnCancel-maladies">Annuler</button>
+				<button type="button" class="btn btn-danger rounded-pill px-4" id="btnSave-maladies">
 					<i class="bi bi-check2-circle me-1"></i>
 					Enregistrer
 				</button>
 			</div>
-
-		</div>
+		</form>
 	</div>
-</div>
 
-{# ===== MODAL VIEW ===== #}
-<div class="modal fade" id="modalMaladiesChroniques" tabindex="-1" aria-hidden="true">
-	<div class="modal-dialog modal-lg modal-dialog-centered">
-		<div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
-
-			<div class="modal-header bg-danger text-white border-0 px-4 py-3">
-				<h5 class="modal-title fw-semibold d-flex align-items-center gap-2 mb-0">
-					<i class="bi bi-activity fs-5"></i>
-					Maladies chroniques
-				</h5>
-				<button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-			</div>
-
-			<div class="modal-body px-4 py-4">
-				<div id="maladiesContent" class="d-none">
-					<div class="row g-3">
-
-						<div class="col-md-4">
-							<div class="p-3 rounded-4 bg-light border-start border-4 border-danger shadow-sm h-100">
-								<div class="text-muted small fw-semibold">Diabète</div>
-								<div class="fs-5 fw-bold" id="view-diabetique">-</div>
-							</div>
-						</div>
-
-						<div class="col-md-4">
-							<div class="p-3 rounded-4 bg-light border-start border-4 border-warning shadow-sm h-100">
-								<div class="text-muted small fw-semibold">Hypertension</div>
-								<div class="fs-5 fw-bold" id="view-hypertendu">-</div>
-							</div>
-						</div>
-
-						<div class="col-md-4">
-							<div class="p-3 rounded-4 bg-light border-start border-4 border-primary shadow-sm h-100">
-								<div class="text-muted small fw-semibold">Cholestérol</div>
-								<div class="fs-5 fw-bold" id="view-cholesterol">-</div>
-							</div>
-						</div>
-
-						<div class="col-md-6">
-							<div class="p-3 rounded-4 bg-light border-start border-4 border-info shadow-sm h-100">
-								<div class="text-muted small fw-semibold">Allergies nasales</div>
-								<div class="fs-5 fw-bold" id="view-allergieNasale">-</div>
-							</div>
-						</div>
-
-						<div class="col-md-6">
-							<div class="p-3 rounded-4 bg-light border-start border-4 border-secondary shadow-sm h-100">
-								<div class="text-muted small fw-semibold">Autre maladie</div>
-								<div class="fs-5 fw-bold" id="view-autreMaladie">-</div>
-							</div>
-						</div>
-
-					</div>
-
-					<div class="text-end mt-4">
-						<button class="btn btn-danger rounded-pill px-4" id="btnEditMaladies" data-bs-target="#modalAddMaladiesChroniques" data-bs-toggle="modal" data-bs-dismiss="modal">
-							<i class="bi bi-pencil-square me-1"></i>
-							Modifier
-						</button>
-					</div>
-				</div>
-
-				<div id="maladiesEmpty" class="text-center text-muted py-4">
-					<i class="bi bi-info-circle me-1"></i>
-					Aucune maladie chronique enregistrée.
-					<div class="mt-3">
-						<button class="btn btn-outline-danger rounded-pill px-4" data-bs-target="#modalAddMaladiesChroniques" data-bs-toggle="modal" data-bs-dismiss="modal">
-							<i class="bi bi-plus-circle me-1"></i>
-							Ajouter
-						</button>
-					</div>
-				</div>
-			</div>
-
-		</div>
-	</div>
 </div>
 
  <script>
 (function () {
-  const SHOW_URL = "{{ path('api_maladies_show', {idClient: fiche_client.id}) }}";
-  const ADD_URL  = "{{ path('api_maladies_add',  {id: fiche_client.id}) }}";
-  const EDIT_URL = "{{ path('api_maladies_edit', {id: fiche_client.id}) }}";
+  const $ = (id) => document.getElementById(id);
+  function openDrawer(open){ $('drawer-maladies').style.display = open ? 'block' : 'none'; }
 
-  let exists = false;
-
-  const modalView = document.getElementById('modalMaladiesChroniques');
-  const modalAdd  = document.getElementById('modalAddMaladiesChroniques');
-  const btnEdit   = document.getElementById('btnEditMaladies');
-  const btnSave   = document.getElementById('btnSaveMaladies');
-  const form      = document.getElementById('maladiesForm');
-
-  const content = document.getElementById('maladiesContent');
-  const empty   = document.getElementById('maladiesEmpty');
-
-  if (!form || !btnSave) return;
-
-  async function fetchData() {
-    const r = await fetch(SHOW_URL);
-    return await r.json();
-  }
-
-  function setView(data) {
-    const fields = ['diabetique','hypertendu','cholesterol','allergieNasale','autreMaladie'];
-    fields.forEach(f => {
-      const el = document.getElementById('view-' + f);
-      if (el) el.textContent = (data && data[f] != null && data[f] !== '') ? data[f] : '-';
-    });
-  }
-
-  function fillForm(data) {
-    form.reset();
-    if (!data) return;
-
-    Object.keys(data).forEach((key) => {
-      const value = data[key];
-      if (value == null || value === '') return;
-
-      const radio = document.querySelector(`input[name="${key}"][value="${value}"]`);
-      if (radio) radio.checked = true;
-
-      if (key === 'autreMaladie') {
-        const ta = form.querySelector('textarea[name="autreMaladie"]');
-        if (ta) ta.value = value;
-      }
-    });
-  }
-
-  async function refreshStateAndUI() {
-    try {
-      const res = await fetchData();
-      exists = !!(res.exists && res.data);
-
-      // expose pour la carte globale
-      window.medicalBlocks = window.medicalBlocks || {};
-      window.medicalBlocks.maladies = { exists };
-
-      if (!exists) {
-        content.classList.add('d-none');
-        empty.classList.remove('d-none');
-        return;
-      }
-
-      empty.classList.add('d-none');
-      content.classList.remove('d-none');
-      setView(res.data);
-
-    } catch (e) {
-      console.error('Maladies: erreur chargement', e);
-    }
-  }
-
-  modalView?.addEventListener('show.bs.modal', refreshStateAndUI);
-
-  btnEdit?.addEventListener('click', async () => {
-    const res = await fetchData();
-    if (res.exists && res.data) {
-      exists = true;
-      fillForm(res.data);
-    } else {
-      exists = false;
-      form.reset();
-    }
-  });
-
-  modalAdd?.addEventListener('show.bs.modal', async () => {
-    // Quand on ouvre add/edit, on pré-remplit si existe
-    try {
-      const res = await fetchData();
-      exists = !!(res.exists && res.data);
-      fillForm(res.data);
-    } catch (e) {
-      exists = false;
-      form.reset();
-    }
-  });
-
-  btnSave.addEventListener('click', async () => {
-    const payload = Object.fromEntries(new FormData(form));
-    const url = exists ? EDIT_URL : ADD_URL;
-
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(payload)
-    });
-
-    const result = await response.json();
-
-    if (!result.success) {
-      buttonSoundError?.('btnSaveMaladies');
-      alert('Erreur : ' + (result.message ?? 'Erreur serveur'));
-      return;
-    }
-
-    exists = true;
-
-    buttonSoundSuccess?.('btnSaveMaladies');
-
-    // fermer modal add
-    const inst = bootstrap.Modal.getInstance(modalAdd);
-    inst?.hide();
-
-    // refresh view + état
-    await refreshStateAndUI();
-
-    // notifier la carte globale (si présente)
-    document.dispatchEvent(new CustomEvent('medical:updated', {
-      detail: { section: 'maladies' }
-    }));
-  });
-
-  // init (utile pour la carte globale)
-  refreshStateAndUI();
+  $('btnEdit-maladies')?.addEventListener('click', () => openDrawer(true));
+  $('btnCancel-maladies')?.addEventListener('click', () => openDrawer(false));
+  $('btnSave-maladies')?.addEventListener('click', () => openDrawer(false));
 })();
 </script>
 
