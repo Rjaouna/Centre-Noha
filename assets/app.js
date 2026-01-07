@@ -75,6 +75,7 @@ window.playSuccessSound = playSuccessSound;
  */
 document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll("[id]").forEach((el) => {
+        el.classList.add("clicSound");
         buttonSoundClick(el.id);
     });
 });
