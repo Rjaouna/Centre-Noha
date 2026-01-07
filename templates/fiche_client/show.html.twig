@@ -85,47 +85,89 @@ Informations patient
 							
 						</button>
 					</div>
+{# ===========================
+   INFOS CLIENT — UX GROUPÉ
+   =========================== #}
 
-<div class="ux-info-grid">
+{% macro item(icon, label, value, color) %}
+	<div class="ux-info-card ux-{{ color }}">
+		<div class="ux-info-icon">
+			<i class="bi {{ icon }}"></i>
+		</div>
+		<div class="ux-info-content">
+			<div class="ux-info-label">{{ label }}</div>
+			<div class="ux-info-value">{{ value ?: '—' }}</div>
+		</div>
+	</div>
+{% endmacro %}
 
-	{% macro item(icon, label, value, color) %}
-		<div class="ux-info-item">
-			<div class="ux-info-card ux-{{ color }}">
-				<div class="ux-info-icon">
-					<i class="bi {{ icon }}"></i>
-				</div>
+<div
+	class="ux-sections">
 
-				<div class="ux-info-content">
-					<div class="ux-info-label">{{ label }}</div>
-					<div class="ux-info-value">{{ value ?: '—' }}</div>
-				</div>
+	{# ================= IDENTITÉ ================= #}
+	<section class="ux-section">
+		<div class="ux-section-head">
+			<div class="ux-section-title">
+				<i class="bi bi-person-badge"></i>
+				Identité
 			</div>
 		</div>
-	{% endmacro %}
+		<div class="ux-info-grid">
+			{{ _self.item('bi-person-badge', 'Nom', fiche_client.nom, 'primary') }}
+			{{ _self.item('bi-person', 'Prénom', fiche_client.prenom, 'primary') }}
+			{{ _self.item('bi-credit-card-2-front', 'CIN', fiche_client.cin, 'secondary') }}
+			{{ _self.item('bi-calendar3', 'Date de naissance', fiche_client.dateNaissance ? fiche_client.dateNaissance|date('d/m/Y') : null, 'dark') }}
+			{{ _self.item('bi-hourglass-split', 'Âge', fiche_client.agePatient is not null ? fiche_client.agePatient ~ ' ans' : null, 'dark') }}
+		</div>
+	</section>
 
-	{# ✅ Identité #}
-	{{ _self.item('bi-person-badge', 'Nom', fiche_client.nom, 'primary') }}
-	{{ _self.item('bi-person', 'Prénom', fiche_client.prenom, 'primary') }}
-	{{ _self.item('bi-credit-card-2-front', 'CIN', fiche_client.cin, 'secondary') }}
+	{# ================= CONTACT ================= #}
+	<section class="ux-section">
+		<div class="ux-section-head">
+			<div class="ux-section-title">
+				<i class="bi bi-telephone"></i>
+				Contact
+			</div>
+		</div>
+		<div class="ux-info-grid">
+			{{ _self.item('bi-geo-alt', 'Ville', fiche_client.ville, 'info') }}
+			{{ _self.item('bi-telephone', 'Téléphone', fiche_client.telephone, 'success') }}
+			{# si tu as email un jour:
+						   {{ _self.item('bi-envelope', 'Email', fiche_client.email, 'primary') }} #}
+		</div>
+	</section>
 
-	{# ✅ Contact #}
-	{{ _self.item('bi-geo-alt', 'Ville', fiche_client.ville, 'info') }}
-	{{ _self.item('bi-telephone', 'Téléphone', fiche_client.telephone, 'success') }}
+	{# ================= SANTÉ ================= #}
+	<section class="ux-section">
+		<div class="ux-section-head">
+			<div class="ux-section-title">
+				<i class="bi bi-clipboard2-pulse"></i>
+				Santé
+			</div>
+		</div>
+		<div class="ux-info-grid">
+			{{ _self.item('bi-speedometer2', 'Poids', fiche_client.poids ? fiche_client.poids ~ ' kg' : null, 'danger') }}
+			{{ _self.item('bi-clock-history', 'Durée maladie', fiche_client.dureeMaladie ? fiche_client.dureeMaladie ~ ' jours' : null, 'warning') }}
+			{{ _self.item('bi-clipboard2-pulse', 'Type maladie', fiche_client.typeMaladie, 'secondary') }}
+		</div>
+	</section>
 
-	{# ✅ Naissance / âge #}
-	{{ _self.item('bi-calendar3', 'Date de naissance', fiche_client.dateNaissance ? fiche_client.dateNaissance|date('d/m/Y') : null, 'dark') }}
-	{{ _self.item('bi-hourglass-split', 'Âge', fiche_client.agePatient is not null ? fiche_client.agePatient ~ ' ans' : null, 'dark') }}
-
-	{# ✅ Santé (sans traitement/observation) #}
-	{{ _self.item('bi-speedometer2', 'Poids', fiche_client.poids ? fiche_client.poids ~ ' kg' : null, 'danger') }}
-	{{ _self.item('bi-clock-history', 'Durée maladie', fiche_client.dureeMaladie ? fiche_client.dureeMaladie ~ ' jours' : null, 'warning') }}
-	{{ _self.item('bi-clipboard2-pulse', 'Type maladie', fiche_client.typeMaladie, 'secondary') }}
-
-	{# ✅ Système #}
-	{{ _self.item('bi-calendar-check', 'Créé le', fiche_client.createdAt ? fiche_client.createdAt|date('d/m/Y H:i') : null, 'dark') }}
-	{{ _self.item('bi-arrow-repeat', 'Mis à jour le', fiche_client.updatedAt ? fiche_client.updatedAt|date('d/m/Y H:i') : null, 'dark') }}
+	{# ================= SYSTÈME ================= #}
+	<section class="ux-section">
+		<div class="ux-section-head">
+			<div class="ux-section-title">
+				<i class="bi bi-shield-check"></i>
+				Système
+			</div>
+		</div>
+		<div class="ux-info-grid">
+			{{ _self.item('bi-calendar-check', 'Créé le', fiche_client.createdAt ? fiche_client.createdAt|date('d/m/Y H:i') : null, 'dark') }}
+			{{ _self.item('bi-arrow-repeat', 'Mis à jour le', fiche_client.updatedAt ? fiche_client.updatedAt|date('d/m/Y H:i') : null, 'dark') }}
+		</div>
+	</section>
 
 </div>
+
 
 
 <hr class="hr-animated">
@@ -464,6 +506,94 @@ Analyses
 .medical-meta i {
 	margin-right: 4px;
 }
+.ux-sections{
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
+
+/* bloc section */
+.ux-section{
+  background:#fff;
+  border:1px solid rgba(15,23,42,.08);
+  border-radius:20px;
+  box-shadow:0 14px 36px rgba(2,6,23,.06);
+  overflow:hidden;
+}
+
+.ux-section-head{
+  padding:14px 16px;
+  border-bottom:1px solid rgba(15,23,42,.06);
+  background:linear-gradient(180deg, rgba(13,110,253,.06), rgba(255,255,255,0));
+}
+
+.ux-section-title{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-weight:900;
+  letter-spacing:.2px;
+  color:#0b1220;
+}
+
+/* grille */
+.ux-info-grid{
+  display:grid;
+  grid-template-columns:repeat(12, 1fr);
+  gap:12px;
+  padding:14px 16px 16px;
+}
+
+.ux-info-card{
+  grid-column:span 6; /* 2 par ligne desktop */
+  display:flex;
+  gap:12px;
+  align-items:center;
+  padding:12px 14px;
+  border-radius:16px;
+  border:1px solid rgba(15,23,42,.08);
+  background:#fff;
+  box-shadow:0 10px 22px rgba(2,6,23,.05);
+}
+
+.ux-info-icon{
+  width:44px;
+  height:44px;
+  border-radius:14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#fff;
+  flex:0 0 auto;
+  box-shadow:0 12px 26px rgba(2,6,23,.10);
+}
+
+.ux-info-label{
+  font-size:.82rem;
+  opacity:.75;
+  font-weight:800;
+}
+.ux-info-value{
+  font-size:1.02rem;
+  font-weight:900;
+  letter-spacing:.2px;
+  color:#0b1220;
+}
+
+/* responsive */
+@media (max-width: 768px){
+  .ux-info-card{ grid-column:span 12; } /* 1 par ligne mobile */
+}
+
+/* --- couleur unique par section --- */
+.ux-section[data-theme="primary"]  .ux-info-icon{ background:linear-gradient(135deg,#2563eb,#3b82f6); }
+.ux-section[data-theme="secondary"] .ux-info-icon{ background:linear-gradient(135deg,#64748b,#94a3b8); }
+.ux-section[data-theme="success"]  .ux-info-icon{ background:linear-gradient(135deg,#16a34a,#22c55e); }
+.ux-section[data-theme="info"]     .ux-info-icon{ background:linear-gradient(135deg,#0ea5e9,#38bdf8); }
+.ux-section[data-theme="warning"]  .ux-info-icon{ background:linear-gradient(135deg,#f59e0b,#fbbf24); }
+.ux-section[data-theme="danger"]   .ux-info-icon{ background:linear-gradient(135deg,#dc2626,#ef4444); }
+.ux-section[data-theme="dark"]     .ux-info-icon{ background:linear-gradient(135deg,#0f172a,#334155); }
+
 
 .medical-count {
 	font-weight: 600;
