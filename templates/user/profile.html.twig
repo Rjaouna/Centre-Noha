@@ -39,118 +39,182 @@
 	</div>
 
 
-	<!-- ⭐⭐ FORMULAIRE ⭐⭐ -->
-	<div class="card shadow-lg border-0 rounded-4 p-4">
+<!-- ⭐⭐ INFOS PERSONNELLES (style cabinet : label dans l'input) ⭐⭐ -->
+<div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+	<div class="card-body p-4 p-md-5">
 
-		<h4 class="fw-bold text-danger mb-4 d-flex align-items-center">
-			<i class="bi bi-gear-fill me-2"></i>
-			Informations personnelles
-		</h4>
+		<div class="d-flex align-items-center gap-3 mb-4">
+			<div class="rounded-3 d-inline-flex align-items-center justify-content-center bg-danger text-white" style="width:44px;height:44px;">
+				<i class="bi bi-person-gear fs-5"></i>
+			</div>
+			<div class="lh-sm">
+				<h4 class="fw-bold mb-0">Informations personnelles</h4>
+				<small class="text-muted">Mettez à jour vos informations</small>
+			</div>
+		</div>
+
+		<div id="alertBox" class="mb-3"></div>
 
 		<form method="post">
 			<div
-				class="row g-4">
+				class="row g-3 g-md-4">
 
 				<!-- Prénom -->
 				<div class="col-md-6">
-					<div class="form-floating mb-3">
-						<input type="text" id="prenom" name="prenom" class="form-control shadow-sm rounded-4" placeholder="Votre prénom" value="{{ user.prenom }}" required>
-						<label for="prenom">
+					<div class="input-group">
+						<span class="input-group-text bg-white">
 							<i class="bi bi-person"></i>
-							Prénom</label>
+						</span>
+						<div class="form-floating flex-grow-1">
+							<input type="text" id="prenom" name="prenom" class="form-control" placeholder="Prénom" value="{{ user.prenom }}" required>
+							<label for="prenom">Prénom
+								<span class="text-danger">*</span>
+							</label>
+						</div>
 					</div>
 				</div>
 
 				<!-- Nom -->
 				<div class="col-md-6">
-					<div class="form-floating mb-3">
-						<input type="text" id="nom" name="nom" class="form-control shadow-sm rounded-4" placeholder="Votre nom" value="{{ user.nom }}" required>
-						<label for="nom">
+					<div class="input-group">
+						<span class="input-group-text bg-white">
 							<i class="bi bi-person"></i>
-							Nom</label>
+						</span>
+						<div class="form-floating flex-grow-1">
+							<input type="text" id="nom" name="nom" class="form-control" placeholder="Nom" value="{{ user.nom }}" required>
+							<label for="nom">Nom
+								<span class="text-danger">*</span>
+							</label>
+						</div>
 					</div>
 				</div>
 
-				<!-- Email non modifiable -->
-				<div class="col-md-12">
-					<div class="form-floating mb-1">
-						<input type="email" id="email" class="form-control shadow-sm rounded-4 bg-light" placeholder="Adresse email" value="{{ user.email }}" disabled>
-						<label for="email">
+				<!-- Email (non modifiable) -->
+				<div class="col-12">
+					<div class="input-group">
+						<span class="input-group-text bg-white">
 							<i class="bi bi-envelope"></i>
-							Adresse email</label>
+						</span>
+						<div class="form-floating flex-grow-1">
+							<input type="email" id="email" class="form-control bg-light" placeholder="Adresse email" value="{{ user.email }}" disabled>
+							<label for="email">Adresse email</label>
+						</div>
 					</div>
 
-					<small class="text-muted fst-italic">
-						<i class="bi bi-info-circle"></i>
-						Contactez l’administrateur pour modifier votre adresse email.
-					</small>
+					<div class="d-flex align-items-start gap-2 mt-2 text-muted">
+						<i class="bi bi-info-circle mt-1"></i>
+						<small class="fst-italic">
+							Contactez l’administrateur pour modifier votre adresse email.
+						</small>
+					</div>
 				</div>
 
 			</div>
 
-			<div class="text-end mt-4">
-				<button class="btn btn-danger btn-lg rounded-pill px-5 shadow-sm d-flex align-items-center gap-2">
-					<i class="bi bi-check-circle"></i>
+			<div class="d-flex justify-content-end mt-4">
+				<button class="btn btn-danger rounded-pill px-4 py-2 d-inline-flex align-items-center gap-2 text-light">
+					<i class="bi bi-check2-circle"></i>
 					Enregistrer
 				</button>
 			</div>
-
 		</form>
 
-<hr class="my-4">
+		<hr class="my-4">
 
-<div class="d-flex justify-content-end">
-	<a href="#" class="text-danger fw-bold d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
-		<i class="bi bi-shield-lock"></i>
-		Changer mon mot de passe
-	</a>
-</div></div><div class="modal fade" id="changePasswordModal" tabindex="-1">
-<div class="modal-dialog modal-dialog-centered">
-	<div class="modal-content rounded-4">
+		<div class="d-flex justify-content-end">
+			<button type="button" class="btn btn-outline-danger rounded-pill px-4 d-inline-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+				<i class="bi bi-shield-lock"></i>
+				Changer mon mot de passe
+			</button>
+		</div>
 
-
-		<form method="post" action="{{ path('app_change_password') }}">
-			<div class="modal-header">
-				<h5 class="modal-title text-danger">
-					<i class="bi bi-key"></i>
-					Changer le mot de passe
-				</h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-
-			</div>
-
-
-			<div
-				class="modal-body">
-
-				<!-- Mot de passe actuel -->
-				<div class="mb-3">
-					<label class="form-label">Mot de passe actuel</label>
-					<input type="password" name="current_password" class="form-control" required>
-
-
-				</div>
-
-				<!-- Nouveau mot de passe -->
-				<div class="mb-3">
-					<label class="form-label">Nouveau mot de passe</label>
-					<input type="password" id="newPassword" name="new_password" class="form-control" required>
-					<small id="passwordHelp" class="text-muted">
-						Minimum 8 caractères, lettres et chiffres
-					</small>
-
-
+	</div>
 </div>
 
 
-<!-- Confirmation (cachée par défaut) -->
-<div class="mb-3 d-none" id="confirmPasswordBlock">
-	<label class="form-label">Confirmer le nouveau mot de passe</label>
-	<input type="password" name="confirm_password" class="form-control" required>
-</div></div><div class="modal-footer">
-<button type="submit" class="btn btn-danger" disabled id="submitPasswordBtn">
-	Mettre à jour
-</button></div></form></div></div></div> <script>
+
+
+<div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+
+			<form method="post" action="{{ path('app_change_password') }}">
+				<div class="modal-header bg-light border-0 px-4 py-3">
+					<div class="d-flex align-items-center gap-3">
+						<div class="rounded-3 d-inline-flex align-items-center justify-content-center bg-danger text-white" style="width:42px;height:42px;">
+							<i class="bi bi-key fs-5"></i>
+						</div>
+						<div class="lh-sm">
+							<h5 class="modal-title mb-0 fw-semibold" id="changePasswordLabel">Changer le mot de passe</h5>
+							<small class="text-muted">Sécurisez votre compte</small>
+						</div>
+					</div>
+
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+				</div>
+
+				<div
+					class="modal-body px-4 py-4">
+					<!-- Mot de passe actuel -->
+					<div class="mb-3">
+						<label class="form-label fw-medium">Mot de passe actuel
+							<span class="text-danger">*</span>
+						</label>
+						<div class="input-group">
+							<span class="input-group-text bg-white">
+								<i class="bi bi-lock"></i>
+							</span>
+							<input type="password" name="current_password" class="form-control" required>
+						</div>
+					</div>
+
+					<!-- Nouveau mot de passe -->
+					<div class="mb-2">
+						<label class="form-label fw-medium">Nouveau mot de passe
+							<span class="text-danger">*</span>
+						</label>
+						<div class="input-group">
+							<span class="input-group-text bg-white">
+								<i class="bi bi-shield-lock"></i>
+							</span>
+							<input type="password" id="newPassword" name="new_password" class="form-control" required>
+						</div>
+						<small id="passwordHelp" class="text-muted">
+							Minimum 8 caractères, lettres et chiffres
+						</small>
+					</div>
+
+					<!-- Confirmation (cachée par défaut) -->
+					<div class="mb-0 d-none" id="confirmPasswordBlock">
+						<label class="form-label fw-medium mt-3">Confirmer le nouveau mot de passe
+							<span class="text-danger">*</span>
+						</label>
+						<div class="input-group">
+							<span class="input-group-text bg-white">
+								<i class="bi bi-check2-circle"></i>
+							</span>
+							<input type="password" name="confirm_password" class="form-control" required>
+						</div>
+					</div>
+				</div>
+
+				<div class="modal-footer border-0 px-4 pb-4 pt-0 d-flex gap-2 justify-content-end">
+					<button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">
+						Annuler
+					</button>
+
+					<button type="submit" class="btn btn-danger rounded-pill px-4 text-light" disabled id="submitPasswordBtn">
+						Mettre à jour
+					</button>
+				</div>
+			</form>
+
+		</div>
+	</div>
+</div>
+
+
+ <script>
 		document.addEventListener('DOMContentLoaded', function () {
 		
 			const newPasswordInput = document.getElementById('newPassword');
