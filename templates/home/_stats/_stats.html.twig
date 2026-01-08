@@ -413,7 +413,10 @@
 		</p>
 	</div>
 
-	<a href="/rendezvous/calendrier" class="btn btn-outline-primary rounded-pill btn-sm">
+<a href="/rendezvous/calendrier" class="btn btn-link rounded-pill fw-bold px-3">
+
+
+
 		<i class="bi bi-calendar-event me-1"></i>
 		Calendrier
 	</a>
@@ -1022,9 +1025,7 @@ async function loadAllRDV() {
 
 <div class="rdv-empty-card">
 	<div class="rdv-empty-top">
-		<div class="rdv-empty-icon">
-
-<i class="bi bi-calendar2-week"></i></div>
+	
 
 
 <div class="rdv-empty-text">
@@ -1036,24 +1037,8 @@ async function loadAllRDV() {
 </div></div>
 
 
-<div class="rdv-empty-actions">
+</div>
 
-<a href="/rendezvous/calendrier" class="btn btn-primary rounded-pill px-4">
-
-<i class="bi bi-calendar-event me-1"></i>
-Ouvrir le calendrier</a>
-
-
-<button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#modalAddRdv">
-	<i class="bi bi-plus-circle me-1"></i>
-	Ajouter un RDV
-</button></div>
-
-
-<div class="rdv-empty-hint">
-	<i class="bi bi-lightning-charge-fill me-1"></i>
-	Astuce : un clic sur une date dans le calendrier pour créer un rendez-vous rapidement.
-</div></div>
 
 </div>
         `;
