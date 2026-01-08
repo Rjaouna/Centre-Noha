@@ -397,20 +397,29 @@
 	
 <div class="mt-5 ref-section">
 
-	<div class="card border-0 shadow-sm rounded-4">
-		<div class="card-body p-4">
+		<div class="card-body py-4">
 
-			<div class="d-flex align-items-center justify-content-between mb-4">
-				<h4 class="fw-bold text-primary mb-0">
-					<i class="bi bi-calendar-check me-2"></i>
-					Prochains RDV
-				</h4>
+<div class="d-flex align-items-center justify-content-between mb-4">
+	<div>
+		<h4 class="fw-bold mb-1 text-primary d-flex align-items-center">
+			<span class="ref-icon me-2">
+				<i class="bi bi-calendar-check"></i>
+			</span>
+			Prochains RDV
+		</h4>
 
-				<a href="/rendezvous/calendrier" class="btn btn-outline-primary rounded-pill btn-sm">
-					<i class="bi bi-calendar-event me-1"></i>
-					Calendrier
-				</a>
-			</div>
+		<p class="text-muted mb-0 small">
+			Agenda du jour et rendez-vous à venir pour une gestion rapide.
+		</p>
+	</div>
+
+	<a href="/rendezvous/calendrier" class="btn btn-outline-primary rounded-pill btn-sm">
+		<i class="bi bi-calendar-event me-1"></i>
+		Calendrier
+	</a>
+</div>
+
+
 
 			<!-- LISTE RDV (injectée en JS) -->
 			<div class="row g-4" id="rdvList"></div>
@@ -422,7 +431,6 @@
 			</div>
 
 		</div>
-	</div>
 
 </div>
 
@@ -614,6 +622,70 @@
 			max-height: 160px !important;
 		}
 	}
+
+
+
+
+	.rdv-empty-card{
+    border: 1px solid rgba(15,23,42,.08);
+    border-radius: 22px;
+    background: radial-gradient(900px 500px at 10% 0%, rgba(59,130,246,.10), transparent 55%),
+                radial-gradient(900px 500px at 90% 20%, rgba(16,185,129,.10), transparent 60%),
+                #fff;
+    box-shadow: 0 18px 40px rgba(2,6,23,.06);
+    padding: 18px;
+  }
+
+  .rdv-empty-top{
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+
+  .rdv-empty-icon{
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(59,130,246,.10);
+    border: 1px solid rgba(59,130,246,.18);
+    color: #1d4ed8;
+    flex: 0 0 auto;
+    font-size: 1.3rem;
+  }
+
+  .rdv-empty-text{
+    min-width: 0;
+  }
+
+  .rdv-empty-actions{
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+  }
+
+  .rdv-empty-actions .btn{
+    font-weight: 900;
+  }
+
+  .rdv-empty-hint{
+    margin-top: 14px;
+    font-size: .86rem;
+    font-weight: 700;
+    color: rgba(15,23,42,.65);
+    background: rgba(15,23,42,.04);
+    border: 1px solid rgba(15,23,42,.06);
+    padding: 10px 12px;
+    border-radius: 14px;
+  }
+
+  @media (max-width: 576px){
+    .rdv-empty-card{ padding: 16px; }
+    .rdv-empty-icon{ width: 48px; height: 48px; border-radius: 14px; }
+  }
 </style>
 
 
@@ -628,7 +700,8 @@ class="mt-5 ref-section">
 
 		<div class="d-flex align-items-start justify-content-between gap-3">
 			<div class="d-flex align-items-start gap-3">
-				<div class="analytics-head-icon">
+<div class="ref-icon me-2">
+
 					<i class="bi bi-graph-up"></i>
 				</div>
 
@@ -945,29 +1018,44 @@ async function loadAllRDV() {
      * =============================== */
     if (confirmes.length === 0) {
         container.innerHTML = `
-            <div class="col-12">
-                <div class="rdv-empty-state">
-                    <div class="rdv-empty-icon">
-                        <i class="bi bi-calendar-x"></i>
-                    </div>
+<div class="col-12">
 
-                    <h5 class="fw-bold mt-3">
-                        Aucun rendez-vous programmé
-                    </h5>
+<div class="rdv-empty-card">
+	<div class="rdv-empty-top">
+		<div class="rdv-empty-icon">
 
-                    <p class="text-muted mb-4">
-Vous n’avez actuellement aucun rendez-vous confirmé.
+<i class="bi bi-calendar2-week"></i></div>
 
-                    </p>
+
+<div class="rdv-empty-text">
+	<h5 class="mb-1 fw-bold">Aucun rendez-vous aujourd’hui</h5>
+	<p class="mb-0 text-muted">
+		Votre planning est vide pour le moment. Ajoutez un RDV ou consultez l’agenda.
+	</p>
+
+</div></div>
+
+
+<div class="rdv-empty-actions">
 
 <a href="/rendezvous/calendrier" class="btn btn-primary rounded-pill px-4">
 
+<i class="bi bi-calendar-event me-1"></i>
+Ouvrir le calendrier</a>
 
-                        <i class="bi bi-calendar-event me-1"></i>
-                        Voir le calendrier
-                    </a>
-                </div>
-            </div>
+
+<button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#modalAddRdv">
+	<i class="bi bi-plus-circle me-1"></i>
+	Ajouter un RDV
+</button></div>
+
+
+<div class="rdv-empty-hint">
+	<i class="bi bi-lightning-charge-fill me-1"></i>
+	Astuce : un clic sur une date dans le calendrier pour créer un rendez-vous rapidement.
+</div></div>
+
+</div>
         `;
         return;
     }
