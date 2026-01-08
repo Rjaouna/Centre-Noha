@@ -2,50 +2,61 @@
 <div class="modal fade" id="waitingRoomModal" tabindex="-1" aria-hidden="true">
 	<div class="modal-dialog modal-fullscreen">
 		<div class="modal-content wr-shell">
-
 <div
-	class="wr-header d-flex align-items-center justify-content-between px-4 py-3">
+	class="wr-header d-flex align-items-center justify-content-between px-3 px-md-4 py-3">
 
 	<!-- GAUCHE -->
-	<div class="d-flex align-items-center gap-3">
+	<div
+		class="d-flex align-items-center gap-3 min-w-0">
 
-		<div class="wr-badge">
+		<!-- ✅ Badge seulement desktop -->
+		<div class="wr-badge d-none d-md-flex">
 			<i class="bi bi-people-fill"></i>
 		</div>
 
-		<div class="wr-titles">
-			<div class="d-flex align-items-center gap-2">
-				<h5 class="wr-title mb-0 text-uppercase">
+		<div class="wr-titles min-w-0">
+
+			<div
+				class="d-flex align-items-center gap-2 flex-wrap">
+
+				<!-- ✅ Titre : desktop = normal, mobile = simple -->
+				<h5 class="wr-title mb-0 text-uppercase text-truncate">
 					Salle d’attente
 				</h5>
 
+				<!-- ✅ Live toujours visible -->
 				<span class="wr-chip-live text-uppercase d-flex align-items-center gap-1">
 					<span class="wr-live-dot"></span>
 					Live
 				</span>
 			</div>
 
-			<div class="wr-subtitle">
-Salle d’attente intelligente
-
+			<!-- ✅ Sous-titre seulement desktop -->
+			<div class="wr-subtitle d-none d-md-block">
+				Salle d’attente intelligente
 			</div>
-		</div>
 
+		</div>
 	</div>
 
 	<!-- DROITE -->
-	<div class="d-flex align-items-center gap-3">
+	<div
+		class="d-flex align-items-center gap-3 flex-shrink-0">
 
-		<div class="wr-pill" id="wrLastUpdate">—</div>
+		<!-- ✅ Maj seulement desktop -->
+		<div class="wr-pill d-none d-md-block" id="wrLastUpdate">—</div>
 
+		<!-- ✅ Fermer toujours visible à droite -->
 		<button type="button" class="btn wr-close d-flex align-items-center gap-1" data-bs-dismiss="modal">
 			<i class="bi bi-x-lg"></i>
-			Fermer
+			<span class="d-none d-md-inline">Fermer</span>
 		</button>
 
 	</div>
 
 </div>
+
+
 
 
 
