@@ -192,52 +192,105 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-		{# ======================= #}
-		{# 🔹 DASHBOARD DESKTOP #}
-		{# ======================= #}
-			<div class="row g-3 d-none d-md-flex"> {% include 'home/_dashboard/_card_desktop.html.twig' with {
-            title: 'Ajouter un patient',
-            desc: 'Créer une nouvelle fiche',
-            icon: 'bi-person-plus-fill',
-            bg: 'bg-add',
-            modal: '#modalAddClient'
-        } %}
+{# ======================= #}
+{# 🔹 DASHBOARD DESKTOP #}
+{# ======================= #}
+	<div class="row g-3 d-none d-md-flex"> {% include 'home/_dashboard/_card_desktop.html.twig' with {
+    title: 'Ajouter un patient',
+    desc: 'Créer une nouvelle fiche',
+    icon: 'bi-person-plus-fill',
+    bg: 'bg-add',
+    modal: '#modalAddClient'
+  } %}
 
-			{% include 'home/_dashboard/_card_desktop.html.twig' with {
-            title: 'Patients',
-            desc: 'Gérer les dossiers',
-            icon: 'bi-people-fill',
-            bg: 'bg-patients',
-            link: path('app_fiche_client_index'),
-            badge: totalClients ?? null
-        } %}
+	{% include 'home/_dashboard/_card_desktop.html.twig' with {
+    title: 'Patients',
+    desc: 'Gérer les dossiers',
+    icon: 'bi-people-fill',
+    bg: 'bg-patients',
+    link: path('app_fiche_client_index'),
+    badge: totalClients ?? null
+  } %}
 
-{% include 'home/_dashboard/_card_desktop.html.twig' with {
-  title: 'Salle d’attente',
-  desc: 'Patients du jour',
-  icon: 'bi-people-fill',
-  bg: 'bg-medicines',
-  modal: '#waitingRoomModal'
-} %}
+	{% include 'home/_dashboard/_card_desktop.html.twig' with {
+    title: 'Salle d’attente',
+    desc: 'Patients du jour',
+    icon: 'bi-hourglass-split',
+    bg: 'bg-medicines',
+    modal: '#waitingRoomModal'
+  } %}
 
-
-
-
-{% include 'home/_dashboard/_card_desktop.html.twig' with {
+	{% include 'home/_dashboard/_card_desktop.html.twig' with {
     title: 'Rendez-vous',
     desc: 'Agenda & consultations',
     icon: 'bi-calendar-check-fill',
     bg: 'bg-rdv',
-link: path('rendezvous_calendrier'),
-
+    link: path('rendezvous_calendrier'),
     badge: totalRdvToday ?? null
-} %}
+  } %}
 
+</div>
 
+{# ✅ MINI WIDGET SALLE D’ATTENTE (DESKTOP) #}
+<div class="d-none d-md-block mt-5">
+	<div class="wr-mini card border-0 shadow-sm rounded-4">
+		<div class="card-body p-3 p-lg-4">
 
-			
+			<div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+				<div class="d-flex align-items-center gap-3">
+					<div class="wr-mini-icon">
+						<i class="bi bi-hourglass-split"></i>
+					</div>
+
+					<div>
+						<div class="d-flex align-items-center gap-2">
+							<h5 class="mb-0 fw-black">Salle d’attente</h5>
+							<span class="wr-mini-live">
+								<span class="dot"></span>Live
+							</span>
+						</div>
+						<div class="text-muted small">Vue rapide des patients du jour (statuts)</div>
+					</div>
+				</div>
+
+				<div class="d-flex align-items-center gap-2">
+					<div class="wr-mini-last" id="wrDeskLast">Maj: —</div>
+
+					<button class="btn btn-primary rounded-pill fw-bold px-3" data-bs-toggle="modal" data-bs-target="#waitingRoomModal" id="openWaitingRoomDesktop">
+						Ouvrir
+						<i class="bi bi-box-arrow-up-right ms-1"></i>
+					</button>
+				</div>
+			</div>
+
+			<div class="wr-mini-stats mt-3" id="wrDeskStats">
+				<div class="s s-wait">
+					<div class="n" id="wrDeskWait">0</div>
+					<div class="l">En attente</div>
+				</div>
+				<div class="s s-call">
+					<div class="n" id="wrDeskCall">0</div>
+					<div class="l">Appelés</div>
+				</div>
+				<div class="s s-consult">
+					<div class="n" id="wrDeskConsult">0</div>
+					<div class="l">Consultation</div>
+				</div>
+				<div class="s s-done">
+					<div class="n" id="wrDeskDone">0</div>
+					<div class="l">Terminés</div>
+				</div>
+				<div class="s s-abs">
+					<div class="n" id="wrDeskAbs">0</div>
+					<div class="l">Absents</div>
+				</div>
+			</div>
 
 		</div>
+	</div>
+</div>
+
+
 
 		{# ======================= #}
 		{# 🔹 RESSOURCES #}
@@ -254,6 +307,69 @@ link: path('rendezvous_calendrier'),
 
 
 <style>
+
+  .fw-black{font-weight:1000}
+
+  .wr-mini{
+    background: radial-gradient(1100px 320px at 0% 0%, rgba(59,130,246,.14), transparent 55%),
+                radial-gradient(1100px 320px at 100% 0%, rgba(16,185,129,.12), transparent 55%),
+                #fff;
+  }
+  .wr-mini-icon{
+    width:56px;height:56px;border-radius:18px;
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;font-size:1.3rem;
+    background: linear-gradient(135deg,#f59e0b,#fbbf24);
+    box-shadow:0 18px 30px rgba(245,158,11,.25);
+  }
+
+  .wr-mini-live{
+    display:inline-flex;align-items:center;gap:7px;
+    padding:6px 10px;border-radius:999px;
+    font-weight:1000;font-size:.78rem;
+    background:rgba(16,185,129,.12);
+    border:1px solid rgba(16,185,129,.22);
+    color:#0f766e;
+  }
+  .wr-mini-live .dot{
+    width:9px;height:9px;border-radius:999px;background:#10b981;
+    box-shadow:0 0 0 5px rgba(16,185,129,.18);
+    animation: wrPulse 1.5s infinite;
+  }
+  @keyframes wrPulse{
+    0%{transform:scale(.95);opacity:.9}
+    50%{transform:scale(1.05);opacity:1}
+    100%{transform:scale(.95);opacity:.9}
+  }
+
+  .wr-mini-last{
+    padding:8px 12px;border-radius:999px;background:#fff;
+    border:1px solid rgba(15,23,42,.10);
+    font-weight:900;font-size:.85rem;
+    box-shadow:0 10px 22px rgba(2,6,23,.06);
+  }
+
+  .wr-mini-stats{
+    display:grid;
+    grid-template-columns: repeat(5, minmax(120px, 1fr));
+    gap:10px;
+  }
+  .wr-mini-stats .s{
+    background:#fff;
+    border:1px solid rgba(15,23,42,.10);
+    border-radius:18px;
+    padding:12px 10px;
+    text-align:center;
+    box-shadow:0 14px 26px rgba(2,6,23,.06);
+  }
+  .wr-mini-stats .n{font-weight:1000;font-size:1.25rem;color:#0b1220}
+  .wr-mini-stats .l{font-size:.82rem;font-weight:900;opacity:.75}
+
+  .s-wait{border-top:3px solid rgba(245,158,11,.85)}
+  .s-call{border-top:3px solid rgba(59,130,246,.85)}
+  .s-consult{border-top:3px solid rgba(16,185,129,.85)}
+  .s-done{border-top:3px solid rgba(100,116,139,.85)}
+  .s-abs{border-top:3px solid rgba(239,68,68,.85)}
 /* ===== MOBILE DASHBOARD ===== */
 .dashboard-header {
   background: linear-gradient(
@@ -500,14 +616,6 @@ box-shadow: 0 8px 22px rgba(0,0,0,.15);
 {# ===================== #}
  <script>
 document.addEventListener("DOMContentLoaded", () => {
-  const lastEl = document.getElementById("wrMobileLast");
-
-  const cWait = document.getElementById("wrCountWait");
-  const cCall = document.getElementById("wrCountCall");
-  const cConsult = document.getElementById("wrCountConsult");
-  const cDone = document.getElementById("wrCountDone");
-  const cAbs = document.getElementById("wrCountAbs");
-
   let timer = null;
 
   async function safeJsonFetch(url, options = {}) {
@@ -520,50 +628,70 @@ document.addEventListener("DOMContentLoaded", () => {
     return j;
   }
 
-  function setCounts(data){
-    const w = data?.EN_ATTENTE?.length ?? 0;
-    const a = data?.APPELE?.length ?? 0;
-    const c = data?.EN_CONSULTATION?.length ?? 0;
-    const t = data?.TERMINE?.length ?? 0;
+  function setText(id, value) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = value;
+  }
+
+  function setLast(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const now = new Date();
+    el.textContent = "Maj: " + now.toLocaleTimeString("fr-FR", { hour:"2-digit", minute:"2-digit" });
+  }
+
+  function applyCounts(data) {
+    const w  = data?.EN_ATTENTE?.length ?? 0;
+    const a  = data?.APPELE?.length ?? 0;
+    const c  = data?.EN_CONSULTATION?.length ?? 0;
+    const t  = data?.TERMINE?.length ?? 0;
     const ab = data?.ABSENT?.length ?? 0;
 
-    if (cWait) cWait.textContent = w;
-    if (cCall) cCall.textContent = a;
-    if (cConsult) cConsult.textContent = c;
-    if (cDone) cDone.textContent = t;
-    if (cAbs) cAbs.textContent = ab;
+    // ✅ Mobile ids
+    setText("wrCountWait", w);
+    setText("wrCountCall", a);
+    setText("wrCountConsult", c);
+    setText("wrCountDone", t);
+    setText("wrCountAbs", ab);
+    setLast("wrMobileLast");
 
-    if (lastEl) {
-      const now = new Date();
-      lastEl.textContent = now.toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"});
-    }
+    // ✅ Desktop ids
+    setText("wrDeskWait", w);
+    setText("wrDeskCall", a);
+    setText("wrDeskConsult", c);
+    setText("wrDeskDone", t);
+    setText("wrDeskAbs", ab);
+    setLast("wrDeskLast");
   }
 
-  async function loadCounts(){
-    try{
+  async function loadCounts() {
+    try {
       const j = await safeJsonFetch("/api/waiting-room/list");
       if (!j.success) return;
-      setCounts(j.data);
-    }catch(e){
-      // si l'API plante, on laisse silencieux sur mobile
+      applyCounts(j.data);
+    } catch (e) {
+      // silencieux UX
     }
   }
 
-  // ✅ Recharge quand on ouvre le modal, et auto-refresh tant qu'il est ouvert
+  // 1er chargement
+  loadCounts();
+
+  // refresh quand le modal est ouvert
   const modalEl = document.getElementById("waitingRoomModal");
   modalEl?.addEventListener("shown.bs.modal", async () => {
     await loadCounts();
     timer = setInterval(loadCounts, 5000);
   });
+
   modalEl?.addEventListener("hidden.bs.modal", () => {
     if (timer) clearInterval(timer);
     timer = null;
   });
-
-  // ✅ petit refresh au chargement de la page
-  loadCounts();
 });
 </script>
+
+
 
  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 

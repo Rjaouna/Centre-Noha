@@ -394,36 +394,37 @@
 <!-- ============================= -->
 <!-- 📅 PROCHAINS RENDEZ-VOUS -->
 <!-- ============================= -->
-	<div
-	class="mt-5"> <!-- TITRE -->
-	<div class="d-flex align-items-center justify-content-between mb-4">
-		<h4 class="fw-bold text-primary mb-0">
-			<i class="bi bi-calendar-check me-2"></i>
-Prochains RDV
+	
+<div class="mt-5 ref-section">
 
-		</h4>
-
-<a href="/rendezvous/calendrier" class="btn btn-outline-primary rounded-pill btn-sm">
-
-
-			<i class="bi bi-calendar-event me-1"></i>
-			Calendrier
-		</a>
-	</div>
-
-	<!-- CONTENEUR RDV -->
 	<div class="card border-0 shadow-sm rounded-4">
-		<div
-			class="card-body p-4">
+		<div class="card-body p-4">
+
+			<div class="d-flex align-items-center justify-content-between mb-4">
+				<h4 class="fw-bold text-primary mb-0">
+					<i class="bi bi-calendar-check me-2"></i>
+					Prochains RDV
+				</h4>
+
+				<a href="/rendezvous/calendrier" class="btn btn-outline-primary rounded-pill btn-sm">
+					<i class="bi bi-calendar-event me-1"></i>
+					Calendrier
+				</a>
+			</div>
 
 			<!-- LISTE RDV (injectée en JS) -->
 			<div class="row g-4" id="rdvList"></div>
+
+			<!-- (optionnel) état vide -->
+			<div id="rdvEmpty" class="text-center text-muted py-4 d-none">
+				<i class="bi bi-calendar-x fs-1 d-block mb-2"></i>
+				Aucun rendez-vous à venir
+			</div>
 
 		</div>
 	</div>
 
 </div>
-
 
 
 <!-- ============================= -->
