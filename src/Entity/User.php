@@ -62,11 +62,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: RendezVous::class, mappedBy: 'praticien')]
     private \Doctrine\Common\Collections\Collection $rendezVouses;
 
+    /**
+     * @var \Doctrine\Common\Collections\Collection<int, WaitingRoom>
+     */
+    #[ORM\OneToMany(targetEntity: WaitingRoom::class, mappedBy: 'praticien')]
+    private \Doctrine\Common\Collections\Collection $waitingRooms;
+
     public function __construct()
     {
         $this->disponibilites = new ArrayCollection();
         $this->indisponibilites = new ArrayCollection();
         $this->rendezVouses = new ArrayCollection();
+        $this->waitingRooms = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -258,6 +265,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($rendezVouse->getPraticien() === $this) {
                 $rendezVouse->setPraticien(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return \Doctrine\Common\Collections\Collection<int, WaitingRoom>
+     */
+    public function getWaitingRooms(): \Doctrine\Common\Collections\Collection
+    {
+        return $this->waitingRooms;
+    }
+
+    public function addWaitingRoom(WaitingRoom $waitingRoom): static
+    {
+        if (!$this->waitingRooms->contains($waitingRoom)) {
+            $this->waitingRooms->add($waitingRoom);
+            $waitingRoom->setPraticien($this);
+        }
+
+        return $this;
+    }
+
+    public function removeWaitingRoom(WaitingRoom $waitingRoom): static
+    {
+        if ($this->waitingRooms->removeElement($waitingRoom)) {
+            // set the owning side to null (unless already changed)
+            if ($waitingRoom->getPraticien() === $this) {
+                $waitingRoom->setPraticien(null);
             }
         }
 

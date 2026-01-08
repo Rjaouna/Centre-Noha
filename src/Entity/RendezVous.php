@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\RendezVousRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -40,6 +42,17 @@ class RendezVous
 
     #[ORM\Column]
     private ?\DateTimeImmutable $expiresAt = null;
+
+    /**
+     * @var Collection<int, WaitingRoom>
+     */
+    #[ORM\OneToMany(targetEntity: WaitingRoom::class, mappedBy: 'rdv')]
+    private Collection $waitingRooms;
+
+    public function __construct()
+    {
+        $this->waitingRooms = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -150,6 +163,36 @@ class RendezVous
     public function setExpiresAt(\DateTimeImmutable $expiresAt): static
     {
         $this->expiresAt = $expiresAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, WaitingRoom>
+     */
+    public function getWaitingRooms(): Collection
+    {
+        return $this->waitingRooms;
+    }
+
+    public function addWaitingRoom(WaitingRoom $waitingRoom): static
+    {
+        if (!$this->waitingRooms->contains($waitingRoom)) {
+            $this->waitingRooms->add($waitingRoom);
+            $waitingRoom->setRdv($this);
+        }
+
+        return $this;
+    }
+
+    public function removeWaitingRoom(WaitingRoom $waitingRoom): static
+    {
+        if ($this->waitingRooms->removeElement($waitingRoom)) {
+            // set the owning side to null (unless already changed)
+            if ($waitingRoom->getRdv() === $this) {
+                $waitingRoom->setRdv(null);
+            }
+        }
 
         return $this;
     }

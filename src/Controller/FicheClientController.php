@@ -1,26 +1,27 @@
 <?php
+
 namespace App\Controller;
 
-use App\Entity\Paiement;
-use App\Form\PaiementType;
 use App\Entity\FicheClient;
+use App\Entity\Paiement;
 use App\Form\FicheClientType;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Form\PaiementType;
 use App\Repository\FicheClientRepository;
+use App\Repository\WaitingRoomRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 #[Route('/fiche/client')]
 final class FicheClientController extends AbstractController
 {
     #[Route('/', name: 'app_fiche_client_index', methods: ['GET'])]
-    public function index(
-        FicheClientRepository $ficheClientRepository
-    ): Response {
+    public function index(FicheClientRepository $ficheClientRepository): Response
+    {
         $fiche = new FicheClient();
         $paiement = new Paiement();
 
@@ -28,24 +29,56 @@ final class FicheClientController extends AbstractController
         $formPaiement = $this->createForm(PaiementType::class, $paiement);
 
         return $this->render('fiche_client/index.html.twig', [
-            // ⚠️ utile si tu veux fallback non-AJAX
             'fiche_clients' => $ficheClientRepository->findAll(),
-
-            // 🔥 forms pour modals
             'form' => $form->createView(),
             'formPaiement' => $formPaiement->createView(),
         ]);
     }
-    #[Route('/ajax', name: 'app_fiche_client_ajax', methods: ['GET'])]
-    public function ajax(FicheClientRepository $repo): JsonResponse
-    {
-        $data = [];
 
+    #[Route('/ajax', name: 'app_fiche_client_ajax', methods: ['GET'])]
+    public function ajax(
+        FicheClientRepository $repo,
+        WaitingRoomRepository $wrRepo
+    ): JsonResponse {
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->json(['data' => []], 401);
+        }
+
+        $start = new \DateTimeImmutable('today');
+        $end   = $start->modify('+1 day');
+
+        // ✅ toutes les lignes waiting_room du jour pour ce praticien
+        $wrs = $wrRepo->createQueryBuilder('w')
+            ->leftJoin('w.patient', 'p')->addSelect('p')
+            ->andWhere('w.praticien = :u')
+            ->andWhere('w.queueDate >= :start AND w.queueDate < :end')
+            ->andWhere('w.isActive = true')
+            ->setParameter('u', $user)
+            ->setParameter('start', $start, \Doctrine\DBAL\Types\Types::DATETIME_IMMUTABLE)
+            ->setParameter('end', $end, \Doctrine\DBAL\Types\Types::DATETIME_IMMUTABLE)
+            ->getQuery()
+            ->getResult();
+
+        // patientId => wrId + statut
+        $wrByPatientId = [];
+        foreach ($wrs as $w) {
+            $pid = $w->getPatient()?->getId();
+            if (!$pid) continue;
+
+            $wrByPatientId[$pid] = [
+                'wrId' => $w->getId(),
+                'wrStatut' => $w->getStatut(), // ✅ statut WAITING_ROOM
+            ];
+        }
+
+        $data = [];
         foreach ($repo->findAll() as $fiche) {
-            $isNew = !$fiche->isConsulted();
+            $pid = $fiche->getId();
+            $wr = $wrByPatientId[$pid] ?? ['wrId' => null, 'wrStatut' => null];
 
             $data[] = [
-                'id' => $fiche->getId(),
+                'id' => $pid,
                 'nom' => $fiche->getNom(),
                 'prenom' => $fiche->getPrenom(),
                 'cin' => $fiche->getCin(),
@@ -53,15 +86,18 @@ final class FicheClientController extends AbstractController
                 'telephone' => $fiche->getTelephone(),
                 'age' => $fiche->getAgePatient(),
                 'maladie' => $fiche->getTypeMaladie(),
-                'statut' => $fiche->getStatut() ?: null,   // ou 'EN_ATTENTE' si tu veux un défaut
-                'isNew' => $isNew,
+                'isNew' => !$fiche->isConsulted(),
+
+                // ✅ champs salle d’attente
+                'wrId' => $wr['wrId'],
+                'wrStatut' => $wr['wrStatut'],
             ];
         }
 
-        return new JsonResponse([
-            'data' => $data
-        ]);
+        return $this->json(['data' => $data]);
     }
+
+
 
     #[Route('/new', name: 'app_fiche_client_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response

@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\WaitingRoom;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Traits\TimestampableTrait;
@@ -160,6 +161,15 @@ class FicheClient
     #[ORM\Column(length: 20, nullable: true)]
     private ?string $statut = null;
 
+    #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
+    private ?\DateTime $heureArrive = null;
+
+    /**
+     * @var Collection<int, WaitingRoom>
+     */
+    #[ORM\OneToMany(targetEntity: WaitingRoom::class, mappedBy: 'patient')]
+    private Collection $waitingRooms;
+
     public function __construct()
     {
         $this->paiements = new ArrayCollection();
@@ -171,6 +181,7 @@ class FicheClient
         $this->analysePrescriptions = new ArrayCollection();
         $this->rendezVouses = new ArrayCollection();
         $this->radiologies = new ArrayCollection();
+        $this->waitingRooms = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -663,6 +674,7 @@ class FicheClient
     }
     // FicheClient.php
 
+    public const STATUT_EN_FIXTURES = '';
     public const STATUT_EN_ATTENTE = 'EN_ATTENTE';
     public const STATUT_APPELE = 'APPELE';
     public const STATUT_EN_CONSULTATION = 'EN_CONSULTATION';
@@ -674,7 +686,49 @@ class FicheClient
     {
         // Nouveau patient => En attente par défaut
         if (!$this->getStatut()) {
-            $this->setStatut(self::STATUT_EN_ATTENTE);
+            $this->setStatut(self::STATUT_EN_FIXTURES);
         }
+    }
+
+    public function getHeureArrive(): ?\DateTime
+    {
+        return $this->heureArrive;
+    }
+
+    public function setHeureArrive(?\DateTime $heureArrive): static
+    {
+        $this->heureArrive = $heureArrive;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, WaitingRoom>
+     */
+    public function getWaitingRooms(): Collection
+    {
+        return $this->waitingRooms;
+    }
+
+    public function addWaitingRoom(WaitingRoom $waitingRoom): static
+    {
+        if (!$this->waitingRooms->contains($waitingRoom)) {
+            $this->waitingRooms->add($waitingRoom);
+            $waitingRoom->setPatient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeWaitingRoom(WaitingRoom $waitingRoom): static
+    {
+        if ($this->waitingRooms->removeElement($waitingRoom)) {
+            // set the owning side to null (unless already changed)
+            if ($waitingRoom->getPatient() === $this) {
+                $waitingRoom->setPatient(null);
+            }
+        }
+
+        return $this;
     }
 }

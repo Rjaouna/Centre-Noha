@@ -60,8 +60,8 @@ class AppFixtures extends Fixture
             $client->setCreatedAt($date);
             $client->setUpdatedAt($date);
 
-            $client->setIsOpen(true);
-            $client->setIsConsulted(true);
+            $client->setIsOpen(false);
+            $client->setIsConsulted(false);
 
 
             $manager->persist($client);
