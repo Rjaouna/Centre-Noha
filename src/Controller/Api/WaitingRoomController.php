@@ -112,6 +112,7 @@ class WaitingRoomController extends AbstractController
 					'typeMaladie' => $p->getTypeMaladie(),
 
 					'statut' => $statut,
+					'note' => $w->getNote(),
 
 					'arriveAt' => $arriveAt ? $arriveAt->format('Y-m-d H:i:s') : null,
 
@@ -177,6 +178,7 @@ class WaitingRoomController extends AbstractController
 			if ($patientId <= 0) {
 				return $this->json(['success' => false, 'message' => 'patientId manquant'], 400);
 			}
+			$note = isset($payload['note']) ? (string) $payload['note'] : '';
 
 			$patient = $patientRepo->find($patientId);
 			if (!$patient) {
@@ -205,6 +207,7 @@ class WaitingRoomController extends AbstractController
 				$w->setPraticien($praticien);
 				$w->setQueueDate($now);
 				$w->setCreatedAt($now);
+				$w->setNote($note);
 			}
 
 			// ✅ RDV du jour (si tu veux lier)

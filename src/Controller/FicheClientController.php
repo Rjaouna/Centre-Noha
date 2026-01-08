@@ -35,68 +35,54 @@ final class FicheClientController extends AbstractController
         ]);
     }
 
-    #[Route('/ajax', name: 'app_fiche_client_ajax', methods: ['GET'])]
+    #[Route('/fiche-client/ajax', name: 'app_fiche_client_ajax', methods: ['GET'])]
     public function ajax(
-        FicheClientRepository $repo,
+        FicheClientRepository $clientRepo,
         WaitingRoomRepository $wrRepo
     ): JsonResponse {
-        $user = $this->getUser();
-        if (!$user) {
-            return $this->json(['data' => []], 401);
-        }
+        $clients = $clientRepo->findAll();
 
-        $start = new \DateTimeImmutable('today');
-        $end   = $start->modify('+1 day');
-
-        // ✅ toutes les lignes waiting_room du jour pour ce praticien
-        $wrs = $wrRepo->createQueryBuilder('w')
-            ->leftJoin('w.patient', 'p')->addSelect('p')
-            ->andWhere('w.praticien = :u')
-            ->andWhere('w.queueDate >= :start AND w.queueDate < :end')
-            ->andWhere('w.isActive = true')
-            ->setParameter('u', $user)
-            ->setParameter('start', $start, \Doctrine\DBAL\Types\Types::DATETIME_IMMUTABLE)
-            ->setParameter('end', $end, \Doctrine\DBAL\Types\Types::DATETIME_IMMUTABLE)
-            ->getQuery()
-            ->getResult();
-
-        // patientId => wrId + statut
-        $wrByPatientId = [];
-        foreach ($wrs as $w) {
-            $pid = $w->getPatient()?->getId();
-            if (!$pid) continue;
-
-            $wrByPatientId[$pid] = [
-                'wrId' => $w->getId(),
-                'wrStatut' => $w->getStatut(), // ✅ statut WAITING_ROOM
-            ];
-        }
+        [$start, $end] = [
+            new \DateTimeImmutable('today'),
+            (new \DateTimeImmutable('today'))->modify('+1 day')
+        ];
 
         $data = [];
-        foreach ($repo->findAll() as $fiche) {
-            $pid = $fiche->getId();
-            $wr = $wrByPatientId[$pid] ?? ['wrId' => null, 'wrStatut' => null];
+
+        foreach ($clients as $c) {
+
+            // 🔎 Salle d’attente du jour pour ce patient
+            $wr = $wrRepo->createQueryBuilder('w')
+                ->andWhere('w.patient = :patient')
+                ->andWhere('w.queueDate >= :start AND w.queueDate < :end')
+                ->andWhere('w.isActive = true')
+                ->setParameter('patient', $c)
+                ->setParameter('start', $start)
+                ->setParameter('end', $end)
+                ->setMaxResults(1)
+                ->getQuery()
+                ->getOneOrNullResult();
 
             $data[] = [
-                'id' => $pid,
-                'nom' => $fiche->getNom(),
-                'prenom' => $fiche->getPrenom(),
-                'cin' => $fiche->getCin(),
-                'ville' => $fiche->getVille(),
-                'telephone' => $fiche->getTelephone(),
-                'age' => $fiche->getAgePatient(),
-                'maladie' => $fiche->getTypeMaladie(),
-                'isNew' => !$fiche->isConsulted(),
+                'id'        => $c->getId(),
+                'nom'       => $c->getNom(),
+                'prenom'    => $c->getPrenom(),
+                'ville'     => $c->getVille(),
+                'telephone' => $c->getTelephone(),
+                'age'       => $c->getAge(),
+                'maladie'   => $c->getTypeMaladie(),
+                'isNew'     => false,
 
-                // ✅ champs salle d’attente
-                'wrId' => $wr['wrId'],
-                'wrStatut' => $wr['wrStatut'],
+                // ✅ CLÉS CRITIQUES POUR DATATABLES
+                'wrId'      => $wr?->getId(),
+                'wrStatut'  => $wr?->getStatut(),
             ];
         }
 
-        return $this->json(['data' => $data]);
+        return $this->json([
+            'data' => $data
+        ]);
     }
-
 
 
     #[Route('/new', name: 'app_fiche_client_new', methods: ['GET', 'POST'])]

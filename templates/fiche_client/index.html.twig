@@ -1,17 +1,18 @@
-{# templates/fiche_client/index.html.twig #}
 {% extends 'base.html.twig' %}
 
 {% block title %}Gestion des patients
 {% endblock %}
 
 {% block body %}
-	<div class="mt-4">
+	<div
+		class="mt-4">
 
+		{# ================= HEADER ================= #}
 		{% embed '_partials/_page_header.html.twig' with {
-      icon: 'bi bi-people-fill',
-      title: 'Gestion des patients',
-      subtitle: 'Suivi médical & dossiers patients'
-    } %}
+    icon: 'bi bi-people-fill',
+    title: 'Gestion des patients',
+    subtitle: 'Suivi médical & salle d’attente'
+  } %}
 			{% block header_actions_left %}
 				<span class="action-icon bg-primary" role="button" data-bs-toggle="modal" data-bs-target="#modalAddClient" title="Nouveau patient">
 					<i class="bi bi-person-plus"></i>
@@ -19,6 +20,7 @@
 			{% endblock %}
 		{% endembed %}
 
+		{# ================= TABLE ================= #}
 		<div class="card shadow-sm border-0 rounded-4 mt-3">
 			<div class="card-body px-4">
 				<table id="patientsTable" class="table table-hover align-middle w-100">
@@ -30,7 +32,7 @@
 							<th>Téléphone</th>
 							<th>Âge</th>
 							<th>Maladie</th>
-							<th>Statut (Salle)</th>
+							<th>Salle</th>
 							<th class="text-center">Actions</th>
 						</tr>
 					</thead>
@@ -41,229 +43,187 @@
 
 	</div>
 
+	{# ================= MODALS ================= #}
 	{% include 'home/_modals/_add_patient.html.twig' %}
+
+	{# ===== MODAL NOTE ARRIVÉE SALLE ===== #}
+	<div class="modal fade" id="wrNoteModal" tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content rounded-4 shadow-lg">
+
+				<div class="modal-header bg-warning text-dark">
+					<h5 class="modal-title fw-bold text-light">
+						<i class="bi bi-clipboard-check me-2"></i>
+						Motif d’arrivée
+					</h5>
+					<button class="btn-close" data-bs-dismiss="modal"></button>
+				</div>
+
+				<div class="modal-body">
+					<input type="hidden" id="wrPatientId">
+
+					<label class="form-label fw-semibold mb-2">Type de consultation</label>
+
+					<select id="wrNote" class="form-select rounded-3">
+						<option value="">— Sélectionner —</option>
+						<option value="Consultation ordinaire">Consultation ordinaire</option>
+						<option value="Cas urgent">⚠️ Cas urgent</option>
+						<option value="Suivi médical">Suivi médical</option>
+						<option value="Contrôle">Contrôle</option>
+						<option value="Renouvellement traitement">Renouvellement traitement</option>
+						<option value="Douleur aiguë">Douleur aiguë</option>
+						<option value="Autre">Autre</option>
+					</select>
+
+					<div class="small text-muted mt-2">
+						Cette information est visible dans la salle d’attente.
+					</div>
+				</div>
+
+				<div class="modal-footer d-flex justify-content-between">
+					<button class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">
+						Annuler
+					</button>
+
+					<button class="btn btn-warning fw-bold rounded-pill px-4" id="wrConfirmArrive">
+						<i class="bi bi-check-circle me-1"></i>
+						Mettre en salle
+					</button>
+				</div>
+
+			</div>
+		</div>
+	</div>
 {% endblock %}
 
 {% block javascripts %}
 	{{ parent() }}
 
 	 <script>
-	    let patientsDT;
+	let patientsDT;
+	let wrModal;
+	let currentPatientId = null;
 	
-	    function hideLoader() {
-	      const loader = document.getElementById('pageLoader');
-	      if (loader) loader.style.display = 'none';
-	    }
-	    function showLoader() {
-	      const loader = document.getElementById('pageLoader');
-	      if (loader) loader.style.display = 'flex';
-	    }
+	/* ================= UTIL ================= */
+	async function safeJsonFetch(url, options = {}) {
+	  const r = await fetch(url, options);
+	  const t = await r.text();
+	  const j = JSON.parse(t);
+	  if (!r.ok) throw new Error(j.message ?? "Erreur serveur");
+	  return j;
+	}
 	
-	    async function safeJsonFetch(url, options = {}) {
-	      const r = await fetch(url, options);
-	      const text = await r.text();
-	      let j = null;
-	      try { j = JSON.parse(text); } catch (e) {}
-	      if (!r.ok) throw new Error(j?.message ?? `Erreur HTTP ${r.status}`);
-	      if (!j) throw new Error("Réponse JSON invalide");
-	      return j;
-	    }
+	function raw(s){ return (s ?? "").toString().trim().toUpperCase(); }
 	
-	    function rawStatut(s) {
-	      return (s ?? "").toString().trim().toUpperCase();
-	    }
+	function badgeSalle(row) {
+	  if (!row.wrId || raw(row.wrStatut) === 'TERMINE')
+	    return `<span class="badge bg-light text-dark rounded-pill">Hors salle</span>`;
 	
-	    function isInWaitingRoom(row) {
-	      const wrId = row?.wrId ?? null;
-	      const wrStatut = rawStatut(row?.wrStatut);
-	      // ✅ en salle = il a une ligne WR du jour ET pas terminé
-	      return (wrId !== null) && (wrStatut !== 'TERMINE');
-	    }
+	  const map = {
+	    EN_ATTENTE: 'bg-warning text-dark',
+	    APPELE: 'bg-primary',
+	    EN_CONSULTATION: 'bg-success',
+	    ABSENT: 'bg-danger'
+	  };
+	  const cls = map[raw(row.wrStatut)] ?? 'bg-dark';
+	  return `<span class="badge ${cls} rounded-pill">${row.wrStatut}</span>`;
+	}
 	
-	    function badgeWaitingRoom(row) {
-	      const wrId = row?.wrId ?? null;
-	      const v = rawStatut(row?.wrStatut);
+	/* ================= INIT TABLE ================= */
+	function initPatientsTable() {
+	  patientsDT = $('#patientsTable').DataTable({
+	    responsive: true,
+	    ajax: { url: "{{ path('app_fiche_client_ajax') }}", dataSrc: 'data' },
+	    order: [[0,'desc']],
+	    pageLength: 10,
+	    lengthChange: false,
+	    language: { url: '//cdn.datatables.net/plug-ins/1.13.8/i18n/fr-FR.json' },
 	
-	      // ✅ Hors salle si pas de ligne OU terminé
-	      if (!wrId || v === 'TERMINE') {
-	        return `<span class="badge bg-light text-dark rounded-pill">Hors salle</span>`;
-	      }
+	    columns: [
+	      { data:'id', className:'fw-bold' },
 	
-	      if (v === 'APPELE')          return `<span class="badge bg-primary rounded-pill">Appelé</span>`;
-	      if (v === 'EN_CONSULTATION') return `<span class="badge bg-success rounded-pill">Consultation</span>`;
-	      if (v === 'ABSENT')          return `<span class="badge bg-danger rounded-pill">Absent</span>`;
-	      if (v === 'EN_ATTENTE')      return `<span class="badge bg-warning text-dark rounded-pill">En attente</span>`;
+	      { data:null, render: r => `
+	        <strong>${r.nom} ${r.prenom ?? ''}</strong>
+	        ${r.isNew ? '<span class="badge bg-success ms-2">Nouveau</span>' : ''}
+	      `},
 	
-	      return `<span class="badge bg-dark rounded-pill">${v}</span>`;
-	    }
+	      { data:'ville', defaultContent:'—' },
 	
-	    function initPatientsTable() {
-	      const tableEl = $('#patientsTable');
+	      { data:'telephone', render:t =>
+	        t ? `<a href="tel:${t}" class="text-primary fw-semibold">${t}</a>` : '—'
+	      },
 	
-	      if (!tableEl.length || !$.fn.DataTable) {
-	        console.error("DataTables n'est pas chargé.");
-	        hideLoader();
-	        return;
-	      }
-	      if (!$.fn.dataTable.Responsive) {
-	        console.error("DataTables Responsive n'est pas chargé (js/css).");
-	        hideLoader();
-	        return;
-	      }
+	      { data:'age', render:a => a ? `${a} ans` : '—' },
 	
-	      if ($.fn.DataTable.isDataTable(tableEl)) {
-	        tableEl.DataTable().clear().destroy();
-	      }
+	      { data:'maladie', render:m =>
+	        `<span class="badge bg-info bg-opacity-75 rounded-pill">${m ?? '—'}</span>`
+	      },
 	
-	      patientsDT = tableEl.DataTable({
-	        processing: true,
-	        responsive: true,
-	        autoWidth: false,
+	      { data:null, render: r => badgeSalle(r) },
 	
-	        ajax: {
-	          url: "{{ path('app_fiche_client_ajax') }}",
-	          dataSrc: 'data'
-	        },
+	      { data:null, orderable:false, className:'text-center', render:r => {
+	        const url = "{{ path('app_fiche_client_show', {'id':'ID'}) }}".replace('ID', r.id);
+	        const inRoom = r.wrId && raw(r.wrStatut) !== 'TERMINE';
 	
-	        language: {
-	          url: '//cdn.datatables.net/plug-ins/1.13.8/i18n/fr-FR.json',
-	          processing: "Chargement..."
-	        },
+	        return `
+	          <div class="d-flex justify-content-center gap-2">
+	            <a href="${url}" class="btn btn-sm rounded-pill btn-outline-primary">
+	              <i class="bi bi-eye"></i>
+	            </a>
 	
-	        pageLength: 10,
-	        lengthChange: false,
-	        order: [[0, 'desc']],
-	
-	        columns: [
-	          { data: 'id', className: 'fw-bold' },
-	
-	          {
-	            data: null,
-	            render: row => `
-	              <div class="d-flex flex-column">
-	                <div class="d-flex align-items-center gap-2">
-	                  <strong>${row.nom ?? ''} ${row.prenom ?? ''}</strong>
-	                  ${row.isNew ? '<span class="badge bg-success rounded-pill">Nouveau</span>' : ''}
-	                </div>
-	                ${row.cin ? `<div class="small text-muted mt-1">CIN: ${row.cin}</div>` : ''}
-	              </div>
-	            `
-	          },
-	
-	          { data: 'ville', defaultContent: '—' },
-	
-	          {
-	            data: 'telephone',
-	            render: tel => tel
-	              ? `<a href="tel:${tel}" class="fw-semibold text-primary text-decoration-none">${tel}</a>`
-	              : '—'
-	          },
-	
-	          {
-	            data: 'age',
-	            render: age => age ? `<span class="badge bg-light rounded-pill px-3">${age} ans</span>` : '—'
-	          },
-	
-	          {
-	            data: 'maladie',
-	            render: m => `<span class="badge bg-info bg-opacity-75 rounded-pill px-3">${m ?? '—'}</span>`
-	          },
-	
-	          // ✅ Statut Salle (selon WaitingRoom)
-	          {
-	            data: null,
-	            render: row => badgeWaitingRoom(row)
-	          },
-	
-	          // ✅ Actions
-	          {
-	            data: null,
-	            orderable: false,
-	            className: 'text-center',
-	            render: row => {
-	              const patientId = row.id;
-	              const url = "{{ path('app_fiche_client_show', {'id': 'ID'}) }}".replace('ID', patientId);
-	
-	              const inRoom = isInWaitingRoom(row);
-	              const canSetWaiting = !inRoom; // ✅ bouton téléphone seulement si hors salle
-	
-	              return `
-	                <div class="d-flex justify-content-center gap-2 flex-wrap">
-	                  <a href="${url}" class="btn btn-sm px-3 py-2 fw-semibold rounded-pill btn-view-outline" title="Voir">
-	                    <i class="bi bi-eye"></i>
-	                  </a>
-	
-	                  ${canSetWaiting ? `
-	                    <button type="button"
-	                            class="btn btn-sm px-3 py-2 fw-semibold rounded-pill btn-warning text-dark js-arrive-wr"
-	                            data-patient-id="${patientId}"
-	                            title="Mettre en salle (EN_ATTENTE)">
-	                      <i class="bi bi-telephone-fill"></i>
-	                    </button>
-	                  ` : `
-	                    <span class="badge bg-warning text-dark rounded-pill px-3 py-2" title="Déjà en salle">
-	                      <i class="bi bi-hourglass-split"></i>
-	                    </span>
-	                  `}
-	                </div>
-	              `;
+	            ${!inRoom ? `
+	              <button class="btn btn-sm rounded-pill btn-warning text-dark js-arrive-wr"
+	                data-patient-id="${r.id}">
+	                <i class="bi bi-telephone-fill"></i>
+	              </button>` : `
+	              <span class="badge bg-warning text-dark rounded-pill px-3">
+	                <i class="bi bi-hourglass-split"></i>
+	              </span>`
 	            }
-	          }
-	        ],
+	          </div>
+	        `;
+	      }}
+	    ]
+	  });
+	}
 	
-	        initComplete: function() {
-	          const api = this.api();
-	          requestAnimationFrame(() => { api.columns.adjust(); api.responsive.recalc(); });
-	          setTimeout(() => { api.columns.adjust(); api.responsive.recalc(); }, 250);
-	        }
+	/* ================= MODAL ARRIVÉE ================= */
+	document.addEventListener("DOMContentLoaded", () => {
+	  wrModal = new bootstrap.Modal(document.getElementById('wrNoteModal'));
+	
+	  initPatientsTable();
+	
+	  document.body.addEventListener('click', e => {
+	    const btn = e.target.closest('.js-arrive-wr');
+	    if (!btn) return;
+	
+	    currentPatientId = btn.dataset.patientId;
+	    document.getElementById('wrNote').value = '';
+	    wrModal.show();
+	  });
+	
+	  document.getElementById('wrConfirmArrive').addEventListener('click', async () => {
+	    const note = document.getElementById('wrNote').value;
+	    if (!note) { alert("Veuillez choisir un motif"); return; }
+	
+	    try {
+	      await safeJsonFetch('/api/waiting-room/arrive', {
+	        method:'POST',
+	        headers:{'Content-Type':'application/json'},
+	        body: JSON.stringify({
+	          patientId: parseInt(currentPatientId,10),
+	          note: note
+	        })
 	      });
 	
-	      patientsDT.one('draw.dt', () => {
-	        setTimeout(() => { patientsDT.columns.adjust().responsive.recalc(); hideLoader(); }, 80);
-	      });
+	      wrModal.hide();
+	      patientsDT.ajax.reload(null,false);
 	
-	      window.refreshPatientsTable = () => {
-	        if (patientsDT) patientsDT.ajax.reload(null, false);
-	      };
-	
-	      // ✅ bouton "mettre en salle"
-	      $('#patientsTable').on('click', '.js-arrive-wr', async function () {
-	        const patientId = this.dataset.patientId;
-	        if (!patientId) return;
-	
-	        const oldHtml = this.innerHTML;
-	        this.disabled = true;
-	        this.innerHTML = `<span class="spinner-border spinner-border-sm"></span>`;
-	
-	        try {
-	          const j = await safeJsonFetch(`/api/waiting-room/arrive`, {
-	            method: "POST",
-	            headers: { "Content-Type": "application/json" },
-	            body: JSON.stringify({ patientId: parseInt(patientId, 10) })
-	          });
-	
-	          if (!j.success) {
-	            alert(j.message ?? "Impossible d'ajouter en salle.");
-	            return;
-	          }
-	
-	          window.playSuccessSound?.();
-	          window.refreshPatientsTable?.();
-	
-	        } catch (e) {
-	          console.error(e);
-	          alert(e.message ?? "Erreur serveur.");
-	        } finally {
-	          this.disabled = false;
-	          this.innerHTML = oldHtml;
-	        }
-	      });
-	
-	      setTimeout(() => hideLoader(), 6000);
+	    } catch(e) {
+	      alert(e.message);
 	    }
-	
-	    showLoader();
-	    window.addEventListener('load', initPatientsTable);
-	  </script>
+	  });
+	});
+	</script>
 {% endblock %}
 
