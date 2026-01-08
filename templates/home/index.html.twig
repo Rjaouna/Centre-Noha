@@ -96,11 +96,10 @@ document.addEventListener("DOMContentLoaded", () => {
 {# 🔹 DASHBOARD MOBILE PRO #}
 {# ======================= #}
 	<div
-	class="d-md-none"> {# ACTION PRINCIPALE #}
+	class="d-md-none"> {# ✅ ACTION PRINCIPALE #}
 	<div class="mb-4">
 		<a data-bs-toggle="modal" data-bs-target="#modalAddClient" class="text-decoration-none">
-<div class="mobile-primary-action py-4">
-
+			<div class="mobile-primary-action py-4">
 				<div class="icon">
 					<i class="bi bi-person-plus-fill"></i>
 				</div>
@@ -112,36 +111,84 @@ document.addEventListener("DOMContentLoaded", () => {
 		</a>
 	</div>
 
-	{# STATS RAPIDES #}
+	{# ✅ SALLE D’ATTENTE (UX TOP) #}
+	<div class="mb-4">
+		<a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#waitingRoomModal" id="openWaitingRoomMobile">
+			<div class="mobile-wr-card">
+				<div class="mobile-wr-left">
+					<div class="mobile-wr-icon">
+						<i class="bi bi-hourglass-split"></i>
+					</div>
+
+					<div class="mobile-wr-text">
+						<div class="d-flex align-items-center gap-2">
+							<h5 class="mb-0">Salle d’attente</h5>
+							<span class="mobile-wr-live">
+								<span class="dot"></span>Live
+							</span>
+						</div>
+						<div class="mobile-wr-sub">Suivi des statuts en temps réel</div>
+					</div>
+				</div>
+
+				<div class="mobile-wr-right">
+					<div class="mobile-wr-last" id="wrMobileLast">—</div>
+					<i class="bi bi-chevron-right"></i>
+				</div>
+			</div>
+		</a>
+
+		{# ✅ mini stats #}
+		<div class="mobile-wr-stats mt-3" id="wrMobileStats">
+			<div class="s s-wait">
+				<div class="n" id="wrCountWait">0</div>
+				<div class="l">Attente</div>
+			</div>
+			<div class="s s-call">
+				<div class="n" id="wrCountCall">0</div>
+				<div class="l">Appelés</div>
+			</div>
+			<div class="s s-consult">
+				<div class="n" id="wrCountConsult">0</div>
+				<div class="l">Consult.</div>
+			</div>
+			<div class="s s-done">
+				<div class="n" id="wrCountDone">0</div>
+				<div class="l">Terminés</div>
+			</div>
+			<div class="s s-abs">
+				<div class="n" id="wrCountAbs">0</div>
+				<div class="l">Absents</div>
+			</div>
+		</div>
+	</div>
+
+	{# ✅ STATS RAPIDES #}
 	<div class="row g-3 mb-4">
 		<div class="col-6">
 			<a href="{{ path('app_fiche_client_index') }}" class="text-decoration-none">
-<div class="mobile-stat-card bg-info">
-
+				<div class="mobile-stat-card bg-info">
 					<i class="bi bi-people-fill"></i>
-					<div class="value">{{ totalClients ?? 0 }} Patients</div>
+					<div class="value">{{ totalClients ?? 0 }}
+						Patients</div>
 					<span>Gestion & consultations</span>
 				</div>
 			</a>
 		</div>
-<div class="col-6">
-	<a href="{{ path('rendezvous_calendrier') }}" class="text-decoration-none">
-		<div class="mobile-stat-card bg-success">
-			<i class="bi bi-calendar-check-fill"></i>
-<div class="value">Rendez-vous</div>
 
-<span>Agenda & consultations</span>
-
+		<div class="col-6">
+			<a href="{{ path('rendezvous_calendrier') }}" class="text-decoration-none">
+				<div class="mobile-stat-card bg-success">
+					<i class="bi bi-calendar-check-fill"></i>
+					<div class="value">Rendez-vous</div>
+					<span>Agenda & consultations</span>
+				</div>
+			</a>
 		</div>
-	</a>
-</div>
-
-
 	</div>
 
-	
-
 </div>
+
 
 
 
@@ -359,6 +406,88 @@ box-shadow: 0 8px 22px rgba(0,0,0,.15);
     opacity: 1;
 }
 
+
+
+
+{# ===================== #}
+{# ✅ CSS SALLE D’ATTENTE #}
+{# ===================== #}
+
+	.mobile-wr-card{
+	    display:flex;align-items:center;justify-content:space-between;
+	    padding:16px 14px;border-radius:18px;
+	    background: radial-gradient(800px 300px at 0% 0%, rgba(59,130,246,.16), transparent 55%),
+	                radial-gradient(800px 300px at 100% 0%, rgba(16,185,129,.12), transparent 55%),
+	                #fff;
+	    border:1px solid rgba(15,23,42,.10);
+	    box-shadow: 0 18px 40px rgba(2,6,23,.08);
+	  }
+	  .mobile-wr-left{display:flex;align-items:center;gap:12px;min-width:0}
+	  .mobile-wr-icon{
+	    width:52px;height:52px;border-radius:18px;
+	    display:flex;align-items:center;justify-content:center;
+	    color:#fff;font-size:1.25rem;
+	    background: linear-gradient(135deg,#f59e0b,#fbbf24);
+	    box-shadow:0 18px 30px rgba(245,158,11,.28);
+	    flex:0 0 auto;
+	  }
+	  .mobile-wr-text{min-width:0}
+	  .mobile-wr-text h5{font-weight:1000;color:#0b1220}
+	  .mobile-wr-sub{
+	    margin-top:4px;
+	    font-size:.9rem;
+	    color:rgba(15,23,42,.70);
+	    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+	  }
+	  .mobile-wr-right{
+	    display:flex;align-items:center;gap:10px;
+	    color:rgba(15,23,42,.70);
+	    font-weight:900;
+	    flex:0 0 auto;
+	  }
+	  .mobile-wr-last{
+	    padding:6px 10px;border-radius:999px;background:#fff;
+	    border:1px solid rgba(15,23,42,.10);
+	    font-size:.8rem;
+	  }
+	  .mobile-wr-live{
+	    display:inline-flex;align-items:center;gap:7px;
+	    padding:5px 9px;border-radius:999px;
+	    font-weight:1000;font-size:.75rem;
+	    background:rgba(16,185,129,.12);
+	    border:1px solid rgba(16,185,129,.22);
+	    color:#0f766e;
+	  }
+	  .mobile-wr-live .dot{
+	    width:9px;height:9px;border-radius:999px;background:#10b981;
+	    box-shadow:0 0 0 5px rgba(16,185,129,.18);
+	    animation: wrPulse 1.5s infinite;
+	  }
+	  @keyframes wrPulse{
+	    0%{transform:scale(.95);opacity:.9}
+	    50%{transform:scale(1.05);opacity:1}
+	    100%{transform:scale(.95);opacity:.9}
+	  }
+	
+	  .mobile-wr-stats{
+	    display:grid;
+	    grid-template-columns: repeat(5, 1fr);
+	    gap:8px;
+	  }
+	  .mobile-wr-stats .s{
+	    background:#fff;border:1px solid rgba(15,23,42,.10);
+	    border-radius:16px;padding:10px 6px;
+	    text-align:center;box-shadow:0 12px 24px rgba(2,6,23,.06);
+	  }
+	  .mobile-wr-stats .n{font-weight:1000;font-size:1.05rem;color:#0b1220}
+	  .mobile-wr-stats .l{font-size:.72rem;font-weight:900;opacity:.70}
+	
+	  .s-wait{border-top:3px solid rgba(245,158,11,.85)}
+	  .s-call{border-top:3px solid rgba(59,130,246,.85)}
+	  .s-consult{border-top:3px solid rgba(16,185,129,.85)}
+	  .s-done{border-top:3px solid rgba(100,116,139,.85)}
+	  .s-abs{border-top:3px solid rgba(239,68,68,.85)}
+
 </style>
 {% endblock %}
 
@@ -366,6 +495,76 @@ box-shadow: 0 8px 22px rgba(0,0,0,.15);
 
 {% block javascripts %}
 	{{ parent() }}
+{# ===================== #}
+{# ✅ JS : charge les stats #}
+{# ===================== #}
+ <script>
+document.addEventListener("DOMContentLoaded", () => {
+  const lastEl = document.getElementById("wrMobileLast");
+
+  const cWait = document.getElementById("wrCountWait");
+  const cCall = document.getElementById("wrCountCall");
+  const cConsult = document.getElementById("wrCountConsult");
+  const cDone = document.getElementById("wrCountDone");
+  const cAbs = document.getElementById("wrCountAbs");
+
+  let timer = null;
+
+  async function safeJsonFetch(url, options = {}) {
+    const res = await fetch(url, options);
+    const text = await res.text();
+    let j = null;
+    try { j = JSON.parse(text); } catch(e) {}
+    if (!res.ok) throw new Error(j?.message ?? `HTTP ${res.status}`);
+    if (!j) throw new Error("Réponse JSON invalide");
+    return j;
+  }
+
+  function setCounts(data){
+    const w = data?.EN_ATTENTE?.length ?? 0;
+    const a = data?.APPELE?.length ?? 0;
+    const c = data?.EN_CONSULTATION?.length ?? 0;
+    const t = data?.TERMINE?.length ?? 0;
+    const ab = data?.ABSENT?.length ?? 0;
+
+    if (cWait) cWait.textContent = w;
+    if (cCall) cCall.textContent = a;
+    if (cConsult) cConsult.textContent = c;
+    if (cDone) cDone.textContent = t;
+    if (cAbs) cAbs.textContent = ab;
+
+    if (lastEl) {
+      const now = new Date();
+      lastEl.textContent = now.toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"});
+    }
+  }
+
+  async function loadCounts(){
+    try{
+      const j = await safeJsonFetch("/api/waiting-room/list");
+      if (!j.success) return;
+      setCounts(j.data);
+    }catch(e){
+      // si l'API plante, on laisse silencieux sur mobile
+    }
+  }
+
+  // ✅ Recharge quand on ouvre le modal, et auto-refresh tant qu'il est ouvert
+  const modalEl = document.getElementById("waitingRoomModal");
+  modalEl?.addEventListener("shown.bs.modal", async () => {
+    await loadCounts();
+    timer = setInterval(loadCounts, 5000);
+  });
+  modalEl?.addEventListener("hidden.bs.modal", () => {
+    if (timer) clearInterval(timer);
+    timer = null;
+  });
+
+  // ✅ petit refresh au chargement de la page
+  loadCounts();
+});
+</script>
+
  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
 	 <script>
