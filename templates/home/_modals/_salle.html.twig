@@ -180,8 +180,11 @@
 		gap: 8px
 	}
 	.wr-body {
-		padding: 18px 18px 26px
-	}
+    padding: 18px 18px 26px;
+    overflow-y: auto;
+    max-height: calc(100vh - 90px); /* header inclus */
+}
+
 
 	.wr-board {
 		display: grid;
@@ -207,8 +210,8 @@
 		box-shadow: 0 16px 40px rgba(2, 6, 23, .06);
 		overflow: hidden;
 		display: flex;
-		flex-direction: column;
-		height: calc(100vh - 130px)
+flex-direction: column;
+
 	}
 	.wr-col-head {
 		padding: 14px;
