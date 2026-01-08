@@ -3,29 +3,50 @@
 	<div class="modal-dialog modal-fullscreen">
 		<div class="modal-content wr-shell">
 
-			<div class="wr-header">
-				<div class="wr-left">
-					<div class="wr-badge">
-						<i class="bi bi-people-fill"></i>
-					</div>
-					<div class="wr-titles">
-						<div class="wr-title-row">
-							<h5 class="wr-title mb-0">Salle d’attente</h5>
-							<span class="wr-chip-live">
-								<span class="wr-live-dot"></span>Live</span>
-						</div>
-						<div class="wr-subtitle">Salle d’attente intelligente • priorité à la simplicité</div>
-					</div>
-				</div>
+<div
+	class="wr-header d-flex align-items-center justify-content-between px-4 py-3">
 
-				<div class="wr-right">
-					<div class="wr-pill" id="wrLastUpdate">—</div>
-					<button type="button" class="btn wr-close" data-bs-dismiss="modal">
-						<i class="bi bi-x-lg"></i>
-						Fermer
-					</button>
-				</div>
+	<!-- GAUCHE -->
+	<div class="d-flex align-items-center gap-3">
+
+		<div class="wr-badge">
+			<i class="bi bi-people-fill"></i>
+		</div>
+
+		<div class="wr-titles">
+			<div class="d-flex align-items-center gap-2">
+				<h5 class="wr-title mb-0 text-uppercase">
+					Salle d’attente
+				</h5>
+
+				<span class="wr-chip-live text-uppercase d-flex align-items-center gap-1">
+					<span class="wr-live-dot"></span>
+					Live
+				</span>
 			</div>
+
+			<div class="wr-subtitle">
+				Salle d’attente intelligente • priorité à la simplicité
+			</div>
+		</div>
+
+	</div>
+
+	<!-- DROITE -->
+	<div class="d-flex align-items-center gap-3">
+
+		<div class="wr-pill" id="wrLastUpdate">—</div>
+
+		<button type="button" class="btn wr-close d-flex align-items-center gap-1" data-bs-dismiss="modal">
+			<i class="bi bi-x-lg"></i>
+			Fermer
+		</button>
+
+	</div>
+
+</div>
+
+
 
 			<div class="modal-body wr-body">
 				<div class="wr-board" id="wrBoard"></div>
@@ -331,7 +352,9 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const statusBtn = (id, toStatut) => {
-    const labelMap = { APPELE:"Appeler", EN_CONSULTATION:"En consultation", TERMINE:"Terminer", ABSENT:"Absent", EN_ATTENTE:"Remettre en attente" };
+const labelMap = { APPELE:"Appeler", EN_CONSULTATION:"En consultation", TERMINE:"Terminer", ABSENT:"Absent", EN_ATTENTE:"En attente" };
+
+
     const btnClassMap = { APPELE:"btn-primary", EN_CONSULTATION:"btn-success", TERMINE:"btn-secondary", ABSENT:"btn-danger", EN_ATTENTE:"btn-warning" };
     const iconMap = { APPELE:"bi-megaphone-fill", EN_CONSULTATION:"bi-heart-pulse-fill", TERMINE:"bi-check2-circle", ABSENT:"bi-x-circle", EN_ATTENTE:"bi-hourglass-split" };
 
