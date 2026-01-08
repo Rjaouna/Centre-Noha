@@ -53,7 +53,7 @@ final class FicheClientController extends AbstractController
                 'telephone' => $fiche->getTelephone(),
                 'age' => $fiche->getAgePatient(),
                 'maladie' => $fiche->getTypeMaladie(),
-                'statut' => $fiche->isConsulted() ? 'Consulté' : 'En attente',
+                'statut' => $fiche->getStatut() ?: null,   // ou 'EN_ATTENTE' si tu veux un défaut
                 'isNew' => $isNew,
             ];
         }

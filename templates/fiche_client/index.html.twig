@@ -1,22 +1,19 @@
+{# templates/fiche_client/index.html.twig #}
 {% extends 'base.html.twig' %}
 
 {% block title %}Gestion des patients
 {% endblock %}
 
 {% block body %}
-
-
-
 	<div
-class=" mt-4">
-
+		class="mt-4">
 
 		{# ================= HEADER ================= #}
 		{% embed '_partials/_page_header.html.twig' with {
-        icon: 'bi bi-people-fill',
-        title: 'Gestion des patients',
-        subtitle: 'Suivi médical & dossiers patients'
-    } %}
+      icon: 'bi bi-people-fill',
+      title: 'Gestion des patients',
+      subtitle: 'Suivi médical & dossiers patients'
+  } %}
 			{% block header_actions_left %}
 				<span class="action-icon bg-primary" role="button" data-bs-toggle="modal" data-bs-target="#modalAddClient" title="Nouveau patient">
 					<i class="bi bi-person-plus"></i>
@@ -51,163 +48,262 @@ class=" mt-4">
 
 	{# ================= MODALS ================= #}
 	{% include 'home/_modals/_add_patient.html.twig' %}
-
 {% endblock %}
+
 {% block javascripts %}
 	{{ parent() }}
 
 	 <script>
-	  let patientsDT;
+	let patientsDT;
 	
-	  function hideLoader() {
-	    const loader = document.getElementById('pageLoader');
-	    if (loader) loader.style.display = 'none';
+	function hideLoader() {
+	  const loader = document.getElementById('pageLoader');
+	  if (loader) loader.style.display = 'none';
+	}
+	function showLoader() {
+	  const loader = document.getElementById('pageLoader');
+	  if (loader) loader.style.display = 'flex';
+	}
+	
+	// ✅ fetch qui évite "Unexpected token <" si serveur renvoie HTML d’erreur
+	async function safeJsonFetch(url, options = {}) {
+	  const r = await fetch(url, options);
+	  const text = await r.text();
+	  let j = null;
+	  try { j = JSON.parse(text); } catch (e) {}
+	
+	  if (!r.ok) {
+	    const msg = j?.message ?? `Erreur HTTP ${r.status}`;
+	    throw new Error(msg);
 	  }
-	  function showLoader() {
-	    const loader = document.getElementById('pageLoader');
-	    if (loader) loader.style.display = 'flex';
+	  if (!j) throw new Error("Réponse JSON invalide");
+	  return j;
+	}
+	
+	function rawStatut(s) {
+  return (s ?? "").toString().trim().toUpperCase(); // garde "" si NULL
+}
+
+function badgeStatut(statutRaw) {
+  const v = rawStatut(statutRaw);
+
+  if (v === '')               return `<span class="badge bg-light text-dark rounded-pill">Non défini</span>`;
+  if (v === 'APPELE')         return `<span class="badge bg-primary rounded-pill">Appelé</span>`;
+  if (v === 'EN_CONSULTATION')return `<span class="badge bg-success rounded-pill">Consultation</span>`;
+  if (v === 'TERMINE')        return `<span class="badge bg-secondary rounded-pill">Terminé</span>`;
+  if (v === 'ABSENT')         return `<span class="badge bg-danger rounded-pill">Absent</span>`;
+  if (v === 'EN_ATTENTE')     return `<span class="badge bg-warning text-dark rounded-pill">En attente</span>`;
+
+  return `<span class="badge bg-dark rounded-pill">${v}</span>`;
+}
+
+	
+	function getParentRow(btnEl) {
+	  // DataTables responsive peut créer des <tr class="child">
+	  let $tr = $(btnEl).closest('tr');
+	  if ($tr.hasClass('child')) $tr = $tr.prev();
+	  return $tr;
+	}
+	
+	function initPatientsTable() {
+	  const tableEl = $('#patientsTable');
+	
+	  if (!tableEl.length || !$.fn.DataTable) {
+	    console.error("DataTables n'est pas chargé.");
+	    hideLoader();
+	    return;
+	  }
+	  if (!$.fn.dataTable.Responsive) {
+	    console.error("DataTables Responsive n'est pas chargé (js/css).");
+	    hideLoader();
+	    return;
 	  }
 	
-	  function initPatientsTable() {
-	    const tableEl = $('#patientsTable');
+	  if ($.fn.DataTable.isDataTable(tableEl)) {
+	    tableEl.DataTable().clear().destroy();
+	  }
 	
-	    if (!tableEl.length || !$.fn.DataTable) {
-	      console.error("DataTables n'est pas chargé.");
-	      hideLoader();
-	      return;
-	    }
+	  patientsDT = tableEl.DataTable({
+	    processing: true,
+	    responsive: true,
+	    autoWidth: false,
 	
-	    // ⚠️ check responsive plugin
-	    if (!$.fn.dataTable.Responsive) {
-	      console.error("DataTables Responsive n'est pas chargé (js/css).");
-	      hideLoader();
-	      return;
-	    }
+	    ajax: {
+	      url: "{{ path('app_fiche_client_ajax') }}",
+	      dataSrc: 'data'
+	    },
 	
-	    if ($.fn.DataTable.isDataTable(tableEl)) {
-	      tableEl.DataTable().clear().destroy();
-	    }
+	    language: {
+	      url: '//cdn.datatables.net/plug-ins/1.13.8/i18n/fr-FR.json',
+	      processing: "Chargement..."
+	    },
 	
-	    patientsDT = tableEl.DataTable({
-	      processing: true,
-	      responsive: true,
-	      autoWidth: false,
+	    pageLength: 10,
+	    lengthChange: false,
+	    order: [[0, 'desc']],
 	
-	      ajax: {
-	        url: "{{ path('app_fiche_client_ajax') }}",
-	        dataSrc: 'data'
-	      },
+	    columns: [
+	      { data: 'id', className: 'fw-bold' },
 	
-	      language: {
-	        url: '//cdn.datatables.net/plug-ins/1.13.8/i18n/fr-FR.json',
-	        processing: "Chargement..."
-	      },
-	
-	      pageLength: 10,
-	      lengthChange: false,
-	      order: [[0, 'desc']],
-	
-	      columns: [
-	        { data: 'id', className: 'fw-bold' },
-	
-	        {
-	          data: null,
-	          render: row => `
-	            <div class="d-flex flex-column">
-	              <div class="d-flex align-items-center gap-2">
-	                <strong>${row.nom} ${row.prenom}</strong>
-	                ${row.isNew ? '<span class="badge bg-success rounded-pill">Nouveau</span>' : ''}
-	              </div>
-	              ${row.cin ? `<div class="small text-muted mt-1">CIN: ${row.cin}</div>` : ''}
+	      {
+	        data: null,
+	        render: row => `
+	          <div class="d-flex flex-column">
+	            <div class="d-flex align-items-center gap-2">
+	              <strong>${row.nom ?? ''} ${row.prenom ?? ''}</strong>
+	              ${row.isNew ? '<span class="badge bg-success rounded-pill">Nouveau</span>' : ''}
 	            </div>
-	          `
-	        },
-	
-	        { data: 'ville' },
-	
-	        {
-	          data: 'telephone',
-	          render: tel => `<a href="tel:${tel}" class="fw-semibold text-primary text-decoration-none">${tel}</a>`
-	        },
-	
-	        {
-	          data: 'age',
-	          render: age => age ? `<span class="badge bg-light rounded-pill px-3">${age} ans</span>` : '—'
-	        },
-	
-	        {
-	          data: 'maladie',
-	          render: m => `<span class="badge bg-info bg-opacity-75 rounded-pill px-3">${m ?? '—'}</span>`
-	        },
-	
-	        {
-	          data: 'statut',
-	          render: s => s === 'Consulté'
-	            ? `<span class="badge bg-light rounded-pill">Consulté</span>`
-	            : `<span class="badge bg-success rounded-pill">En attente</span>`
-	        },
-	
-	        {
-	          data: 'id',
-	          orderable: false,
-	          className: 'text-center',
-	          render: id => {
-	            const url = "{{ path('app_fiche_client_show', {'id': 'ID'}) }}".replace('ID', id);
-	            return `
-	              <a href="${url}" class="btn btn-sm px-3 py-2 fw-semibold rounded-pill btn-view-outline">
-	                <i class="bi bi-eye me-1"></i> Voir
-	              </a>
-	            `;
-	          }
-	        }
-	      ],
-	
-	      createdRow: (row, data) => {
-	        if (data.isNew) row.classList.add('table-success', 'bg-opacity-10');
+	            ${row.cin ? `<div class="small text-muted mt-1">CIN: ${row.cin}</div>` : ''}
+	          </div>
+	        `
 	      },
 	
-	      initComplete: function() {
-	        const api = this.api();
-	        requestAnimationFrame(() => {
-	          api.columns.adjust();
-	          api.responsive.recalc();
-	        });
-	        setTimeout(() => {
-	          api.columns.adjust();
-	          api.responsive.recalc();
-	        }, 250);
+	      { data: 'ville', defaultContent: '—' },
+	
+	      {
+	        data: 'telephone',
+	        render: tel => tel
+	          ? `<a href="tel:${tel}" class="fw-semibold text-primary text-decoration-none">${tel}</a>`
+	          : '—'
+	      },
+	
+	      {
+	        data: 'age',
+	        render: age => age ? `<span class="badge bg-light rounded-pill px-3">${age} ans</span>` : '—'
+	      },
+	
+	      {
+	        data: 'maladie',
+	        render: m => `<span class="badge bg-info bg-opacity-75 rounded-pill px-3">${m ?? '—'}</span>`
+	      },
+	
+	      {
+	        data: 'statut',
+	        render: s => badgeStatut(s)
+	      },
+	
+	      {
+	        data: null,
+	        orderable: false,
+	        className: 'text-center',
+	        render: row => {
+	          const id = row.id;
+	          const url = "{{ path('app_fiche_client_show', {'id': 'ID'}) }}".replace('ID', id);
+	
+	         const v = rawStatut(row.statut);
+
+// ✅ on affiche le bouton si le statut est NULL/"" OU différent de EN_ATTENTE
+const canSetWaiting = (v === '' || v !== 'EN_ATTENTE');
+
+	
+	          return `
+	            <div class="d-flex justify-content-center gap-2 flex-wrap">
+	              <a href="${url}" class="btn btn-sm px-3 py-2 fw-semibold rounded-pill btn-view-outline" title="Voir">
+	                <i class="bi bi-eye"></i>
+	              </a>
+	
+	              ${canSetWaiting ? `
+	                <button type="button"
+	                        class="btn btn-sm px-3 py-2 fw-semibold rounded-pill btn-warning text-dark js-set-waiting clicSound"
+	                        data-id="${id}"
+	                        title="Remettre en attente">
+	                  <i class="bi bi-telephone-fill"></i>
+	                </button>
+	              ` : `
+	                <span class="badge bg-warning text-dark rounded-pill px-3 py-2" title="Déjà en attente">
+	                  <i class="bi bi-hourglass-split"></i>
+	                </span>
+	              `}
+	            </div>
+	          `;
+	        }
 	      }
-	    });
+	    ],
 	
-	    // hide loader on first draw
-	    patientsDT.one('draw.dt', () => {
+	    createdRow: (row, data) => {
+	      if (data.isNew) row.classList.add('table-success', 'bg-opacity-10');
+	    },
+	
+	    initComplete: function() {
+	      const api = this.api();
+	      requestAnimationFrame(() => {
+	        api.columns.adjust();
+	        api.responsive.recalc();
+	      });
 	      setTimeout(() => {
-	        patientsDT.columns.adjust().responsive.recalc();
-	        hideLoader();
-	      }, 80);
-	    });
+	        api.columns.adjust();
+	        api.responsive.recalc();
+	      }, 250);
+	    }
+	  });
 	
-	    // refresh function
-	    window.refreshPatientsTable = () => {
-	      if (patientsDT) patientsDT.ajax.reload(null, false);
-	    };
+	  // hide loader on first draw
+	  patientsDT.one('draw.dt', () => {
+	    setTimeout(() => {
+	      patientsDT.columns.adjust().responsive.recalc();
+	      hideLoader();
+	    }, 80);
+	  });
 	
-	    // resize/orientation fix
-	    window.addEventListener('resize', () => {
-	      if (!patientsDT) return;
-	      clearTimeout(window.__dtResizeTimer);
-	      window.__dtResizeTimer = setTimeout(() => {
-	        patientsDT.columns.adjust().responsive.recalc();
-	      }, 120);
-	    });
+	  window.refreshPatientsTable = () => {
+	    if (patientsDT) patientsDT.ajax.reload(null, false);
+	  };
 	
-	    // ✅ failsafe: au cas où draw ne vient pas (ajax error)
-	    setTimeout(() => hideLoader(), 6000);
-	  }
+	  window.addEventListener('resize', () => {
+	    if (!patientsDT) return;
+	    clearTimeout(window.__dtResizeTimer);
+	    window.__dtResizeTimer = setTimeout(() => {
+	      patientsDT.columns.adjust().responsive.recalc();
+	    }, 120);
+	  });
 	
-	  // ✅ meilleur timing
-	  showLoader();
-	  window.addEventListener('load', initPatientsTable);
-	  </script>
+	  // ✅ Action bouton EN_ATTENTE (icône d’appel)
+	  $('#patientsTable').on('click', '.js-set-waiting', async function () {
+	    const id = this.dataset.id;
+	    if (!id) return;
+	
+	    // ✅ récupère la vraie ligne DataTables même en responsive
+	   const $tr = getParentRow(this);
+const rowData = patientsDT.row($tr).data();
+const current = rawStatut(rowData?.statut);
+
+// ✅ si déjà EN_ATTENTE "réel", on ne fait rien
+if (current === 'EN_ATTENTE') return;
+
+	
+	    const oldHtml = this.innerHTML;
+	    this.disabled = true;
+	    this.innerHTML = `<span class="spinner-border spinner-border-sm"></span>`;
+	
+	    try {
+	      const j = await safeJsonFetch(`/api/waiting-room/${id}/status`, {
+	        method: "PATCH",
+	        headers: { "Content-Type": "application/json" },
+	        body: JSON.stringify({ statut: "EN_ATTENTE" })
+	      });
+	
+	      if (!j.success) {
+	        alert(j.message ?? "Impossible de changer le statut.");
+	        return;
+	      }
+	
+	      window.playSuccessSound?.();
+	      window.refreshPatientsTable?.();
+	
+	    } catch (e) {
+	      console.error(e);
+	      alert(e.message ?? "Erreur serveur.");
+	    } finally {
+	      this.disabled = false;
+	      this.innerHTML = oldHtml;
+	    }
+	  });
+	
+	  setTimeout(() => hideLoader(), 6000);
+	}
+	
+	showLoader();
+	window.addEventListener('load', initPatientsTable);
+	</script>
 {% endblock %}
 

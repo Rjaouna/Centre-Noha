@@ -46,6 +46,22 @@ class FicheClientRepository extends ServiceEntityRepository
     }
 
 
+    public function findWaitingRoomToday(\DateTimeInterface $today): array
+    {
+        // On veut les RDV du jour (DATE only)
+        return $this->createQueryBuilder('c')
+            ->leftJoin('c.rendezVouses', 'r', 'WITH', 'r.date = :today')
+            ->addSelect('r')
+            ->andWhere('c.Statut IS NOT NULL OR r.id IS NOT NULL')
+            ->setParameter('today', $today->format('Y-m-d')) // important pour DATE
+            ->orderBy('c.updatedAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+
+
+
 
     //    /**
     //     * @return FicheClient[] Returns an array of FicheClient objects

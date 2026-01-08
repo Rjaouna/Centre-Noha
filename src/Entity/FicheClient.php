@@ -157,6 +157,9 @@ class FicheClient
     #[ORM\Column(length: 8, nullable: true)]
     private ?string $cin = null;
 
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $statut = null;
+
     public function __construct()
     {
         $this->paiements = new ArrayCollection();
@@ -645,5 +648,33 @@ class FicheClient
         $this->cin = $cin;
 
         return $this;
+    }
+
+    public function getstatut(): ?string
+    {
+        return $this->statut;
+    }
+
+    public function setstatut(?string $statut): static
+    {
+        $this->statut = $statut;
+
+        return $this;
+    }
+    // FicheClient.php
+
+    public const STATUT_EN_ATTENTE = 'EN_ATTENTE';
+    public const STATUT_APPELE = 'APPELE';
+    public const STATUT_EN_CONSULTATION = 'EN_CONSULTATION';
+    public const STATUT_TERMINE = 'TERMINE';
+    public const STATUT_ABSENT = 'ABSENT';
+
+    #[ORM\PrePersist]
+    public function onPrePersist(): void
+    {
+        // Nouveau patient => En attente par défaut
+        if (!$this->getStatut()) {
+            $this->setStatut(self::STATUT_EN_ATTENTE);
+        }
     }
 }

@@ -1,0 +1,600 @@
+<!-- ✅ MODAL SALLE D’ATTENTE -->
+<div class="modal fade" id="waitingRoomModal" tabindex="-1" aria-hidden="true">
+	<div class="modal-dialog modal-fullscreen">
+		<div
+			class="modal-content wr-shell">
+
+			<!-- HEADER -->
+			<div class="wr-header">
+				<div class="wr-left">
+					<div class="wr-badge">
+						<i class="bi bi-people-fill"></i>
+					</div>
+
+					<div class="wr-titles">
+						<div class="wr-title-row">
+							<h5 class="wr-title mb-0">Salle d’attente</h5>
+							<span class="wr-chip-live">
+								<span class="wr-live-dot"></span>
+								Live
+							</span>
+						</div>
+
+						<div class="wr-subtitle">
+							Salle d’attente intelligente • priorité à la simplicité
+						</div>
+					</div>
+				</div>
+
+				<div class="wr-right">
+					<div class="wr-meta">
+						<div class="wr-pill" id="wrLastUpdate">—</div>
+					</div>
+
+					<button type="button" class="btn wr-close" data-bs-dismiss="modal">
+						<i class="bi bi-x-lg"></i>
+						Fermer
+					</button>
+				</div>
+			</div>
+
+			<!-- BODY -->
+			<div class="modal-body wr-body">
+				<div class="wr-board" id="wrBoard"></div>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+
+<!-- ✅ TOAST -->
+<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 20000;">
+	<div id="wrToast" class="toast align-items-center text-bg-dark border-0" role="alert" aria-live="assertive" aria-atomic="true">
+		<div class="d-flex">
+			<div class="toast-body" id="wrToastBody">—</div>
+			<button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+		</div>
+	</div>
+</div>
+
+<style>
+	.fw-black {
+		font-weight: 900
+	}
+
+	.wr-shell {
+		border: 0;
+		background: radial-gradient(1200px 600px at 10% 0%, rgba(59,130,246,.14), transparent 60%), radial-gradient(900px 500px at 90% 10%, rgba(16, 185, 129, 0.12), transparent 55%), #f7f8fb;
+	}
+
+	.wr-header {
+		padding: 18px 22px;
+		background: rgba(255, 255, 255, .72);
+		backdrop-filter: blur(10px);
+	}
+
+	.wr-badge {
+		width: 44px;
+		height: 44px;
+		border-radius: 16px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: #fff;
+		background: linear-gradient(135deg,#2563eb,#3b82f6);
+		box-shadow: 0 16px 30px rgba(2, 6, 23, .18);
+	}
+
+	.wr-pill {
+		padding: 8px 12px;
+		border-radius: 999px;
+		background: #fff;
+		border: 1px solid rgba(15, 23, 42, .10);
+		font-weight: 900;
+		font-size: 0.85rem;
+	}
+
+	.wr-body {
+		padding: 18px 18px 26px;
+	}
+
+	.wr-board {
+		display: grid;
+		grid-template-columns: repeat(5, minmax(280px, 1fr));
+		gap: 14px;
+	}
+
+	@media(max-width:1100px) {
+		.wr-board {
+			grid-template-columns: repeat(2, minmax(280px, 1fr));
+		}
+	}
+	@media(max-width:700px) {
+		.wr-board {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	.wr-col {
+		background: #fff;
+		border: 1px solid rgba(15, 23, 42, .08);
+		border-radius: 20px;
+		box-shadow: 0 16px 40px rgba(2, 6, 23, .06);
+		overflow: hidden;
+		display: flex;
+		flex-direction: column;
+		min-height: 60vh;
+	}
+
+	.wr-col-head {
+		padding: 14px 14px 12px;
+		border-bottom: 1px solid rgba(15, 23, 42, .06);
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		background: linear-gradient(180deg, rgba(2,6,23,.03), transparent);
+	}
+
+	.wr-col-title {
+		font-weight: 1000;
+		letter-spacing: 0.2px;
+		display: flex;
+		align-items: center;
+		gap: 10px;
+	}
+
+	.wr-count {
+		font-weight: 1000;
+		padding: 6px 10px;
+		border-radius: 999px;
+		background: rgba(15, 23, 42, .06);
+	}
+
+	.wr-list {
+		padding: 12px;
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+	}
+
+	.wr-card {
+		border-radius: 16px;
+		border: 1px solid rgba(15, 23, 42, .10);
+		background: #fff;
+		box-shadow: 0 12px 22px rgba(2, 6, 23, .06);
+		padding: 12px;
+	}
+
+	.wr-name {
+		font-weight: 1000;
+	}
+	.wr-meta {
+		font-size: 0.84rem;
+		opacity: .78;
+	}
+
+	.wr-badges {
+		display: flex;
+		gap: 8px;
+		flex-wrap: wrap;
+		margin-top: 8px;
+	}
+	.wr-badge-soft {
+		border-radius: 999px;
+		padding: 6px 10px;
+		font-weight: 900;
+		font-size: 0.78rem;
+		border: 1px solid rgba(15, 23, 42, .10);
+		background: rgba(15, 23, 42, .04);
+	}
+
+	.wr-rdv {
+		background: rgba(59, 130, 246, .12);
+		border-color: rgba(59, 130, 246, .25);
+		color: #1d4ed8;
+	}
+	.wr-rdv.wr-rdv-late {
+		background: rgba(220, 53, 69, .12);
+		border-color: rgba(220, 53, 69, .25);
+		color: #dc3545;
+	}
+	/* =========================
+   WAITING ROOM — LUX HEADER
+   ========================= */
+.wr-shell{
+  border:0;
+  background:
+    radial-gradient(1200px 600px at 10% 0%, rgba(59,130,246,.14), transparent 60%),
+    radial-gradient(900px 500px at 90% 10%, rgba(16,185,129,.12), transparent 55%),
+    #f7f8fb;
+}
+
+.wr-header{
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  padding: 18px 18px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 14px;
+  border-bottom: 1px solid rgba(15,23,42,.08);
+  background: rgba(255,255,255,.72);
+  backdrop-filter: blur(12px);
+}
+
+.wr-left{
+  display:flex;
+  align-items:center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.wr-badge{
+  width: 50px;
+  height: 50px;
+  border-radius: 18px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#fff;
+  background: linear-gradient(135deg,#2563eb,#3b82f6);
+  box-shadow: 0 18px 34px rgba(2,6,23,.18);
+  flex: 0 0 auto;
+  font-size: 1.25rem;
+}
+
+.wr-titles{
+  min-width: 0;
+}
+.wr-title-row{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.wr-title{
+  font-weight: 1000;
+  letter-spacing: .2px;
+  color: #0b1220;
+}
+
+.wr-subtitle{
+  margin-top: 4px;
+  font-size: .92rem;
+  color: rgba(15,23,42,.68);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wr-chip-live{
+  display:inline-flex;
+  align-items:center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 900;
+  font-size: .78rem;
+  color: #0b1220;
+  background: rgba(16,185,129,.10);
+  border: 1px solid rgba(16,185,129,.20);
+}
+
+.wr-live-dot{
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 0 6px rgba(16,185,129,.18);
+  animation: wrPulse 1.5s infinite ease-in-out;
+}
+@keyframes wrPulse{
+  0%{ transform: scale(.95); opacity: .9; }
+  50%{ transform: scale(1.05); opacity: 1; }
+  100%{ transform: scale(.95); opacity: .9; }
+}
+
+.wr-right{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+  flex: 0 0 auto;
+}
+
+.wr-pill{
+  padding: 9px 12px;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid rgba(15,23,42,.10);
+  font-weight: 900;
+  font-size: .85rem;
+  box-shadow: 0 10px 22px rgba(2,6,23,.06);
+}
+
+.wr-close{
+  border-radius: 999px;
+  padding: 10px 14px;
+  font-weight: 900;
+  letter-spacing: .2px;
+  background: rgba(15,23,42,.06);
+  border: 1px solid rgba(15,23,42,.10);
+  color: #0b1220;
+  display:inline-flex;
+  align-items:center;
+  gap: 8px;
+  transition: .16s ease;
+  box-shadow: 0 12px 26px rgba(2,6,23,.08);
+}
+.wr-close:hover{
+  transform: translateY(-1px);
+  background: rgba(15,23,42,.08);
+}
+
+.wr-body{
+  padding: 18px 18px 26px;
+}
+
+	.wr-actions {
+		display: flex;
+		gap: 8px;
+		flex-wrap: wrap;
+		margin-top: 10px;
+	}
+	.wr-actions .btn {
+		border-radius: 999px;
+		font-weight: 900;
+	}
+
+	.wr-status-dot {
+		width: 10px;
+		height: 10px;
+		border-radius: 50%;
+		box-shadow: 0 8px 20px rgba(2, 6, 23, .15);
+	}
+	.dot-wait {
+		background: #f59e0b;
+	}
+	.dot-call {
+		background: #3b82f6;
+	}
+	.dot-consult {
+		background: #10b981;
+	}
+	.dot-done {
+		background: #64748b;
+	}
+	.dot-abs {
+		background: #ef4444;
+	}
+</style>
+
+ <script>
+document.addEventListener("DOMContentLoaded", () => {
+  const modalEl = document.getElementById("waitingRoomModal");
+  const boardEl = document.getElementById("wrBoard");
+  const lastUpdateEl = document.getElementById("wrLastUpdate");
+
+  const toastEl = document.getElementById("wrToast");
+  const toastBody = document.getElementById("wrToastBody");
+  const toast = toastEl ? bootstrap.Toast.getOrCreateInstance(toastEl, { delay: 2200 }) : null;
+
+  let timer = null;
+  let state = { knownIds: new Set() };
+
+  const STAT = {
+    EN_ATTENTE:       { label:"En attente",        icon:"bi-hourglass-split",  dot:"dot-wait",    actions:["APPELE","ABSENT"] },
+    APPELE:           { label:"Appelé",            icon:"bi-megaphone-fill",   dot:"dot-call",    actions:["EN_CONSULTATION","EN_ATTENTE"] },
+    EN_CONSULTATION:  { label:"En consultation",   icon:"bi-heart-pulse-fill", dot:"dot-consult", actions:["TERMINE"] },
+    TERMINE:          { label:"Terminé",           icon:"bi-check2-circle",    dot:"dot-done",    actions:[] },
+    ABSENT:           { label:"Absent",            icon:"bi-x-circle",         dot:"dot-abs",     actions:["EN_ATTENTE"] },
+  };
+
+  // ✅ Safe fetch JSON (évite Unexpected token '<')
+  async function safeJsonFetch(url, options = {}) {
+    const res = await fetch(url, options);
+    const text = await res.text();
+
+    if (!res.ok) {
+      console.error("API error", res.status, text.slice(0, 600));
+      throw new Error(`HTTP ${res.status}`);
+    }
+
+    try {
+      return JSON.parse(text);
+    } catch (e) {
+      console.error("Invalid JSON returned:", text.slice(0, 600));
+      throw e;
+    }
+  }
+
+  const clickSound = () => {
+    // si tu veux le son "clic" sur les boutons dynamiques
+    try { new Audio("/assets/media/light-switch-382712.mp3").play().catch(()=>{}); } catch(e) {}
+  };
+
+  const notify = (msg, ok = true) => {
+    if (!toastBody || !toast) return;
+    toastBody.textContent = msg;
+    toastEl.classList.toggle("text-bg-dark", ok);
+    toastEl.classList.toggle("text-bg-danger", !ok);
+    toast.show();
+  };
+
+  const fmtTime = (iso) => {
+    if (!iso) return null;
+    // support "YYYY-MM-DD HH:mm:ss"
+    const d = new Date(iso.replace(" ", "T"));
+    return d.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
+  };
+
+  const statusBtn = (id, toStatut) => {
+    const labelMap = {
+      APPELE: "Appeler",
+      EN_CONSULTATION: "En consultation",
+      TERMINE: "Terminer",
+      ABSENT: "Absent",
+      EN_ATTENTE: "Remettre en attente",
+    };
+    const btnClassMap = {
+      APPELE: "btn-primary",
+      EN_CONSULTATION: "btn-success",
+      TERMINE: "btn-secondary",
+      ABSENT: "btn-danger",
+      EN_ATTENTE: "btn-warning",
+    };
+    const iconMap = {
+      APPELE: "bi-megaphone-fill",
+      EN_CONSULTATION: "bi-heart-pulse-fill",
+      TERMINE: "bi-check2-circle",
+      ABSENT: "bi-x-circle",
+      EN_ATTENTE: "bi-hourglass-split",
+    };
+
+    return `
+      <button type="button"
+        class="btn ${btnClassMap[toStatut]} btn-sm text-light"
+        data-action="status"
+        data-id="${id}"
+        data-to="${toStatut}">
+        <i class="bi ${iconMap[toStatut] || "bi-arrow-right"} me-1"></i>
+        ${labelMap[toStatut] || toStatut}
+      </button>
+    `;
+  };
+
+  const cardHtml = (p) => {
+    const full = `${p.nom ?? ""} ${p.prenom ?? ""}`.trim() || "—";
+    const rdvTime = fmtTime(p.rdvStart);
+    const rdvBadge = p.rdvStart ? `
+      <span class="wr-badge-soft wr-rdv ${p.rdvPassed ? "wr-rdv-late" : ""}">
+        <i class="bi bi-calendar-check me-1"></i> RDV ${rdvTime ?? ""}
+      </span>` : "";
+
+    const actions = (STAT[p.statut]?.actions ?? []).map(s => statusBtn(p.id, s)).join("");
+
+    return `
+      <div class="wr-card" data-patient="${p.id}">
+        <div class="d-flex justify-content-between align-items-start gap-2">
+          <div>
+            <div class="wr-name">${full}</div>
+            <div class="wr-meta">
+              <i class="bi bi-geo-alt me-1"></i>${p.ville ?? "—"} •
+              <i class="bi bi-telephone ms-2 me-1"></i>${p.telephone ?? "—"}
+            </div>
+            <div class="wr-meta mt-1">
+              <i class="bi bi-clipboard2-pulse me-1"></i>${p.typeMaladie ?? "—"}
+            </div>
+          </div>
+
+<a class="btn btn-light btn-sm rounded-pill" href="/fiche/client/${p.id}">
+
+            <i class="bi bi-box-arrow-up-right"></i>
+          </a>
+        </div>
+
+        <div class="wr-badges">${rdvBadge}</div>
+        ${actions ? `<div class="wr-actions">${actions}</div>` : ""}
+      </div>
+    `;
+  };
+
+  const colHtml = (statut, list) => {
+    const cfg = STAT[statut];
+    const items = (list ?? []).map(cardHtml).join("") || `<div class="text-muted small px-2">Aucun patient</div>`;
+    return `
+      <div class="wr-col">
+        <div class="wr-col-head">
+          <div class="wr-col-title">
+            <span class="wr-status-dot ${cfg.dot}"></span>
+            <i class="bi ${cfg.icon}"></i>
+            ${cfg.label}
+          </div>
+          <div class="wr-count">${(list ?? []).length}</div>
+        </div>
+        <div class="wr-list">${items}</div>
+      </div>
+    `;
+  };
+
+  const render = (data) => {
+    boardEl.innerHTML = `
+      ${colHtml("EN_ATTENTE", data.EN_ATTENTE)}
+      ${colHtml("APPELE", data.APPELE)}
+      ${colHtml("EN_CONSULTATION", data.EN_CONSULTATION)}
+      ${colHtml("TERMINE", data.TERMINE)}
+      ${colHtml("ABSENT", data.ABSENT)}
+    `;
+  };
+
+  const load = async () => {
+    const j = await safeJsonFetch("/api/waiting-room/list");
+    if (!j.success) throw new Error(j.message || "Erreur chargement");
+
+    render(j.data);
+
+    const now = new Date();
+    if (lastUpdateEl) {
+      lastUpdateEl.textContent =
+        "Maj: " + now.toLocaleTimeString("fr-FR", {hour:"2-digit", minute:"2-digit", second:"2-digit"});
+    }
+  };
+
+  const patchStatus = async (id, statut, btn) => {
+    const old = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>...`;
+
+    try {
+      const j = await safeJsonFetch(`/api/waiting-room/${id}/status`, {
+        method: "PATCH",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({ statut })
+      });
+
+      if (!j.success) {
+        window.buttonSoundError?.(btn.id);
+        notify(j.message || "Erreur", false);
+        return;
+      }
+
+      window.playSuccessSound?.(); // ton son global si dispo
+      notify("Statut mis à jour ✅");
+      await load();
+
+    } catch (e) {
+      console.error(e);
+      notify("Erreur réseau / API", false);
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = old;
+    }
+  };
+
+  // Delegation click (boutons dynamiques)
+  boardEl?.addEventListener("click", (e) => {
+    const b = e.target.closest('[data-action="status"]');
+    if (!b) return;
+
+    clickSound();
+
+    const id = b.dataset.id;
+    const to = b.dataset.to;
+    patchStatus(id, to, b);
+  });
+
+  // Start/stop refresh seulement si modal ouverte
+  modalEl?.addEventListener("shown.bs.modal", async () => {
+    try { await load(); } catch(e) {}
+    timer = setInterval(() => load().catch(()=>{}), 5000);
+  });
+
+  modalEl?.addEventListener("hidden.bs.modal", () => {
+    if (timer) clearInterval(timer);
+    timer = null;
+    if (boardEl) boardEl.innerHTML = ""; // optionnel : clean visuel
+  });
+});
+</script>
+

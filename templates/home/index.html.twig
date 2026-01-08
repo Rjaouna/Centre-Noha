@@ -15,6 +15,8 @@
 
 
 
+
+
 {# ======================= #}
 {# 🔹 HEADER DASHBOARD #}
 {# ======================= #}
@@ -163,13 +165,17 @@ document.addEventListener("DOMContentLoaded", () => {
             badge: totalClients ?? null
         } %}
 
-			{% include 'home/_dashboard/_card_desktop.html.twig' with {
-            title: 'Médicaments',
-            desc: 'Référentiel',
-            icon: 'bi-capsule-pill',
-            bg: 'bg-medicines',
-            link: path('medicine_index')
-        } %}
+{% include 'home/_dashboard/_card_desktop.html.twig' with {
+  title: 'Salle d’attente',
+  desc: 'Patients du jour',
+  icon: 'bi-people-fill',
+  bg: 'bg-medicines',
+  modal: '#waitingRoomModal'
+} %}
+
+
+
+
 {% include 'home/_dashboard/_card_desktop.html.twig' with {
     title: 'Rendez-vous',
     desc: 'Agenda & consultations',
@@ -195,7 +201,11 @@ link: path('rendezvous_calendrier'),
 
 	</div>
 
-	{% include 'home/_modals/_add_patient.html.twig' %}
+{% include 'home/_modals/_add_patient.html.twig' %}
+
+{% include 'home/_modals/_salle.html.twig' %}
+
+
 <style>
 /* ===== MOBILE DASHBOARD ===== */
 .dashboard-header {

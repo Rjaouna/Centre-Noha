@@ -115,7 +115,11 @@ class RendezVousController extends AbstractController
 			$rdv->setExpiresAt(
 				\DateTimeImmutable::createFromMutable($heureDebut)
 			);
+			$patient->setIsConsulted(false);
+			$patient->setStatut('EN_ATTENTE');
+			$patient->setIsOpen(false);
 
+			$em->persist($patient);
 			$em->persist($rdv);
 			$em->flush();
 
