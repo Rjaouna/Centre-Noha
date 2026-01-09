@@ -24,11 +24,18 @@ class PatientPrestation
 	#[ORM\Column]
 	private int $quantite = 1;
 
-	#[ORM\Column(type: 'float')]
-	private float $prixUnitaire = 0.0;
+	// ✅ Argent = DECIMAL -> stocké en string (Doctrine)
+	#[ORM\Column(type: 'decimal', precision: 10, scale: 2)]
+	private ?string $prixUnitaire = '0.00';
 
 	#[ORM\Column]
 	private \DateTimeImmutable $createdAt;
+
+	#[ORM\Column(length: 50, nullable: true)]
+	private ?string $nom = null;
+
+	#[ORM\Column(type: 'decimal', precision: 10, scale: 2, nullable: true)]
+	private ?string $totalPrestation = null;
 
 	public function __construct()
 	{
@@ -73,14 +80,14 @@ class PatientPrestation
 		return $this;
 	}
 
-	public function getPrixUnitaire(): float
+	public function getPrixUnitaire(): ?string
 	{
 		return $this->prixUnitaire;
 	}
 
-	public function setPrixUnitaire(float $prixUnitaire): static
+	public function setPrixUnitaire(?string $prixUnitaire): static
 	{
-		$this->prixUnitaire = max(0, $prixUnitaire);
+		$this->prixUnitaire = $prixUnitaire;
 		return $this;
 	}
 
@@ -101,5 +108,28 @@ class PatientPrestation
 	public function getTotal(): float
 	{
 		return $this->prixUnitaire * $this->quantite;
+	}
+
+	public function getNom(): ?string
+	{
+		return $this->nom;
+	}
+
+	public function setNom(?string $nom): static
+	{
+		$this->nom = $nom;
+
+		return $this;
+	}
+
+	public function getTotalPrestation(): ?string
+	{
+		return $this->totalPrestation;
+	}
+
+	public function setTotalPrestation(?string $totalPrestation): static
+	{
+		$this->totalPrestation = $totalPrestation;
+		return $this;
 	}
 }

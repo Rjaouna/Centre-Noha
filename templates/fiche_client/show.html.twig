@@ -428,7 +428,9 @@ Analyses
 		{# ===================================================== #}
 			<section class="mb-4"> <div class="card shadow-sm border-0 rounded-4">
 				<div class="card-body">
-					{% include 'fiche_client/_composants/_paiements.html.twig' %}
+{% include 'fiche_client/_composants/_prestations.html.twig' with { fiche_client: fiche_client } %}
+
+
 				</div>
 			</div>
 		</section>

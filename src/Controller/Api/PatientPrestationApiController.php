@@ -14,6 +14,48 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class PatientPrestationApiController extends AbstractController
 {
+	#[Route('/api/patients/{id}/prestations', name: 'api_patient_prestations_list', methods: ['GET'])]
+	public function list(
+		int $id,
+		FicheClientRepository $patientRepo,
+		PatientPrestationRepository $repo
+	): JsonResponse {
+		$patient = $patientRepo->find($id);
+		if (!$patient) {
+			return $this->json(['success' => false, 'message' => 'Patient introuvable'], 404);
+		}
+
+		$rows = $repo->findBy(['patient' => $patient], ['createdAt' => 'DESC']);
+
+		$data = array_map(static function (PatientPrestation $pp) {
+			$p = $pp->getPrestation();
+
+			// ✅ si tu stockes nom/totalPrestation, on privilégie ça
+			$nom = $pp->getNom() ?: ($p?->getNom() ?? '—');
+
+			// total (snapshot sinon calcul)
+			$total = $pp->getTotalPrestation();
+			if ($total === null || $total === '') {
+				// si prixUnitaire est string decimal -> on calcule en float fallback
+				$pu = (float) str_replace(',', '.', (string) $pp->getPrixUnitaire());
+				$total = number_format($pu * $pp->getQuantite(), 2, '.', '');
+			}
+
+			return [
+				'id' => $pp->getId(),
+				'prestationId' => $p?->getId(),
+				'nom' => $nom,
+				'categorie' => $p?->getCategorie(),
+				'quantite' => $pp->getQuantite(),
+				'prixUnitaire' => $pp->getPrixUnitaire(), // string decimal ou float selon ton entity
+				'total' => $total,
+				'createdAt' => $pp->getCreatedAt()->format('Y-m-d H:i:s'),
+			];
+		}, $rows);
+
+		return $this->json(['success' => true, 'data' => $data]);
+	}
+
 	#[Route('/api/patients/{id}/prestations', name: 'api_patient_prestations_create', methods: ['POST'])]
 	public function create(
 		int $id,
@@ -48,7 +90,6 @@ class PatientPrestationApiController extends AbstractController
 				$errors[] = "Ligne #$idx: prestationId manquant";
 				continue;
 			}
-
 			if ($quantite < 1) {
 				$errors[] = "Ligne #$idx: quantité invalide";
 				continue;
@@ -60,14 +101,23 @@ class PatientPrestationApiController extends AbstractController
 				continue;
 			}
 
-			// ✅ Snapshot du prix au moment (prix est DECIMAL string)
-			$prixUnitaire = (float) str_replace(',', '.', (string) $prestation->getPrix());
+			// ✅ prix du catalogue (decimal string)
+			$prixUnitaire = (string) $prestation->getPrix();
+
+			// ✅ total = prix * quantité (avec bcmul si dispo)
+			$total = function_exists('bcmul')
+				? bcmul($prixUnitaire, (string)$quantite, 2)
+				: number_format(((float)$prixUnitaire) * $quantite, 2, '.', '');
 
 			$pp = new PatientPrestation();
 			$pp->setPatient($patient);
 			$pp->setPrestation($prestation);
 			$pp->setQuantite($quantite);
+
+			// Snapshot utile (optionnel mais tu les as)
+			$pp->setNom($prestation->getNom());
 			$pp->setPrixUnitaire($prixUnitaire);
+			$pp->setTotalPrestation($total);
 
 			$em->persist($pp);
 			$created++;
@@ -91,37 +141,6 @@ class PatientPrestationApiController extends AbstractController
 		]);
 	}
 
-	#[Route('/api/patients/{id}/prestations', name: 'api_patient_prestations_list', methods: ['GET'])]
-	public function list(
-		int $id,
-		FicheClientRepository $patientRepo,
-		PatientPrestationRepository $repo
-	): JsonResponse {
-		$patient = $patientRepo->find($id);
-		if (!$patient) {
-			return $this->json(['success' => false, 'message' => 'Patient introuvable'], 404);
-		}
-
-		$rows = $repo->findBy(['patient' => $patient], ['createdAt' => 'DESC']);
-
-		$data = array_map(static function (PatientPrestation $pp) {
-			$p = $pp->getPrestation();
-
-			return [
-				'id' => $pp->getId(),
-				'prestationId' => $p?->getId(),
-				'nom' => $p?->getNom(),
-				'categorie' => $p?->getCategorie(),
-				'quantite' => $pp->getQuantite(),
-				'prixUnitaire' => $pp->getPrixUnitaire(),
-				'total' => $pp->getTotal(),
-				'createdAt' => $pp->getCreatedAt()->format('Y-m-d H:i:s'),
-			];
-		}, $rows);
-
-		return $this->json(['success' => true, 'data' => $data]);
-	}
-
 	#[Route('/api/patient-prestations/{id}', name: 'api_patient_prestations_delete', methods: ['DELETE'])]
 	public function delete(
 		int $id,
@@ -130,7 +149,7 @@ class PatientPrestationApiController extends AbstractController
 	): JsonResponse {
 		$pp = $repo->find($id);
 		if (!$pp) {
-			return $this->json(['success' => false, 'message' => 'Ligne introuvable'], 404);
+			return $this->json(['success' => false, 'message' => 'Prestation patient introuvable'], 404);
 		}
 
 		$em->remove($pp);

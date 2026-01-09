@@ -1,0 +1,346 @@
+ <script>
+document.addEventListener('DOMContentLoaded', () => {
+  const patientId = {{ patientId|default(0) }};
+  if (!patientId) return;
+
+  // ====== Elements LISTE ======
+  const listEl  = document.getElementById('prestationsList');
+  const emptyEl = document.getElementById('prestationsEmpty');
+
+  // ====== Elements MODAL ======
+  const modalEl = document.getElementById('prestationsModal');
+  const tbody   = document.getElementById('prestationsTbody');
+  const search  = document.getElementById('prestSearch');
+
+  const selEmpty   = document.getElementById('prestSelectionEmpty');
+  const selList    = document.getElementById('prestSelectionList');
+  const totalEl    = document.getElementById('prestTotal');
+  const btnValidate = document.getElementById('btnValidatePrestations');
+
+  // ✅ Sécurité DOM
+  if (!listEl || !emptyEl || !modalEl || !tbody || !search || !selEmpty || !selList || !totalEl || !btnValidate) {
+    console.warn('Prestations: éléments manquants dans le DOM');
+    return;
+  }
+
+  // ✅ Bootstrap présent ?
+  if (typeof bootstrap === 'undefined') {
+    console.error('Bootstrap JS non chargé (typeof bootstrap === undefined)');
+    return;
+  }
+
+  const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+
+  // ====== Utils ======
+  const toNumber = (v) => {
+    const n = Number(String(v ?? '').replace(',', '.'));
+    return Number.isNaN(n) ? 0 : n;
+  };
+
+  const moneyDH = (v) => {
+    const n = toNumber(v);
+    return n.toFixed(2).replace('.', ',') + ' DH';
+  };
+
+  const moneyEUR = (v) => {
+    const n = toNumber(v);
+    return n.toFixed(2).replace('.', ',') + ' €';
+  };
+
+  const fmtDate = (s) => {
+    if (!s) return '—';
+    const d = new Date(String(s).replace(' ', 'T'));
+    if (isNaN(d.getTime())) return s;
+    return d.toLocaleString('fr-FR', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+  };
+
+  // =======================
+  // A) LISTE: prestations patient
+  // =======================
+  async function loadPrestationsPatient() {
+    try {
+      const res = await fetch(`/api/patients/${patientId}/prestations`, {
+        headers: { 'Accept':'application/json' }
+      });
+
+      const j = await res.json();
+      const data = j?.data ?? [];
+
+      if (!Array.isArray(data) || data.length === 0) {
+        emptyEl.classList.remove('d-none');
+        listEl.classList.add('d-none');
+        listEl.innerHTML = '';
+        return;
+      }
+
+      emptyEl.classList.add('d-none');
+      listEl.classList.remove('d-none');
+
+      listEl.innerHTML = data.map(p => {
+        const total = (p.total ?? (toNumber(p.prixUnitaire) * toNumber(p.quantite)));
+
+        return `
+          <div class="border shadow-sm rounded-4 p-3 mb-2 d-flex justify-content-between align-items-center flex-wrap gap-2">
+
+            <div class="min-w-0">
+              <div class="fw-bold d-flex align-items-center gap-2 flex-wrap">
+                <span class="badge bg-primary rounded-pill">${p.categorie ?? '—'}</span>
+                <span class="text-truncate">${p.nom ?? '—'}</span>
+              </div>
+
+              <div class="text-muted small mt-1">
+                <i class="bi bi-clock me-1"></i>${fmtDate(p.createdAt)}
+                <span class="mx-2">•</span>Qté: <b>${p.quantite ?? 1}</b>
+                <span class="mx-2">•</span>PU: <b>${moneyDH(p.prixUnitaire)}</b>
+                <span class="mx-2">•</span>Total: <b>${moneyDH(total)}</b>
+              </div>
+            </div>
+
+            <div class="table-actions">
+              <button type="button"
+                      class="btn btn-action btn-action-danger js-del-prestation"
+                      title="Supprimer"
+                      data-id="${p.id}">
+                <i class="bi bi-trash"></i>
+              </button>
+            </div>
+
+          </div>
+        `;
+      }).join('');
+
+    } catch (e) {
+      console.error(e);
+      emptyEl.classList.remove('d-none');
+      listEl.classList.add('d-none');
+      listEl.innerHTML = '';
+    }
+  }
+
+  // delete via delegation
+  listEl.addEventListener('click', async (e) => {
+    const btn = e.target.closest('.js-del-prestation');
+    if (!btn) return;
+
+    if (!confirm('Supprimer cette prestation ?')) return;
+
+    const id = btn.dataset.id;
+    const del = await fetch(`/api/patient-prestations/${id}`, { method:'DELETE' });
+    if (!del.ok) {
+      alert("Erreur suppression");
+      return;
+    }
+    loadPrestationsPatient();
+  });
+
+  // expose global (si besoin)
+  window.loadPrestationsPatient = loadPrestationsPatient;
+
+  // =======================
+  // B) MODAL: catalogue + sélection
+  // =======================
+  let allPrestations = [];
+  const selected = new Map(); // id -> { item, qty }
+
+  function renderRows(filterText = '') {
+    const q = (filterText || '').trim().toLowerCase();
+
+    const rows = allPrestations
+      .filter(p => {
+        if (!q) return true;
+        return (p.nom ?? '').toLowerCase().includes(q) || (p.categorie ?? '').toLowerCase().includes(q);
+      })
+      .map(p => {
+        const isChecked = selected.has(p.id);
+        const qty = selected.get(p.id)?.qty ?? 1;
+
+        return `
+          <tr>
+            <td class="text-center">
+              <input type="checkbox" class="form-check-input" data-id="${p.id}" ${isChecked ? 'checked' : ''}>
+            </td>
+
+            <td class="fw-semibold">
+              ${p.nom ?? '—'}
+              ${p.description ? `<div class="text-muted small">${p.description}</div>` : ``}
+            </td>
+
+            <td><span class="badge bg-success rounded-pill px-3">${p.categorie ?? '—'}</span></td>
+            <td class="text-center"><span class="badge bg-primary rounded-pill px-3">${moneyEUR(p.prix)}</span></td>
+            <td class="text-center">${p.duree_minutes ? `${p.duree_minutes} min` : '—'}</td>
+
+            <td class="text-center">
+              <input type="number" min="1" step="1"
+                     class="form-control form-control-sm text-center"
+                     style="max-width:90px; margin: 0 auto;"
+                     data-qty="${p.id}" value="${qty}" ${isChecked ? '' : 'disabled'}>
+            </td>
+          </tr>
+        `;
+      })
+      .join('');
+
+    tbody.innerHTML = rows || `<tr><td colspan="6" class="text-muted">Aucune prestation</td></tr>`;
+  }
+
+  function renderSelection() {
+    const items = [...selected.values()];
+
+    if (items.length === 0) {
+      selEmpty.classList.remove('d-none');
+      selList.classList.add('d-none');
+      selList.innerHTML = '';
+      totalEl.textContent = '0,00 €';
+      return;
+    }
+
+    selEmpty.classList.add('d-none');
+    selList.classList.remove('d-none');
+
+    let total = 0;
+
+    selList.innerHTML = items.map(({ item, qty }) => {
+      total += toNumber(item.prix) * qty;
+
+      return `
+        <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+          <div class="me-2">
+            <div class="fw-bold">${item.nom}</div>
+            <div class="text-muted small">${item.categorie ?? '—'} • ${moneyEUR(item.prix)} x ${qty}</div>
+          </div>
+
+          <button type="button" class="btn btn-sm btn-outline-danger rounded-pill" data-remove="${item.id}">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+      `;
+    }).join('');
+
+    totalEl.textContent = moneyEUR(total);
+  }
+
+  async function loadCatalogPrestations() {
+    tbody.innerHTML = `<tr><td colspan="6" class="text-muted">Chargement…</td></tr>`;
+
+    const res = await fetch('/api/prestation-prices', { headers: { 'Accept': 'application/json' }});
+    if (!res.ok) {
+      tbody.innerHTML = `<tr><td colspan="6" class="text-danger">Erreur chargement prestations</td></tr>`;
+      return;
+    }
+
+    allPrestations = await res.json();
+    renderRows(search.value);
+    renderSelection();
+  }
+
+  modalEl.addEventListener('show.bs.modal', () => {
+    selected.clear();
+    search.value = '';
+  });
+
+  modalEl.addEventListener('shown.bs.modal', () => {
+    loadCatalogPrestations();
+  });
+
+  search.addEventListener('input', () => renderRows(search.value));
+
+  modalEl.addEventListener('change', (e) => {
+    const cb = e.target.closest('input[type="checkbox"][data-id]');
+    if (cb) {
+      const id = Number(cb.dataset.id);
+      const item = allPrestations.find(x => x.id === id);
+      if (!item) return;
+
+      const qtyInput = modalEl.querySelector(`input[data-qty="${id}"]`);
+
+      if (cb.checked) {
+        selected.set(id, { item, qty: Number(qtyInput?.value || 1) });
+        if (qtyInput) qtyInput.disabled = false;
+      } else {
+        selected.delete(id);
+        if (qtyInput) qtyInput.disabled = true;
+      }
+
+      renderSelection();
+      return;
+    }
+
+    const qty = e.target.closest('input[type="number"][data-qty]');
+    if (qty) {
+      const id = Number(qty.dataset.qty);
+      if (!selected.has(id)) return;
+
+      const v = Math.max(1, Number(qty.value || 1));
+      qty.value = v;
+
+      const current = selected.get(id);
+      selected.set(id, { ...current, qty: v });
+      renderSelection();
+    }
+  });
+
+  modalEl.addEventListener('click', (e) => {
+    const rm = e.target.closest('[data-remove]');
+    if (!rm) return;
+
+    const id = Number(rm.dataset.remove);
+
+    selected.delete(id);
+
+    const cb = modalEl.querySelector(`input[type="checkbox"][data-id="${id}"]`);
+    if (cb) cb.checked = false;
+
+    const qtyInput = modalEl.querySelector(`input[data-qty="${id}"]`);
+    if (qtyInput) qtyInput.disabled = true;
+
+    renderSelection();
+    renderRows(search.value);
+  });
+
+  btnValidate.addEventListener('click', async () => {
+    const payload = {
+      items: [...selected.entries()].map(([id, v]) => ({
+        prestationId: id,
+        quantite: v.qty
+      }))
+    };
+
+    if (payload.items.length === 0) {
+      alert("Sélectionne au moins une prestation.");
+      return;
+    }
+
+    btnValidate.disabled = true;
+    btnValidate.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Enregistrement...`;
+
+    try {
+      const res = await fetch(`/api/patients/${patientId}/prestations`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      const j = await res.json();
+      if (!res.ok || !j.success) {
+        console.error(j);
+        alert(j.message ?? "Erreur enregistrement");
+        return;
+      }
+
+      modal.hide();
+      loadPrestationsPatient();
+
+    } catch (e) {
+      console.error(e);
+      alert("Erreur réseau");
+    } finally {
+      btnValidate.disabled = false;
+      btnValidate.innerHTML = `<i class="bi bi-check2-circle me-1"></i>Valider la sélection`;
+    }
+  });
+
+  // ====== First load ======
+  loadPrestationsPatient();
+});
+</script>
+
