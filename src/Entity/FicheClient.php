@@ -62,6 +62,9 @@ class FicheClient
 
     #[ORM\OneToMany(mappedBy: 'client', targetEntity: Image::class, cascade: ['persist', 'remove'])]
     private Collection $images;
+    #[ORM\OneToMany(mappedBy: 'patient', targetEntity: PatientPrestation::class, orphanRemoval: true)]
+    private Collection $patientPrestations;
+
 
     /**
      * @return Collection<int, Image>
@@ -182,6 +185,7 @@ class FicheClient
         $this->rendezVouses = new ArrayCollection();
         $this->radiologies = new ArrayCollection();
         $this->waitingRooms = new ArrayCollection();
+        $this->patientPrestations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -732,6 +736,35 @@ class FicheClient
             // set the owning side to null (unless already changed)
             if ($waitingRoom->getPatient() === $this) {
                 $waitingRoom->setPatient(null);
+            }
+        }
+
+        return $this;
+    }
+    /**
+     * @return Collection<int, PatientPrestation>
+     */
+    public function getPatientPrestations(): Collection
+    {
+        return $this->patientPrestations;
+    }
+
+    public function addPatientPrestation(PatientPrestation $patientPrestation): static
+    {
+        if (!$this->patientPrestations->contains($patientPrestation)) {
+            $this->patientPrestations->add($patientPrestation);
+            $patientPrestation->setPatient($this);
+        }
+
+        return $this;
+    }
+
+    public function removePatientPrestation(PatientPrestation $patientPrestation): static
+    {
+        if ($this->patientPrestations->removeElement($patientPrestation)) {
+            // set the owning side to null (unless already changed)
+            if ($patientPrestation->getPatient() === $this) {
+                $patientPrestation->setPatient(null);
             }
         }
 

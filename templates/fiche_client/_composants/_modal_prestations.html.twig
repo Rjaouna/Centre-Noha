@@ -265,19 +265,55 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Validate selection (pour l’instant: juste console)
-  btnValidate.addEventListener('click', () => {
-    const payload = [...selected.entries()].map(([id, v]) => ({
+ btnValidate.addEventListener('click', async () => {
+const patientId =
+{{ fiche_client.id }}; // ✅ adapte ta variable twig !
+
+
+  const payload = {
+    items: [...selected.entries()].map(([id, v]) => ({
       prestationId: id,
-      quantite: v.qty,
-      nom: v.item.nom,
-      prix: v.item.prix
-    }));
+      quantite: v.qty
+    }))
+  };
 
-    console.log("Prestations sélectionnées :", payload);
+  if (payload.items.length === 0) {
+    alert("Sélectionne au moins une prestation.");
+    return;
+  }
 
-    // ✅ ici plus tard on fera le POST vers Symfony
+  btnValidate.disabled = true;
+  btnValidate.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Enregistrement...`;
+
+  try {
+    const res = await fetch(`/api/patients/${patientId}/prestations`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    const j = await res.json();
+    if (!res.ok || !j.success) {
+      console.error(j);
+      alert(j.message ?? "Erreur enregistrement");
+      return;
+    }
+
+    // ✅ succès
     modal.hide();
-  });
+
+    // 👉 plus tard on affichera la liste des prestations faites
+    // loadPrestationsPatient();
+
+  } catch (e) {
+    console.error(e);
+    alert("Erreur réseau");
+  } finally {
+    btnValidate.disabled = false;
+    btnValidate.innerHTML = `<i class="bi bi-check2-circle me-1"></i>Valider la sélection`;
+  }
+});
+
 });
 </script>
 

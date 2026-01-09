@@ -20,7 +20,9 @@
 
 
 {% include 'fiche_client/_composants/_modal_paiement.html.twig' %}
-{% include 'fiche_client/_composants/_modal_prestations.html.twig' %}
+{% include 'fiche_client/_composants/_modal_prestations.html.twig' with { patientId: fiche_client.id } %}
+
+
 
 
 
