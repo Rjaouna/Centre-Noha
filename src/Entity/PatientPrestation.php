@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\PatientPrestationRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PatientPrestationRepository::class)]
@@ -37,9 +39,16 @@ class PatientPrestation
 	#[ORM\Column(type: 'decimal', precision: 10, scale: 2, nullable: true)]
 	private ?string $totalPrestation = null;
 
+    /**
+     * @var Collection<int, WaitingRoom>
+     */
+    #[ORM\ManyToMany(targetEntity: WaitingRoom::class, mappedBy: 'prestation')]
+    private Collection $waitingRooms;
+
 	public function __construct()
 	{
 		$this->createdAt = new \DateTimeImmutable();
+        $this->waitingRooms = new ArrayCollection();
 	}
 
 	public function getId(): ?int
@@ -132,4 +141,31 @@ class PatientPrestation
 		$this->totalPrestation = $totalPrestation;
 		return $this;
 	}
+
+    /**
+     * @return Collection<int, WaitingRoom>
+     */
+    public function getWaitingRooms(): Collection
+    {
+        return $this->waitingRooms;
+    }
+
+    public function addWaitingRoom(WaitingRoom $waitingRoom): static
+    {
+        if (!$this->waitingRooms->contains($waitingRoom)) {
+            $this->waitingRooms->add($waitingRoom);
+            $waitingRoom->addPrestation($this);
+        }
+
+        return $this;
+    }
+
+    public function removeWaitingRoom(WaitingRoom $waitingRoom): static
+    {
+        if ($this->waitingRooms->removeElement($waitingRoom)) {
+            $waitingRoom->removePrestation($this);
+        }
+
+        return $this;
+    }
 }

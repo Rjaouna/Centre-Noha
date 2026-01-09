@@ -6,6 +6,7 @@ use App\Entity\PatientPrestation;
 use App\Repository\FicheClientRepository;
 use App\Repository\PatientPrestationRepository;
 use App\Repository\PrestationPriceRepository;
+use App\Repository\WaitingRoomRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -62,9 +63,12 @@ class PatientPrestationApiController extends AbstractController
 		Request $request,
 		FicheClientRepository $patientRepo,
 		PrestationPriceRepository $prestationRepo,
-		EntityManagerInterface $em
+		EntityManagerInterface $em,
+		WaitingRoomRepository $waitingRoomRepository
 	): JsonResponse {
+
 		$patient = $patientRepo->find($id);
+
 		if (!$patient) {
 			return $this->json(['success' => false, 'message' => 'Patient introuvable'], 404);
 		}
@@ -119,8 +123,11 @@ class PatientPrestationApiController extends AbstractController
 			$pp->setPrixUnitaire($prixUnitaire);
 			$pp->setTotalPrestation($total);
 
+
 			$em->persist($pp);
 			$created++;
+			$waitingRoom = $waitingRoomRepository->findOneBy(['patient' => $patient]);
+			$waitingRoom->addPrestation($pp);
 		}
 
 		if ($created === 0) {
@@ -130,6 +137,7 @@ class PatientPrestationApiController extends AbstractController
 				'errors' => $errors
 			], 400);
 		}
+
 
 		$em->flush();
 

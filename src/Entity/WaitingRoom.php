@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Entity\FicheClient;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\User;
@@ -60,6 +62,17 @@ class WaitingRoom
 
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $note = null;
+
+    /**
+     * @var Collection<int, PatientPrestation>
+     */
+    #[ORM\ManyToMany(targetEntity: PatientPrestation::class, inversedBy: 'waitingRooms')]
+    private Collection $prestation;
+
+    public function __construct()
+    {
+        $this->prestation = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -230,6 +243,30 @@ class WaitingRoom
     public function setNote(?string $note): static
     {
         $this->note = $note;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PatientPrestation>
+     */
+    public function getPrestation(): Collection
+    {
+        return $this->prestation;
+    }
+
+    public function addPrestation(PatientPrestation $prestation): static
+    {
+        if (!$this->prestation->contains($prestation)) {
+            $this->prestation->add($prestation);
+        }
+
+        return $this;
+    }
+
+    public function removePrestation(PatientPrestation $prestation): static
+    {
+        $this->prestation->removeElement($prestation);
 
         return $this;
     }

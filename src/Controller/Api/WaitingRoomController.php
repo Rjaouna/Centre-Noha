@@ -3,9 +3,10 @@
 namespace App\Controller\Api;
 
 use App\Entity\WaitingRoom;
+use App\Entity\PatientPrestation;
 use App\Repository\RendezVousRepository;
-use Doctrine\ORM\EntityManagerInterface;
 
+use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\FicheClientRepository;
 use App\Repository\WaitingRoomRepository;
 use Symfony\Component\HttpFoundation\Request;
@@ -57,6 +58,8 @@ class WaitingRoomController extends AbstractController
 				return $this->json(['success' => false, 'message' => 'Non authentifié'], 401);
 			}
 
+
+
 			[$start, $end] = $this->dayRange();
 			$now = new \DateTimeImmutable();
 
@@ -98,6 +101,20 @@ class WaitingRoomController extends AbstractController
 					$rdvStart = $rdvStartDT->format('Y-m-d H:i:s');
 					$rdvPassed = $rdvStartDT < $now;
 				}
+				$prestations = $w->getPrestation()->map(static function (PatientPrestation $pp) {
+					$p = $pp->getPrestation(); // PrestationPrice (catalogue)
+
+					return [
+						'id' => $pp->getId(),
+						'prestationId' => $p?->getId(),
+						'nom' => $pp->getNom() ?? $p?->getNom(),
+						'categorie' => $p?->getCategorie(),
+						'quantite' => $pp->getQuantite(),
+						'prixUnitaire' => $pp->getPrixUnitaire(),      // string decimal si tu as changé
+						'total' => $pp->getTotalPrestation(),          // string decimal si tu as changé
+						'createdAt' => $pp->getCreatedAt()?->format('Y-m-d H:i:s'),
+					];
+				})->toArray();
 
 				$arriveAt = $w->getArriveAt();
 				$grouped[$statut][] = [
@@ -113,6 +130,8 @@ class WaitingRoomController extends AbstractController
 
 					'statut' => $statut,
 					'note' => $w->getNote(),
+					// ✅ prestations sérialisées
+					'prestations' => $prestations,
 
 					'arriveAt' => $arriveAt ? $arriveAt->format('Y-m-d H:i:s') : null,
 

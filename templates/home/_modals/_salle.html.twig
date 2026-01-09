@@ -327,23 +327,93 @@ flex-direction: column;
   color: #dc3545;
   box-shadow: 0 0 0 4px rgba(220,53,69,.08);
 }
+/* ✅ Le conteneur badges est flex, donc on force le bloc prestations à prendre toute la largeur */
+.wr-presta {
+  flex: 0 0 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+/* ✅ Bloc prestations propre et safe */
+.wr-presta-box {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid rgba(15,23,42,.10);
+  background: rgba(255,255,255,.92);
+  border-radius: 16px;
+  padding: 10px;
+}
+
+/* ✅ Lignes en GRID => ne déborde jamais */
+.wr-presta-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  padding: 6px 0;
+  border-top: 1px dashed rgba(15,23,42,.10);
+}
+.wr-presta-item:first-child { border-top: 0; padding-top: 0; }
+
+.wr-presta-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 800;
+  font-size: .92rem;
+}
+
+.wr-presta-sub {
+  font-size: .80rem;
+  color: rgba(15,23,42,.70);
+}
+
+.wr-presta-right {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.wr-presta-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(15,23,42,.10);
+  background: rgba(13,110,253,.08);
+  font-weight: 900;
+  font-size: .80rem;
+}
+
 
 </style>
 
  <script>
- const sndClick = new Audio("/assets/media/success-340660.mp3");
+const sndClick = new Audio("/assets/media/success-340660.mp3");
+const sndOk    = new Audio("/assets/media/success-340660.mp3");
 
-const sndOk    = new Audio("/assets/media/success-340660.mp3"); // mets ton vrai fichier
 sndClick.volume = 0.35;
 sndOk.volume = 0.45;
 
-const play = (a) => {
-  try { a.currentTime = 0; a.play().catch(()=>{}); } catch(e) {}
+const play = (a) => { try { a.currentTime = 0; a.play().catch(()=>{}); } catch(e) {} };
+
+// ✅ helpers manquants (cause du blocage)
+const toNum = (v) => {
+  const n = Number(String(v ?? '0').replace(',', '.'));
+  return Number.isNaN(n) ? 0 : n;
 };
+const money = (v) => toNum(v).toFixed(2).replace('.', ',') + ' DH';
+
 document.addEventListener("DOMContentLoaded", () => {
   const modalEl = document.getElementById("waitingRoomModal");
   const boardEl = document.getElementById("wrBoard");
   const lastUpdateEl = document.getElementById("wrLastUpdate");
+
+  // ✅ si un élément manque -> on ne casse pas toute la page
+  if (!modalEl || !boardEl) return;
 
   const toastEl = document.getElementById("wrToast");
   const toastBody = document.getElementById("wrToastBody");
@@ -355,7 +425,9 @@ document.addEventListener("DOMContentLoaded", () => {
     EN_ATTENTE:      { label:"En attente",       icon:"bi-hourglass-split",  dot:"dot-wait",    actions:["APPELE","ABSENT"] },
     APPELE:          { label:"Appelé",           icon:"bi-megaphone-fill",   dot:"dot-call",    actions:["EN_CONSULTATION","EN_ATTENTE"] },
     EN_CONSULTATION: { label:"En consultation",  icon:"bi-heart-pulse-fill", dot:"dot-consult", actions:["TERMINE"] },
-    TERMINE:         { label:"Terminé",          icon:"bi-check2-circle",    dot:"dot-done",    actions:["EN_ATTENTE"] },
+TERMINE: { label:"Terminé", icon:"bi-check2-circle", dot:"dot-done", actions:[] },
+
+
     ABSENT:          { label:"Absent",           icon:"bi-x-circle",         dot:"dot-abs",     actions:["EN_ATTENTE"] },
   };
 
@@ -363,7 +435,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const res = await fetch(url, options);
     const text = await res.text();
     if (!res.ok) throw new Error(text || `HTTP ${res.status}`);
-    return JSON.parse(text);
+    try { return JSON.parse(text); } catch { throw new Error("Réponse JSON invalide"); }
   }
 
   const notify = (msg, ok = true) => {
@@ -376,20 +448,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const fmtTime = (iso) => {
     if (!iso) return null;
-    const d = new Date(iso.replace(" ", "T"));
+    const d = new Date(String(iso).replace(" ", "T"));
     return d.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
   };
 
   const fmtDateTime = (iso) => {
     if (!iso) return null;
-    const d = new Date(iso.replace(" ", "T"));
+    const d = new Date(String(iso).replace(" ", "T"));
     return d.toLocaleString("fr-FR", { day:"2-digit", month:"2-digit", hour:"2-digit", minute:"2-digit" });
   };
 
   const statusBtn = (id, toStatut) => {
-const labelMap = { APPELE:"Appeler", EN_CONSULTATION:"En consultation", TERMINE:"Terminer", ABSENT:"Absent", EN_ATTENTE:"En attente" };
-
-
+    const labelMap = { APPELE:"Appeler", EN_CONSULTATION:"En consultation", TERMINE:"Terminer", ABSENT:"Absent", EN_ATTENTE:"En attente" };
     const btnClassMap = { APPELE:"btn-primary", EN_CONSULTATION:"btn-success", TERMINE:"btn-secondary", ABSENT:"btn-danger", EN_ATTENTE:"btn-warning" };
     const iconMap = { APPELE:"bi-megaphone-fill", EN_CONSULTATION:"bi-heart-pulse-fill", TERMINE:"bi-check2-circle", ABSENT:"bi-x-circle", EN_ATTENTE:"bi-hourglass-split" };
 
@@ -406,50 +476,101 @@ const labelMap = { APPELE:"Appeler", EN_CONSULTATION:"En consultation", TERMINE:
 
   const cardHtml = (p) => {
     const full = `${p.nom ?? ""} ${p.prenom ?? ""}`.trim() || "—";
-
-
-
-
     const rdvTime = fmtTime(p.rdvStart);
     const arrive = fmtDateTime(p.arriveAt);
-const noteBadge = p.note ? `
-<span class="wr-badge-soft ${
-		    p.note === 'Cas urgent' ? 'wr-urgent' : ''
-		  }">
-	<i class="bi bi-clipboard-check me-1"></i>${p.note}
-</span>
+
+    const statutKey = String(p.statut ?? '').toUpperCase();
+
+    const noteBadge = p.note ? `
+      <span class="wr-badge-soft ${p.note === 'Cas urgent' ? 'wr-urgent' : ''}">
+        <i class="bi bi-clipboard-check me-1"></i>${p.note}
+      </span>
+    ` : '';
+
+    // ✅ Prestations (safe)
+    const presta = (["TERMINE", "EN_CONSULTATION"].includes(statutKey) && Array.isArray(p.prestations))
+      ? p.prestations
+      : [];
+
+    const prestaCount = presta.length;
+
+    const prestaTotal = presta.reduce((sum, x) => {
+      const qty = Math.max(1, parseInt(x.quantite ?? 1, 10));
+      const pu  = toNum(x.prixUnitaire ?? x.prix ?? 0);
+      return sum + (pu * qty);
+    }, 0);
+
+const prestaList = prestaCount ? `
+<div class="wr-presta mt-2">
+	<div class="wr-presta-box">
+
+		<div class="d-flex align-items-center justify-content-between gap-2 mb-2">
+			<div class="fw-bold small d-flex align-items-center gap-2">
+				<i class="bi bi-clipboard2-check text-primary"></i>
+				Prestations
+			</div>
+			<span class="wr-presta-pill">
+				<i class="bi bi-cash-coin text-primary"></i>
+				${money(prestaTotal)}
+			</span>
+		</div>
+
+		${presta.slice(0,4).map(x => {
+		        const qty = Math.max(1, parseInt(x.quantite ?? 1, 10));
+		        const pu  = toNum(x.prixUnitaire ?? x.prix ?? 0);
+		        const lineTotal = pu * qty;
+		
+		        return `
+		<div class="wr-presta-item">
+			<div class="min-w-0">
+				<div class="wr-presta-name">${x.nom ?? '—'}
+					<span class="text-muted">×${qty}</span>
+				</div>
+				<div class="wr-presta-sub">PU :
+					<b class="text-dark">${money(pu)}</b>
+				</div>
+			</div>
+
+			<div class="wr-presta-right">
+				<div class="small text-muted lh-1">Total</div>
+				<div class="fw-bold text-primary lh-1">${money(lineTotal)}</div>
+			</div>
+		</div>
+		`;
+		      }).join('')}
+		
+		      ${prestaCount > 4 ? `<div class="small text-muted mt-2">… +${prestaCount - 4} autre(s)</div>` : ''}
+
+	</div>
+</div>
 ` : '';
-
-
 
 
 
     const arriveBadge = p.arriveAt ? `
       <span class="wr-badge-soft">
         <i class="bi bi-door-open me-1"></i> Arrivé ${arrive}
-      </span>` : "";
+      </span>
+    ` : "";
 
     const rdvBadge = p.rdvStart ? `
       <span class="wr-badge-soft wr-rdv ${p.rdvPassed ? "wr-rdv-late" : ""}">
         <i class="bi bi-calendar-check me-1"></i> RDV ${rdvTime ?? ""}
-      </span>` : "";
+      </span>
+    ` : "";
 
-    const actions = (STAT[p.statut]?.actions ?? []).map(s => statusBtn(p.id, s)).join("");
+    // ✅ utiliser statutKey ici aussi
+    const actions = (STAT[statutKey]?.actions ?? []).map(s => statusBtn(p.id, s)).join("");
 
     return `
       <div class="wr-card">
         <div class="d-flex justify-content-between align-items-start gap-2">
           <div>
-<div class="wr-name">${full}</div>
-
-
+            <div class="wr-name">${full}</div>
             <div class="wr-meta">
-<i class="bi bi-geo-alt me-1"></i>${p.ville ?? "—"}  •
-
-
+              <i class="bi bi-geo-alt me-1"></i>${p.ville ?? "—"} •
               <i class="bi bi-telephone ms-2 me-1"></i>${p.telephone ?? "—"}
             </div>
-          
           </div>
 
           <a class="btn btn-light btn-sm rounded-pill" href="/fiche/client/${p.patientId}">
@@ -457,12 +578,12 @@ const noteBadge = p.note ? `
           </a>
         </div>
 
-<div class="wr-badges">
-	${noteBadge}
-	  ${arriveBadge}
-	  ${rdvBadge}
-</div>
-
+        <div class="wr-badges">
+          ${noteBadge}
+          ${arriveBadge}
+          ${rdvBadge}
+          ${prestaList}
+        </div>
 
         ${actions ? `<div class="wr-actions">${actions}</div>` : ""}
       </div>
@@ -502,8 +623,10 @@ const noteBadge = p.note ? `
 
     render(j.data);
 
-    const now = new Date();
-    lastUpdateEl.textContent = "Maj: " + now.toLocaleTimeString("fr-FR", {hour:"2-digit", minute:"2-digit", second:"2-digit"});
+    if (lastUpdateEl) {
+      const now = new Date();
+      lastUpdateEl.textContent = "Maj: " + now.toLocaleTimeString("fr-FR", {hour:"2-digit", minute:"2-digit", second:"2-digit"});
+    }
   };
 
   const patchStatus = async (id, statut, btn) => {
@@ -531,21 +654,20 @@ const noteBadge = p.note ? `
     }
   };
 
-boardEl?.addEventListener("click", (e) => {
-  const b = e.target.closest('[data-action="status"]');
-  if (!b) return;
+  boardEl.addEventListener("click", (e) => {
+    const b = e.target.closest('[data-action="status"]');
+    if (!b) return;
 
-  play(sndClick); // ✅ son clic
-  patchStatus(b.dataset.id, b.dataset.to, b);
-});
+    play(sndClick);
+    patchStatus(b.dataset.id, b.dataset.to, b);
+  });
 
-
-  modalEl?.addEventListener("shown.bs.modal", async () => {
-    await load().catch(()=>{});
+  modalEl.addEventListener("shown.bs.modal", async () => {
+    await load().catch(console.error);
     timer = setInterval(() => load().catch(()=>{}), 5000);
   });
 
-  modalEl?.addEventListener("hidden.bs.modal", () => {
+  modalEl.addEventListener("hidden.bs.modal", () => {
     if (timer) clearInterval(timer);
     timer = null;
     boardEl.innerHTML = "";
