@@ -1,0 +1,283 @@
+<div class="modal fade" id="prestationsModal" tabindex="-1" aria-hidden="true">
+	<div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+		<div class="modal-content rounded-4 shadow-lg">
+
+			<div class="modal-header bg-primary text-white">
+				<h5 class="modal-title fw-bold d-flex align-items-center gap-2">
+					<i class="bi bi-clipboard2-plus"></i>
+					Sélectionner des prestations
+				</h5>
+				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+			</div>
+
+			<div class="modal-body">
+				<div class="row g-3">
+
+					<div class="col-12 col-lg-8">
+						<div class="d-flex align-items-center justify-content-between gap-2 mb-2">
+							<div class="fw-bold">Liste</div>
+							<input id="prestSearch" class="form-control form-control-sm" style="max-width:260px" placeholder="Rechercher (nom, catégorie)…">
+						</div>
+
+						<div class="table-responsive">
+							<table class="table table-hover align-middle">
+								<thead class="table-light">
+									<tr>
+										<th style="width:44px;"></th>
+										<th>Prestation</th>
+										<th>Catégorie</th>
+										<th class="text-center">Prix</th>
+										<th class="text-center">Durée</th>
+										<th class="text-center" style="width:120px;">Qté</th>
+									</tr>
+								</thead>
+								<tbody id="prestationsTbody">
+									<tr>
+										<td colspan="6" class="text-muted">Chargement…</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+
+					<div class="col-12 col-lg-4">
+						<div class="card border-0 shadow-sm rounded-4">
+							<div class="card-body">
+								<div class="fw-bold mb-2">Sélection</div>
+
+								<div id="prestSelectionEmpty" class="text-muted small">
+									Aucune prestation sélectionnée.
+								</div>
+
+								<div id="prestSelectionList" class="d-none"></div>
+
+								<hr>
+
+								<div class="d-flex justify-content-between fw-bold">
+									<div>Total</div>
+									<div id="prestTotal">0,00 €</div>
+								</div>
+
+								<div class="small text-muted mt-2">
+									(Pour l’instant on ne sauvegarde pas : on prépare la sélection.)
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+
+			<div class="modal-footer">
+				<button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Fermer</button>
+				<button type="button" class="btn btn-primary rounded-pill px-4" id="btnValidatePrestations">
+					<i class="bi bi-check2-circle me-1"></i>Valider la sélection
+				</button>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+ <script>
+document.addEventListener("DOMContentLoaded", () => {
+  const modalEl = document.getElementById('prestationsModal');
+  if (!modalEl) return;
+
+  const tbody = document.getElementById('prestationsTbody');
+  const search = document.getElementById('prestSearch');
+
+  const selEmpty = document.getElementById('prestSelectionEmpty');
+  const selList = document.getElementById('prestSelectionList');
+  const totalEl = document.getElementById('prestTotal');
+  const btnValidate = document.getElementById('btnValidatePrestations');
+
+  const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+
+  let allPrestations = [];
+  const selected = new Map(); // id -> { item, qty }
+
+  const toNumber = (v) => {
+    const n = Number(String(v ?? '').replace(',', '.'));
+    return Number.isNaN(n) ? 0 : n;
+  };
+
+  const money = (v) => {
+    const n = toNumber(v);
+    return n.toFixed(2).replace('.', ',') + ' €';
+  };
+
+  function renderRows(filterText = '') {
+    const q = (filterText || '').trim().toLowerCase();
+
+    const rows = allPrestations
+      .filter(p => {
+        if (!q) return true;
+        return (p.nom ?? '').toLowerCase().includes(q)
+          || (p.categorie ?? '').toLowerCase().includes(q);
+      })
+      .map(p => {
+        const isChecked = selected.has(p.id);
+        const qty = selected.get(p.id)?.qty ?? 1;
+
+        return `
+          <tr>
+            <td class="text-center">
+              <input type="checkbox" class="form-check-input"
+                     data-id="${p.id}" ${isChecked ? 'checked' : ''}>
+            </td>
+            <td class="fw-semibold">
+              ${p.nom ?? '—'}
+              ${p.description ? `<div class="text-muted small">${p.description}</div>` : ``}
+            </td>
+            <td><span class="badge bg-success rounded-pill px-3">${p.categorie ?? '—'}</span></td>
+            <td class="text-center"><span class="badge bg-primary rounded-pill px-3">${money(p.prix)}</span></td>
+            <td class="text-center">${p.duree_minutes ? `${p.duree_minutes} min` : '—'}</td>
+            <td class="text-center">
+              <input type="number" min="1" step="1"
+                     class="form-control form-control-sm text-center"
+                     style="max-width:90px; margin: 0 auto;"
+                     data-qty="${p.id}" value="${qty}" ${isChecked ? '' : 'disabled'}>
+            </td>
+          </tr>
+        `;
+      })
+      .join('');
+
+    tbody.innerHTML = rows || `<tr><td colspan="6" class="text-muted">Aucune prestation</td></tr>`;
+  }
+
+  function renderSelection() {
+    const items = [...selected.values()];
+    if (items.length === 0) {
+      selEmpty.classList.remove('d-none');
+      selList.classList.add('d-none');
+      selList.innerHTML = '';
+      totalEl.textContent = '0,00 €';
+      return;
+    }
+
+    selEmpty.classList.add('d-none');
+    selList.classList.remove('d-none');
+
+    let total = 0;
+
+    selList.innerHTML = items.map(({ item, qty }) => {
+      total += toNumber(item.prix) * qty;
+
+      return `
+        <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+          <div class="me-2">
+            <div class="fw-bold">${item.nom}</div>
+            <div class="text-muted small">${item.categorie ?? '—'} • ${money(item.prix)} x ${qty}</div>
+          </div>
+          <button class="btn btn-sm btn-outline-danger rounded-pill" data-remove="${item.id}">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+      `;
+    }).join('');
+
+    totalEl.textContent = money(total);
+  }
+
+  async function loadPrestations() {
+    tbody.innerHTML = `<tr><td colspan="6" class="text-muted">Chargement…</td></tr>`;
+
+    const res = await fetch('/api/prestation-prices', { headers: { 'Accept': 'application/json' }});
+    if (!res.ok) {
+      tbody.innerHTML = `<tr><td colspan="6" class="text-danger">Erreur chargement prestations</td></tr>`;
+      return;
+    }
+
+    allPrestations = await res.json();
+    renderRows(search.value);
+    renderSelection();
+  }
+
+  // Open modal -> refresh list
+  modalEl.addEventListener('show.bs.modal', () => {
+    selected.clear();
+    search.value = '';
+  });
+
+  modalEl.addEventListener('shown.bs.modal', () => {
+    loadPrestations();
+  });
+
+  // Search
+  search.addEventListener('input', () => renderRows(search.value));
+
+  // Checkbox + qty
+  modalEl.addEventListener('change', (e) => {
+    const cb = e.target.closest('input[type="checkbox"][data-id]');
+    if (cb) {
+      const id = Number(cb.dataset.id);
+      const item = allPrestations.find(x => x.id === id);
+      if (!item) return;
+
+      const qtyInput = modalEl.querySelector(`input[data-qty="${id}"]`);
+
+      if (cb.checked) {
+        selected.set(id, { item, qty: Number(qtyInput?.value || 1) });
+        if (qtyInput) qtyInput.disabled = false;
+      } else {
+        selected.delete(id);
+        if (qtyInput) qtyInput.disabled = true;
+      }
+
+      renderSelection();
+      return;
+    }
+
+    const qty = e.target.closest('input[type="number"][data-qty]');
+    if (qty) {
+      const id = Number(qty.dataset.qty);
+      if (!selected.has(id)) return;
+
+      const v = Math.max(1, Number(qty.value || 1));
+      qty.value = v;
+
+      const current = selected.get(id);
+      selected.set(id, { ...current, qty: v });
+      renderSelection();
+    }
+  });
+
+  // Remove from selection
+  modalEl.addEventListener('click', (e) => {
+    const rm = e.target.closest('[data-remove]');
+    if (rm) {
+      const id = Number(rm.dataset.remove);
+
+      selected.delete(id);
+
+      const cb = modalEl.querySelector(`input[type="checkbox"][data-id="${id}"]`);
+      if (cb) cb.checked = false;
+
+      const qtyInput = modalEl.querySelector(`input[data-qty="${id}"]`);
+      if (qtyInput) qtyInput.disabled = true;
+
+      renderSelection();
+      renderRows(search.value);
+      return;
+    }
+  });
+
+  // Validate selection (pour l’instant: juste console)
+  btnValidate.addEventListener('click', () => {
+    const payload = [...selected.entries()].map(([id, v]) => ({
+      prestationId: id,
+      quantite: v.qty,
+      nom: v.item.nom,
+      prix: v.item.prix
+    }));
+
+    console.log("Prestations sélectionnées :", payload);
+
+    // ✅ ici plus tard on fera le POST vers Symfony
+    modal.hide();
+  });
+});
+</script>
+
