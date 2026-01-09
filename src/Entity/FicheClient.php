@@ -256,10 +256,16 @@ class FicheClient
         return $this;
     }
 
-    public function getAge(): ?\DateTimeInterface
+    public function getAge(): ?int
     {
-        return $this->age;
+        if (!$this->dateNaissance) {
+            return null;
+        }
+
+        $now = new \DateTimeImmutable('today');
+        return $this->dateNaissance->diff($now)->y;
     }
+
 
     public function setAge(?\DateTimeInterface $age): static
     {

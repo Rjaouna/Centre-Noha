@@ -4,6 +4,80 @@
 {% endblock %}
 
 {% block body %}
+
+	{# ✅ Loader global (même structure que ton code) #}
+	<div id="pageLoader" class="page-loader d-none" aria-hidden="true">
+		<div class="loader-card">
+			<div class="lds-ring">
+				<div></div>
+				<div></div>
+				<div></div>
+				<div></div>
+			</div>
+			<div class="mt-3 fw-bold">Chargement…</div>
+			<div class="text-muted small">Merci de patienter</div>
+		</div>
+	</div>
+
+	<style>
+		.page-loader {
+			position: fixed;
+			inset: 0;
+			z-index: 2000;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			background: rgba(255, 255, 255, .65);
+			backdrop-filter: blur(6px);
+		}
+		.loader-card {
+			background: #fff;
+			border: 1px solid rgba(0, 0, 0, .06);
+			box-shadow: 0 20px 60px rgba(0, 0, 0, .12);
+			border-radius: 22px;
+			padding: 22px 26px;
+			text-align: center;
+			min-width: 220px;
+		}
+		.lds-ring {
+			display: inline-block;
+			position: relative;
+			width: 56px;
+			height: 56px;
+		}
+		.lds-ring div {
+			box-sizing: border-box;
+			display: block;
+			position: absolute;
+			width: 56px;
+			height: 56px;
+			margin: 0;
+			border: 6px solid currentColor;
+			border-radius: 50%;
+			animation: lds-ring 1.1s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+			border-color: currentColor transparent transparent transparent;
+			color: #0d6efd;
+		}
+		.lds-ring div:nth-child(1) {
+			animation-delay: -0.45s;
+		}
+		.lds-ring div:nth-child(2) {
+			animation-delay: -0.3s;
+		}
+		.lds-ring div:nth-child(3) {
+			animation-delay: -0.15s;
+		}
+
+		@keyframes lds-ring {
+			0% {
+				transform: rotate(0deg);
+			}
+			100% {
+				transform: rotate(360deg);
+			}
+		}
+	</style>
+
 	<div
 		class="mt-4">
 
@@ -60,8 +134,6 @@
 				</div>
 
 				<div class="modal-body">
-					<input type="hidden" id="wrPatientId">
-
 					<label class="form-label fw-semibold mb-2">Type de consultation</label>
 
 					<select id="wrNote" class="form-select rounded-3">
@@ -94,136 +166,186 @@
 			</div>
 		</div>
 	</div>
-{% endblock %}
 
+{% endblock %}
 {% block javascripts %}
 	{{ parent() }}
 
+	{# ⚠️ Si jQuery/DataTables ne sont PAS dans base.html.twig, dé-commente ceci #}
+	{# 
+	   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+	 <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+	 <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
+#}
+
 	 <script>
-		let patientsDT;
-		let wrModal;
-		let currentPatientId = null;
-		
-		/* ================= UTIL ================= */
-		async function safeJsonFetch(url, options = {}) {
-		  const r = await fetch(url, options);
-		  const t = await r.text();
-		  const j = JSON.parse(t);
-		  if (!r.ok) throw new Error(j.message ?? "Erreur serveur");
-		  return j;
-		}
-		
-		function raw(s){ return (s ?? "").toString().trim().toUpperCase(); }
-		
-		function badgeSalle(row) {
-		  if (!row.wrId || raw(row.wrStatut) === 'TERMINE')
-		    return `<span class="badge bg-light text-dark rounded-pill">Hors salle</span>`;
-		
-		  const map = {
-		    EN_ATTENTE: 'bg-warning text-dark',
-		    APPELE: 'bg-primary',
-		    EN_CONSULTATION: 'bg-success',
-		    ABSENT: 'bg-danger'
-		  };
-		  const cls = map[raw(row.wrStatut)] ?? 'bg-dark';
-		  return `<span class="badge ${cls} rounded-pill">${row.wrStatut}</span>`;
-		}
-		
-		/* ================= INIT TABLE ================= */
-		function initPatientsTable() {
-		  patientsDT = $('#patientsTable').DataTable({
-		    responsive: true,
-		    ajax: { url: "{{ path('app_fiche_client_ajax') }}", dataSrc: 'data' },
-		    order: [[0,'desc']],
-		    pageLength: 10,
-		    lengthChange: false,
-		    language: { url: '//cdn.datatables.net/plug-ins/1.13.8/i18n/fr-FR.json' },
-		
-		    columns: [
-		      { data:'id', className:'fw-bold' },
-		
-		      { data:null, render: r => `
-		        <strong>${r.nom} ${r.prenom ?? ''}</strong>
-		        ${r.isNew ? '<span class="badge bg-success ms-2">Nouveau</span>' : ''}
-		      `},
-		
-		      { data:'ville', defaultContent:'—' },
-		
-		      { data:'telephone', render:t =>
-		        t ? `<a href="tel:${t}" class="text-primary fw-semibold">${t}</a>` : '—'
-		      },
-		
-		      { data:'age', render:a => a ? `${a} ans` : '—' },
-		
-		      { data:'maladie', render:m =>
-		        `<span class="badge bg-info bg-opacity-75 rounded-pill">${m ?? '—'}</span>`
-		      },
-		
-		      { data:null, render: r => badgeSalle(r) },
-		
-		      { data:null, orderable:false, className:'text-center', render:r => {
-		        const url = "{{ path('app_fiche_client_show', {'id':'ID'}) }}".replace('ID', r.id);
-		        const inRoom = r.wrId && raw(r.wrStatut) !== 'TERMINE';
-		
-		        return `
-		          <div class="d-flex justify-content-center gap-2">
-		            <a href="${url}" class="btn btn-sm rounded-pill btn-outline-primary">
-		              <i class="bi bi-eye"></i>
-		            </a>
-		
-		            ${!inRoom ? `
-		              <button class="btn btn-sm rounded-pill btn-warning text-dark js-arrive-wr"
-		                data-patient-id="${r.id}">
-		                <i class="bi bi-telephone-fill"></i>
-		              </button>` : `
-		              <span class="badge bg-warning text-dark rounded-pill px-3">
-		                <i class="bi bi-hourglass-split"></i>
-		              </span>`
-		            }
-		          </div>
-		        `;
-		      }}
-		    ]
-		  });
-		}
-		
-		/* ================= MODAL ARRIVÉE ================= */
-		document.addEventListener("DOMContentLoaded", () => {
-		  wrModal = new bootstrap.Modal(document.getElementById('wrNoteModal'));
-		
-		  initPatientsTable();
-		
-		  document.body.addEventListener('click', e => {
-		    const btn = e.target.closest('.js-arrive-wr');
-		    if (!btn) return;
-		
-		    currentPatientId = btn.dataset.patientId;
-		    document.getElementById('wrNote').value = '';
-		    wrModal.show();
-		  });
-		
-		  document.getElementById('wrConfirmArrive').addEventListener('click', async () => {
-		    const note = document.getElementById('wrNote').value;
-		    if (!note) { alert("Veuillez choisir un motif"); return; }
-		
-		    try {
-		      await safeJsonFetch('/api/waiting-room/arrive', {
-		        method:'POST',
-		        headers:{'Content-Type':'application/json'},
-		        body: JSON.stringify({
-		          patientId: parseInt(currentPatientId,10),
-		          note: note
-		        })
-		      });
-		
-		      wrModal.hide();
-		      patientsDT.ajax.reload(null,false);
-		
-		    } catch(e) {
-		      alert(e.message);
-		    }
-		  });
-		});
-		</script>
+	    let patientsDT;
+	    let wrModal;
+	    let currentPatientId = null;
+	
+	    // ✅ Appel safe au loader GLOBAL (sans redéfinir showLoader/hideLoader)
+	    function uiShowLoader(text = "Chargement…") {
+	      if (typeof window.showLoader === 'function') window.showLoader(text);
+	    }
+	    function uiHideLoader() {
+	      if (typeof window.hideLoader === 'function') window.hideLoader();
+	    }
+	
+	    /* ================= UTIL ================= */
+	    async function safeJsonFetch(url, options = {}) {
+	      const r = await fetch(url, options);
+	      const t = await r.text();
+	      let j = {};
+	      try { j = JSON.parse(t); } catch(e) {}
+	      if (!r.ok) throw new Error(j.message ?? "Erreur serveur");
+	      return j;
+	    }
+	
+	    function raw(s){ return (s ?? "").toString().trim().toUpperCase(); }
+	
+	    function badgeSalle(row) {
+	      if (!row.wrId || raw(row.wrStatut) === 'TERMINE')
+	        return `<span class="badge bg-light text-dark rounded-pill">Hors salle</span>`;
+	
+	      const map = {
+	        EN_ATTENTE: 'bg-warning text-dark',
+	        APPELE: 'bg-primary',
+	        EN_CONSULTATION: 'bg-success',
+	        ABSENT: 'bg-danger'
+	      };
+	      const cls = map[raw(row.wrStatut)] ?? 'bg-dark';
+	      return `<span class="badge ${cls} rounded-pill">${row.wrStatut}</span>`;
+	    }
+	
+	    /* ================= INIT TABLE ================= */
+	    function initPatientsTable() {
+	      // Si tu as un loader global, on l’affiche
+	      uiShowLoader("Chargement des patients…");
+	
+	      // ✅ sécurité : DataTables est-il chargé ?
+	      if (!window.jQuery || !$.fn || !$.fn.DataTable) {
+	        console.error("jQuery/DataTables non chargé. Vérifie base.html.twig.");
+	        uiHideLoader();
+	        return;
+	      }
+	
+	      // ✅ destroy si déjà initialisé
+	      if ($.fn.DataTable.isDataTable('#patientsTable')) {
+	        $('#patientsTable').DataTable().clear().destroy();
+	      }
+	
+	      patientsDT = $('#patientsTable').DataTable({
+	        responsive: true,
+	        ajax: { url: "{{ path('app_fiche_client_ajax') }}", dataSrc: 'data' },
+	        order: [[0,'desc']],
+	        pageLength: 10,
+	        lengthChange: false,
+	        language: { url: '//cdn.datatables.net/plug-ins/1.13.8/i18n/fr-FR.json' },
+	
+	        columns: [
+	          { data:'id', className:'fw-bold' },
+	
+	          { data:null, render: r => `
+	            <strong>${r.nom} ${r.prenom ?? ''}</strong>
+	            ${r.isNew ? '<span class="badge bg-success ms-2">Nouveau</span>' : ''}
+	          `},
+	
+	          { data:'ville', defaultContent:'—' },
+	
+	          { data:'telephone', render:t =>
+	            t ? `<a href="tel:${t}" class="text-primary fw-semibold">${t}</a>` : '—'
+	          },
+	
+	          { data:'age', render:a => a ? `${a} ans` : '—' },
+	
+	          { data:'maladie', render:m =>
+	            `<span class="badge bg-info bg-opacity-75 rounded-pill">${m ?? '—'}</span>`
+	          },
+	
+	          { data:null, render: r => badgeSalle(r) },
+	
+	          { data:null, orderable:false, className:'text-center', render:r => {
+	            const url = "{{ path('app_fiche_client_show', {'id':'ID'}) }}".replace('ID', r.id);
+	            const inRoom = r.wrId && raw(r.wrStatut) !== 'TERMINE';
+	
+	            return `
+	              <div class="d-flex justify-content-center gap-2">
+	                <a href="${url}" class="btn btn-sm rounded-pill btn-outline-primary">
+	                  <i class="bi bi-eye"></i>
+	                </a>
+	
+	                ${!inRoom ? `
+	                  <button class="btn btn-sm rounded-pill btn-warning text-dark js-arrive-wr"
+	                    data-patient-id="${r.id}">
+	                    <i class="bi bi-telephone-fill"></i>
+	                  </button>` : `
+	                  <span class="badge bg-warning text-dark rounded-pill px-3">
+	                    <i class="bi bi-hourglass-split"></i>
+	                  </span>`
+	                }
+	              </div>
+	            `;
+	          }}
+	        ]
+	      });
+	
+	      // ✅ Loader global sur toutes les requêtes DataTables
+	      $('#patientsTable')
+	        .on('preXhr.dt', () => uiShowLoader("Chargement des patients…"))
+	        .on('xhr.dt', () => uiHideLoader())
+	        .on('error.dt', () => uiHideLoader());
+	    }
+	
+	    /* ================= MODAL ARRIVÉE ================= */
+	    document.addEventListener("DOMContentLoaded", () => {
+	      wrModal = new bootstrap.Modal(document.getElementById('wrNoteModal'));
+	
+	      initPatientsTable();
+	
+	      document.body.addEventListener('click', e => {
+	        const btn = e.target.closest('.js-arrive-wr');
+	        if (!btn) return;
+	
+	        currentPatientId = btn.dataset.patientId;
+	        document.getElementById('wrNote').value = '';
+	        wrModal.show();
+	      });
+	
+	      document.getElementById('wrConfirmArrive').addEventListener('click', async () => {
+	        const note = document.getElementById('wrNote').value;
+	        if (!note) { alert("Veuillez choisir un motif"); return; }
+	
+	        try {
+	          uiShowLoader("Mise en salle…");
+	
+	          await safeJsonFetch('/api/waiting-room/arrive', {
+	            method:'POST',
+	            headers:{'Content-Type':'application/json'},
+	            body: JSON.stringify({
+	              patientId: parseInt(currentPatientId,10),
+	              note: note
+	            })
+	          });
+	
+	          wrModal.hide();
+	          patientsDT.ajax.reload(null,false);
+	
+	        } catch(e) {
+	          alert(e.message);
+	        } finally {
+	          uiHideLoader();
+	        }
+	      });
+	    });
+		// ✅ Auto-refresh toutes les 5 secondes (sans reset pagination)
+setInterval(() => {
+  if (patientsDT) {
+    patientsDT.ajax.reload(null, false);
+  }
+}, 5000);
+
+	  </script>
 {% endblock %}
+
+
 

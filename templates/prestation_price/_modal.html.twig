@@ -1,0 +1,108 @@
+<div class="modal fade ux-modal" id="modalPrestationPrice" tabindex="-1">
+	<div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+
+		<div class="modal-content rounded-4 shadow">
+
+			<form
+				id="prestationPriceForm">
+
+				<!-- HEADER -->
+				<div class="modal-header bg-primary text-white rounded-top-4">
+					<div class="d-flex align-items-center gap-2">
+						<span class="icon-circle bg-white bg-opacity-25 text-white d-flex align-items-center justify-content-center" style="width:42px;height:42px;border-radius:14px;">
+							<i class="bi bi-cash-coin fs-5"></i>
+						</span>
+						<div>
+							<div class="fw-bold">Prestation</div>
+							<small class="opacity-75">Ajouter ou modifier une prestation</small>
+						</div>
+					</div>
+
+					<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+				</div>
+
+				<!-- BODY -->
+				<div
+					class="modal-body p-3 p-md-4">
+
+					<!-- Nom -->
+					<div class="card border-0 shadow-sm rounded-4 mb-3">
+						<div class="card-header bg-light fw-bold rounded-top-4 d-flex align-items-center gap-2">
+							<i class="bi bi-tag text-primary"></i>
+							Nom de la prestation
+						</div>
+						<div class="card-body">
+							<input name="nom" class="form-control rounded-3" placeholder="Ex : Consultation générale" required>
+						</div>
+					</div>
+
+					<!-- Catégorie -->
+					<div class="card border-0 shadow-sm rounded-4 mb-3">
+						<div class="card-header bg-light fw-bold rounded-top-4 d-flex align-items-center gap-2">
+							<i class="bi bi-grid text-primary"></i>
+							Catégorie
+						</div>
+						<div class="card-body">
+							<input name="categorie" class="form-control rounded-3" placeholder="Ex : Consultation" required>
+						</div>
+					</div>
+
+					<div
+						class="row g-3">
+						<!-- Prix -->
+						<div class="col-md-6">
+							<div class="card border-0 shadow-sm rounded-4 h-100">
+								<div class="card-header bg-light fw-bold rounded-top-4 d-flex align-items-center gap-2">
+									<i class="bi bi-currency-euro text-primary"></i>
+									Prix
+								</div>
+								<div class="card-body">
+									<input name="prix" type="number" step="0.01" min="0" class="form-control rounded-3" placeholder="Ex : 25.00" required>
+								</div>
+							</div>
+						</div>
+
+						<!-- Durée -->
+						<div class="col-md-6">
+							<div class="card border-0 shadow-sm rounded-4 h-100">
+								<div class="card-header bg-light fw-bold rounded-top-4 d-flex align-items-center gap-2">
+									<i class="bi bi-clock text-primary"></i>
+									Durée (minutes)
+								</div>
+								<div class="card-body">
+									<input name="duree_minutes" type="number" step="1" min="0" class="form-control rounded-3" placeholder="Ex : 20" required>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Description -->
+					<div class="card border-0 shadow-sm rounded-4 mt-3">
+						<div class="card-header bg-light fw-bold rounded-top-4 d-flex align-items-center gap-2">
+							<i class="bi bi-chat-left-text text-primary"></i>
+							Description
+						</div>
+						<div class="card-body">
+							<textarea name="description" class="form-control rounded-3" rows="3" placeholder="Détails, remarques, conditions…"></textarea>
+						</div>
+					</div>
+
+				</div>
+
+				<!-- FOOTER -->
+				<div class="modal-footer border-0 px-4 pb-4 pt-0 d-flex gap-2">
+					<button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">
+						Annuler
+					</button>
+					<button type="submit" class="btn btn-primary rounded-pill px-4 d-flex align-items-center gap-2">
+						<i class="bi bi-check2-circle"></i>
+						Enregistrer
+					</button>
+				</div>
+
+			</form>
+
+		</div>
+	</div>
+</div>
+
