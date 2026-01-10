@@ -1,0 +1,47 @@
+{# ===== MODAL NOTE ARRIVÉE SALLE ===== #}
+<div class="modal fade" id="wrNoteModal" tabindex="-1">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content rounded-4 shadow-lg">
+
+			<div class="modal-header bg-warning text-dark">
+				<h5 class="modal-title fw-bold text-light">
+					<i class="bi bi-clipboard-check me-2"></i>
+					Motif d’arrivée
+				</h5>
+				<button class="btn-close" data-bs-dismiss="modal"></button>
+			</div>
+
+			<div class="modal-body">
+				<label class="form-label fw-semibold mb-2">Type de consultation</label>
+
+				<select id="wrNote" class="form-select rounded-3">
+					<option value="">— Sélectionner —</option>
+					<option value="Consultation ordinaire">Consultation ordinaire</option>
+					<option value="Cas urgent">⚠️ Cas urgent</option>
+					<option value="Suivi médical">Suivi médical</option>
+					<option value="Contrôle">Contrôle</option>
+					<option value="Renouvellement traitement">Renouvellement traitement</option>
+					<option value="Douleur aiguë">Douleur aiguë</option>
+					<option value="Autre">Autre</option>
+				</select>
+
+				<div class="small text-muted mt-2">
+					Cette information est visible dans la salle d’attente.
+				</div>
+			</div>
+
+			<div class="modal-footer d-flex justify-content-between">
+				<button class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">
+					Annuler
+				</button>
+
+				<button class="btn btn-warning fw-bold rounded-pill px-4" id="wrConfirmArrive">
+					<i class="bi bi-check-circle me-1"></i>
+					Mettre en salle
+				</button>
+			</div>
+
+		</div>
+	</div>
+</div>
+

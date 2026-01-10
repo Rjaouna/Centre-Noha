@@ -1,3 +1,4 @@
+{# templates/fiche_client/index.html.twig (exemple) #}
 {% extends 'base.html.twig' %}
 
 {% block title %}Gestion des patients
@@ -5,88 +6,14 @@
 
 {% block body %}
 
-	{# ✅ Loader global (même structure que ton code) #}
-	<div id="pageLoader" class="page-loader d-none" aria-hidden="true">
-		<div class="loader-card">
-			<div class="lds-ring">
-				<div></div>
-				<div></div>
-				<div></div>
-				<div></div>
-			</div>
-			<div class="mt-3 fw-bold">Chargement…</div>
-			<div class="text-muted small">Merci de patienter</div>
-		</div>
-	</div>
+	{# ================= HEADER ================= #}
+	<div class="mt-4">
 
-	<style>
-		.page-loader {
-			position: fixed;
-			inset: 0;
-			z-index: 2000;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			background: rgba(255, 255, 255, .65);
-			backdrop-filter: blur(6px);
-		}
-		.loader-card {
-			background: #fff;
-			border: 1px solid rgba(0, 0, 0, .06);
-			box-shadow: 0 20px 60px rgba(0, 0, 0, .12);
-			border-radius: 22px;
-			padding: 22px 26px;
-			text-align: center;
-			min-width: 220px;
-		}
-		.lds-ring {
-			display: inline-block;
-			position: relative;
-			width: 56px;
-			height: 56px;
-		}
-		.lds-ring div {
-			box-sizing: border-box;
-			display: block;
-			position: absolute;
-			width: 56px;
-			height: 56px;
-			margin: 0;
-			border: 6px solid currentColor;
-			border-radius: 50%;
-			animation: lds-ring 1.1s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-			border-color: currentColor transparent transparent transparent;
-			color: #0d6efd;
-		}
-		.lds-ring div:nth-child(1) {
-			animation-delay: -0.45s;
-		}
-		.lds-ring div:nth-child(2) {
-			animation-delay: -0.3s;
-		}
-		.lds-ring div:nth-child(3) {
-			animation-delay: -0.15s;
-		}
-
-		@keyframes lds-ring {
-			0% {
-				transform: rotate(0deg);
-			}
-			100% {
-				transform: rotate(360deg);
-			}
-		}
-	</style>
-
-	<div
-		class="mt-4">
-
-		{# ================= HEADER ================= #}
 		{% embed '_partials/_page_header.html.twig' with {
-    icon: 'bi bi-people-fill',
-    title: 'Gestion des patients',
-    subtitle: 'Suivi médical & salle d’attente'
-  } %}
+      icon: 'bi bi-people-fill',
+      title: 'Gestion des patients',
+      subtitle: 'Suivi médical & salle d’attente'
+    } %}
 			{% block header_actions_left %}
 				<span class="action-icon bg-primary" role="button" data-bs-toggle="modal" data-bs-target="#modalAddClient" title="Nouveau patient">
 					<i class="bi bi-person-plus"></i>
@@ -121,69 +48,29 @@
 	{% include 'home/_modals/_add_patient.html.twig' %}
 
 	{# ===== MODAL NOTE ARRIVÉE SALLE ===== #}
-	<div class="modal fade" id="wrNoteModal" tabindex="-1">
-		<div class="modal-dialog modal-dialog-centered">
-			<div class="modal-content rounded-4 shadow-lg">
+{{ include('fiche_client/_composants/_choix_appel_waiting_room.html.twig') }}
 
-				<div class="modal-header bg-warning text-dark">
-					<h5 class="modal-title fw-bold text-light">
-						<i class="bi bi-clipboard-check me-2"></i>
-						Motif d’arrivée
-					</h5>
-					<button class="btn-close" data-bs-dismiss="modal"></button>
-				</div>
-
-				<div class="modal-body">
-					<label class="form-label fw-semibold mb-2">Type de consultation</label>
-
-					<select id="wrNote" class="form-select rounded-3">
-						<option value="">— Sélectionner —</option>
-						<option value="Consultation ordinaire">Consultation ordinaire</option>
-						<option value="Cas urgent">⚠️ Cas urgent</option>
-						<option value="Suivi médical">Suivi médical</option>
-						<option value="Contrôle">Contrôle</option>
-						<option value="Renouvellement traitement">Renouvellement traitement</option>
-						<option value="Douleur aiguë">Douleur aiguë</option>
-						<option value="Autre">Autre</option>
-					</select>
-
-					<div class="small text-muted mt-2">
-						Cette information est visible dans la salle d’attente.
-					</div>
-				</div>
-
-				<div class="modal-footer d-flex justify-content-between">
-					<button class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">
-						Annuler
-					</button>
-
-					<button class="btn btn-warning fw-bold rounded-pill px-4" id="wrConfirmArrive">
-						<i class="bi bi-check-circle me-1"></i>
-						Mettre en salle
-					</button>
-				</div>
-
-			</div>
-		</div>
-	</div>
 
 {% endblock %}
+
 {% block javascripts %}
 	{{ parent() }}
 
-	{# ⚠️ Si jQuery/DataTables ne sont PAS dans base.html.twig, dé-commente ceci #}
-	{# 
+	{# ⚠️ Décommente seulement si pas déjà dans base.html.twig #}
+	{#
 	   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 	 <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
 	 <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
 #}
 
 	 <script>
-	    let patientsDT;
-	    let wrModal;
+	  (function () {
+	    let patientsDT = null;
+	    let wrModal = null;
 	    let currentPatientId = null;
+	    let refreshTimer = null;
 	
-	    // ✅ Appel safe au loader GLOBAL (sans redéfinir showLoader/hideLoader)
+	    // ✅ Appel safe au loader GLOBAL (sans le redéfinir ici)
 	    function uiShowLoader(text = "Chargement…") {
 	      if (typeof window.showLoader === 'function') window.showLoader(text);
 	    }
@@ -191,7 +78,6 @@
 	      if (typeof window.hideLoader === 'function') window.hideLoader();
 	    }
 	
-	    /* ================= UTIL ================= */
 	    async function safeJsonFetch(url, options = {}) {
 	      const r = await fetch(url, options);
 	      const t = await r.text();
@@ -217,13 +103,11 @@
 	      return `<span class="badge ${cls} rounded-pill">${row.wrStatut}</span>`;
 	    }
 	
-	    /* ================= INIT TABLE ================= */
 	    function initPatientsTable() {
-	      // Si tu as un loader global, on l’affiche
 	      uiShowLoader("Chargement des patients…");
 	
 	      // ✅ sécurité : DataTables est-il chargé ?
-	      if (!window.jQuery || !$.fn || !$.fn.DataTable) {
+	      if (!window.jQuery || !window.$ || !$.fn || !$.fn.DataTable) {
 	        console.error("jQuery/DataTables non chargé. Vérifie base.html.twig.");
 	        uiHideLoader();
 	        return;
@@ -236,6 +120,7 @@
 	
 	      patientsDT = $('#patientsTable').DataTable({
 	        responsive: true,
+	        processing: false,
 	        ajax: { url: "{{ path('app_fiche_client_ajax') }}", dataSrc: 'data' },
 	        order: [[0,'desc']],
 	        pageLength: 10,
@@ -276,7 +161,7 @@
 	
 	                ${!inRoom ? `
 	                  <button class="btn btn-sm rounded-pill btn-warning text-dark js-arrive-wr"
-	                    data-patient-id="${r.id}">
+	                          data-patient-id="${r.id}">
 	                    <i class="bi bi-telephone-fill"></i>
 	                  </button>` : `
 	                  <span class="badge bg-warning text-dark rounded-pill px-3">
@@ -294,25 +179,40 @@
 	        .on('preXhr.dt', () => uiShowLoader("Chargement des patients…"))
 	        .on('xhr.dt', () => uiHideLoader())
 	        .on('error.dt', () => uiHideLoader());
+	
+	      // ✅ Auto-refresh toutes les 5 secondes (lancé après l'init)
+	      refreshTimer = setInterval(() => {
+	        if (patientsDT) patientsDT.ajax.reload(null, false);
+	      }, 5000);
+	
+	      // ✅ stop timer quand on quitte la page (évite refresh fantôme)
+	      window.addEventListener('pagehide', () => {
+	        if (refreshTimer) clearInterval(refreshTimer);
+	        refreshTimer = null;
+	      }, { once: true });
 	    }
 	
-	    /* ================= MODAL ARRIVÉE ================= */
-	    document.addEventListener("DOMContentLoaded", () => {
-	      wrModal = new bootstrap.Modal(document.getElementById('wrNoteModal'));
+	    function initArriveModal() {
+	      const modalEl = document.getElementById('wrNoteModal');
+	      if (!modalEl) return;
 	
-	      initPatientsTable();
+	      wrModal = bootstrap.Modal.getOrCreateInstance(modalEl);
 	
-	      document.body.addEventListener('click', e => {
+	      document.body.addEventListener('click', (e) => {
 	        const btn = e.target.closest('.js-arrive-wr');
 	        if (!btn) return;
 	
 	        currentPatientId = btn.dataset.patientId;
-	        document.getElementById('wrNote').value = '';
+	        const noteEl = document.getElementById('wrNote');
+	        if (noteEl) noteEl.value = '';
 	        wrModal.show();
 	      });
 	
-	      document.getElementById('wrConfirmArrive').addEventListener('click', async () => {
-	        const note = document.getElementById('wrNote').value;
+	      const confirmBtn = document.getElementById('wrConfirmArrive');
+	      if (!confirmBtn) return;
+	
+	      confirmBtn.addEventListener('click', async () => {
+	        const note = document.getElementById('wrNote')?.value;
 	        if (!note) { alert("Veuillez choisir un motif"); return; }
 	
 	        try {
@@ -328,7 +228,7 @@
 	          });
 	
 	          wrModal.hide();
-	          patientsDT.ajax.reload(null,false);
+	          if (patientsDT) patientsDT.ajax.reload(null,false);
 	
 	        } catch(e) {
 	          alert(e.message);
@@ -336,16 +236,13 @@
 	          uiHideLoader();
 	        }
 	      });
+	    }
+	
+	    window.addEventListener('load', () => {
+	      initArriveModal();
+	      initPatientsTable();
 	    });
-		// ✅ Auto-refresh toutes les 5 secondes (sans reset pagination)
-setInterval(() => {
-  if (patientsDT) {
-    patientsDT.ajax.reload(null, false);
-  }
-}, 5000);
-
+	  })();
 	  </script>
 {% endblock %}
-
-
 

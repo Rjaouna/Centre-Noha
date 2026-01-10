@@ -785,3 +785,38 @@ body.auth-locked{
   box-shadow: 0 0 0 .2rem rgba(220,53,69,.14);
   border-color: rgba(220,53,69,.45);
 }
+
+
+	.delete-tip {
+		position: fixed;
+		z-index: 9999;
+		width: 320px;
+		padding: 12px 14px;
+		border-radius: 14px;
+		background: #fff;
+		border: 1px solid rgba(0, 0, 0, .08);
+		box-shadow: 0 14px 35px rgba(0, 0, 0, .14);
+		opacity: 0;
+		transform: translateY(-6px);
+		pointer-events: none;
+		transition: 0.15s ease;
+	}
+
+	.delete-tip.show {
+		opacity: 1;
+		transform: translateY(0);
+	}
+
+	.delete-tip .title {
+		font-weight: 800;
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		margin-bottom: 6px;
+	}
+
+	.delete-tip .text {
+		color: rgba(0, 0, 0, .65);
+		font-size: 0.92rem;
+		line-height: 1.25rem;
+	}

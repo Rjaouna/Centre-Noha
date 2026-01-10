@@ -78,6 +78,24 @@ final class DossierMedicalController extends AbstractController
             'suiviCount' => 0
         ]);
     }
+    #[Route('/api/dossier-medical/{id}', name: 'api_dossier_medical_delete', methods: ['DELETE'])]
+    public function delete(
+        int $id,
+        DossierMedicalRepository $repo,
+        EntityManagerInterface $em
+    ): JsonResponse {
+        $dossier = $repo->find($id);
+
+        if (!$dossier) {
+            return $this->json(['success' => false, 'message' => 'Dossier introuvable'], 404);
+        }
+
+
+        $em->remove($dossier);
+        $em->flush();
+
+        return $this->json(['success' => true, 'message' => 'Dossier supprimé']);
+    }
 
 
     #[Route('/api/patient/{id}/dossiers', name: 'api_dossier_medical_by_patient', methods: ['GET'])]
