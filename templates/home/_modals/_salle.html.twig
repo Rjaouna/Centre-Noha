@@ -2,59 +2,90 @@
 <div class="modal fade" id="waitingRoomModal" tabindex="-1" aria-hidden="true">
 	<div class="modal-dialog modal-fullscreen">
 		<div class="modal-content wr-shell">
-			<div
-				class="wr-header d-flex align-items-center justify-content-between px-3 px-md-4 py-3">
+<div
+	class="wr-header d-flex align-items-center justify-content-between px-3 px-md-4 py-3">
 
-				<!-- GAUCHE -->
-				<div
-					class="d-flex align-items-center gap-3 min-w-0">
+	<!-- GAUCHE -->
+	<div class="d-flex align-items-center gap-3 min-w-0">
+		<div class="wr-badge d-none d-md-flex">
+			<i class="bi bi-people-fill"></i>
+		</div>
 
-					<!-- ✅ Badge seulement desktop -->
-					<div class="wr-badge d-none d-md-flex">
-						<i class="bi bi-people-fill"></i>
-					</div>
+		<div class="wr-titles min-w-0">
+			<div class="d-flex align-items-center gap-2 flex-wrap">
+				<h5 class="wr-title mb-0 text-uppercase text-truncate">
+					Salle d’attente
+				</h5>
 
-					<div class="wr-titles min-w-0">
-
-						<div
-							class="d-flex align-items-center gap-2 flex-wrap">
-
-							<!-- ✅ Titre : desktop = normal, mobile = simple -->
-							<h5 class="wr-title mb-0 text-uppercase text-truncate">
-								Salle d’attente
-							</h5>
-
-							<!-- ✅ Live toujours visible -->
-							<span class="wr-chip-live text-uppercase d-flex align-items-center gap-1">
-								<span class="wr-live-dot"></span>
-								Live
-							</span>
-						</div>
-
-						<!-- ✅ Sous-titre seulement desktop -->
-						<div class="wr-subtitle d-none d-md-block">
-							Salle d’attente intelligente
-						</div>
-
-					</div>
-				</div>
-
-				<!-- DROITE -->
-				<div
-					class="d-flex align-items-center gap-3 flex-shrink-0">
-
-					<!-- ✅ Maj seulement desktop -->
-					<div class="wr-pill d-none d-md-block" id="wrLastUpdate">—</div>
-
-					<!-- ✅ Fermer toujours visible à droite -->
-					<button type="button" class="btn wr-close d-flex align-items-center gap-1" data-bs-dismiss="modal">
-						<i class="bi bi-x-lg"></i>
-						<span class="d-none d-md-inline">Fermer</span>
-					</button>
-
-				</div>
-
+				<span class="wr-chip-live text-uppercase d-flex align-items-center gap-1">
+					<span class="wr-live-dot"></span>
+					Live
+				</span>
 			</div>
+
+			<div class="wr-subtitle d-none d-md-block">
+				Salle d’attente intelligente
+			</div>
+		</div>
+	</div>
+
+	<!-- DROITE (desktop) -->
+	<div
+		class="d-flex align-items-center gap-3 flex-shrink-0">
+
+		<!-- ✅ CAISSE desktop (sur la même ligne) -->
+		<div class="wr-cash d-none d-md-flex align-items-center gap-2">
+			<div class="wr-cash-info">
+				<div class="wr-cash-label">
+					<i class="bi bi-cash-coin me-1"></i>
+					Caisse
+				</div>
+				<div class="wr-cash-value">
+					<span id="wrTodayRevenue">0</span>
+					<span class="wr-cash-currency">DH</span>
+					<span class="wr-cash-sub">/ jour</span>
+				</div>
+			</div>
+
+			<button type="button" class="btn wr-cash-btn" id="wrCloseDayBtn">
+				<i class="bi bi-lock-fill me-1"></i>
+				Clôturer
+			</button>
+		</div>
+
+		<!-- ✅ Maj seulement desktop -->
+		<div class="wr-pill d-none d-md-block" id="wrLastUpdate">—</div>
+
+		<!-- ✅ Fermer toujours visible à droite -->
+		<button type="button" class="btn wr-close d-flex align-items-center gap-1" data-bs-dismiss="modal">
+			<i class="bi bi-x-lg"></i>
+			<span class="d-none d-md-inline">Fermer</span>
+		</button>
+	</div>
+</div>
+
+<!-- ✅ LIGNE MOBILE (2ème ligne) -->
+<div class="wr-header-mobile-cash d-md-none px-3 pb-3">
+	<div class="wr-cash-mobile">
+		<div class="wr-cash-mobile-left">
+			<div class="wr-cash-label">
+				<i class="bi bi-cash-coin me-1"></i>
+				Caisse du jour
+			</div>
+			<div class="wr-cash-value">
+				<span id="wrTodayRevenueMobile">0</span>
+				<span class="wr-cash-currency">DH</span>
+			</div>
+		</div>
+
+		<button type="button" class="btn wr-cash-btn" id="wrCloseDayBtnMobile">
+			<i class="bi bi-lock-fill me-1"></i>
+			Clôturer
+		</button>
+	</div>
+</div>
+
+
 
 
 			<div class="modal-body wr-body">
@@ -76,6 +107,83 @@
 </div>
 
 <style>
+/* ----- Desktop caisse ----- */
+.wr-cash{
+  padding: 8px 10px;
+  border-radius: 16px;
+  background: rgba(13,110,253,.06);
+  border: 1px solid rgba(13,110,253,.12);
+}
+
+.wr-cash-info{
+  line-height: 1.05;
+}
+
+.wr-cash-label{
+  font-weight: 800;
+  font-size: .78rem;
+  color: rgba(0,0,0,.65);
+  text-transform: uppercase;
+  letter-spacing: .02em;
+}
+
+.wr-cash-value{
+  font-weight: 900;
+  font-size: 1rem;
+}
+
+.wr-cash-currency{
+  font-weight: 900;
+  opacity: .85;
+}
+
+.wr-cash-sub{
+  font-weight: 700;
+  font-size: .8rem;
+  opacity: .55;
+  margin-left: 4px;
+}
+
+.wr-cash-btn{
+  border-radius: 999px;
+  padding: 8px 12px;
+  font-weight: 800;
+background: #ffc107;
+
+  border: 1px solid rgba(0,0,0,.10);
+  box-shadow: 0 10px 22px rgba(0,0,0,.08);
+}
+.wr-cash-btn:hover{
+  transform: translateY(-1px);
+}
+
+/* ----- Mobile 2ème ligne ----- */
+.wr-header-mobile-cash{
+  margin-top: -8px; /* colle visuellement au header */
+}
+
+.wr-cash-mobile{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(255,193,7,.15), rgba(255,193,7,.08));
+  border: 1px solid rgba(255,193,7,.25);
+}
+
+.wr-cash-mobile .wr-cash-value{
+  font-size: 1.15rem;
+}
+
+.wr-cash-mobile .wr-cash-btn{
+  background: #ffc107;
+  border: 1px solid rgba(0,0,0,.12);
+  color: #111;
+  box-shadow: 0 12px 26px rgba(0,0,0,.12);
+}
+
 	.wr-shell {
 		border: 0;
 		background: radial-gradient(1200px 600px at 10% 0%,rgba(59,130,246,.14),transparent 60%), radial-gradient(900px 500px at 90% 10%, rgba(16, 185, 129, 0.12), transparent 55%), #f7f8fb
@@ -673,5 +781,8 @@ const prestaList = prestaCount ? `
     boardEl.innerHTML = "";
   });
 });
+
+
 </script>
+
 

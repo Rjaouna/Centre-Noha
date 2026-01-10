@@ -47,4 +47,18 @@ class PatientPrestationRepository extends ServiceEntityRepository
 
 		return (float) $res;
 	}
+	/**
+	 * Total recette entre 2 dates (from inclus, to exclu)
+	 */
+	public function sumRevenueBetween(\DateTimeImmutable $start, \DateTimeImmutable $end): string
+	{
+		return (string) $this->createQueryBuilder('pp')
+			->select('COALESCE(SUM(pp.prixUnitaire * pp.quantite), 0)')
+			->andWhere('pp.createdAt >= :start')
+			->andWhere('pp.createdAt < :end')
+			->setParameter('start', $start)
+			->setParameter('end', $end)
+			->getQuery()
+			->getSingleScalarResult();
+	}
 }

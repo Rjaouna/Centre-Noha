@@ -1,3 +1,4 @@
+
 {% include 'home/_modals/_salle.html.twig' %}
 
 
@@ -84,6 +85,121 @@
 	</div>
 
 </footer>
+
+ <script>
+(() => {
+  const API_URL = '/api/caisse/recette-du-jour';
+  const MODAL_ID = 'waitingRoomModal';
+  const REFRESH_MS = 30000;
+
+  let timer = null;
+
+  const elDesktop = () => document.getElementById('wrTodayRevenue');
+  const elMobile  = () => document.getElementById('wrTodayRevenueMobile');
+
+  const setRevenue = (value) => {
+    const v = Number(String(value ?? '0').replace(',', '.'));
+    const txt = (Number.isFinite(v) ? v : 0).toFixed(2).replace('.', ',');
+    if (elDesktop()) elDesktop().textContent = txt;
+    if (elMobile())  elMobile().textContent  = txt;
+  };
+
+  const setLoading = () => {
+    if (elDesktop()) elDesktop().textContent = '…';
+    if (elMobile())  elMobile().textContent  = '…';
+  };
+
+  const setError = () => {
+    if (elDesktop()) elDesktop().textContent = '—';
+    if (elMobile())  elMobile().textContent  = '—';
+  };
+
+  async function fetchTodayRevenue() {
+    const token = localStorage.getItem('jwt_token');
+
+    const res = await fetch(API_URL, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        ...(token ? { 'Authorization': 'Bearer ' + token } : {})
+      },
+      credentials: 'same-origin'
+    });
+
+    const raw = await res.text();
+
+    console.log('📦 [CAISSE] status:', res.status);
+    console.log('📦 [CAISSE] raw response:', raw);
+
+    let data;
+    try { data = JSON.parse(raw); }
+    catch {
+      // Souvent ici: page HTML (login/redirect) -> donc pas JSON
+      throw new Error('Réponse non JSON (probable redirect/login/HTML).');
+    }
+
+    if (!res.ok) {
+      throw new Error(data?.message || ('HTTP ' + res.status));
+    }
+
+    if (!data.success) {
+      throw new Error(data?.message || 'success=false');
+    }
+
+    return data.total; // "123.45"
+  }
+
+  async function refresh() {
+    // si les spans ne sont pas dans le DOM, inutile d'appeler l'API
+    if (!elDesktop() && !elMobile()) {
+      console.warn('⚠️ [CAISSE] spans wrTodayRevenue introuvables dans le DOM');
+      return;
+    }
+
+    setLoading();
+
+    try {
+      const total = await fetchTodayRevenue();
+      setRevenue(total);
+      console.log('✅ [CAISSE] total affiché:', total);
+    } catch (e) {
+      console.error('❌ [CAISSE] erreur:', e);
+      setError();
+    }
+  }
+
+  function start() {
+    if (timer) return;
+    console.log('▶️ [CAISSE] start refresh');
+    refresh();
+    timer = setInterval(refresh, REFRESH_MS);
+  }
+
+  function stop() {
+    if (!timer) return;
+    console.log('⏹️ [CAISSE] stop refresh');
+    clearInterval(timer);
+    timer = null;
+  }
+
+  // 1) Quand le modal s’ouvre => refresh + interval
+  document.addEventListener('shown.bs.modal', (e) => {
+    if (e.target?.id === MODAL_ID) start();
+  });
+
+  // 2) Quand il se ferme => stop interval
+  document.addEventListener('hidden.bs.modal', (e) => {
+    if (e.target?.id === MODAL_ID) stop();
+  });
+
+  // 3) Fallback : si la page charge et que les spans existent déjà
+  window.addEventListener('load', () => {
+    if (elDesktop() || elMobile()) refresh();
+  });
+
+  console.log('✅ [CAISSE] script chargé');
+})();
+</script>
 
 
 
@@ -201,18 +317,132 @@ box-shadow: 0 4px 12px rgba(0,0,0,0.18);
 </style>
 
  <script>
-    const footer = document.getElementById('main-footer');
-    const btn = document.getElementById('footer-toggle-btn');
-    const icon = btn.querySelector('i');
+(() => {
+  const footer = document.getElementById('main-footer');
+  const btn = document.getElementById('footer-toggle-btn'); // <- il faut qu'il existe sinon on sort
+  if (!footer || !btn) return;
 
-   btn.addEventListener('click', () => {
-    footer.classList.toggle('d-none');   // garde d-none
+  const icon = btn.querySelector('i');
+
+  btn.addEventListener('click', () => {
+    footer.classList.toggle('d-none');
     setTimeout(() => footer.classList.toggle('show'), 10);
-
-    icon.classList.toggle('rotate-180');
-});
-
+    icon?.classList.toggle('rotate-180');
+  });
+})();
 </script>
+
+ <script>
+(() => {
+  if (window.__WR_CAISSE_BOUND__) return;
+  window.__WR_CAISSE_BOUND__ = true;
+
+  const API_REVENUE   = "/api/caisse/recette-du-jour";
+  const API_CLOSE_DAY = "/api/caisse/cloturer-journee";
+  const MODAL_ID      = "waitingRoomModal";
+  const REFRESH_MS    = 30000;
+
+  const elD = () => document.getElementById("wrTodayRevenue");
+  const elM = () => document.getElementById("wrTodayRevenueMobile");
+
+  const setTxt = (t) => {
+    if (elD()) elD().textContent = t;
+    if (elM()) elM().textContent = t;
+  };
+
+  const formatMoney = (v) => {
+    const n = Number(String(v ?? "0").replace(",", "."));
+    return (Number.isFinite(n) ? n : 0).toFixed(2).replace(".", ",");
+  };
+
+  async function fetchJson(url, options = {}) {
+    const token = localStorage.getItem("jwt_token");
+    const res = await fetch(url, {
+      credentials: "same-origin",
+      headers: {
+        "Accept": "application/json",
+        ...(options.headers || {}),
+        ...(token ? { "Authorization": "Bearer " + token } : {})
+      },
+      ...options
+    });
+
+    const raw = await res.text();
+    let data = null;
+    try { data = JSON.parse(raw); } catch { /* HTML/login */ }
+
+    console.log("📦 [API]", url, "status=", res.status, "raw=", raw);
+
+    if (!res.ok) throw new Error(data?.message || ("HTTP " + res.status));
+    if (!data?.success) throw new Error(data?.message || "success=false");
+    return data;
+  }
+
+  async function refreshRevenue() {
+    if (!elD() && !elM()) return; // spans pas dans le DOM
+    setTxt("…");
+    try {
+      const data = await fetchJson(API_REVENUE, { method: "GET" });
+      setTxt(formatMoney(data.total));
+    } catch (e) {
+      console.error("❌ [CAISSE]", e);
+      setTxt("—");
+    }
+  }
+
+  // Start/Stop refresh quand le modal s'ouvre/ferme
+  let timer = null;
+  document.addEventListener("shown.bs.modal", (e) => {
+    if (e.target?.id !== MODAL_ID) return;
+    refreshRevenue();
+    timer = setInterval(refreshRevenue, REFRESH_MS);
+  });
+
+  document.addEventListener("hidden.bs.modal", (e) => {
+    if (e.target?.id !== MODAL_ID) return;
+    if (timer) clearInterval(timer);
+    timer = null;
+  });
+
+  // ✅ Click clôturer (desktop + mobile)
+  document.addEventListener("click", async (e) => {
+    const btn = e.target.closest("#wrCloseDayBtn, #wrCloseDayBtnMobile");
+    if (!btn) return;
+
+    const ok = confirm(
+      "Êtes-vous sûr de vouloir clôturer la journée ?\n\n" +
+      "• La salle d’attente sera vidée\n" +
+      "• Les prestations du jour seront supprimées"
+    );
+    if (!ok) return;
+
+    const old = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Clôture…`;
+
+    try {
+      await fetchJson(API_CLOSE_DAY, { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" });
+
+      alert("Journée clôturée ✅");
+      setTxt("0,00");
+
+      // Optionnel: si tu veux vider visuellement le board
+      document.getElementById("wrBoard")?.replaceChildren();
+
+    } catch (err) {
+      console.error("❌ [CLOTURE]", err);
+      alert(err.message || "Erreur clôture");
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = old;
+    }
+  });
+
+  console.log("✅ [WR_CAISSE] script chargé");
+})();
+</script>
+
+
 
 
 
