@@ -2,64 +2,81 @@
 
  <script>
 async function getDossier() {
+  const container = document.getElementById("dossiersContainer");
+  if (!container) return;
 
-	const container = document.getElementById("dossiersContainer");
+  // petit loader
+  container.innerHTML = `
+    <div class="col-12 text-center py-4">
+      <div class="spinner-border text-warning"></div>
+    </div>
+  `;
 
-	try {
-		const url = "{{ path('api_dossier_medical_by_patient', { id: patient.id }) }}";
+  try {
+    const baseUrl = "{{ path('api_dossier_medical_by_patient', { id: patient.id }) }}";
+    const url = baseUrl + (baseUrl.includes("?") ? "&" : "?") + "ts=" + Date.now(); // ✅ anti-cache
 
-		const response = await fetch(url, {
-			headers: {
-				"Authorization": "Bearer " + localStorage.getItem("jwt_token")
-			}
-		});
+    const response = await fetch(url, {
+      method: "GET",
+      cache: "no-store", // ✅ important
+      headers: {
+        "Authorization": "Bearer " + localStorage.getItem("jwt_token"),
+        "Accept": "application/json",
+        "Cache-Control": "no-cache"
+      }
+    });
 
-		if (!response.ok) {
-			container.innerHTML = `
-				<div class="col-12 text-center py-4 text-danger">
-					Erreur API (${response.status})
-				</div>
-			`;
-			return;
-		}
+    if (!response.ok) {
+      container.innerHTML = `
+        <div class="col-12 text-center py-4 text-danger">
+          Erreur API (${response.status})
+        </div>
+      `;
+      return;
+    }
 
-		const dossiers = await response.json();
-		container.innerHTML = "";
+    const dossiers = await response.json();
+    container.innerHTML = "";
 
-		if (dossiers.length === 0) {
-			container.innerHTML = `
-				<div class="text-center">
-					Aucun dossier trouvé pour ce patient
-				</div>
-			`;
-			return;
-		}
+    if (!Array.isArray(dossiers) || dossiers.length === 0) {
+      container.innerHTML = `
+        <div class="col-12 text-center text-muted py-4">
+          Aucun dossier trouvé pour ce patient
+        </div>
+      `;
+      return;
+    }
 
-		dossiers.forEach(d => {
-			const urlSuivi = "{{ path('app_suivi_par_dossier', { patientId: patient.id, dossierId: '__ID__' }) }}"
-				.replace("__ID__", d.id);
+    dossiers.forEach(d => {
+      const urlSuivi =
+        "{{ path('app_suivi_par_dossier', { patientId: patient.id, dossierId: '__ID__' }) }}"
+          .replace("__ID__", d.id);
 
-			container.insertAdjacentHTML("beforeend", `
-				<div class="col-12 col-md-6 col-lg-4">
-					<div class="card h-100 shadow-sm rounded-4">
-						<div class="card-body">
-							<h5 class="text-primary fw-bold">${d.titre}</h5>
-							<p class="text-muted small">${d.description ?? "Aucune description"}</p>
-							<a href="${urlSuivi}" class="btn btn-outline-success btn-sm">
-								Voir le dossier
-							</a>
-						</div>
-					</div>
-				</div>
-			`);
-		});
+      container.insertAdjacentHTML("beforeend", `
+        <div class="col-12 col-md-6 col-lg-4">
+          <div class="card h-100 shadow-sm rounded-4">
+            <div class="card-body">
+              <h5 class="text-primary fw-bold">${d.titre}</h5>
+              <p class="text-muted small">${d.description ?? "Aucune description"}</p>
+              <a href="${urlSuivi}" class="btn btn-outline-success btn-sm">
+                Voir le dossier
+              </a>
+            </div>
+          </div>
+        </div>
+      `);
+    });
 
-	} catch (e) {
-		console.error(e);
-		container.innerHTML = `<div class="text-danger text-center">Erreur chargement</div>`;
-	}
+  } catch (e) {
+    console.error(e);
+    container.innerHTML = `<div class="text-danger text-center">Erreur chargement</div>`;
+  }
 }
+
+// ✅ accessible partout (après appel API "arrive", etc.)
+window.getDossier = getDossier;
 
 document.addEventListener("DOMContentLoaded", getDossier);
 </script>
+
 

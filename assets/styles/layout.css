@@ -820,3 +820,55 @@ body.auth-locked{
 		font-size: 0.92rem;
 		line-height: 1.25rem;
 	}
+
+	.medical-card-active{
+  border: 2px solid #198754;         /* vert bootstrap */
+  box-shadow: 0 0 0 0.25rem rgba(25,135,84,.15);
+  position: relative;
+}
+
+.medical-card-active .medical-icon{
+  background: rgba(25,135,84,.12);
+}
+
+.toast-lg{
+  min-width: 520px;
+  max-width: 720px;
+  border-radius: 16px;
+  box-shadow: 0 12px 30px rgba(0,0,0,.18);
+}
+
+.toast-lg .toast-body{
+  font-size: 1.06rem;
+  line-height: 1.35;
+  padding: 1.05rem 1.15rem;
+  color: #111; /* texte dark */
+}
+
+.toast-clickable{
+  cursor: default;
+}
+
+.toast-clickable a.dossier-link{
+  font-weight: 900;
+  color: #111;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+.toast-clickable a.dossier-link:hover{
+  opacity: .85;
+}
+.docto-urgent-icon{
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: rgba(220, 53, 69, 0.12);
+  color: #dc3545;
+  font-size: 22px;
+}

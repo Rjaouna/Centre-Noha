@@ -5,7 +5,7 @@ namespace App\Controller\Api;
 use App\Entity\WaitingRoom;
 use App\Entity\PatientPrestation;
 use App\Repository\RendezVousRepository;
-
+use App\Entity\DossierMedical;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\FicheClientRepository;
 use App\Repository\WaitingRoomRepository;
@@ -204,8 +204,51 @@ class WaitingRoomController extends AbstractController
 				return $this->json(['success' => false, 'message' => 'Patient introuvable'], 404);
 			}
 
-			[$start, $end] = $this->dayRange();
 			$now = new \DateTimeImmutable();
+
+			// =========================
+			// ✅ LOGIQUE DOSSIER MEDICAL
+			// =========================
+			$dossiers = $patient->getDossierMedicals(); // Collection (jamais null)
+
+			// Normalisation (évite les doublons "Fièvre" vs " fievre ")
+			$noteNorm = mb_strtolower(trim((string) $note));
+
+			// 1) Chercher si un dossier existe déjà avec le même titre
+			$existingDossier = null;
+			foreach ($dossiers as $d) {
+				$titreNorm = mb_strtolower(trim((string) $d->getTitre()));
+				if ($titreNorm === $noteNorm) {
+					$existingDossier = $d;
+					break;
+				}
+			}
+
+			// 2) Désactiver tous les dossiers existants
+			foreach ($dossiers as $d) {
+				$d->setIsActif(false);
+			}
+
+			// 3) Activer l’existant OU créer un nouveau
+			if ($existingDossier) {
+				$existingDossier->setIsActif(true);
+				$dossierActif = $existingDossier;
+			} else {
+				$newDossier = new DossierMedical();
+				$newDossier->setPatient($patient);
+				$newDossier->setTitre((string) $note);   // garde le titre exact
+				$newDossier->setDescription(null);
+				$newDossier->setIsActif(true);
+
+				$em->persist($newDossier);
+			}
+			// (optionnel) si tu veux être sûr que Doctrine va bien pousser les updates
+			$em->flush();
+
+			// =========================
+			// ✅ SALLE D’ATTENTE (TON CODE)
+			// =========================
+			[$start, $end] = $this->dayRange();
 
 			// ✅ si déjà une ligne du jour (active ou pas) pour ce patient/praticien -> on la reprend
 			$existing = $wrRepo->createQueryBuilder('w')

@@ -466,6 +466,21 @@ Analyses
 	{# ============================== #}
 	 <script>
 	function createDossierCard(d) {
+		const isActif = d.isActif === true || d.isActif === 1 || d.isActif === "1";
+const toggleTitle = isActif ? "Désactiver" : "Activer";
+const toggleIcon = isActif ? "bi-toggle-on" : "bi-toggle-off";
+
+const toggleBtn = `
+  <button type="button"
+          class="btn btn-action border-success-subtle ${isActif ? 'text-success' : 'text-secondary'}"
+          data-action="toggle-actif"
+          data-id="${d.id}"
+          data-is-actif="${isActif ? 1 : 0}"
+          title="${toggleTitle}">
+    <i class="bi ${toggleIcon}"></i>
+  </button>
+`;
+
 	    const urlSuivi = "{{ path('app_suivi_par_dossier', {
 	        patientId: fiche_client.id,
 	        dossierId: '__ID__'
@@ -475,7 +490,10 @@ const hasSuivi = (d.suiviCount ?? 0) > 0;
 	
 	    return `
 	<div class="col-md-6 col-lg-4">
-<div class="medical-card h-100">
+<div class="medical-card h-100 ${isActif ? 'medical-card-active' : ''}">
+
+
+
 
 
 <div
@@ -489,10 +507,18 @@ class="medical-card-header d-flex align-items-start justify-content-between">
 
 
 <div class="medical-title">
-	<h5>${d.titre}</h5>
+	<h5>${d.titre}
+${isActif ? `<span class="badge text-bg-success ms-2">Actif</span>` : ''}
+
+
+</h5>
 	<span class="medical-id">Dossier #${d.id}</span>
 
-</div></div><div class="table-actions">
+</div></div>
+
+<div class="table-actions">
+${toggleBtn}
+
 ${hasSuivi ? `
 <span id="deleteDisabled" class="delete-disabled-wrap">
 	<button type="button" class="btn btn-action border-danger-subtle text-danger" disabled tabindex="-1" aria-disabled="true">
@@ -553,45 +579,101 @@ ${hasSuivi ? `
 	</div>
 	    `;
 	}
-	
+	let activeDossierToastShown = false;
+
+function isActifValue(v) {
+  return v === true || v === 1 || v === "1";
+}
+
+function escapeHtml(str) {
+  return String(str ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function showActiveDossierToast(dossier) {
+  const toastEl = document.getElementById("activeDossierToast");
+  const bodyEl = document.getElementById("activeDossierToastBody");
+  if (!toastEl || !bodyEl) return;
+
+  // URL vers la page dossier (suivi)
+  const urlSuivi = "{{ path('app_suivi_par_dossier', { patientId: fiche_client.id, dossierId: '__ID__' }) }}"
+    .replace('__ID__', dossier.id);
+
+  bodyEl.innerHTML = `
+    <div class="fw-bold mb-1">
+      <i class="bi bi-exclamation-triangle-fill me-2"></i>
+      Attention : dossier actif
+    </div>
+
+    <div>
+      Le dossier actif pour ce client est
+      <a class="dossier-link" href="${urlSuivi}">
+        ${escapeHtml(dossier.titre)}
+      </a>
+      <span class="fw-semibold">(#${escapeHtml(dossier.id)})</span>.
+      <div class="mt-1">
+        Pensez à le changer si ce n’est pas le bon.
+      </div>
+    </div>
+  `;
+
+  bootstrap.Toast.getOrCreateInstance(toastEl, {
+    delay: 5000,
+    autohide: true
+  }).show();
+}
+
+
 	async function loadDossiers() {
-	    const container = document.getElementById("dossiersContainer");
-	
-	    container.innerHTML = `
-	        <div class="col-12 text-center py-4">
-	            <div class="spinner-border text-warning"></div>
-	        </div>
-	    `;
-	
-	    try {
-	        const response = await fetch(
-	            "{{ path('api_dossier_medical_by_patient', { id: fiche_client.id }) }}",
-	            {
-	                headers: {
-	                    "Authorization": "Bearer " + localStorage.getItem("jwt_token")
-	                }
-	            }
-	        );
-	
-	        if (!response.ok) throw new Error("Erreur chargement");
-	
-	        const dossiers = await response.json();
-	        container.innerHTML = "";
-	
-	        dossiers.forEach(d => {
-	            container.insertAdjacentHTML("beforeend", createDossierCard(d));
-	        });
-	
-	    } catch (error) {
-	        console.error(error);
-	        container.innerHTML = `
-	            <div class="text-danger text-center">
-	                Erreur chargement dossiers
-	            </div>
-	        `;
-	    }
-	}
-	
+  const container = document.getElementById("dossiersContainer");
+  const badge = document.getElementById("dossierCount");
+  const emptyState = document.getElementById("dossiersEmptyState");
+
+  container.innerHTML = `
+    <div class="col-12 text-center py-4">
+      <div class="spinner-border text-warning"></div>
+    </div>
+  `;
+
+  try {
+    const baseUrl = "{{ path('api_dossier_medical_by_patient', { id: fiche_client.id }) }}";
+    const url = baseUrl + (baseUrl.includes("?") ? "&" : "?") + "ts=" + Date.now(); // ✅ anti-cache
+
+    const response = await fetch(url, {
+      method: "GET",
+      cache: "no-store", // ✅ important
+      headers: {
+        "Authorization": "Bearer " + localStorage.getItem("jwt_token"),
+        "Accept": "application/json",
+        "Cache-Control": "no-cache"
+      }
+    });
+
+    if (!response.ok) throw new Error("Erreur chargement");
+
+    const dossiers = await response.json();
+
+    // ✅ compteur + empty state
+    if (badge) badge.textContent = String(dossiers.length);
+    if (emptyState) emptyState.classList.toggle("d-none", dossiers.length > 0);
+
+    container.innerHTML = "";
+    dossiers.forEach(d => container.insertAdjacentHTML("beforeend", createDossierCard(d)));
+
+  } catch (error) {
+    console.error(error);
+    container.innerHTML = `<div class="text-danger text-center">Erreur chargement dossiers</div>`;
+  }
+}
+
+// ✅ important : rendre accessible depuis les autres scripts
+window.loadDossiers = loadDossiers;
+
+
 	document.addEventListener("DOMContentLoaded", () => {
 	    loadDossiers();
 	
@@ -655,6 +737,56 @@ ${hasSuivi ? `
 	    });
 	});
 	</script>
+ <script>
+document.addEventListener("DOMContentLoaded", () => {
+  const container = document.getElementById("dossiersContainer");
+  if (!container) return;
+
+  const API_SET_ACTIF = (id) =>
+    "{{ path('api_dossier_medical_set_actif', { id: '__ID__' }) }}".replace('__ID__', id);
+
+  container.addEventListener("click", async (e) => {
+    const btn = e.target.closest('[data-action="toggle-actif"]');
+    if (!btn) return;
+
+    const id = btn.dataset.id;
+    const current = btn.dataset.isActif === "1";
+    const next = !current;
+
+    btn.disabled = true;
+
+    try {
+      const res = await fetch(API_SET_ACTIF(id), {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + localStorage.getItem("jwt_token"),
+          "Accept": "application/json",
+        },
+        body: JSON.stringify({ isActif: next })
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok || !data.success) {
+        alert(data.error || data.message || "Erreur lors de la mise à jour");
+        return;
+      }
+
+      // 🔥 Le plus simple/solide : on recharge la liste (garantit un seul actif affiché)
+      await loadDossiers();
+
+    } catch (err) {
+      console.error(err);
+      alert("Erreur réseau");
+    } finally {
+      btn.disabled = false;
+    }
+  });
+});
+</script>
+
+
  <script>
 document.addEventListener("DOMContentLoaded", () => {
   // Ferme tous les accordions au chargement
@@ -809,6 +941,12 @@ document.addEventListener("DOMContentLoaded", () => {
             note: note
           })
         });
+if (typeof window.loadDossiers === "function") {
+
+await window.loadDossiers();
+
+}
+
 
         wrModal.hide();
       } catch (e) {
@@ -821,6 +959,8 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 })();
 </script>
+
+{{ include('fiche_client/_composants/_notifications.html.twig') }}
 
 
 

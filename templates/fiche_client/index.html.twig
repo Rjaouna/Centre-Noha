@@ -48,8 +48,7 @@
 	{% include 'home/_modals/_add_patient.html.twig' %}
 
 	{# ===== MODAL NOTE ARRIVÉE SALLE ===== #}
-{{ include('fiche_client/_composants/_choix_appel_waiting_room.html.twig') }}
-
+	{{ include('fiche_client/_composants/_choix_appel_waiting_room.html.twig') }}
 
 {% endblock %}
 
@@ -226,6 +225,10 @@
 	              note: note
 	            })
 	          });
+
+
+
+
 	
 	          wrModal.hide();
 	          if (patientsDT) patientsDT.ajax.reload(null,false);

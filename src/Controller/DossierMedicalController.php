@@ -35,7 +35,7 @@ final class DossierMedicalController extends AbstractController
 
         return $this->render('dossier_medical/index.html.twig', [
             'dossiers' => $dossiers,
-            'patient' => $patient
+            'patient' => $patient,
         ]);
     }
 
@@ -60,12 +60,20 @@ final class DossierMedicalController extends AbstractController
         if (!$patient) {
             return $this->json(['error' => 'Patient introuvable'], 404);
         }
+        // 1) Récupérer tous les dossiers du patient
+        $dossiers = $patient->getDossierMedicals();
+
+        foreach ($dossiers as $d) {
+            $d->setIsActif(false);
+        }
+
 
         $dossier = new DossierMedical();
         $dossier->setTitre($data['titre']);
         $dossier->setDescription($data['description'] ?? null);
         $dossier->setPatient($patient);
         $dossier->setCreatedAt(new \DateTimeImmutable());
+        $dossier->setIsActif(true);
 
         $em->persist($dossier);
         $em->flush();
@@ -75,6 +83,7 @@ final class DossierMedicalController extends AbstractController
             'titre' => $dossier->getTitre(),
             'description' => $dossier->getDescription(),
             'createdAt' => $dossier->getCreatedAt()->format('d/m/Y'),
+            'isActif' => $dossier->isActif(),
             'suiviCount' => 0
         ]);
     }
@@ -118,6 +127,7 @@ final class DossierMedicalController extends AbstractController
             $data[] = [
                 'id' => $d->getId(),
                 'titre' => $d->getTitre(),
+                'isActif' => $d->isActif(),
                 'description' => $d->getDescription(),
                 'createdAt' => $d->getCreatedAt()?->format('Y-m-d H:i'),
                 'updatedAt' => $d->getUpdatedAt()?->format('Y-m-d H:i'),
@@ -154,6 +164,51 @@ final class DossierMedicalController extends AbstractController
             'titre' => $dossier->getTitre(),
             'description' => $dossier->getDescription(),
             'createdAt' => $dossier->getCreatedAt()?->format('d/m/Y H:i'),
+        ]);
+    }
+    #[Route('/api/dossier-medical/{id}/actif', name: 'api_dossier_medical_set_actif', methods: ['PATCH'])]
+    public function setActif(
+        int $id,
+        Request $request,
+        EntityManagerInterface $em,
+        DossierMedicalRepository $dossierRepo
+    ): JsonResponse {
+        $payload = json_decode($request->getContent(), true) ?? [];
+
+        if (!array_key_exists('isActif', $payload)) {
+            return $this->json(['success' => false, 'error' => 'Champ isActif manquant'], 400);
+        }
+
+        $isActif = filter_var($payload['isActif'], FILTER_VALIDATE_BOOL, FILTER_NULL_ON_FAILURE);
+        if ($isActif === null) {
+            return $this->json(['success' => false, 'error' => 'isActif invalide (true/false)'], 400);
+        }
+
+        $dossier = $dossierRepo->find($id);
+        if (!$dossier) {
+            return $this->json(['success' => false, 'error' => 'Dossier introuvable'], 404);
+        }
+
+        $patient = $dossier->getPatient();
+
+        if ($isActif) {
+            // Désactive tous les dossiers du patient
+            foreach ($patient->getDossierMedicals() as $d) {
+                $d->setIsActif(false);
+            }
+            // Active celui-ci
+            $dossier->setIsActif(true);
+        } else {
+            // Désactive seulement celui-ci
+            $dossier->setIsActif(false);
+        }
+
+        $em->flush();
+
+        return $this->json([
+            'success' => true,
+            'id' => $dossier->getId(),
+            'isActif' => $dossier->isActif(),
         ]);
     }
 }

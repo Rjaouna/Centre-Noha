@@ -37,6 +37,9 @@ class DossierMedical
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $autre = null;
 
+    #[ORM\Column]
+    private ?bool $isActif = null;
+
     public function __construct()
     {
         $this->suiviSoins = new ArrayCollection();
@@ -121,6 +124,18 @@ class DossierMedical
     public function setAutre(?string $autre): static
     {
         $this->autre = $autre;
+
+        return $this;
+    }
+
+    public function isActif(): ?bool
+    {
+        return $this->isActif;
+    }
+
+    public function setIsActif(bool $isActif): static
+    {
+        $this->isActif = $isActif;
 
         return $this;
     }
