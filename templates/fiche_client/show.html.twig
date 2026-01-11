@@ -959,6 +959,65 @@ await window.loadDossiers();
   });
 })();
 </script>
+ <script>
+document.addEventListener("DOMContentLoaded", async () => {
+  const toastEl = document.getElementById("activeDossierToast");
+  const bodyEl  = document.getElementById("activeDossierToastBody");
+  if (!toastEl || !bodyEl) return;
+
+  try {
+    // Récupérer les dossiers du patient
+    const baseUrl = "{{ path('api_dossier_medical_by_patient', { id: fiche_client.id }) }}";
+    const url = baseUrl + (baseUrl.includes("?") ? "&" : "?") + "ts=" + Date.now(); // anti-cache
+
+    const res = await fetch(url, {
+      method: "GET",
+      cache: "no-store",
+      headers: {
+        "Authorization": "Bearer " + localStorage.getItem("jwt_token"),
+        "Accept": "application/json"
+      }
+    });
+
+    if (!res.ok) return;
+
+    const dossiers = await res.json();
+
+    // Trouver dossier actif
+    const actif = dossiers.find(d => d.isActif === true || d.isActif === 1 || d.isActif === "1");
+    if (!actif) return;
+
+    // Lien vers le dossier
+    const urlSuivi = "{{ path('app_suivi_par_dossier', { patientId: fiche_client.id, dossierId: '__ID__' }) }}"
+      .replace("__ID__", actif.id);
+
+    // Contenu toast
+    bodyEl.innerHTML = `
+      <div class="fw-bold mb-1">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        Attention : dossier actif
+      </div>
+      <div>
+        Le dossier actif pour ce client est
+        <a class="dossier-link" href="${urlSuivi}">${String(actif.titre ?? '').replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")}</a>
+        <span class="fw-semibold">(#${actif.id})</span>.
+        <div class="mt-1">Pensez à le changer si ce n’est pas le bon.</div>
+      </div>
+    `;
+
+    // ✅ Affichage 5s
+    bootstrap.Toast.getOrCreateInstance(toastEl, {
+      delay: 5000,
+      autohide: true
+    }).show();
+
+  } catch (e) {
+    console.error(e);
+  }
+});
+</script>
+
+
 
 {{ include('fiche_client/_composants/_notifications.html.twig') }}
 
