@@ -182,7 +182,9 @@
 	      // ✅ Auto-refresh toutes les 5 secondes (lancé après l'init)
 	      refreshTimer = setInterval(() => {
 	        if (patientsDT) patientsDT.ajax.reload(null, false);
-	      }, 5000);
+}, 10000);
+
+
 	
 	      // ✅ stop timer quand on quitte la page (évite refresh fantôme)
 	      window.addEventListener('pagehide', () => {
